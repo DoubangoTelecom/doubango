@@ -90,6 +90,7 @@ typedef struct tbfcp_attr_grouped_s {
 TINYBFCP_API int tbfcp_attr_grouped_create(enum tbfcp_attribute_type_e type, unsigned M, struct tbfcp_attr_grouped_s** pp_self);
 TINYBFCP_API int tbfcp_attr_grouped_create_u16(enum tbfcp_attribute_type_e type, unsigned M, uint16_t extra_hdr_u16_val, struct tbfcp_attr_grouped_s** pp_self);
 TINYBFCP_API int tbfcp_attr_grouped_add_attr(struct tbfcp_attr_grouped_s* p_self, struct tbfcp_attr_s** p_attr);
+TINYBFCP_API int tbfcp_attr_grouped_find_at(const struct tbfcp_attr_grouped_s* pc_self, enum tbfcp_attribute_format_e e_format, tsk_size_t u_index, const struct tbfcp_attr_s** ppc_attr);
 
 TBFCP_END_DECLS
 

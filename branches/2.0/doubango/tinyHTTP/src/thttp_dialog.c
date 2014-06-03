@@ -389,7 +389,6 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 			goto bail;
 		}
 	}
-	
 	if (tnet_transport_send(self->session->stack->transport, self->session->fd, output->data, output->size)) {
 		TSK_DEBUG_INFO("HTTP/HTTPS message successfully sent.");
 		thttp_dialog_update_timestamp(self);

@@ -40,6 +40,9 @@ TBFCP_BEGIN_DECLS
 #if !defined(kBfcpTimerT1MaxTries)
 #	define kBfcpTimerT1MaxTries 4 // draft says #3 but we use #4
 #endif /* kBfcpTimerT1MaxTries */
+#if !defined(kBfcpTimerT1Max)
+#	define kBfcpTimerT1Max (kBfcpTimerT1 * kBfcpTimerT1MaxTries)
+#endif /* kBfcpTimerT1 */
 
 #if !defined(kBfcpTcpTimerReconnect)
 #	define kBfcpTcpTimerReconnect	5000 // Try to reconnect the TCP/TLS socket every 5seconds if unexpectedly disconnected
@@ -177,7 +180,7 @@ typedef enum tbfcp_prio_e {
 // RFC4582 - 5.2.5.  REQUEST-STATUS
 typedef enum tbfcp_reqstatus_e {
     tbfcp_reqstatus_Pending		= 1,
-    tbfcp_reqstatus_Accepte		= 2,
+    tbfcp_reqstatus_Accepted	= 2,
     tbfcp_reqstatus_Granted		= 3,
     tbfcp_reqstatus_Denied		= 4,
     tbfcp_reqstatus_Cancelled	= 5,

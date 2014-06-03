@@ -60,6 +60,8 @@ TINYBFCP_API int tbfcp_pkt_get_size_in_octetunits_with_padding(const struct tbfc
 TINYBFCP_API int tbfcp_pkt_write_with_padding(const struct tbfcp_pkt_s* pc_self, uint8_t* p_buff_ptr, tsk_size_t n_buff_size, tsk_size_t *p_written);
 TINYBFCP_API int tbfcp_pkt_is_complete(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size, tsk_bool_t *pb_is_complete);
 TINYBFCP_API int tbfcp_pkt_read(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size, struct tbfcp_pkt_s** pp_pkt);
+TINYBFCP_API int tbfcp_pkt_attr_find_at(const struct tbfcp_pkt_s* pc_self, enum tbfcp_attribute_format_e e_format, tsk_size_t u_index, const struct tbfcp_attr_s** ppc_attr);
+#define tbfcp_pkt_attr_find_first(pc_self, e_format, ppc_attr) tbfcp_pkt_attr_find_at(pc_self, e_format, 0, ppc_attr)
 
 /***** rfc4582 - 5.3.1.  FloorRequest *****/
 #define tbfcp_pkt_create_FloorRequest(conf_id, transac_id, user_id, pp_self) tbfcp_pkt_create(tbfcp_primitive_FloorRequest, (conf_id), (transac_id), (user_id), (pp_self))

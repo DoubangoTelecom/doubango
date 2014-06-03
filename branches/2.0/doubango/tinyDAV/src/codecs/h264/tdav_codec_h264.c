@@ -266,7 +266,7 @@ static tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_da
 		send_idr = (
 			h264->encoder.frame_count++ == 0
 			|| h264 ->encoder.force_idr
-			|| ( (h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->out.fps * 4) && ((h264->encoder.frame_count % TMEDIA_CODEC_VIDEO(h264)->out.fps)==0) )
+			//|| ( (h264->encoder.frame_count < (int)TMEDIA_CODEC_VIDEO(h264)->out.fps * 4) && ((h264->encoder.frame_count % TMEDIA_CODEC_VIDEO(h264)->out.fps)==0) )
 		   );
 
 		// send SPS and PPS headers for:
@@ -274,7 +274,7 @@ static tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_da
 		//  - every 5 seconds after the first 4seconds
 		send_hdr = (
 			send_idr
-			|| ( (h264->encoder.frame_count % (TMEDIA_CODEC_VIDEO(h264)->out.fps * 5))==0 )
+			//|| ( (h264->encoder.frame_count % (TMEDIA_CODEC_VIDEO(h264)->out.fps * 5))==0 )
 			);
 		if(send_hdr){
 			tdav_codec_h264_rtp_encap(TDAV_CODEC_H264_COMMON(h264), h264->encoder.context->extradata, (tsk_size_t)h264->encoder.context->extradata_size);
@@ -726,7 +726,7 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 	self->encoder.context->mb_qmax = self->encoder.context->qmax;
 #endif
 	/* METROPOLIS = G2J.COM TelePresence client. Check Issue 378: No video when calling "TANDBERG/4129 (X8.1.1)" */
-#if !METROPOLIS
+#if !METROPOLIS  && 0
 	self->encoder.context->flags |= CODEC_FLAG_GLOBAL_HEADER;
 #endif
     self->encoder.context->flags |= CODEC_FLAG_LOW_DELAY;

@@ -46,7 +46,7 @@ TDAV_BEGIN_DECLS
 #endif
 
 #if !defined(H264_PACKETIZATION_MODE)
-#	if METROPOLIS
+#	if METROPOLIS || 1
 #		define H264_PACKETIZATION_MODE	Single_NAL_Unit_Mode
 #	else
 #		define H264_PACKETIZATION_MODE	Non_Interleaved_Mode
