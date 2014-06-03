@@ -44,6 +44,7 @@ typedef struct tdav_session_bfcp_s
 
 	struct tbfcp_session_s* p_bfcp_s;
 	struct tbfcp_pkt_s* p_pkt_FloorRequest;
+	struct tbfcp_pkt_s* p_pkt_FloorRelease;
 	struct tbfcp_pkt_s* p_pkt_Hello;
 
 	tsk_bool_t b_use_ipv6;
@@ -436,14 +437,14 @@ static int _tdav_session_bfcp_notif(const struct tbfcp_session_event_xs *e)
 #define _RAISE_ERR_AND_GOTO_BAIL(_code, _reason) \
 		if (TMEDIA_SESSION(p_bfcp)->bfcp_cb.fun) { \
 			tmedia_session_bfcp_evt_xt e; \
-			e.err.code = _code; e.reason = _reason; \
+			e.type = tmedia_session_bfcp_evt_type_err; e.err.code = _code; e.reason = _reason; \
 			TMEDIA_SESSION(p_bfcp)->bfcp_cb.fun(TMEDIA_SESSION(p_bfcp)->bfcp_cb.usrdata, TMEDIA_SESSION(p_bfcp), &e); \
 		} \
 		ret = _code; goto bail;
 #define _RAISE_FLREQ(_status, _reason) \
 		if (TMEDIA_SESSION(p_bfcp)->bfcp_cb.fun) { \
 			tmedia_session_bfcp_evt_xt e; \
-			e.flreq.status = _status; e.reason = _reason; \
+			e.type = tmedia_session_bfcp_evt_type_flreq_status; e.flreq.status = _status; e.reason = _reason; \
 			TMEDIA_SESSION(p_bfcp)->bfcp_cb.fun(TMEDIA_SESSION(p_bfcp)->bfcp_cb.usrdata, TMEDIA_SESSION(p_bfcp), &e); \
 		} \
 
@@ -517,6 +518,7 @@ static int _tdav_session_bfcp_notif(const struct tbfcp_session_event_xs *e)
 						}
 
 						if (pc_attr_RequestStatus) {
+							// https://tools.ietf.org/html/rfc4582#section-5.2.5
 							uint16_t u_status = pc_attr_RequestStatus->OctetString16[0] + (pc_attr_RequestStatus->OctetString16[1] << 8);
 							_RAISE_FLREQ(u_status, kInfoTextFloorReqStatus);
 						}
@@ -583,6 +585,7 @@ static tsk_object_t* _tdav_session_bfcp_dtor(tsk_object_t * p_self)
 
 		TSK_OBJECT_SAFE_FREE(p_session->p_bfcp_s);
 		TSK_OBJECT_SAFE_FREE(p_session->p_pkt_FloorRequest);
+		TSK_OBJECT_SAFE_FREE(p_session->p_pkt_FloorRelease);
 		TSK_OBJECT_SAFE_FREE(p_session->p_pkt_Hello);
 
 		TSK_FREE(p_session->p_local_ip);
