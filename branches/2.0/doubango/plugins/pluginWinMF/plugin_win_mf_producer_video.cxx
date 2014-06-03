@@ -207,6 +207,7 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 	IMFTopologyNode *pNodeGrabber = NULL;
 	IMFMediaType* pGrabberNegotiatedInputMedia = NULL;
 	BOOL bVideoProcessorIsSupported = FALSE;
+	const VideoSubTypeGuidPair *pcPreferredSubTypeGuidPair = NULL;
 
 	// create device list object
 	if(!pSelf->pDeviceList && !(pSelf->pDeviceList = new DeviceListVideo())){
@@ -272,7 +273,8 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 				TMEDIA_PRODUCER(pSelf)->video.fps,
 				&nWidth,
 				&nHeight,
-				&nFps
+				&nFps,
+				&pcPreferredSubTypeGuidPair
 			);
 			if (SUCCEEDED(hr))
 			{
@@ -377,8 +379,8 @@ static int plugin_win_mf_producer_video_prepare(tmedia_producer_t* self, const t
 		else {
 			// Video Processors will be inserted in the topology if the source cannot produce I420 frames
 			// IMPORTANT: Must not be NV12 because not supported by Video Resizer DSP (http://msdn.microsoft.com/en-us/library/windows/desktop/ff819491(v=vs.85).aspx)
-			CHECK_HR(hr = pSelf->pGrabberInputType->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_I420));
-			TMEDIA_PRODUCER(pSelf)->video.chroma = tmedia_chroma_yuv420p;
+			CHECK_HR(hr = pSelf->pGrabberInputType->SetGUID(MF_MT_SUBTYPE, pcPreferredSubTypeGuidPair ? pcPreferredSubTypeGuidPair->fourcc : MFVideoFormat_I420));
+			TMEDIA_PRODUCER(pSelf)->video.chroma = pcPreferredSubTypeGuidPair ? pcPreferredSubTypeGuidPair->chroma : tmedia_chroma_yuv420p;
 			TSK_DEBUG_INFO("MF video producer chroma = %d", TMEDIA_PRODUCER(pSelf)->video.chroma);
 		}
 		
