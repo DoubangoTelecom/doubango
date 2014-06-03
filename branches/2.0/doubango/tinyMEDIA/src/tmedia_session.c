@@ -588,12 +588,23 @@ int tmedia_session_set_onerror_cbfn(tmedia_session_t* self, const void* usrdata,
 
 int tmedia_session_set_rfc5168_cbfn(tmedia_session_t* self, const void* usrdata, tmedia_session_rfc5168_cb_f fun)
 {
-	if(!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	self->rfc5168_cb.fun = fun;
 	self->rfc5168_cb.usrdata = usrdata;
+	return 0;
+}
+
+int tmedia_session_set_bfcp_cbfn(tmedia_session_t* self, const void* usrdata, tmedia_session_bfcp_cb_f fun)
+{
+	if (!self) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->bfcp_cb.fun = fun;
+	self->bfcp_cb.usrdata = usrdata;
 	return 0;
 }
 
@@ -1943,6 +1954,28 @@ int tmedia_session_mgr_set_rfc5168_cbfn(tmedia_session_mgr_t* self, const void* 
 			continue;
 		}
 		tmedia_session_set_rfc5168_cbfn(session, usrdata, fun);
+	}
+	tsk_list_unlock(self->sessions);
+
+	return 0;
+}
+
+int tmedia_session_mgr_set_bfcp_cbfn(tmedia_session_mgr_t* self, const void* usrdata, tmedia_session_bfcp_cb_f fun)
+{
+	tmedia_session_t* session;
+	tsk_list_item_t *item;
+
+	if (!self) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tsk_list_lock(self->sessions);
+	tsk_list_foreach(item, self->sessions) {
+		if (!(session = item->data)) {
+			continue;
+		}
+		tmedia_session_set_bfcp_cbfn(session, usrdata, fun);
 	}
 	tsk_list_unlock(self->sessions);
 

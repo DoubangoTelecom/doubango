@@ -55,6 +55,26 @@ typedef enum tmedia_session_rfc5168_cmd_e
 	tmedia_session_rfc5168_cmd_picture_fast_update,
 }
 tmedia_session_rfc5168_cmd_t;
+// BFCP (rfc4582) events
+typedef enum tmedia_session_bfcp_evt_type_e
+{
+	tmedia_session_bfcp_evt_type_err, // Global error
+	tmedia_session_bfcp_evt_type_flreq_status, // FloorRequestStatus
+}
+tmedia_session_bfcp_evt_type_t;
+
+typedef struct tmedia_session_bfcp_evt_xs {
+	tmedia_session_bfcp_evt_type_t type;
+	const char* reason;
+	union {
+		struct {
+			int code;
+		} err;
+		struct {
+			uint16_t status;
+		} flreq;
+	};
+} tmedia_session_bfcp_evt_xt;
 
 #define TMEDIA_SESSION(self)		((tmedia_session_t*)(self))
 #define TMEDIA_SESSION_AUDIO(self)	((tmedia_session_audio_t*)(self))
@@ -65,7 +85,7 @@ typedef int (*tmedia_session_t140_ondata_cb_f)(const void* usrdata, tmedia_t140_
 typedef int (*tmedia_session_rtcp_onevent_cb_f)(const void* usrdata, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media);
 typedef int (*tmedia_session_onerror_cb_f)(const void* usrdata, const struct tmedia_session_s* session, const char* reason, tsk_bool_t is_fatal);
 typedef int (*tmedia_session_rfc5168_cb_f)(const void* usrdata, const struct tmedia_session_s* session, const char* reason, enum tmedia_session_rfc5168_cmd_e command);
-
+typedef int (*tmedia_session_bfcp_cb_f)(const void* usrdata, const struct tmedia_session_s* session, const tmedia_session_bfcp_evt_xt* evt);
 
 /**Max number of plugins (session types) we can create */
 #define TMED_SESSION_MAX_PLUGINS			0x0F
@@ -109,6 +129,11 @@ typedef struct tmedia_session_s
 		tmedia_session_rfc5168_cb_f fun;
 		const void* usrdata;
 	} rfc5168_cb;
+	//! BFCP (rfc4582)
+	struct {
+		tmedia_session_bfcp_cb_f fun;
+		const void* usrdata;
+	} bfcp_cb;
 	
 	tsk_bool_t bypass_encoding;
 	tsk_bool_t bypass_decoding;
@@ -185,6 +210,7 @@ TINYMEDIA_API int tmedia_session_send_rtcp_event(tmedia_session_t* self, tmedia_
 TINYMEDIA_API int tmedia_session_recv_rtcp_event(tmedia_session_t* self, tmedia_rtcp_event_type_t event_type, uint32_t ssrc_media);
 TINYMEDIA_API int tmedia_session_set_onerror_cbfn(tmedia_session_t* self, const void* usrdata, tmedia_session_onerror_cb_f fun);
 TINYMEDIA_API int tmedia_session_set_rfc5168_cbfn(tmedia_session_t* self, const void* usrdata, tmedia_session_rfc5168_cb_f fun);
+TINYMEDIA_API int tmedia_session_set_bfcp_cbfn(tmedia_session_t* self, const void* usrdata, tmedia_session_bfcp_cb_f fun);
 TINYMEDIA_API int tmedia_session_deinit(tmedia_session_t* self);
 typedef tsk_list_t tmedia_sessions_L_t; /**< List of @ref tmedia_session_t objects */
 #define TMEDIA_DECLARE_SESSION tmedia_session_t __session__
@@ -238,14 +264,13 @@ tmedia_session_msrp_t;
 /** BFCP Session */
 struct tmedia_session_bfcp_s;
 struct tbfcp_event_s;
-// use "struct tbfcp_event_s" instead of "tbfcp_event_t" to avoid linking aginst tinyBFCP
-typedef int (*tmedia_session_bfcp_cb_f)(const struct tbfcp_event_s* event);
 typedef struct tmedia_session_bfcp_s
 {
 	TMEDIA_DECLARE_SESSION;
 
 	struct {
-		tmedia_session_bfcp_cb_f func;
+		// use "struct tbfcp_event_s" instead of "tbfcp_event_t" to avoid linking aginst tinyBFCP
+		int (*fun)(const struct tbfcp_event_s* event);
 		const void* data;
 	} callback;
 	
@@ -538,6 +563,7 @@ TINYMEDIA_API int tmedia_session_mgr_send_message(tmedia_session_mgr_t* self, co
 TINYMEDIA_API int tmedia_session_mgr_set_msrp_cb(tmedia_session_mgr_t* self, const void* usrdata, tmedia_session_msrp_cb_f func);
 TINYMEDIA_API int tmedia_session_mgr_set_onerror_cbfn(tmedia_session_mgr_t* self, const void* usrdata, tmedia_session_onerror_cb_f fun);
 TINYMEDIA_API int tmedia_session_mgr_set_rfc5168_cbfn(tmedia_session_mgr_t* self, const void* usrdata, tmedia_session_rfc5168_cb_f fun);
+TINYMEDIA_API int tmedia_session_mgr_set_bfcp_cbfn(tmedia_session_mgr_t* self, const void* usrdata, tmedia_session_bfcp_cb_f fun);
 
 
 TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_session_mgr_def_t;

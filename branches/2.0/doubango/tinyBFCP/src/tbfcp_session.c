@@ -27,12 +27,29 @@
 #include "tsk_safeobj.h"
 #include "tsk_debug.h"
 
+typedef struct tbfcp_udp_pkt_s {
+	TSK_DECLARE_OBJECT;
+	struct {
+		tsk_timer_id_t u_id;
+		uint64_t u_timeout;
+	} timer;
+	tbfcp_pkt_t *p_pkt;
+} tbfcp_udp_pkt_t;
+typedef tsk_list_t tbfcp_udp_pkts_L_t;
+
 typedef struct tbfcp_session_s {
     TSK_DECLARE_OBJECT;
 
     tsk_bool_t b_started;
     tsk_bool_t b_stopping;
     tsk_bool_t b_prepared;
+
+	tbfcp_udp_pkts_L_t *p_list_udp_pkts;
+
+	struct {
+		tbfcp_session_callback_f f_fun;
+		struct tbfcp_session_event_xs e;
+	} cb;
 
 	// Values received from the server in the 200 OK. Attributes from rfc4583
 	struct {
@@ -80,12 +97,15 @@ typedef struct tbfcp_session_s {
 } tbfcp_session_t;
 
 typedef enum _bfcp_timer_type_e {
-    _bfcp_timer_type_T1, // draft-ietf-bfcpbis-rfc4582bis-11 - 4.16.  Timer Values (8.3.3)
-    _bfcp_timer_type_T2, // draft-ietf-bfcpbis-rfc4582bis-11 - 4.16.  Timer Values (8.3.3)
+    _bfcp_timer_type_T1, // draft-ietf-bfcpbis-rfc4582bis-11 - 4.16.  Timer Values (8.3.3) - Initial request retransmission timer (0.5s)
+    _bfcp_timer_type_T2, // draft-ietf-bfcpbis-rfc4582bis-11 - 4.16.  Timer Values (8.3.3) - Response retransmission timer (10s)
     _bfcp_timer_type_TcpReconnect, // Try to reconnect the TCP/TLS socket every X seconds if unexpectedly disconnected
 }
 _bfcp_timer_type_t;
 
+static int _tbfcp_udp_pkt_create(const tbfcp_pkt_t *pc_pkt, tbfcp_udp_pkt_t** pp_pkt);
+
+static int _tbfcp_session_send_pkt(tbfcp_session_t* p_self, const tbfcp_pkt_t* pc_pkt);
 static int _tbfcp_session_send_Hello(struct tbfcp_session_s* p_self);
 static int _tbfcp_session_send_HelloAck(struct tbfcp_session_s* p_self, const tbfcp_pkt_t *pc_hello);
 static int _tbfcp_session_send_FloorRequest(struct tbfcp_session_s* p_self);
@@ -95,6 +115,28 @@ static int _tbfcp_session_timer_callback(const void* pc_arg, tsk_timer_id_t time
 static int _tbfcp_session_timer_schedule(struct tbfcp_session_s* p_self, _bfcp_timer_type_t e_timer, uint64_t u_timeout);
 static int _tbfcp_session_transport_layer_dgram_cb(const tnet_transport_event_t* e);
 static int _tbfcp_session_transport_layer_stream_cb(const tnet_transport_event_t* e);
+
+#define _tbfcp_session_raise(_p_self, _e_type, _pc_pkt) \
+	if ((_p_self)->cb.f_fun) { \
+		(_p_self)->cb.e.e_type = (_e_type); \
+		(_p_self)->cb.e.pc_pkt = (_pc_pkt); \
+		(_p_self)->cb.f_fun(&_p_self->cb.e); \
+	}
+#define _tbfcp_session_raise_inf_inc_msg(_p_self, _pc_pkt) _tbfcp_session_raise(_p_self, tbfcp_session_event_type_inf_inc_msg, _pc_pkt)
+#define _tbfcp_session_raise_err_send_timedout(_p_self, _pc_pkt) _tbfcp_session_raise(_p_self, tbfcp_session_event_type_err_send_timedout, _pc_pkt)
+
+static int __pred_find_udp_pkt_by_timer(const tsk_list_item_t *item, const void *u64_id) {
+	if (item && item->data) {
+		return (int)(((const struct tbfcp_udp_pkt_s *)item->data)->timer.u_id - *((const uint64_t*)u64_id));
+	}
+	return -1;
+}
+static int __pred_find_udp_pkt_by_transac_id(const tsk_list_item_t *item, const void *u16_transac_id) {
+	if (item && item->data) {
+		return (int)(((const struct tbfcp_udp_pkt_s *)item->data)->p_pkt->hdr.transac_id - *((const uint16_t*)u16_transac_id));
+	}
+	return -1;
+}
 
 int tbfcp_session_create(tnet_socket_type_t e_socket_type, const char* pc_local_ip, tbfcp_session_t** pp_self)
 {
@@ -145,6 +187,17 @@ int tbfcp_session_create_2(struct tnet_ice_ctx_s* p_ice_ctx, tbfcp_session_t** p
     }
     (*pp_self)->p_ice_ctx = tsk_object_ref(p_ice_ctx);
     return 0;
+}
+
+int tbfcp_session_set_callback(struct tbfcp_session_s* p_self, tbfcp_session_callback_f f_fun, const void* pc_usr_data)
+{
+	if (!p_self) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	p_self->cb.f_fun = f_fun;
+	p_self->cb.e.pc_usr_data = pc_usr_data;
+	return 0;
 }
 
 int tbfcp_session_set_ice_ctx(tbfcp_session_t* p_self, struct tnet_ice_ctx_s* p_ice_ctx)
@@ -279,11 +332,11 @@ int tbfcp_session_start(tbfcp_session_t* p_self)
     p_self->b_started = tsk_true;
 
 	// Send hello now if UDP/DTLS. Otherwise (TCP/TLS), wait for the connection to complete.
-	if (TNET_SOCKET_TYPE_IS_DGRAM(p_self->e_socket_type)) {
-		if ((ret = _tbfcp_session_send_Hello(p_self))) {
-			goto bail;
-		}
-	}
+	//if (TNET_SOCKET_TYPE_IS_DGRAM(p_self->e_socket_type)) {
+	//	if ((ret = _tbfcp_session_send_Hello(p_self))) {
+	//		goto bail;
+	//	}
+	//}
 
 bail:
     // unlock()
@@ -473,6 +526,44 @@ int tbfcp_session_get_local_address(const tbfcp_session_t* pc_self, const char**
 	return 0;
 }
 
+int tbfcp_session_create_pkt_Hello(struct tbfcp_session_s* p_self, struct tbfcp_pkt_s** pp_pkt)
+{
+	int ret;
+	if (!p_self || !pp_pkt) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	// lock()
+    tsk_safeobj_lock(p_self);
+	if ((ret = tbfcp_pkt_create_Hello(p_self->conf_ids.u_conf_id, tbfcp_utils_rand_u16(), p_self->conf_ids.u_user_id, pp_pkt))) {
+		goto bail;
+	}
+
+bail:
+	// lock()
+    tsk_safeobj_unlock(p_self);
+	return ret;
+}
+
+int tbfcp_session_create_pkt_FloorRequest(struct tbfcp_session_s* p_self, struct tbfcp_pkt_s** pp_pkt)
+{
+	int ret;
+	if (!p_self || !pp_pkt) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	// lock()
+    tsk_safeobj_lock(p_self);
+	if ((ret = tbfcp_pkt_create_FloorRequest_2(p_self->conf_ids.u_conf_id, tbfcp_utils_rand_u16(), p_self->conf_ids.u_user_id, p_self->conf_ids.u_floor_id, pp_pkt))) {
+		goto bail;
+	}
+
+bail:
+	// lock()
+    tsk_safeobj_unlock(p_self);
+	return ret;
+}
+
 static int _tbfcp_session_send_buff(tbfcp_session_t* p_self, const void* pc_buff_ptr, tsk_size_t u_buff_size)
 {
     int ret = 0;
@@ -513,6 +604,49 @@ bail:
 }
 
 int tbfcp_session_send_pkt(tbfcp_session_t* p_self, const tbfcp_pkt_t* pc_pkt)
+{
+    int ret = 0;
+	tbfcp_udp_pkt_t *p_udp_pkt = tsk_null;
+    if (!p_self || !pc_pkt) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+
+    // lock()
+    tsk_safeobj_lock(p_self);
+
+    if (TNET_SOCKET_TYPE_IS_DGRAM(p_self->e_socket_type)) {
+		const tsk_list_item_t* pc_item = tsk_list_find_item_by_pred(p_self->p_list_udp_pkts, __pred_find_udp_pkt_by_transac_id, &pc_pkt->hdr.transac_id);
+		if (pc_item) {
+			p_udp_pkt = tsk_object_ref(TSK_OBJECT(pc_item->data));
+		} else {
+			tbfcp_udp_pkt_t *_p_udp_pkt = tsk_null;
+			if ((ret = _tbfcp_udp_pkt_create(pc_pkt, &_p_udp_pkt))) {
+				goto bail;
+			}
+			p_udp_pkt = tsk_object_ref(_p_udp_pkt);
+			tsk_list_push_back_data(p_self->p_list_udp_pkts, (void**)&_p_udp_pkt);
+		}
+	}
+	else {
+	}
+
+	if ((ret = _tbfcp_session_send_pkt(p_self, pc_pkt))) {
+		goto bail;
+	}
+	if (p_udp_pkt) {
+		p_udp_pkt->timer.u_id = tsk_timer_manager_schedule(p_self->timer.ph_global, p_udp_pkt->timer.u_timeout, _tbfcp_session_timer_callback, p_self);
+		p_udp_pkt->timer.u_timeout += kBfcpTimerT1;
+	}
+
+bail:
+	TSK_OBJECT_SAFE_FREE(p_udp_pkt);
+    // unlock()
+    tsk_safeobj_unlock(p_self);
+    return ret;
+}
+
+int _tbfcp_session_send_pkt(tbfcp_session_t* p_self, const tbfcp_pkt_t* pc_pkt)
 {
     int ret;
     tsk_size_t u_min_size;
@@ -587,7 +721,7 @@ int _tbfcp_session_send_HelloAck(tbfcp_session_t* p_self, const tbfcp_pkt_t *pc_
 	if ((ret = tbfcp_pkt_create_HelloAck_2(pc_hello->hdr.conf_id, pc_hello->hdr.transac_id, pc_hello->hdr.user_id, &p_pkt))) {
 		goto bail;
 	}
-	if ((ret = tbfcp_session_send_pkt(p_self, p_pkt))) {
+	if ((ret = _tbfcp_session_send_pkt(p_self, p_pkt))) {
 		goto bail;
 	}
 	
@@ -638,9 +772,10 @@ static int _tbfcp_session_process_incoming_pkt(tbfcp_session_t* p_self, const tb
 			break;
 	}
 
-	// FIXME
-	_tbfcp_session_send_FloorRequest(p_self);
-	_tbfcp_session_send_FloorRequest(p_self);
+	// raise event
+	_tbfcp_session_raise_inf_inc_msg(p_self, pc_pkt);
+	// remove request
+	tsk_list_remove_item_by_pred(p_self->p_list_udp_pkts, __pred_find_udp_pkt_by_transac_id, &pc_pkt->hdr.transac_id);
 
 bail:
     // unlock()
@@ -713,7 +848,22 @@ static int _tbfcp_session_timer_schedule(tbfcp_session_t* p_self, _bfcp_timer_ty
 static int _tbfcp_session_timer_callback(const void* pc_arg, tsk_timer_id_t timer_id)
 {
     tbfcp_session_t* p_session = (tbfcp_session_t*)pc_arg;
+	const tsk_list_item_t* pc_item;
     tsk_safeobj_lock(p_session); // must
+	pc_item = tsk_list_find_item_by_pred(p_session->p_list_udp_pkts, __pred_find_udp_pkt_by_timer, &timer_id);
+	if (pc_item) {
+		tbfcp_udp_pkt_t* pc_udp_pkt = (tbfcp_udp_pkt_t*)pc_item->data;
+		if (pc_udp_pkt->timer.u_timeout <= kBfcpTimerT1Max) {
+			tbfcp_session_send_pkt(p_session, pc_udp_pkt->p_pkt);
+		}
+		else {
+			// raise event
+			_tbfcp_session_raise_err_send_timedout(p_session, pc_udp_pkt->p_pkt);
+			// remove pkt
+			tsk_list_remove_item_by_pred(p_session->p_list_udp_pkts, __pred_find_udp_pkt_by_timer, &timer_id);
+		}
+	}
+#if 0
     if (p_session->timer.id_T1 == timer_id) {
         p_session->timer.id_T1 = TSK_INVALID_TIMER_ID;
         // OnExpire(session, EVENT_BYE);
@@ -722,6 +872,7 @@ static int _tbfcp_session_timer_callback(const void* pc_arg, tsk_timer_id_t time
         p_session->timer.id_T2 = TSK_INVALID_TIMER_ID;
         // OnExpire(session, EVENT_REPORT);
     }
+#endif
     tsk_safeobj_unlock(p_session);
     return 0;
 }
@@ -767,6 +918,10 @@ static tsk_object_t* tbfcp_session_ctor(tsk_object_t * self, va_list * app)
     if (p_session) {
         p_session->timer.id_T1 = TSK_INVALID_TIMER_ID;
         p_session->timer.id_T2 = TSK_INVALID_TIMER_ID;
+		if (!(p_session->p_list_udp_pkts = tsk_list_create())) {
+			TSK_DEBUG_ERROR("Failed to create en empty list");
+			return tsk_null;
+		}
         // get a handle for the global timer manager
         if (!(p_session->timer.ph_global = tsk_timer_mgr_global_ref())) {
             TSK_DEBUG_ERROR("Failed to get a reference to the global timer");
@@ -787,9 +942,8 @@ static tsk_object_t* tbfcp_session_dtor(tsk_object_t * self)
         // stop the session if not already done
         tbfcp_session_stop(p_session);
         // release the handle for the global timer manager
-        if (p_session->timer.ph_global) {
-            tsk_timer_mgr_global_unref(&p_session->timer.ph_global);
-        }
+        tsk_timer_mgr_global_unref(&p_session->timer.ph_global);
+        
         TSK_FREE(p_session->p_local_ip);
         TSK_FREE(p_session->p_local_public_ip);
         TSK_FREE(p_session->p_remote_ip);
@@ -797,6 +951,7 @@ static tsk_object_t* tbfcp_session_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(p_session->p_natt_ctx);
         TSK_OBJECT_SAFE_FREE(p_session->p_ice_ctx);
         TSK_OBJECT_SAFE_FREE(p_session->p_transport);
+		TSK_OBJECT_SAFE_FREE(p_session->p_list_udp_pkts);
         tsk_safeobj_deinit(p_session);
     }
 
@@ -815,3 +970,47 @@ static const tsk_object_def_t tbfcp_session_def_s = {
     tbfcp_session_cmp,
 };
 const tsk_object_def_t *tbfcp_session_def_t = &tbfcp_session_def_s;
+
+
+
+static int _tbfcp_udp_pkt_create(const tbfcp_pkt_t *pc_pkt, tbfcp_udp_pkt_t** pp_pkt)
+{
+	extern const tsk_object_def_t *tbfcp_udp_pkt_def_t;
+	if (!pc_pkt || !pp_pkt) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	*pp_pkt = tsk_object_new(tbfcp_udp_pkt_def_t);
+	if (!(*pp_pkt)) {
+		TSK_DEBUG_ERROR("Failed to create object with type= 'tbfcp_udp_pkt_def_t'");
+		return -2;
+	}
+	(*pp_pkt)->p_pkt = tsk_object_ref(TSK_OBJECT(pc_pkt));
+	return 0;
+}
+
+static tsk_object_t* tbfcp_udp_pkt_ctor(tsk_object_t * self, va_list * app)
+{
+    tbfcp_udp_pkt_t *p_udp_pkt = (tbfcp_udp_pkt_t *)self;
+    if (p_udp_pkt) {
+        p_udp_pkt->timer.u_timeout = kBfcpTimerT1;
+		p_udp_pkt->timer.u_id = TSK_INVALID_TIMER_ID;
+    }
+    return self;
+}
+static tsk_object_t* tbfcp_udp_pkt_dtor(tsk_object_t * self)
+{
+    tbfcp_udp_pkt_t *p_udp_pkt = (tbfcp_udp_pkt_t *)self;
+    if (p_udp_pkt) {
+		TSK_OBJECT_SAFE_FREE(p_udp_pkt->p_pkt);
+		TSK_DEBUG_INFO("*** tbfcp_udp_pkt_t destroyed ***");
+    }
+    return self;
+}
+static const tsk_object_def_t tbfcp_udp_pkt_def_s = {
+    sizeof(tbfcp_udp_pkt_t),
+    tbfcp_udp_pkt_ctor,
+    tbfcp_udp_pkt_dtor,
+    tsk_null,
+};
+const tsk_object_def_t *tbfcp_udp_pkt_def_t = &tbfcp_udp_pkt_def_s;

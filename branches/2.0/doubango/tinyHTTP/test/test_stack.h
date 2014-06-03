@@ -81,7 +81,7 @@ void test_stack()
 		//THTTP_STACK_SET_TLS_CERTS_VERIFY(tsk_false),
 		//THTTP_STACK_SET_LOCAL_IP("0.0.0.0"),
 		//THTTP_STACK_SET_LOCAL_PORT(8080),
-		THTTP_STACK_SET_PROXY("msp.f-secure.com", 443),
+		//THTTP_STACK_SET_PROXY("msp.f-secure.com", 443),
 
 		THTTP_STACK_SET_NULL());
 

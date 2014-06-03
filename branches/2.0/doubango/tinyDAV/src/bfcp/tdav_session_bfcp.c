@@ -23,6 +23,7 @@
 #include "tinydav/bfcp/tdav_session_bfcp.h"
 
 #include "tinybfcp/tbfcp_session.h"
+#include "tinybfcp/tbfcp_pkt.h"
 #include "tinybfcp/tbfcp_utils.h"
 
 #include "tsk_string.h"
@@ -42,6 +43,8 @@ typedef struct tdav_session_bfcp_s
 	TMEDIA_DECLARE_SESSION_BFCP;
 
 	struct tbfcp_session_s* p_bfcp_s;
+	struct tbfcp_pkt_s* p_pkt_FloorRequest;
+	struct tbfcp_pkt_s* p_pkt_Hello;
 
 	tsk_bool_t b_use_ipv6;
 
@@ -63,6 +66,8 @@ typedef struct tdav_session_bfcp_s
 	} rfc4583;
 }
 tdav_session_bfcp_t;
+
+static int _tdav_session_bfcp_notif(const struct tbfcp_session_event_xs *e);
 
 
 /* ============ Plugin interface ================= */
@@ -148,6 +153,11 @@ static int _tdav_session_bfcp_prepare(tmedia_session_t* p_self)
 	if ((ret = tbfcp_session_prepare(p_bfcp->p_bfcp_s))) {
 		return ret;
 	}
+	if ((ret = tbfcp_session_set_callback(p_bfcp->p_bfcp_s, _tdav_session_bfcp_notif, p_bfcp))) {
+		return ret;
+	}
+	TSK_OBJECT_SAFE_FREE(p_bfcp->p_pkt_Hello);
+	TSK_OBJECT_SAFE_FREE(p_bfcp->p_pkt_FloorRequest);
 
 	return ret;
 }
@@ -170,6 +180,15 @@ static int _tdav_session_bfcp_start(tmedia_session_t* p_self)
 		return ret;
 	}
 	if ((ret = tbfcp_session_start(p_bfcp->p_bfcp_s))) {
+		return ret;
+	}
+
+	// Create Hello if not already done
+	if (!p_bfcp->p_pkt_Hello && (ret = tbfcp_session_create_pkt_Hello(p_bfcp->p_bfcp_s, &p_bfcp->p_pkt_Hello))) {
+		return ret;
+	}
+	// Send Hello
+	if ((ret = tbfcp_session_send_pkt(p_bfcp->p_bfcp_s, p_bfcp->p_pkt_Hello))) {
 		return ret;
 	}
 
@@ -402,6 +421,134 @@ static int _tdav_session_bfcp_set_ro(tmedia_session_t* p_self, const tsdp_header
 	return ret;
 }
 
+static int _tdav_session_bfcp_notif(const struct tbfcp_session_event_xs *e)
+{
+	tdav_session_bfcp_t* p_bfcp = tsk_object_ref(TSK_OBJECT(e->pc_usr_data));
+	int ret = 0;
+	static const char* kErrTextTimeout = "Timeout";
+	static const int kErrCodeTimeout = -57;
+	static const char* kErrTextUnExpectedIncomingMsg = "Unexpected incoming BFCP message";
+	static const int kErrCodeUnExpectedIncomingMsg = -58;
+	static const char* kErrTextBadRequest = "Bad Request";
+	static const int kErrCodeBadRequest = -59;
+	static const char* kInfoTextFloorReqStatus = "FloorRequestStatus";
+
+#define _RAISE_ERR_AND_GOTO_BAIL(_code, _reason) \
+		if (TMEDIA_SESSION(p_bfcp)->bfcp_cb.fun) { \
+			tmedia_session_bfcp_evt_xt e; \
+			e.err.code = _code; e.reason = _reason; \
+			TMEDIA_SESSION(p_bfcp)->bfcp_cb.fun(TMEDIA_SESSION(p_bfcp)->bfcp_cb.usrdata, TMEDIA_SESSION(p_bfcp), &e); \
+		} \
+		ret = _code; goto bail;
+#define _RAISE_FLREQ(_status, _reason) \
+		if (TMEDIA_SESSION(p_bfcp)->bfcp_cb.fun) { \
+			tmedia_session_bfcp_evt_xt e; \
+			e.flreq.status = _status; e.reason = _reason; \
+			TMEDIA_SESSION(p_bfcp)->bfcp_cb.fun(TMEDIA_SESSION(p_bfcp)->bfcp_cb.usrdata, TMEDIA_SESSION(p_bfcp), &e); \
+		} \
+
+	switch (e->e_type) {
+		case tbfcp_session_event_type_inf_inc_msg:
+			{
+				if (p_bfcp->p_pkt_Hello && p_bfcp->p_pkt_Hello->hdr.transac_id == e->pc_pkt->hdr.transac_id && p_bfcp->p_pkt_Hello->hdr.user_id == e->pc_pkt->hdr.user_id && p_bfcp->p_pkt_Hello->hdr.conf_id == e->pc_pkt->hdr.conf_id) {
+					TSK_OBJECT_SAFE_FREE(p_bfcp->p_pkt_Hello);
+					if (e->pc_pkt->hdr.primitive == tbfcp_primitive_HelloAck) {
+						if (!p_bfcp->p_pkt_FloorRequest) {
+							if ((ret = tbfcp_session_create_pkt_FloorRequest(p_bfcp->p_bfcp_s, &p_bfcp->p_pkt_FloorRequest))) {
+								goto bail;
+							}
+							if ((ret = tbfcp_session_send_pkt(p_bfcp->p_bfcp_s, p_bfcp->p_pkt_FloorRequest))) {
+								goto bail;
+							}
+						}
+					}
+					else {
+						TSK_DEBUG_ERROR("%s", kErrTextUnExpectedIncomingMsg);
+						_RAISE_ERR_AND_GOTO_BAIL(kErrCodeUnExpectedIncomingMsg, kErrTextUnExpectedIncomingMsg);
+					}
+				}
+				else if(p_bfcp->p_pkt_FloorRequest && p_bfcp->p_pkt_FloorRequest->hdr.transac_id == e->pc_pkt->hdr.transac_id && p_bfcp->p_pkt_FloorRequest->hdr.user_id == e->pc_pkt->hdr.user_id && p_bfcp->p_pkt_FloorRequest->hdr.conf_id == e->pc_pkt->hdr.conf_id) {
+					if (e->pc_pkt->hdr.primitive == tbfcp_primitive_FloorRequestStatus) {
+						tsk_size_t u_index0, u_index1, u_index2, u_index3;
+						const tbfcp_attr_grouped_t *pc_attr_FloorRequestInformation = tsk_null, 
+							*pc_attr_FloorRequestStatus = tsk_null, 
+							*pc_attr_OverallRequestStatus = tsk_null;
+						const tbfcp_attr_octetstring16_t *pc_attr_RequestStatus = tsk_null;
+
+						u_index0 = 0;
+						// Find "FloorRequestInformation"
+						while ((ret = tbfcp_pkt_attr_find_at(e->pc_pkt, tbfcp_attribute_format_Grouped, u_index0++, (const tbfcp_attr_t **)&pc_attr_FloorRequestInformation)) == 0 && pc_attr_FloorRequestInformation) {
+							if (TBFCP_ATTR(pc_attr_FloorRequestInformation)->hdr.type != tbfcp_attribute_type_FLOOR_REQUEST_INFORMATION) {
+								continue;
+							}
+							// Find "FloorRequestStatus"
+							u_index1 = 0;
+							while ((ret = tbfcp_attr_grouped_find_at(pc_attr_FloorRequestInformation, tbfcp_attribute_format_Grouped, u_index1++, (const tbfcp_attr_t **)&pc_attr_FloorRequestStatus)) == 0 && pc_attr_FloorRequestStatus) {
+								if (TBFCP_ATTR(pc_attr_FloorRequestStatus)->hdr.type != tbfcp_attribute_type_FLOOR_REQUEST_STATUS) {
+									continue;
+								}
+								if (pc_attr_FloorRequestStatus->extra_hdr.FloorID != atoi(p_bfcp->rfc4583.floorid)) {
+									continue;
+								}
+								break;
+							}
+							if (!pc_attr_FloorRequestStatus) {
+								continue;
+							}
+							// Find "OverallRequestStatus"
+							u_index2 = 0;
+							while ((ret = tbfcp_attr_grouped_find_at(pc_attr_FloorRequestInformation, tbfcp_attribute_format_Grouped, u_index2++, (const tbfcp_attr_t **)&pc_attr_OverallRequestStatus)) == 0 && pc_attr_OverallRequestStatus) {
+								if (TBFCP_ATTR(pc_attr_OverallRequestStatus)->hdr.type != tbfcp_attribute_type_OVERALL_REQUEST_STATUS) {
+									continue;
+								}
+
+								// Find "RequestStatus"
+								u_index3 = 0;
+								while ((ret = tbfcp_attr_grouped_find_at(pc_attr_OverallRequestStatus, tbfcp_attribute_format_OctetString16, u_index3++, (const tbfcp_attr_t **)&pc_attr_RequestStatus)) == 0 && pc_attr_RequestStatus) {
+									if (TBFCP_ATTR(pc_attr_RequestStatus)->hdr.type != tbfcp_attribute_type_REQUEST_STATUS) {
+										continue;
+									}
+									break;
+								}
+							}
+							if (pc_attr_RequestStatus) {
+								break;
+							}
+						}
+
+						if (pc_attr_RequestStatus) {
+							uint16_t u_status = pc_attr_RequestStatus->OctetString16[0] + (pc_attr_RequestStatus->OctetString16[1] << 8);
+							_RAISE_FLREQ(u_status, kInfoTextFloorReqStatus);
+						}
+						else {
+							/* /!\ No RequestStatus attribute in FloorRequestStatus */
+							TSK_OBJECT_SAFE_FREE(p_bfcp->p_pkt_FloorRequest);
+							TSK_DEBUG_ERROR("%s", kErrTextBadRequest);
+							_RAISE_ERR_AND_GOTO_BAIL(kErrCodeBadRequest, kErrTextBadRequest);
+						}						
+					}
+					else {
+						TSK_DEBUG_ERROR("%s", kErrTextUnExpectedIncomingMsg);
+						_RAISE_ERR_AND_GOTO_BAIL(kErrCodeUnExpectedIncomingMsg, kErrTextUnExpectedIncomingMsg);
+					}
+				}
+				break;
+			}
+		case tbfcp_session_event_type_err_send_timedout:
+			{
+				/* /!\ Sending BFCP message timedout */
+				TSK_DEBUG_ERROR("%s", kErrTextTimeout);
+				_RAISE_ERR_AND_GOTO_BAIL(kErrCodeTimeout, kErrTextTimeout);
+				break;
+			}
+	}
+bail:
+	
+	TSK_OBJECT_SAFE_FREE(p_bfcp);
+	return ret;
+}
+
+
 /* ============ Public functions ================= */
 
 
@@ -435,6 +582,8 @@ static tsk_object_t* _tdav_session_bfcp_dtor(tsk_object_t * p_self)
 		/* deinit self */
 
 		TSK_OBJECT_SAFE_FREE(p_session->p_bfcp_s);
+		TSK_OBJECT_SAFE_FREE(p_session->p_pkt_FloorRequest);
+		TSK_OBJECT_SAFE_FREE(p_session->p_pkt_Hello);
 
 		TSK_FREE(p_session->p_local_ip);
 		TSK_FREE(p_session->p_remote_ip);
@@ -450,6 +599,8 @@ static tsk_object_t* _tdav_session_bfcp_dtor(tsk_object_t * p_self)
 		
 		/* deinit base */
 		tmedia_session_deinit(p_self);
+
+		TSK_DEBUG_INFO("*** tdav_session_bfcp_t destroyed ***");
 	}
 
 	return p_self;
