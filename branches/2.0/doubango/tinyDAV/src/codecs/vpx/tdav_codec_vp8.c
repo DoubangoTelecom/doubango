@@ -127,20 +127,20 @@ static int tdav_codec_vp8_set(tmedia_codec_t* self, const tmedia_param_t* param)
 {
 	tdav_codec_vp8_t* vp8 = (tdav_codec_vp8_t*)self;
 	vpx_codec_err_t vpx_ret = VPX_CODEC_OK;
+	tsk_bool_t reconf = tsk_false;
 
-	if(!vp8->encoder.initialized){
+	if (!vp8->encoder.initialized) {
 		TSK_DEBUG_ERROR("Codec not initialized");
 		return -1;
 	}
-	if(param->value_type == tmedia_pvt_int32){
-		if(tsk_striequals(param->key, "action")){
+	if (param->value_type == tmedia_pvt_int32) {
+		if (tsk_striequals(param->key, "action")) {
 			tmedia_codec_action_t action = (tmedia_codec_action_t)TSK_TO_INT32((uint8_t*)param->value);
-			tsk_bool_t reconf = tsk_false;
-			switch(action){
+			switch (action) {
 				case tmedia_codec_action_encode_idr:
 					{
 						vp8->encoder.force_idr = tsk_true;
-						break;
+						return 0;
 					}
 				case tmedia_codec_action_bw_down:
 					{
@@ -157,47 +157,49 @@ static int tdav_codec_vp8_set(tmedia_codec_t* self, const tmedia_param_t* param)
 						break;
 					}
 			}
-
-			if(reconf){
-				if((vpx_ret = vpx_codec_enc_config_set(&vp8->encoder.context, &vp8->encoder.cfg)) != VPX_CODEC_OK){
-					TSK_DEBUG_ERROR("vpx_codec_enc_config_set failed with error =%s", vpx_codec_err_to_string(vpx_ret));
-				}
-			}
-			return (vpx_ret == VPX_CODEC_OK) ? 0 : -2;
 		}
-		else if(tsk_striequals(param->key, "bandwidth-max-upload")){
+		else if(tsk_striequals(param->key, "bw_kbps")) { // both up and down (from the SDP)
+			int32_t max_bw_userdefine = tmedia_defaults_get_bandwidth_video_upload_max();
+			int32_t max_bw_new = *((int32_t*)param->value);
+			if (max_bw_userdefine > 0) {
+				// do not use more than what the user defined in it's configuration
+				TMEDIA_CODEC(vp8)->bandwidth_max_upload = TSK_MIN(max_bw_new, max_bw_userdefine);
+			}
+			else {
+				TMEDIA_CODEC(vp8)->bandwidth_max_upload= max_bw_new;
+			}
+			reconf = tsk_true;
+		}
+		else if (tsk_striequals(param->key, "bandwidth-max-upload")) {
 			int32_t bw_max_upload = *((int32_t*)param->value);
 			TSK_DEBUG_INFO("VP8 codec: bandwidth-max-upload=%d", bw_max_upload);
 			TMEDIA_CODEC(vp8)->bandwidth_max_upload = bw_max_upload;
-			return 0;
+			reconf = tsk_true;
 		}
-		else if(tsk_striequals(param->key, "rotation")){
+		else if (tsk_striequals(param->key, "rotation")) {
 			// IMPORTANT: changing resolution requires at least libvpx v1.1.0 "Eider"
 			int32_t rotation = *((int32_t*)param->value);
 			if(vp8->encoder.rotation != rotation){
 				vp8->encoder.rotation = rotation;
-				if(vp8->encoder.initialized){
-#if 1
+				if (vp8->encoder.initialized){
 					vp8->encoder.cfg.g_w = (rotation == 90 || rotation == 270) ? TMEDIA_CODEC_VIDEO(vp8)->out.height : TMEDIA_CODEC_VIDEO(vp8)->out.width;
 					vp8->encoder.cfg.g_h = (rotation == 90 || rotation == 270) ? TMEDIA_CODEC_VIDEO(vp8)->out.width : TMEDIA_CODEC_VIDEO(vp8)->out.height;
-					if((vpx_ret = vpx_codec_enc_config_set(&vp8->encoder.context, &vp8->encoder.cfg)) != VPX_CODEC_OK){
-						TSK_DEBUG_ERROR("vpx_codec_enc_config_set failed with error =%s", vpx_codec_err_to_string(vpx_ret));
-						return -1;
-					}
-#else
-					int ret;
-					if((ret = tdav_codec_vp8_close_encoder(vp8))){
-						return ret;
-					}
-					if((ret = tdav_codec_vp8_open_encoder(vp8))){
-						return ret;
-					}
-#endif
+					reconf = tsk_true;
 				}
-				return 0;
+				else {
+					return 0;
+				}
 			}
 		}
 	}
+
+	if (reconf) {
+		if ((vpx_ret = vpx_codec_enc_config_set(&vp8->encoder.context, &vp8->encoder.cfg)) != VPX_CODEC_OK) {
+			TSK_DEBUG_ERROR("vpx_codec_enc_config_set failed with error =%s", vpx_codec_err_to_string(vpx_ret));
+		}
+		return (vpx_ret == VPX_CODEC_OK) ? 0 : -2;
+	}
+	
 	return -1;
 }
 

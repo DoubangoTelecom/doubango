@@ -96,44 +96,44 @@ tsk_size_t tsk_base64_encode(const uint8_t* input, tsk_size_t input_size, char *
 	tsk_size_t output_size = 0;
 
 	/* Caller provided his own buffer? */
-	if(!*output){
-		*output = (char*)tsk_calloc(1, (TSK_BASE64_ENCODE_LEN(input_size)+1));
+	if (!*output) {
+		*output = (char*)tsk_calloc((TSK_BASE64_ENCODE_LEN(input_size) + 1), sizeof(char));
 	}
 
 	/* Too short? */
-	if(input_size < TSK_BASE64_ENCODE_BLOCK_SIZE){
+	if (input_size < TSK_BASE64_ENCODE_BLOCK_SIZE) {
 		goto quantum;
 	}
 	
-	do{
-		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ input[i]>> 2 ];
-		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ (input[i]<<4 | input[i+1]>>4) & 0x3F ];
-		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ (input[i+1]<<2 | input[i+2]>>6) & 0x3F ];
+	do {
+		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ (input[i]>> 2) & 0x3F ];
+		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ ((input[i]<<4) | (input[i+1]>>4)) & 0x3F ];
+		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ ((input[i+1]<<2) | (input[i+2]>>6)) & 0x3F ];
 		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ input[i+2] & 0x3F ];
 
 		i += TSK_BASE64_ENCODE_BLOCK_SIZE;
 	}
-	while(( i+ TSK_BASE64_ENCODE_BLOCK_SIZE) <= input_size);
+	while (( i + TSK_BASE64_ENCODE_BLOCK_SIZE) <= input_size);
 
 quantum:
 	
-	if((input_size - i) == 1){
+	if ((input_size - i) == 1) {
 		/* The final quantum of encoding input is exactly 8 bits; here, the
 		   final unit of encoded output will be two characters followed by
 		   two "=" padding characters. 
 		*/
-		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ input[i]>> 2 ];
-		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ input[i]<<4 & 0x3F ];
+		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ (input[i]>> 2) & 0x3F ];
+		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ (input[i]<<4) & 0x3F ];
 		*(*output + output_size++) = TSK_BASE64_PAD, *(*output + output_size++) = TSK_BASE64_PAD;
 	}
-	else if((input_size-i) == 2){
+	else if ((input_size - i) == 2) {
 		/*	The final quantum of encoding input is exactly 16 bits; here, the
 			final unit of encoded output will be three characters followed by
 			one "=" padding character. 
 		*/
-		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ input[i]>> 2 ];
-		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ (input[i]<<4 | input[i+1]>>4) & 0x3F ];
-		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ (input[i+1]<<2 | input[i+2]>>6) & 0x3F ];
+		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ (input[i]>> 2) & 0x3F ];
+		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ ((input[i]<<4) | (input[i+1]>>4)) & 0x3F ];
+		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ ((input[i+1]<<2) | (input[i+2]>>6)) & 0x3F ];
 		*(*output + output_size++) = TSK_BASE64_PAD;
 	}
 	

@@ -134,7 +134,15 @@ static int tdav_codec_h264_set(tmedia_codec_t* self, const tmedia_param_t* param
 			return 0;
 		}
 		else if(tsk_striequals(param->key, "bw_kbps")){
-			h264->encoder.max_bw_kpbs = *((int32_t*)param->value);
+			int32_t max_bw_userdefine = tmedia_defaults_get_bandwidth_video_upload_max();
+			int32_t max_bw_new = *((int32_t*)param->value);
+			if (max_bw_userdefine > 0) {
+				// do not use more than what the user defined in it's configuration
+				h264->encoder.max_bw_kpbs = TSK_MIN(max_bw_new, max_bw_userdefine);
+			}
+			else {
+				h264->encoder.max_bw_kpbs = max_bw_new;
+			}
 			return 0;
 		}
 		else if(tsk_striequals(param->key, "bypass-encoding")){
