@@ -458,7 +458,6 @@ static int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 	int ret, rate = 8000, ptime = 20;
 	uint16_t duration;
 	tdav_session_audio_dtmfe_t *dtmfe, *copy;
-	static uint32_t timestamp = 0x3200;
 	int format = 101;
 
 	if(!self){
@@ -551,35 +550,36 @@ static int tdav_session_audio_send_dtmf(tmedia_session_t* self, uint8_t event)
 	// flag will be turned OFF when the list is empty
 	audio->is_sending_dtmf_events = tsk_true;
 
-	duration = (rate * ptime)/1000;
-	/* Not mandatory but elegant */
-	timestamp += duration;
+	duration = TMEDIA_CODEC_PCM_FRAME_SIZE_AUDIO_ENCODING(audio->encoder.codec);
 
 	// lock() list
 	tsk_list_lock(audio->dtmf_events);
 
-	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*1, ++base->rtp_manager->rtp.seq_num, timestamp, (uint8_t)format, tsk_true, tsk_false);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*1, ++base->rtp_manager->rtp.seq_num, base->rtp_manager->rtp.timestamp, (uint8_t)format, tsk_true, tsk_false);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*0, _tdav_session_audio_dtmfe_timercb, copy);
-	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*2, ++base->rtp_manager->rtp.seq_num, timestamp, (uint8_t)format, tsk_false, tsk_false);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*2, ++base->rtp_manager->rtp.seq_num, base->rtp_manager->rtp.timestamp, (uint8_t)format, tsk_false, tsk_false);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*1, _tdav_session_audio_dtmfe_timercb, copy);
-	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*3, ++base->rtp_manager->rtp.seq_num, timestamp, (uint8_t)format, tsk_false, tsk_false);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*3, ++base->rtp_manager->rtp.seq_num, base->rtp_manager->rtp.timestamp, (uint8_t)format, tsk_false, tsk_false);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*2, _tdav_session_audio_dtmfe_timercb, copy);
-
-	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++base->rtp_manager->rtp.seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++base->rtp_manager->rtp.seq_num, base->rtp_manager->rtp.timestamp, (uint8_t)format, tsk_false, tsk_false);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*3, _tdav_session_audio_dtmfe_timercb, copy);
-	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++base->rtp_manager->rtp.seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
+
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++base->rtp_manager->rtp.seq_num, base->rtp_manager->rtp.timestamp, (uint8_t)format, tsk_false, tsk_true);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*4, _tdav_session_audio_dtmfe_timercb, copy);
-	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++base->rtp_manager->rtp.seq_num, timestamp, (uint8_t)format, tsk_false, tsk_true);
+	copy = dtmfe = _tdav_session_audio_dtmfe_create(audio, event, duration*4, ++base->rtp_manager->rtp.seq_num, base->rtp_manager->rtp.timestamp, (uint8_t)format, tsk_false, tsk_true);
 	tsk_list_push_back_data(audio->dtmf_events, (void**)&dtmfe);
 	tsk_timer_mgr_global_schedule(ptime*5, _tdav_session_audio_dtmfe_timercb, copy);
 
 	// unlock() list
 	tsk_list_unlock(audio->dtmf_events);
+
+	// increment timestamp
+	base->rtp_manager->rtp.timestamp += duration;
 
 	// unref()(thread safeness)
 	audio = tsk_object_unref(audio);
