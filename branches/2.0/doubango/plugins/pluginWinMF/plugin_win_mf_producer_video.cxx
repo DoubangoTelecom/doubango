@@ -66,7 +66,7 @@ typedef struct plugin_win_mf_producer_video_s
 {
 	TMEDIA_DECLARE_PRODUCER;
 	
-	bool bStarted, bPrepared;
+	bool bStarted, bPrepared, bMuted;
 	tsk_thread_handle_t* ppTread[1];
 	HWND hWndPreview;
 
@@ -147,15 +147,20 @@ static int plugin_win_mf_producer_video_set(tmedia_producer_t *self, const tmedi
 	}
 	else if(param->value_type == tmedia_pvt_int32){
 		if(tsk_striequals(param->key, "mute")){
-			//producer->mute = (TSK_TO_INT32((uint8_t*)param->value) != 0);
-			//if(producer->started){
-			//	if(producer->mute){
-			//		producer->grabber->pause();
-			//	}
-			//	else{
-			//		producer->grabber->start();
-			//	}
-			//}
+			pSelf->bMuted = (TSK_TO_INT32((uint8_t*)param->value) != 0);
+			if (pSelf->pCallback) {
+				pSelf->pCallback->SetMute(pSelf->bMuted);
+			}
+#if 0
+			if (pSelf->bStarted && pSelf->pSession) {
+				if (pSelf->bMuted) {
+					pSelf->pSession->Pause();
+				}
+				else {
+					CHECK_HR(hr = MFUtils::RunSession(pSelf->pSession, pSelf->pTopology));
+				}
+			}
+#endif
 		}
 		else if(tsk_striequals(param->key, "create-on-current-thead")){
 			//producer->create_on_ui_thread = *((int32_t*)param->value) ? tsk_false : tsk_true;

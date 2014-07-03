@@ -33,13 +33,16 @@
 //
 class SampleGrabberCB : public IMFSampleGrabberSinkCallback 
 {
+	bool m_bMuted;
     long m_cRef;
     const struct tmedia_producer_s* m_pWrappedProducer;
 
-    SampleGrabberCB(const struct tmedia_producer_s* pcWrappedProducer) : m_cRef(1), m_pWrappedProducer(pcWrappedProducer) {}
+    SampleGrabberCB(const struct tmedia_producer_s* pcWrappedProducer) : m_cRef(1), m_bMuted(false), m_pWrappedProducer(pcWrappedProducer) {}
 
 public:
     static HRESULT CreateInstance(const struct tmedia_producer_s* pcWrappedProducer, SampleGrabberCB **ppCB);
+
+	void SetMute(bool bMuted) { m_bMuted = bMuted; }
 
     // IUnknown methods
     STDMETHODIMP QueryInterface(REFIID iid, void** ppv);

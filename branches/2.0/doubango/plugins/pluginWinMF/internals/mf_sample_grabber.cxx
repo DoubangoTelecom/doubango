@@ -114,8 +114,14 @@ STDMETHODIMP SampleGrabberCB::OnProcessSample(
 	LONGLONG llSampleTime, LONGLONG llSampleDuration, const BYTE * pSampleBuffer,
 	DWORD dwSampleSize)
 {
-	if(m_pWrappedProducer && TMEDIA_PRODUCER(m_pWrappedProducer)->enc_cb.callback)
-	{
+	if (m_pWrappedProducer && TMEDIA_PRODUCER(m_pWrappedProducer)->enc_cb.callback) {
+#if 1
+		if (m_bMuted) {
+			// Send zeros. Do not skip sending data to avoid NAT issues and session deconnection.
+			// Some TelePresence systems disconnect the session when the remote peer stops sending video data.
+			memset((void*)pSampleBuffer, 0, dwSampleSize);
+		}
+#endif
 		TMEDIA_PRODUCER(m_pWrappedProducer)->enc_cb.callback(TMEDIA_PRODUCER(m_pWrappedProducer)->enc_cb.callback_data, pSampleBuffer, dwSampleSize);
 	}
 

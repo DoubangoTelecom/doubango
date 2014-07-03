@@ -76,7 +76,7 @@ static int plugin_video_dshow_producer_set(tmedia_producer_t *self, const tmedia
 		if(tsk_striequals(param->key, "mute")){
 			producer->mute = (TSK_TO_INT32((uint8_t*)param->value) != 0);
 			if(producer->started){
-				if(producer->mute){
+				if (producer->mute) {
 					producer->grabber->pause();
 				}
 				else{
