@@ -36,9 +36,13 @@
 #	pragma comment(lib, "dxguid.lib")
 #endif
 
-#if !defined(FIXME_SEND_SILENCE_ON_MUTE)
-#	define FIXME_SEND_SILENCE_ON_MUTE	0
-#endif /* FIXME_SEND_SILENCE_ON_MUTE */
+#if !defined(SEND_SILENCE_ON_MUTE)
+#	if METROPOLIS
+#		define SEND_SILENCE_ON_MUTE	1
+#	else
+#		define SEND_SILENCE_ON_MUTE	0
+#	endif
+#endif /* SEND_SILENCE_ON_MUTE */
 
 #include "tsk_string.h"
 #include "tsk_thread.h"
@@ -94,7 +98,7 @@ static void* TSK_STDCALL _tdav_producer_dsound_record_thread(void *param)
 		}
 
 		if(TMEDIA_PRODUCER(dsound)->enc_cb.callback){
-#if FIXME_SEND_SILENCE_ON_MUTE
+#if SEND_SILENCE_ON_MUTE
 			if(dsound->mute){
 				memset(lpvAudio1, 0, dwBytesAudio1);
 				if(lpvAudio2){
@@ -157,7 +161,7 @@ static int tdav_producer_dsound_set(tmedia_producer_t* self, const tmedia_param_
 			}
 			else if(tsk_striequals(param->key, "mute")){
 				dsound->mute = (TSK_TO_INT32((uint8_t*)param->value) != 0);
-#if !FIXME_SEND_SILENCE_ON_MUTE
+#if !SEND_SILENCE_ON_MUTE
 				if(dsound->started){
 					if(dsound->mute){
 						IDirectSoundCaptureBuffer_Stop(dsound->captureBuffer);
@@ -305,7 +309,7 @@ static int tdav_producer_dsound_stop(tmedia_producer_t* self)
 	// should be done here
 	dsound->started = tsk_false;
 
-#if !FIXME_SEND_SILENCE_ON_MUTE
+#if !SEND_SILENCE_ON_MUTE
 	if(dsound->mute && dsound->notifEvents[0]){
 		// thread is paused -> raise event now that "started" is equal to false
 		SetEvent(dsound->notifEvents[0]);
