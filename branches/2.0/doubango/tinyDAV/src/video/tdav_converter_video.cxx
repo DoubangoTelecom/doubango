@@ -111,7 +111,7 @@ static inline enum FourCC _tdav_converter_video_libyuv_get_pixfmt(tmedia_chroma_
 		case tmedia_chroma_yuv422p:
 			return FOURCC_I422;
 		case tmedia_chroma_uyvy422:
-			return FOURCC_YU16;
+			return FOURCC_YUY2;
 		case tmedia_chroma_yuv420p:
 			return FOURCC_I420;
 		default:

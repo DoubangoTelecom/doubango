@@ -92,4 +92,12 @@
                 = { l, w1, w2, { b1, b2,  b3,  b4,  b5,  b6,  b7,  b8 } }
 #endif
 
+#if 1 // workaround for "Cannot open include file: 'dxtrans.h': No such file or directory"
+#pragma include_alias( "dxtrans.h", "qedit.h" )
+#define __IDxtCompositor_INTERFACE_DEFINED__
+#define __IDxtAlphaSetter_INTERFACE_DEFINED__
+#define __IDxtJpeg_INTERFACE_DEFINED__
+#define __IDxtKey_INTERFACE_DEFINED__
+#endif
+
 #endif // PLUGIN_DSHOW_CONFIG_H

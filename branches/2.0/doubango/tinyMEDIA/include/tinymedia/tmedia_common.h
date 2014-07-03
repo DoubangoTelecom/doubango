@@ -232,7 +232,7 @@ typedef enum tmedia_chroma_e
 	tmedia_chroma_nv12, // used by iOS4 producer (iPhone and iPod Touch 3GS and 4)
 	tmedia_chroma_nv21, // Yuv420 SP (used by android producer)
 	tmedia_chroma_yuv422p,
-	tmedia_chroma_uyvy422, // used by iOS4 producer (iPhone and iPod Touch 3G)
+	tmedia_chroma_uyvy422, // used by iOS4 producer (iPhone and iPod Touch 3G) - Microsoft: MFVideoFormat_YUY2
 	tmedia_chroma_yuv420p, // Default
 }
 tmedia_chroma_t;
