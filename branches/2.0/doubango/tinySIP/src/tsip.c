@@ -281,10 +281,11 @@ static int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 				else if(tsk_striequals(TRANSPORT_STR, "WSS")){
 					TNET_SOCKET_TYPE_SET_WSS(self->network.proxy_cscf_type[t_idx]);
 				}
+				TNET_SOCKET_TYPE_SET_IPV4(self->network.proxy_cscf_type[t_idx]); // IPv4 is the default version
 				/* whether to use ipv6 or not */
 				if(!tsk_strnullORempty(IP_VERSION_STR)){
 					if(tsk_strcontains(IP_VERSION_STR, tsk_strlen(IP_VERSION_STR), "6")){
-						TNET_SOCKET_TYPE_SET_IPV6Only(self->network.proxy_cscf_type[t_idx]);
+						TNET_SOCKET_TYPE_SET_IPV6Only(self->network.proxy_cscf_type[t_idx]); // "only" to clear IPv4 flag
 					}
 					if(tsk_strcontains(IP_VERSION_STR, tsk_strlen(IP_VERSION_STR), "4")){
 						TNET_SOCKET_TYPE_SET_IPV4(self->network.proxy_cscf_type[t_idx]); /* Not IPV4only ==> '46'/'64' */
