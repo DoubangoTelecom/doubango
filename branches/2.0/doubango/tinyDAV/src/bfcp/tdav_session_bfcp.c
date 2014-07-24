@@ -257,18 +257,6 @@ static const tsdp_header_M_t* _tdav_session_bfcp_get_lo(tmedia_session_t* p_self
 	
 	p_bfcp = (tdav_session_bfcp_t*)p_self;
 
-	if (p_self->ro_changed && p_self->M.lo){
-		/* Codecs */
-		tsdp_header_A_removeAll_by_field(p_self->M.lo->Attributes, "fmtp");
-		tsdp_header_A_removeAll_by_field(p_self->M.lo->Attributes, "rtpmap");
-		tsk_list_clear_items(p_self->M.lo->FMTs);
-		
-		/* QoS */
-		tsdp_header_A_removeAll_by_field(p_self->M.lo->Attributes, "curr");
-		tsdp_header_A_removeAll_by_field(p_self->M.lo->Attributes, "des");
-		tsdp_header_A_removeAll_by_field(p_self->M.lo->Attributes, "conf");
-	}
-
 	b_changed = (p_self->ro_changed || !p_self->M.lo);
 
 	if (!b_changed) {
@@ -277,10 +265,14 @@ static const tsdp_header_M_t* _tdav_session_bfcp_get_lo(tmedia_session_t* p_self
 	}
 
 	if (b_changed && p_self->M.lo) {
-		static const char* __fields[] = { "floorctrl", "setup", "connection" };
+		static const char* __fields[] = { "floorctrl", "setup", "connection", "curr", "des", "conf" };
 		// remove media-level attributes
 		tsdp_header_A_removeAll_by_fields(p_self->M.lo->Attributes, __fields, sizeof(__fields)/sizeof(__fields[0]));
+		// Codec list never change and FMTs always a single star (*) value. Radvision TelePresence System reject a BFCP session whithout the single FMT (*)
+		// The Codecs and formats are never rebuilt which means we must not clear them
+#if 0
 		tsk_list_clear_items(p_self->M.lo->FMTs);
+#endif
 	}
 
 	// get local address
@@ -334,6 +326,7 @@ static const tsdp_header_M_t* _tdav_session_bfcp_get_lo(tmedia_session_t* p_self
 
 	// add "floorctrl" and "setup" attributes
 	tsdp_header_M_add_headers(p_self->M.lo,
+				TSDP_HEADER_A_VA_ARGS("connection", "new"),
 				TSDP_HEADER_A_VA_ARGS("floorctrl", pc_local_role),
 				TSDP_HEADER_A_VA_ARGS("setup", pc_local_setup),
 				tsk_null);

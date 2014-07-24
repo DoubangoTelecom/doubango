@@ -792,11 +792,19 @@ tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* 
  */
 int tmedia_session_mgr_set_media_type(tmedia_session_mgr_t* self, tmedia_type_t type)
 {
-	if(!self){
+	static tsk_bool_t __force_set = tsk_false;
+	return tmedia_session_mgr_set_media_type_2(self, type, __force_set);
+}
+
+/**@ingroup tmedia_session_group
+ */
+int tmedia_session_mgr_set_media_type_2(tmedia_session_mgr_t* self, tmedia_type_t type, tsk_bool_t force)
+{
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if(self->type != type){
+	if (force || self->type != type) {
 		self->mediaType_changed = tsk_true;
 		self->type = type;
 	}
@@ -1128,6 +1136,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	tsk_bool_t is_ro_media_lines_changed = tsk_false;
 	tsk_bool_t is_ice_active = tsk_false;
 	tsk_bool_t had_ro_sdp, had_ro_provisional, is_ro_provisional_final_matching = tsk_false;
+	tsk_bool_t new_mediatype_striped = tsk_false;
 	tmedia_qos_stype_t qos_type = tmedia_qos_stype_none;
 	tmedia_type_t new_mediatype = tmedia_none;
 	tmedia_sessions_L_t *list_tmp_sessions;
@@ -1144,10 +1153,27 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	tsk_safeobj_lock(self);
 	tsk_list_lock(self->sessions);
 
+	new_mediatype = tmedia_type_from_sdp(sdp);
 	had_ro_sdp = (self->sdp.ro != tsk_null);
 	had_ro_provisional = (had_ro_sdp && self->ro_provisional);
 	is_ice_active = (self->ice.ctx_audio && (self->type & tmedia_audio) && tnet_ice_ctx_is_active(self->ice.ctx_audio))
 					|| (self->ice.ctx_video && (self->type & tmedia_video) && tnet_ice_ctx_is_active(self->ice.ctx_video));
+
+	// Remove BFCP offer if not locally enabled. Only the client can init BFCP session.
+	if ((ro_type & tmedia_ro_type_offer)) {
+		if (!(self->type & tmedia_bfcp_video)) {
+			new_mediatype_striped |= (new_mediatype & tmedia_bfcp_video);
+			new_mediatype &= ~tmedia_bfcp_video; 
+		}
+		if (!(self->type & tmedia_bfcp_audio)) {
+			new_mediatype_striped |= (new_mediatype & tmedia_bfcp_video);
+			new_mediatype &= ~tmedia_bfcp_audio;
+		}
+		if (!(self->type & tmedia_bfcp)) {
+			new_mediatype_striped |= (new_mediatype & tmedia_bfcp_video);
+			new_mediatype &= ~tmedia_bfcp;
+		}
+	}
 
 	/*	RFC 3264 subcaluse 8
 		When issuing an offer that modifies the session, the "o=" line of the new SDP MUST be identical to that in the previous SDP, 
@@ -1266,10 +1292,10 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	/* Check if media type has changed or not
 	 * For initial offer we don't need to check anything
 	 */
-	if(self->sdp.lo){
-		new_mediatype = tmedia_type_from_sdp(sdp);
-		if((is_media_type_changed = (new_mediatype != self->type))){
-			tmedia_session_mgr_set_media_type(self, new_mediatype);
+	if (self->sdp.lo) {
+		if ((is_media_type_changed = (new_mediatype != self->type)) || new_mediatype_striped) {
+			tsk_bool_t force = !!new_mediatype_striped;
+			tmedia_session_mgr_set_media_type_2(self, new_mediatype, force);
 			TSK_DEBUG_INFO("media type has changed");
 		}
 	}
@@ -2185,7 +2211,7 @@ const tsdp_message_t* _tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self, tsk
 			TSK_DEBUG_ERROR("Invalid session");
 			continue;
 		}
-		if (self->type & ms->plugin->type) {
+		if ((self->type & ms->plugin->type) || ms->plugin->type == tmedia_ghost) {
 			/* prepare the media session */
 			if(!ms->prepared && (_tmedia_session_prepare(TMEDIA_SESSION(ms)))){
 				TSK_DEBUG_ERROR("Failed to prepare session"); /* should never happen */
