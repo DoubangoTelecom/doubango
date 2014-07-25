@@ -185,5 +185,7 @@ int tbfcp_utils_is_setup_acceptable(enum tbfcp_setup_e e_setup_local, enum tbfcp
 
 uint16_t tbfcp_utils_rand_u16()
 {
-	return (rand() ^ rand()) % 0xFFFF;
+	static long __rand = 0;
+	long num = tsk_atomic_inc(&__rand);
+	return ((num % 0xFF) << 8) | (tsk_time_epoch() % 0xFF);
 }

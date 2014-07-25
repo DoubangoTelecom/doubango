@@ -64,6 +64,7 @@ TINYBFCP_API int tbfcp_session_get_local_setup(const struct tbfcp_session_s* pc_
 TINYBFCP_API int tbfcp_session_get_local_address(const struct tbfcp_session_s* pc_self, const char** ppc_ip, tnet_port_t *pu_port);
 TINYBFCP_API int tbfcp_session_create_pkt_Hello(struct tbfcp_session_s* p_self, struct tbfcp_pkt_s** pp_pkt);
 TINYBFCP_API int tbfcp_session_create_pkt_FloorRequest(struct tbfcp_session_s* p_self, struct tbfcp_pkt_s** pp_pkt);
+TINYBFCP_API int tbfcp_session_create_pkt_FloorRelease(struct tbfcp_session_s* p_self, struct tbfcp_pkt_s** pp_pkt);
 TINYBFCP_API int tbfcp_session_send_pkt(struct tbfcp_session_s* p_self, const struct tbfcp_pkt_s* pc_pkt);
 
 TBFCP_END_DECLS
