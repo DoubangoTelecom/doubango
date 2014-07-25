@@ -381,6 +381,10 @@ int tbfcp_session_stop(tbfcp_session_t* p_self)
         TSK_DEBUG_INFO("BFCP session already stopped");
         goto bail;
     }
+
+	// remove all pending udp packets
+	tsk_list_clear_items(p_self->p_list_udp_pkts);
+
     p_self->b_stopping = tsk_true;
     // this is a global timer shared by many components -> stopping it won't remove
     // all scheduled items as it could continue running if still used
@@ -555,6 +559,25 @@ int tbfcp_session_create_pkt_FloorRequest(struct tbfcp_session_s* p_self, struct
 	// lock()
     tsk_safeobj_lock(p_self);
 	if ((ret = tbfcp_pkt_create_FloorRequest_2(p_self->conf_ids.u_conf_id, tbfcp_utils_rand_u16(), p_self->conf_ids.u_user_id, p_self->conf_ids.u_floor_id, pp_pkt))) {
+		goto bail;
+	}
+
+bail:
+	// lock()
+    tsk_safeobj_unlock(p_self);
+	return ret;
+}
+
+int tbfcp_session_create_pkt_FloorRelease(struct tbfcp_session_s* p_self, struct tbfcp_pkt_s** pp_pkt)
+{
+		int ret;
+	if (!p_self || !pp_pkt) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	// lock()
+    tsk_safeobj_lock(p_self);
+	if ((ret = tbfcp_pkt_create_FloorRelease_2(p_self->conf_ids.u_conf_id, tbfcp_utils_rand_u16(), p_self->conf_ids.u_user_id, p_self->conf_ids.u_floor_id, pp_pkt))) {
 		goto bail;
 	}
 
@@ -850,6 +873,7 @@ static int _tbfcp_session_timer_callback(const void* pc_arg, tsk_timer_id_t time
     tbfcp_session_t* p_session = (tbfcp_session_t*)pc_arg;
 	const tsk_list_item_t* pc_item;
     tsk_safeobj_lock(p_session); // must
+	if (!p_session->b_started) goto bail;
 	pc_item = tsk_list_find_item_by_pred(p_session->p_list_udp_pkts, __pred_find_udp_pkt_by_timer, &timer_id);
 	if (pc_item) {
 		tbfcp_udp_pkt_t* pc_udp_pkt = (tbfcp_udp_pkt_t*)pc_item->data;
@@ -873,6 +897,7 @@ static int _tbfcp_session_timer_callback(const void* pc_arg, tsk_timer_id_t time
         // OnExpire(session, EVENT_REPORT);
     }
 #endif
+bail:
     tsk_safeobj_unlock(p_session);
     return 0;
 }

@@ -47,7 +47,10 @@ typedef struct tdav_session_bfcp_s
 	struct tbfcp_pkt_s* p_pkt_FloorRelease;
 	struct tbfcp_pkt_s* p_pkt_Hello;
 
+	tsk_bool_t b_started;
 	tsk_bool_t b_use_ipv6;
+	tsk_bool_t b_revoked_handled;
+	tsk_bool_t b_conf_idf_changed;
 
 	char* p_local_ip;
 	//uint16_t local_port;
@@ -69,7 +72,7 @@ typedef struct tdav_session_bfcp_s
 tdav_session_bfcp_t;
 
 static int _tdav_session_bfcp_notif(const struct tbfcp_session_event_xs *e);
-
+static int _tdav_session_bfcp_send_Hello(tdav_session_bfcp_t* p_bfcp);
 
 /* ============ Plugin interface ================= */
 
@@ -159,6 +162,8 @@ static int _tdav_session_bfcp_prepare(tmedia_session_t* p_self)
 	}
 	TSK_OBJECT_SAFE_FREE(p_bfcp->p_pkt_Hello);
 	TSK_OBJECT_SAFE_FREE(p_bfcp->p_pkt_FloorRequest);
+	TSK_OBJECT_SAFE_FREE(p_bfcp->p_pkt_FloorRelease);
+	p_bfcp->b_revoked_handled = tsk_false;
 
 	return ret;
 }
@@ -183,15 +188,11 @@ static int _tdav_session_bfcp_start(tmedia_session_t* p_self)
 	if ((ret = tbfcp_session_start(p_bfcp->p_bfcp_s))) {
 		return ret;
 	}
+	if ((ret = _tdav_session_bfcp_send_Hello(p_bfcp))) {
+		return ret;
+	}
 
-	// Create Hello if not already done
-	if (!p_bfcp->p_pkt_Hello && (ret = tbfcp_session_create_pkt_Hello(p_bfcp->p_bfcp_s, &p_bfcp->p_pkt_Hello))) {
-		return ret;
-	}
-	// Send Hello
-	if ((ret = tbfcp_session_send_pkt(p_bfcp->p_bfcp_s, p_bfcp->p_pkt_Hello))) {
-		return ret;
-	}
+	p_bfcp->b_started = tsk_true;
 
 	return ret;
 }
@@ -231,9 +232,21 @@ static int _tdav_session_bfcp_stop(tmedia_session_t* p_self)
 
 	p_bfcp = (tdav_session_bfcp_t*)p_self;
 
+	if (p_bfcp->b_started) {
+#if 0 // Must not ... because could be caused by an incoming reINVITE.
+		if (p_bfcp->p_pkt_FloorRelease) {
+			if ((ret = tbfcp_session_send_pkt(p_bfcp->p_bfcp_s, p_bfcp->p_pkt_FloorRelease))) {
+				
+			}
+		}
+#endif
+	}
+
 	if (p_bfcp->p_bfcp_s) {
 		ret = tbfcp_session_stop(p_bfcp->p_bfcp_s);
 	}
+
+	p_bfcp->b_started = tsk_false;
 
 	return ret;
 }
@@ -359,16 +372,19 @@ static int _tdav_session_bfcp_set_ro(tmedia_session_t* p_self, const tsdp_header
 
 	// https://tools.ietf.org/html/rfc4583
 	{
+		p_bfcp->b_conf_idf_changed = tsk_false;
 		if ((A = tsdp_header_M_findA(m, "floorctrl"))) {
 			if ((ret = tbfcp_utils_parse_role(A->value, &e_remote_role))) {
 				return ret;
 			}
 		}
 		if ((A = tsdp_header_M_findA(m, "confid"))) {
+			p_bfcp->b_conf_idf_changed |= !tsk_striequals(p_bfcp->rfc4583.confid, A->value);
 			tsk_strupdate(&p_bfcp->rfc4583.confid, A->value);
 			u_remote_conf_id = (uint32_t)tsk_atoi64(p_bfcp->rfc4583.confid);
 		}
 		if ((A = tsdp_header_M_findA(m, "userid"))) {
+			p_bfcp->b_conf_idf_changed |= !tsk_striequals(p_bfcp->rfc4583.userid, A->value);
 			tsk_strupdate(&p_bfcp->rfc4583.userid, A->value);
 			u_remote_user_id = (uint16_t)tsk_atoi64(p_bfcp->rfc4583.userid);
 		}
@@ -376,11 +392,13 @@ static int _tdav_session_bfcp_set_ro(tmedia_session_t* p_self, const tsdp_header
 			char tmp_str[256];
 			if (sscanf(A->value, "%255s %*s", tmp_str) != EOF) {
 				char *pch, *saveptr;
+				p_bfcp->b_conf_idf_changed |= !tsk_striequals(p_bfcp->rfc4583.floorid, tmp_str);
 				tsk_strupdate(&p_bfcp->rfc4583.floorid, tmp_str);
 				u_remote_floor_id = (uint16_t)tsk_atoi64(p_bfcp->rfc4583.floorid);
 				pch = tsk_strtok_r(&A->value[tsk_strlen(tmp_str) + 1], " ", &saveptr);
 				while (pch) {
 					if (sscanf(pch, "mstrm: %255s", tmp_str) != EOF) {
+						p_bfcp->b_conf_idf_changed |= !tsk_striequals(p_bfcp->rfc4583.mstrm, tmp_str);
 						tsk_strupdate(&p_bfcp->rfc4583.mstrm, tmp_str);
 						break;
 					}
@@ -415,10 +433,29 @@ static int _tdav_session_bfcp_set_ro(tmedia_session_t* p_self, const tsdp_header
 	return ret;
 }
 
+static int _tdav_session_bfcp_send_Hello(tdav_session_bfcp_t* p_bfcp)
+{
+	int ret = 0;
+	if (!p_bfcp) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if (!p_bfcp->p_pkt_Hello && (ret = tbfcp_session_create_pkt_Hello(p_bfcp->p_bfcp_s, &p_bfcp->p_pkt_Hello))) {
+		return ret;
+	}
+	if ((ret = tbfcp_session_send_pkt(p_bfcp->p_bfcp_s, p_bfcp->p_pkt_Hello))) {
+		return ret;
+	}
+	return ret;
+}
+
 static int _tdav_session_bfcp_notif(const struct tbfcp_session_event_xs *e)
 {
 	tdav_session_bfcp_t* p_bfcp = tsk_object_ref(TSK_OBJECT(e->pc_usr_data));
 	int ret = 0;
+	static const char* kErrTextGlobalError = "Global error";
+	static const int kErrCodeGlobalError = -56;
 	static const char* kErrTextTimeout = "Timeout";
 	static const int kErrCodeTimeout = -57;
 	static const char* kErrTextUnExpectedIncomingMsg = "Unexpected incoming BFCP message";
@@ -448,11 +485,21 @@ static int _tdav_session_bfcp_notif(const struct tbfcp_session_event_xs *e)
 					TSK_OBJECT_SAFE_FREE(p_bfcp->p_pkt_Hello);
 					if (e->pc_pkt->hdr.primitive == tbfcp_primitive_HelloAck) {
 						if (!p_bfcp->p_pkt_FloorRequest) {
-							if ((ret = tbfcp_session_create_pkt_FloorRequest(p_bfcp->p_bfcp_s, &p_bfcp->p_pkt_FloorRequest))) {
-								goto bail;
+							if (p_bfcp->b_conf_idf_changed) {
+								// Create the "FloorRelease" for this "FloorRequest"
+								TSK_OBJECT_SAFE_FREE(p_bfcp->p_pkt_FloorRelease);
+								if ((ret = tbfcp_session_create_pkt_FloorRelease(p_bfcp->p_bfcp_s, &p_bfcp->p_pkt_FloorRelease))) {
+									goto raise_err;
+								}
+								if ((ret = tbfcp_session_create_pkt_FloorRequest(p_bfcp->p_bfcp_s, &p_bfcp->p_pkt_FloorRequest))) {
+									goto raise_err;
+								}
+								if ((ret = tbfcp_session_send_pkt(p_bfcp->p_bfcp_s, p_bfcp->p_pkt_FloorRequest))) {
+									goto raise_err;
+								}
 							}
-							if ((ret = tbfcp_session_send_pkt(p_bfcp->p_bfcp_s, p_bfcp->p_pkt_FloorRequest))) {
-								goto bail;
+							else {
+								TSK_DEBUG_INFO("No change to BFCP session... do not send FloorRequest");
 							}
 						}
 					}
@@ -461,7 +508,8 @@ static int _tdav_session_bfcp_notif(const struct tbfcp_session_event_xs *e)
 						_RAISE_ERR_AND_GOTO_BAIL(kErrCodeUnExpectedIncomingMsg, kErrTextUnExpectedIncomingMsg);
 					}
 				}
-				else if(p_bfcp->p_pkt_FloorRequest && p_bfcp->p_pkt_FloorRequest->hdr.transac_id == e->pc_pkt->hdr.transac_id && p_bfcp->p_pkt_FloorRequest->hdr.user_id == e->pc_pkt->hdr.user_id && p_bfcp->p_pkt_FloorRequest->hdr.conf_id == e->pc_pkt->hdr.conf_id) {
+				else if(p_bfcp->p_pkt_FloorRequest /*&& p_bfcp->p_pkt_FloorRequest->hdr.transac_id == e->pc_pkt->hdr.transac_id*/ && p_bfcp->p_pkt_FloorRequest->hdr.user_id == e->pc_pkt->hdr.user_id && p_bfcp->p_pkt_FloorRequest->hdr.conf_id == e->pc_pkt->hdr.conf_id) {
+					tsk_bool_t transac_id_matched = (p_bfcp->p_pkt_FloorRequest->hdr.transac_id == e->pc_pkt->hdr.transac_id);
 					if (e->pc_pkt->hdr.primitive == tbfcp_primitive_FloorRequestStatus) {
 						tsk_size_t u_index0, u_index1, u_index2, u_index3;
 						const tbfcp_attr_grouped_t *pc_attr_FloorRequestInformation = tsk_null, 
@@ -510,10 +558,40 @@ static int _tdav_session_bfcp_notif(const struct tbfcp_session_event_xs *e)
 							}
 						}
 
-						if (pc_attr_RequestStatus) {
+						if (pc_attr_RequestStatus) { 
 							// https://tools.ietf.org/html/rfc4582#section-5.2.5
 							uint16_t u_status = pc_attr_RequestStatus->OctetString16[0] + (pc_attr_RequestStatus->OctetString16[1] << 8);
-							_RAISE_FLREQ(u_status, kInfoTextFloorReqStatus);
+							if (transac_id_matched) {
+								if (u_status == tbfcp_reqstatus_Revoked && !p_bfcp->b_revoked_handled) { // revoked
+									TSK_OBJECT_SAFE_FREE(p_bfcp->p_pkt_FloorRequest); // free the FloorRequest and ask new one once HelloAck is received
+									// Radvision sends a Revoke after a reINVITE to ask for new negotiation.
+									if (p_bfcp->p_pkt_FloorRelease) {
+										if ((ret = tbfcp_session_send_pkt(p_bfcp->p_bfcp_s, p_bfcp->p_pkt_FloorRelease))) {
+											goto raise_err;
+										}
+									}
+									if ((ret = _tdav_session_bfcp_send_Hello(p_bfcp))) {
+										goto raise_err;
+									}
+									p_bfcp->b_revoked_handled = tsk_true;
+								}
+								else {
+									_RAISE_FLREQ(u_status, kInfoTextFloorReqStatus);
+								}
+							}
+							else { //!transac_id_matched
+								// Status from old FloorRequest
+								tbfcp_pkt_t* p_pkt = tsk_null;
+								TSK_DEBUG_INFO("Status from old Request");
+								if ((ret = tbfcp_pkt_create_FloorRelease_2(e->pc_pkt->hdr.conf_id, e->pc_pkt->hdr.transac_id, e->pc_pkt->hdr.user_id, pc_attr_FloorRequestStatus->extra_hdr.FloorID, &p_pkt))) {
+									goto raise_err;
+								}
+								ret = tbfcp_session_send_pkt(p_bfcp->p_bfcp_s, p_pkt);
+								TSK_OBJECT_SAFE_FREE(p_pkt);
+								if (ret) {
+									goto raise_err;
+								}
+							}
 						}
 						else {
 							/* /!\ No RequestStatus attribute in FloorRequestStatus */
@@ -523,8 +601,15 @@ static int _tdav_session_bfcp_notif(const struct tbfcp_session_event_xs *e)
 						}						
 					}
 					else {
-						TSK_DEBUG_ERROR("%s", kErrTextUnExpectedIncomingMsg);
-						_RAISE_ERR_AND_GOTO_BAIL(kErrCodeUnExpectedIncomingMsg, kErrTextUnExpectedIncomingMsg);
+						switch (e->pc_pkt->hdr.primitive) {
+							case tbfcp_primitive_Hello: break; // already handled in "_tbfcp_session_process_incoming_pkt()"
+							default:
+								{
+									TSK_DEBUG_ERROR("%s", kErrTextUnExpectedIncomingMsg);
+									_RAISE_ERR_AND_GOTO_BAIL(kErrCodeUnExpectedIncomingMsg, kErrTextUnExpectedIncomingMsg);
+									break;
+								}
+						}
 					}
 				}
 				break;
@@ -537,8 +622,13 @@ static int _tdav_session_bfcp_notif(const struct tbfcp_session_event_xs *e)
 				break;
 			}
 	}
+raise_err:
+	if (ret) {
+		TSK_DEBUG_ERROR("%s", kErrTextGlobalError);
+		_RAISE_ERR_AND_GOTO_BAIL(kErrCodeGlobalError, kErrTextGlobalError);
+	}
 bail:
-	
+
 	TSK_OBJECT_SAFE_FREE(p_bfcp);
 	return ret;
 }
