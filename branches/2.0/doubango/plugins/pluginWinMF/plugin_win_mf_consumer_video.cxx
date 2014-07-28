@@ -362,7 +362,11 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 
 	// Color fill the back buffer
 	CHECK_HR(hr = pSelf->pDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBB));
+#if METROPOLIS
+	CHECK_HR(hr = pSelf->pDevice->ColorFill(pBB, NULL, D3DCOLOR_XRGB(0x00, 0x00, 0x00)));
+#else
 	CHECK_HR(hr = pSelf->pDevice->ColorFill(pBB, NULL, D3DCOLOR_XRGB(0xFF, 0xFF, 0xFF)));
+#endif
 	
 	// Resize keeping aspect ratio and Blit the frame (required)
 	hr = pSelf->pDevice->StretchRect(
