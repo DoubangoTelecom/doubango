@@ -1136,7 +1136,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	tsk_bool_t is_ro_media_lines_changed = tsk_false;
 	tsk_bool_t is_ice_active = tsk_false;
 	tsk_bool_t had_ro_sdp, had_ro_provisional, is_ro_provisional_final_matching = tsk_false;
-	tsk_bool_t new_mediatype_striped = tsk_false;
+	tsk_bool_t is_new_mediatype_striped = tsk_false;
 	tmedia_qos_stype_t qos_type = tmedia_qos_stype_none;
 	tmedia_type_t new_mediatype = tmedia_none;
 	tmedia_sessions_L_t *list_tmp_sessions;
@@ -1162,15 +1162,15 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	// Remove BFCP offer if not locally enabled. Only the client can init BFCP session.
 	if ((ro_type & tmedia_ro_type_offer)) {
 		if (!(self->type & tmedia_bfcp_video)) {
-			new_mediatype_striped |= (new_mediatype & tmedia_bfcp_video);
+			is_new_mediatype_striped |= (new_mediatype & tmedia_bfcp_video);
 			new_mediatype &= ~tmedia_bfcp_video; 
 		}
 		if (!(self->type & tmedia_bfcp_audio)) {
-			new_mediatype_striped |= (new_mediatype & tmedia_bfcp_video);
+			is_new_mediatype_striped |= (new_mediatype & tmedia_bfcp_video);
 			new_mediatype &= ~tmedia_bfcp_audio;
 		}
 		if (!(self->type & tmedia_bfcp)) {
-			new_mediatype_striped |= (new_mediatype & tmedia_bfcp_video);
+			is_new_mediatype_striped |= (new_mediatype & tmedia_bfcp_video);
 			new_mediatype &= ~tmedia_bfcp;
 		}
 	}
@@ -1293,8 +1293,8 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	 * For initial offer we don't need to check anything
 	 */
 	if (self->sdp.lo) {
-		if ((is_media_type_changed = (new_mediatype != self->type)) || new_mediatype_striped) {
-			tsk_bool_t force = !!new_mediatype_striped;
+		if ((is_media_type_changed = (new_mediatype != self->type)) || is_new_mediatype_striped) {
+			tsk_bool_t force = !!is_new_mediatype_striped;
 			tmedia_session_mgr_set_media_type_2(self, new_mediatype, force);
 			TSK_DEBUG_INFO("media type has changed");
 		}
@@ -1328,13 +1328,16 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	  * loopback address won't work on embedded devices such as iOS and Android.
 	  *
 	 */
-	if((self->started && !is_ro_loopback_address) && (is_ro_codecs_changed || is_ro_network_info_changed || is_ro_media_lines_changed || is_media_type_changed)){
+	if ((self->started && !is_ro_loopback_address) && (is_ro_codecs_changed || is_ro_network_info_changed || is_ro_media_lines_changed || is_media_type_changed)){
 		TSK_DEBUG_INFO("stopped_to_reconf=true,is_ice_active=%s", is_ice_active?"true":"false");
+		stopped_to_reconf = tsk_true;
+		tmedia_session_mgr_set(self,
+			TMEDIA_SESSION_SET_INT32(self->type, "stop-to-reconf", stopped_to_reconf),
+			TMEDIA_SESSION_SET_NULL());
 		if((ret = tmedia_session_mgr_stop(self))){
 			TSK_DEBUG_ERROR("Failed to stop session manager");
 			goto bail;
 		}
-		stopped_to_reconf = tsk_true;
 	}
 
 	/* update remote offer */
@@ -1459,7 +1462,7 @@ end_of_sessions_update:
 	}
 
 	/* signal that ro has changed (will be used to update lo) unless there was no ro_sdp */
-	self->ro_changed = (had_ro_sdp && (is_ro_hold_resume_changed || is_ro_network_info_changed || is_ro_media_lines_changed || is_ro_codecs_changed));
+	self->ro_changed = (had_ro_sdp && (is_ro_hold_resume_changed || is_ro_network_info_changed || is_ro_media_lines_changed || is_ro_codecs_changed /*|| is_media_type_changed || is_new_mediatype_striped*/));
 
 	/* update "provisional" info */
 	self->ro_provisional = ((ro_type & tmedia_ro_type_provisional) == tmedia_ro_type_provisional);
