@@ -756,7 +756,6 @@ bail:
 static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp_packet_t* packet)
 {
 	tdav_session_av_t* base = (tdav_session_av_t*)self;
-	tmedia_session_t* session = (tmedia_session_t*)self;
 	static const trtp_rtp_header_t* __rtp_header = tsk_null;
 	static const tmedia_codec_id_t __codecs_supporting_zero_artifacts = (tmedia_codec_id_vp8 | tmedia_codec_id_h264_bp | tmedia_codec_id_h264_mp | tmedia_codec_id_h263);
 	int ret = 0;
@@ -768,7 +767,7 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 
 	tsk_safeobj_lock(base);
 
-	if(base->consumer && base->consumer->is_started){
+	if(self->started && base->consumer && base->consumer->is_started){
 		tsk_size_t out_size, _size;
 		const void* _buffer;
 		tdav_session_video_t* video = (tdav_session_video_t*)base;

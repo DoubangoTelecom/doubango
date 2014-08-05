@@ -932,7 +932,7 @@ bail:
 
 static int _tbfcp_session_transport_layer_stream_cb(const tnet_transport_event_t* e)
 {
-	tbfcp_session_t* p_session = (tbfcp_session_t*)e->callback_data;
+	// tbfcp_session_t* p_session = (tbfcp_session_t*)e->callback_data;
 	TSK_DEBUG_ERROR("Not implemented yet");
 	return -1;
 }

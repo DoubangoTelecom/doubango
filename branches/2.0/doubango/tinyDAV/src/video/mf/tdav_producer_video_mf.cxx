@@ -210,7 +210,7 @@ static int tdav_producer_video_mf_prepare(tmedia_producer_t* self, const tmedia_
 {
 	tdav_producer_video_mf_t* pSelf = (tdav_producer_video_mf_t*)self;
 
-	if(!pSelf || !codec && codec->plugin){
+	if(!pSelf || !codec || !codec->plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}

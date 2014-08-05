@@ -399,8 +399,6 @@ static int _tdav_producer_screencast_timer_cb(const void* arg, tsk_timer_id_t ti
 	tdav_producer_screencast_gdi_t* p_gdi = (tdav_producer_screencast_gdi_t*)arg;
 	int ret = 0;
 
-	TSK_DEBUG_INFO("_tdav_producer_screencast_timer_cb"); // FIXME: remove
-
 	tsk_safeobj_lock(p_gdi);
 
 	if (p_gdi->id_timer_grab == timer_id) {

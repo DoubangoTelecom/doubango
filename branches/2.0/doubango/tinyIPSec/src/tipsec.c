@@ -278,7 +278,7 @@ tipsec_error_t tipsec_plugin_register_file(const char* pc_filepath, struct tsk_p
 {
 	struct tsk_plugin_s* p_plugin = tsk_null;
 	tsk_plugin_def_ptr_const_t p_def;
-	tipsec_error_t err;
+	tipsec_error_t err = tipsec_error_success;
 	int i = 0, count = 0;
 
 	p_plugin = tsk_plugin_create(pc_filepath);
