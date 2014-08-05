@@ -50,7 +50,7 @@ int tdav_consumer_video_mf_prepare(tmedia_consumer_t* self, const tmedia_codec_t
 {
 	tdav_consumer_video_mf_t* consumer = (tdav_consumer_video_mf_t*)self;
 
-	if(!consumer || !codec && codec->plugin){
+	if(!consumer || !codec || !codec->plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -180,6 +180,6 @@ static const tmedia_consumer_plugin_def_t tdav_consumer_video_mf_plugin_def_s =
 	tdav_consumer_video_mf_pause,
 	tdav_consumer_video_mf_stop
 };
-extern const tmedia_consumer_plugin_def_t *tdav_consumer_video_mf_plugin_def_t = &tdav_consumer_video_mf_plugin_def_s;
+const tmedia_consumer_plugin_def_t *tdav_consumer_video_mf_plugin_def_t = &tdav_consumer_video_mf_plugin_def_s;
 
 #endif /*HAVE_MF  */

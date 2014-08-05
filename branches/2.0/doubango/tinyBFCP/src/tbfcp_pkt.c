@@ -210,7 +210,7 @@ int tbfcp_pkt_write_with_padding(const tbfcp_pkt_t* pc_self, uint8_t* p_buff_ptr
     p_buff_ptr[0] = (((uint8_t)pc_self->hdr.ver) << 5) | (pc_self->hdr.reserved & 0x7F);
     p_buff_ptr[1] = pc_self->hdr.primitive;
     *((uint32_t*)&p_buff_ptr[2]) = tnet_htons(((*p_written - TBFCP_PKT_HDR_SIZE_IN_OCTETS) >> 2));
-    *((uint32_t*)&p_buff_ptr[4]) = tnet_htonl(pc_self->hdr.conf_id);
+    *((uint32_t*)&p_buff_ptr[4]) = (uint32_t)tnet_htonl(pc_self->hdr.conf_id);
     *((uint16_t*)&p_buff_ptr[8]) = tnet_htons(pc_self->hdr.transac_id);
     *((uint16_t*)&p_buff_ptr[10]) = tnet_htons(pc_self->hdr.user_id);
 
@@ -270,7 +270,7 @@ int tbfcp_pkt_read(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size, tbfcp_pkt
     }
     Primitive = (tbfcp_primitive_t)pc_buff_ptr[1];
     PayloadLengthInOctets = (tnet_ntohs_2(&pc_buff_ptr[2]) << 2);
-    ConferenceID = tnet_ntohl_2(&pc_buff_ptr[4]);
+    ConferenceID = (uint32_t)tnet_ntohl_2(&pc_buff_ptr[4]);
     TransactionID = tnet_ntohs_2(&pc_buff_ptr[8]);
     UserID = tnet_ntohs_2(&pc_buff_ptr[10]);
 
