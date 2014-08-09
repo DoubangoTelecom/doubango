@@ -205,6 +205,7 @@ static int _sdp_pcfgs_cat(const sdp_pcfg_xt (*pcfgs_src)[SDP_CAPS_COUNT_MAX], sd
 int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 {
 	uint64_t session_id;
+	tmedia_session_t* base = TMEDIA_SESSION(self);
 	
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -690,6 +691,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 	tsk_bool_t is_srtp_dtls_enabled = is_srtp_enable && !!(self->srtp_type & tmedia_srtp_type_dtls);
 	tsk_bool_t is_srtp_sdes_enabled = is_srtp_enable && !!(self->srtp_type & tmedia_srtp_type_sdes);
 	tsk_bool_t is_srtp_local_mandatory = is_srtp_enable && (self->srtp_mode == tmedia_srtp_mode_mandatory);
+	tsk_bool_t is_bfcp_session = ((base->type & tmedia_bfcp) == tmedia_bfcp) ? tsk_true : tsk_false; 
 	tsk_bool_t is_first_media;
 
 	if(!base || !base->plugin || !updated){
@@ -1129,7 +1131,13 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 		}
 
 		/* Hold/Resume */
-		tsdp_header_M_set_holdresume_att(base->M.lo, base->lo_held, base->ro_held);		
+#if 0
+		// BFCP sessions send media but not expected to receive any data.
+		// TODO: Radvision ignores "sendonly" and use the bfcp session as receiver for the mixed stream
+		tsdp_header_M_set_holdresume_att(base->M.lo, (base->lo_held | is_bfcp_session), base->ro_held);
+#else
+		tsdp_header_M_set_holdresume_att(base->M.lo, base->lo_held, base->ro_held);
+#endif
 
 		/* Update Proto*/
 		tsk_strupdate(&base->M.lo->proto, 

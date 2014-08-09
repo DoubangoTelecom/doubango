@@ -94,6 +94,8 @@ static inline HRESULT UpdateDestinationRect(struct plugin_video_dshow_consumer_s
 static HRESULT ResetDevice(struct plugin_video_dshow_consumer_s *pSelf, BOOL bUpdateDestinationRect = FALSE);
 static HRESULT SetFullscreen(struct plugin_video_dshow_consumer_s *pSelf, BOOL bFullScreen);
 static HWND CreateFullScreenWindow(struct plugin_video_dshow_consumer_s *pSelf);
+static HRESULT HookWindow(struct plugin_video_dshow_consumer_s *pSelf, HWND hWnd);
+static HRESULT UnhookWindow(struct plugin_video_dshow_consumer_s *pSelf);
 
 
 typedef struct plugin_video_dshow_consumer_s
@@ -103,6 +105,7 @@ typedef struct plugin_video_dshow_consumer_s
 	BOOL bStarted, bPrepared, bPaused, bFullScreen;
 	BOOL bPluginFireFox, bPluginWebRTC4All;
 	HWND hWindow;
+	WNDPROC wndProc;
 	HWND hWindowFullScreen;
 	RECT rcWindow;
 	RECT rcDest;
@@ -151,9 +154,7 @@ static int plugin_video_dshow_consumer_set(tmedia_consumer_t *self, const tmedia
 					hr = ResetDevice(pSelf);
 				}
 				tsk_safeobj_unlock(pSelf); // unblock consumer thread
-			}
-
-			
+			}			
 		}
 	}
 	else if(param->value_type == tmedia_pvt_int32)
@@ -242,9 +243,9 @@ static int plugin_video_dshow_consumer_prepare(tmedia_consumer_t* self, const tm
 		}
 	}
 	
+	CHECK_HR(hr = HookWindow(pSelf, pSelf->hWindow));
 
 bail:
-
 	pSelf->bPrepared = SUCCEEDED(hr);
 	return pSelf->bPrepared ? 0 : -1;
 }
@@ -272,7 +273,7 @@ static int plugin_video_dshow_consumer_start(tmedia_consumer_t* self)
 	pSelf->bPaused = false;
 	pSelf->bStarted = true;
 
-	CHECK_HR(hr);
+	CHECK_HR(hr = HookWindow(pSelf, pSelf->hWindow));
 
 bail:
 	return SUCCEEDED(hr) ? 0 : -1;
@@ -495,6 +496,8 @@ static int _plugin_video_dshow_consumer_unprepare(plugin_video_dshow_consumer_t*
 		return -1;
 	}
 
+	UnhookWindow(pSelf);
+
 	SafeRelease(&pSelf->pDevice);
 	SafeRelease(&pSelf->pD3D);
 	SafeRelease(&pSelf->pSwapChain);
@@ -534,9 +537,9 @@ static tsk_object_t* plugin_video_dshow_consumer_ctor(tsk_object_t * self, va_li
 static tsk_object_t* plugin_video_dshow_consumer_dtor(tsk_object_t * self)
 { 
 	plugin_video_dshow_consumer_t *pSelf = (plugin_video_dshow_consumer_t *)self;
-	if(pSelf){
+	if (pSelf) {
 		/* stop */
-		if(pSelf->bStarted)
+		if (pSelf->bStarted)
 		{
 			plugin_video_dshow_consumer_stop(TMEDIA_CONSUMER(pSelf));
 		}
@@ -949,18 +952,23 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		case WM_MOVE:
 			{
 				struct plugin_video_dshow_consumer_s* pSelf = dynamic_cast<struct plugin_video_dshow_consumer_s*>((struct plugin_video_dshow_consumer_s*)GetPropA(hWnd, "Self"));
-				if(pSelf)
+				if (pSelf)
 				{					
 					
 				}
 				break;
 			}
 
+		case WM_ERASEBKGND:
+			{
+				return TRUE; // avoid background erasing.
+			}
+
 		case WM_CHAR:
 		case WM_KEYUP:
 			{
 				struct plugin_video_dshow_consumer_s* pSelf = dynamic_cast<struct plugin_video_dshow_consumer_s*>((struct plugin_video_dshow_consumer_s*)GetPropA(hWnd, "Self"));
-				if(pSelf)
+				if (pSelf)
 				{	
 					SetFullscreen(pSelf, FALSE);
 				}
@@ -1007,6 +1015,31 @@ static HWND CreateFullScreenWindow(struct plugin_video_dshow_consumer_s *pSelf)
 	return pSelf->hWindowFullScreen;
 }
 
+static HRESULT HookWindow(plugin_video_dshow_consumer_t *pSelf, HWND hWnd)
+{
+	HRESULT hr = S_OK;
+
+	CHECK_HR(hr = UnhookWindow(pSelf));
+
+	if ((pSelf->hWindow = hWnd)) {
+		pSelf->wndProc = (WNDPROC)SetWindowLongPtr(pSelf->hWindow, GWL_WNDPROC, (LONG)WndProc);
+		if (!pSelf->wndProc) {
+			TSK_DEBUG_ERROR("HookWindowLongPtr() failed with errcode=%d", GetLastError());
+			CHECK_HR(hr = E_FAIL);
+		}
+	}
+bail:
+	return S_OK;
+}
+
+static HRESULT UnhookWindow(struct plugin_video_dshow_consumer_s *pSelf)
+{
+	if (pSelf->hWindow && pSelf->wndProc) {
+		SetWindowLongPtr(pSelf->hWindow, GWL_WNDPROC, (LONG)pSelf->wndProc);
+		pSelf->wndProc = NULL;
+	}
+	return S_OK;
+}
 
 #else /* !PLUGIN_DS_CV_USE_D3D9 */
 
