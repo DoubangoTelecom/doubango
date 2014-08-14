@@ -1034,13 +1034,11 @@ int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* re
 			case tsip_REFER:
 			case tsip_MESSAGE:
 			case tsip_PUBLISH:
-			//case tsip_REGISTER:
+			case tsip_REGISTER:
 				{
 					if(!earlyIMS || (earlyIMS && TSIP_REQUEST_IS_REGISTER(request))){
 						TSIP_MESSAGE_ADD_HEADER(request,
-                                                //TSIP_HEADER_P_PREFERRED_IDENTITY_VA_ARGS(preferred_identity)
-                                                TSIP_HEADER_DUMMY_VA_ARGS("P-Preferred-Identity", "sip:+393701212155@ims.indoona.net")
-                                                
+                                                TSIP_HEADER_P_PREFERRED_IDENTITY_VA_ARGS(preferred_identity)
                                                 );
 					}
 					break;
