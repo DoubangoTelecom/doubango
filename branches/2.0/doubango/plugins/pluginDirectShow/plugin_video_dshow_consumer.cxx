@@ -102,7 +102,7 @@ typedef struct plugin_video_dshow_consumer_s
 {
 	TMEDIA_DECLARE_CONSUMER;
 	
-	BOOL bStarted, bPrepared, bPaused, bFullScreen;
+	BOOL bStarted, bPrepared, bPaused, bFullScreen, bWindowHooked;
 	BOOL bPluginFireFox, bPluginWebRTC4All;
 	HWND hWindow;
 	WNDPROC wndProc;
@@ -242,8 +242,6 @@ static int plugin_video_dshow_consumer_prepare(tmedia_consumer_t* self, const tm
 			TSK_DEBUG_WARN("Delaying D3D9 device creation because HWND is not defined yet");
 		}
 	}
-	
-	CHECK_HR(hr = HookWindow(pSelf, pSelf->hWindow));
 
 bail:
 	pSelf->bPrepared = SUCCEEDED(hr);
@@ -273,9 +271,6 @@ static int plugin_video_dshow_consumer_start(tmedia_consumer_t* self)
 	pSelf->bPaused = false;
 	pSelf->bStarted = true;
 
-	CHECK_HR(hr = HookWindow(pSelf, pSelf->hWindow));
-
-bail:
 	return SUCCEEDED(hr) ? 0 : -1;
 }
 
@@ -313,6 +308,12 @@ static int plugin_video_dshow_consumer_consume(tmedia_consumer_t* self, const vo
 	{
 		TSK_DEBUG_INFO("Do not draw frame because HWND not set");
 		goto bail; // not an error as the application can decide to set the HWND at any time
+	}
+
+	if (!pSelf->bWindowHooked) 
+	{
+		// Do not hook "hWnd" as it could be the fullscreen handle which is always hooked.
+		CHECK_HR(hr = HookWindow(pSelf, pSelf->hWindow));
 	}
 
 	if(!pSelf->pDevice || !pSelf->pD3D || !pSelf->pSwapChain)
@@ -467,11 +468,6 @@ static int plugin_video_dshow_consumer_stop(tmedia_consumer_t* self)
     pSelf->bStarted = false;
 	pSelf->bPaused = false;
 
-	// Clear last video frame
-	if(pSelf->hWindow)
-	{
-		::InvalidateRect(pSelf->hWindow, NULL, FALSE);
-	}
 	if(pSelf->hWindowFullScreen)
 	{
 		::InvalidateRect(pSelf->hWindowFullScreen, NULL, FALSE);
@@ -958,11 +954,27 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 				}
 				break;
 			}
+#if 0
+		case WM_PAINT:
+			{
+				PAINTSTRUCT ps;
+				HDC hdc = BeginPaint(hWnd, &ps);
+				ps.fErase = FALSE;
+
+				RECT rc;
+				GetBoundsRect(hdc, &rc, 0);
+				FillRect(hdc, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
+				
+				EndPaint(hWnd, &ps);
+				break;
+			}
+#endif
 
 		case WM_ERASEBKGND:
 			{
 				return TRUE; // avoid background erasing.
 			}
+
 
 		case WM_CHAR:
 		case WM_KEYUP:
@@ -1019,6 +1031,8 @@ static HRESULT HookWindow(plugin_video_dshow_consumer_t *pSelf, HWND hWnd)
 {
 	HRESULT hr = S_OK;
 
+	tsk_safeobj_lock(pSelf);
+
 	CHECK_HR(hr = UnhookWindow(pSelf));
 
 	if ((pSelf->hWindow = hWnd)) {
@@ -1027,17 +1041,26 @@ static HRESULT HookWindow(plugin_video_dshow_consumer_t *pSelf, HWND hWnd)
 			TSK_DEBUG_ERROR("HookWindowLongPtr() failed with errcode=%d", GetLastError());
 			CHECK_HR(hr = E_FAIL);
 		}
+		pSelf->bWindowHooked = TRUE;
 	}
 bail:
+	tsk_safeobj_unlock(pSelf);
 	return S_OK;
 }
 
 static HRESULT UnhookWindow(struct plugin_video_dshow_consumer_s *pSelf)
 {
+	tsk_safeobj_lock(pSelf);
 	if (pSelf->hWindow && pSelf->wndProc) {
 		SetWindowLongPtr(pSelf->hWindow, GWL_WNDPROC, (LONG)pSelf->wndProc);
 		pSelf->wndProc = NULL;
 	}
+	if(pSelf->hWindow)
+	{
+		::InvalidateRect(pSelf->hWindow, NULL, FALSE);
+	}
+	pSelf->bWindowHooked = FALSE;
+	tsk_safeobj_unlock(pSelf);
 	return S_OK;
 }
 
