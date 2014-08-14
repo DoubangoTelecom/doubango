@@ -261,7 +261,7 @@ static char* tdav_codec_opus_sdp_att_get(const tmedia_codec_t* codec, const char
 		return tsk_null;
 	}
 
-	if(tsk_striequals(att_name, "fmtp")){
+	/*if(tsk_striequals(att_name, "fmtp")){
 		char* fmtp = tsk_null;
 		tsk_sprintf(&fmtp, "maxplaybackrate=%d; sprop-maxcapturerate=%d; stereo=%d; sprop-stereo=%d; useinbandfec=%d; usedtx=%d", 
 				TMEDIA_CODEC(opus)->in.rate, 
@@ -272,7 +272,21 @@ static char* tdav_codec_opus_sdp_att_get(const tmedia_codec_t* codec, const char
 				opus->decoder.dtx_enabled ? 1 : 0
 			);
 		return fmtp;
-	}
+	}*/
+    
+    if(tsk_striequals(att_name, "fmtp")){
+ 		char* fmtp = tsk_null;
+                            		//tsk_sprintf(&fmtp, "maxplaybackrate=%d; sprop-maxcapturerate=%d; stereo=%d; sprop-stereo=%d; useinbandfec=%d; usedtx=%d",
+                                  tsk_sprintf(&fmtp, "maxplaybackrate=%d; stereo=%d; sprop-stereo=%d; useinbandfec=%d",
+                                                 TMEDIA_CODEC(opus)->in.rate,
+                                                 				//TMEDIA_CODEC(opus)->out.rate,
+                                                 (TMEDIA_CODEC_AUDIO(opus)->in.channels == 2) ? 1 : 0,
+                                                 (TMEDIA_CODEC_AUDIO(opus)->out.channels == 2) ? 1 : 0,
+                                                 				opus->decoder.fec_enabled ? 1 : 0
+                                                 				//opus->decoder.dtx_enabled ? 1 : 0
+                                                 );
+                            return fmtp;
+                            }
 
 	return tsk_null;
 }

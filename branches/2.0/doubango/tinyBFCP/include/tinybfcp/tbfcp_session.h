@@ -20,14 +20,13 @@
 #define TBFCP_SESSION_H
 
 #include "tinybfcp_config.h"
+#include "tinybfcp/tbfcp_types.h"
 
 #include "tinynet.h"
 
 TBFCP_BEGIN_DECLS
 
 struct tbfcp_session_s;
-enum tbfcp_role_e;
-enum tbfcp_setup_e;
 struct tbfcp_pkt_s;
 
 typedef enum tbfcp_session_event_type_e
