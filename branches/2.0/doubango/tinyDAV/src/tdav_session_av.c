@@ -873,7 +873,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 				char* str = tsk_null;
 				tsdp_header_A_t* cryptoA = tsk_null;
 				tsk_bool_t negotiate_srtp = (self->srtp_mode == tmedia_srtp_mode_optional);
-				tsk_bool_t negotiate_avpf = (self->avpf_mode_set == tmedia_mode_optional);
+				tsk_bool_t negotiate_avpf = 0;//(self->avpf_mode_set == tmedia_mode_optional);
 				tsk_bool_t is_srtp_remote_mandatory = (base->M.ro && _sdp_str_contains(base->M.ro->proto, "SAVP"));
 				tsk_size_t profiles_index = 0;
 				RTP_PROFILE_T profiles[RTP_PROFILES_COUNT] = { RTP_PROFILE_NONE };
@@ -945,7 +945,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 					}
 					
 					// "tcap"
-					_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("tcap", tcap), tsk_null);
+					//_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("tcap", tcap), tsk_null);
 					TSK_FREE(tcap);
 
 					acap_tag = TSK_MAX(acap_tag, acap_tag_connection);
