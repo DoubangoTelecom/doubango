@@ -38,7 +38,7 @@
 
 TDAV_BEGIN_DECLS
 
-const tmedia_denoise_plugin_def_t *tdav_speex_denoise_plugin_def_t;
+extern const tmedia_denoise_plugin_def_t *tdav_speex_denoise_plugin_def_t;
 
 TDAV_END_DECLS
 
