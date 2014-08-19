@@ -1,7 +1,5 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +21,6 @@
 /**@file tsk_ragel_state.h
  * @brief Ragel state for SIP, HTTP and MSRP parsing.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #ifndef TINYSAK_RAGEL_STATE_H
 #define TINYSAK_RAGEL_STATE_H
@@ -36,7 +31,6 @@
 #include <string.h>
 
 TSK_BEGIN_DECLS
-
 
 #if defined(_MSC_VER)
 #	define atoi64	_atoi64
@@ -77,7 +71,7 @@ TSK_BEGIN_DECLS
 			char* tmp = tsk_calloc(len+1, sizeof(char)); \
 			memcpy(tmp, ts, len); \
 			integer = atoi(tmp); \
-			free(tmp); \
+			tsk_free(&tmp); \
 		} \
 	}
 
@@ -91,7 +85,7 @@ TSK_BEGIN_DECLS
 			char* tmp = tsk_calloc(len+1, sizeof(char)); \
 			memcpy(tmp, tag_start, len); \
 			retval = (type) func(tmp); \
-			free(tmp); \
+			tsk_free(&tmp); \
 		} \
 	}
 /**@ingroup tsk_ragel_state_group

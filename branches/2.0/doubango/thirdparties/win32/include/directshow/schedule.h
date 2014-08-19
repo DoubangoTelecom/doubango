@@ -3,7 +3,7 @@
 //
 // Desc: DirectShow base classes.
 //
-// Copyright (c) Microsoft Corporation.  All rights reserved.
+// Copyright (c) 1996-2001 Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
 
@@ -50,10 +50,10 @@ private:
         HANDLE          m_hNotify;          // Handle to event or semephore
         BOOL            m_bPeriodic;        // TRUE => Periodic event
 
-        CAdvisePacket( CAdvisePacket * next, LONGLONG time ) : m_next(next), m_rtEventTime(time)
+        CAdvisePacket( __inout_opt CAdvisePacket * next, LONGLONG time ) : m_next(next), m_rtEventTime(time)
         {}
 
-        void InsertAfter( CAdvisePacket * p )
+        void InsertAfter( __inout CAdvisePacket * p )
         {
             p->m_next = m_next;
             m_next    = p;
@@ -99,7 +99,7 @@ private:
     CCritSec        m_Serialize;
 
     // AddAdvisePacket: adds the packet, returns the cookie (0 if failed)
-    DWORD_PTR AddAdvisePacket( CAdvisePacket * pPacket );
+    DWORD_PTR AddAdvisePacket( __inout CAdvisePacket * pPacket );
     // Event that we should set if the packed added above will be the next to fire.
     const HANDLE m_ev;
 
@@ -113,7 +113,7 @@ private:
     DWORD           m_dwCacheCount;
     enum { dwCacheMax = 5 };             // Don't bother caching more than five
 
-    void Delete( CAdvisePacket * pLink );// This "Delete" will cache the Link
+    void Delete( __inout CAdvisePacket * pLink );// This "Delete" will cache the Link
 
 // Attributes and methods for debugging
 public:
