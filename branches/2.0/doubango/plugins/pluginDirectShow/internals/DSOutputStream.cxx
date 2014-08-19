@@ -21,6 +21,8 @@
 
 #include <iostream>
 
+#include "tsk_memory.h"
+
 using namespace std;
 
 #define DEFAULT_FPS	15
@@ -61,7 +63,7 @@ DSOutputStream::DSOutputStream(HRESULT *phr, DSOutputFilter *pParent, LPCWSTR pP
 
 DSOutputStream::~DSOutputStream()
 {
-	SAFE_DELETE_PTR(this->buffer);
+	TSK_FREE(this->buffer);
 	tsk_mutex_destroy(&this->mutex);
 	// TODO : Is there anything to free ???
 }
