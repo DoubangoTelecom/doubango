@@ -1,4 +1,4 @@
-/* Copyright (C) 2014 Mamadou DIOP.
+/* Copyright (C) 2011-2014 Doubango Telecom <http://www.doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -15,21 +15,21 @@
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 */
-#ifndef TINYDAV_PRODUCER_SCREENCAST_GDI_H
-#define TINYDAV_PRODUCER_SCREENCAST_GDI_H
+#ifndef TINYDAV_CONSUMER_VIDEO_GDI_H
+#define TINYDAV_CONSUMER_VIDEO_GDI_H
 
 #include "tinydav_config.h"
 
 #if TDAV_UNDER_WINDOWS && !TDAV_UNDER_WINDOWS_RT
 
-#include "tinymedia/tmedia_producer.h"
+#include "tinymedia/tmedia_consumer.h"
 
 TDAV_BEGIN_DECLS
 
-TINYDAV_GEXTERN const tmedia_producer_plugin_def_t *tdav_producer_screencast_gdi_plugin_def_t;
+TINYDAV_GEXTERN const tmedia_consumer_plugin_def_t *tdav_consumer_gdi_plugin_def_t;
 
 TDAV_END_DECLS
 
 #endif /* TDAV_UNDER_WINDOWS && !TDAV_UNDER_WINDOWS_RT */
 
-#endif /* TINYDAV_PRODUCER_SCREENCAST_GDI_H */
+#endif /* TINYDAV_CONSUMER_VIDEO_GDI_H */

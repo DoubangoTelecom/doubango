@@ -50,18 +50,23 @@ Version Number    Description
 static DWORD dwMajorVersion = -1;
 static DWORD dwMinorVersion = -1;
 
-#if !TDAV_UNDER_WINDOWS_RT
+#if (TDAV_UNDER_WINDOWS_RT || TDAV_UNDER_WINDOWS_CE)
+const HMODULE GetCurrentModule()
+{
+	return NULL;
+}
+#else
 const HMODULE GetCurrentModule()
 {
 	HMODULE hm = {0};
     GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)GetCurrentModule, &hm);   
     return hm;
 }
-#endif /* !TDAV_UNDER_WINDOWS_RT */
+#endif /* !(TDAV_UNDER_WINDOWS_RT || TDAV_UNDER_WINDOWS_CE) */
 
 int tdav_win32_init()
 {
-#if !TDAV_UNDER_WINDOWS_RT
+#if !(TDAV_UNDER_WINDOWS_RT || TDAV_UNDER_WINDOWS_CE)
 	MMRESULT result;
 	
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
@@ -134,26 +139,42 @@ const char* tdav_get_current_directory_const()
 	static char CURRENT_DIR_PATH[MAX_PATH] = { 0 };
 	static DWORD CURRENT_DIR_PATH_LEN = 0;
 	if(CURRENT_DIR_PATH_LEN == 0) {
+		static wchar_t TMP_CURRENT_DIR_PATH[MAX_PATH] = { 0 };
 		// NULL HMODULE will get the path to the executable not the DLL. When runing the code in Internet Explorer this is a BIG issue as the path is where IE.exe is installed.
-		if((CURRENT_DIR_PATH_LEN = GetModuleFileNameA(GetCurrentModule(), CURRENT_DIR_PATH, MAX_PATH))) {
-			if(!PathRemoveFileSpecA(CURRENT_DIR_PATH)) {
-				TSK_DEBUG_ERROR("PathRemoveFileSpecA(%s) failed: %x", CURRENT_DIR_PATH, GetLastError());
-				memset(CURRENT_DIR_PATH, 0, MAX_PATH);
+#if TDAV_UNDER_WINDOWS_CE
+		if ((CURRENT_DIR_PATH_LEN = GetModuleFileName(GetCurrentModule(), TMP_CURRENT_DIR_PATH, sizeof(TMP_CURRENT_DIR_PATH)))) {
+			if ((CURRENT_DIR_PATH_LEN = wcstombs(CURRENT_DIR_PATH, TMP_CURRENT_DIR_PATH, sizeof(CURRENT_DIR_PATH) - 1))) {
+				int idx = tsk_strLastIndexOf(CURRENT_DIR_PATH, CURRENT_DIR_PATH_LEN, "\\");
+				if (idx > -1) {
+					CURRENT_DIR_PATH[idx] = '\0';
+					CURRENT_DIR_PATH_LEN = idx;
+				}
 			}
 		}
-		else {
+#else
+		if ((CURRENT_DIR_PATH_LEN = GetModuleFileName(GetCurrentModule(), TMP_CURRENT_DIR_PATH, sizeof(TMP_CURRENT_DIR_PATH)))) {
+			if (!PathRemoveFileSpec(TMP_CURRENT_DIR_PATH)) {
+				TSK_DEBUG_ERROR("PathRemoveFileSpec(%s) failed: %x", TMP_CURRENT_DIR_PATH, GetLastError());
+				memset(CURRENT_DIR_PATH, 0, sizeof(CURRENT_DIR_PATH));
+			}
+		}
+#endif /* TDAV_UNDER_WINDOWS_CE */
+		if (!CURRENT_DIR_PATH_LEN) {
 			TSK_DEBUG_ERROR("GetModuleFileNameA() failed: %x", GetLastError());
 		}
 	}
 	return CURRENT_DIR_PATH;
-#endif
+#endif /* TDAV_UNDER_WINDOWS_RT */
 }
 
 TINYDAV_API void tdav_win32_print_error(const char* func, HRESULT hr)
 {
 	CHAR message[1024] = {0};
 
-#if TDAV_UNDER_WINDOWS_RT
+#if (TDAV_UNDER_WINDOWS_RT || TDAV_UNDER_WINDOWS_CE)
+#if !defined(WC_ERR_INVALID_CHARS)
+#define WC_ERR_INVALID_CHARS 0
+#endif
 	// FormatMessageA not allowed on the Store
 	static WCHAR wBuff[1024] = {0};
 	FormatMessageW(
@@ -166,11 +187,7 @@ TINYDAV_API void tdav_win32_print_error(const char* func, HRESULT hr)
 		  tsk_null);
 	WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, wBuff, wcslen(wBuff), message, sizeof(message) - 1, NULL, NULL);
 #else
-#ifdef _WIN32_WCE
-	FormatMessage
-#else
 	FormatMessageA
-#endif
 	(
 #if !TDAV_UNDER_WINDOWS_RT
 	  FORMAT_MESSAGE_ALLOCATE_BUFFER | 
@@ -189,7 +206,7 @@ TINYDAV_API void tdav_win32_print_error(const char* func, HRESULT hr)
 
 int tdav_win32_deinit()
 {
-#if !TDAV_UNDER_WINDOWS_RT
+#if !(TDAV_UNDER_WINDOWS_RT || TDAV_UNDER_WINDOWS_CE)
 	MMRESULT result;
 
 	// Timers accuracy

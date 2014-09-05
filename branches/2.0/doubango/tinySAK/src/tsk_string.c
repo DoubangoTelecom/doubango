@@ -372,7 +372,7 @@ int tsk_sprintf_2(char** str, const char* format, va_list* ap)
 			}
 			else{
 				len += 10;
-				*str = tsk_realloc(*str, len+1);
+				*str = (char*)tsk_realloc(*str, len+1);
 			}
 		}
 done:

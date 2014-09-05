@@ -420,7 +420,7 @@ int tsk_timer_mgr_global_unref(tsk_timer_manager_handle_t** mgr_global)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	__timer_mgr = tsk_object_unref(TSK_OBJECT(*mgr_global));
+	__timer_mgr = (tsk_timer_manager_t*)tsk_object_unref(TSK_OBJECT(*mgr_global));
 	*mgr_global = tsk_null;
 	return 0;
 }

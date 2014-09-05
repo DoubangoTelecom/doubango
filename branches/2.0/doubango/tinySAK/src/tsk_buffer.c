@@ -112,7 +112,7 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 	{
 		int n;
 		len = (tsk_strlen(format)*2);
-		buffer = tsk_realloc(buffer, (oldsize+len));
+		buffer = (char*)tsk_realloc(buffer, (oldsize+len));
 		for(;;){
 			if( (n = vsnprintf((char*)(buffer + oldsize), len, format, ap)) >= 0 && (n<=len) ){
 				len = n;
@@ -120,7 +120,7 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 			}
 			else{
 				len += 10;
-				buffer = tsk_realloc(buffer, (oldsize+len));
+				buffer = (char*)tsk_realloc(buffer, (oldsize+len));
 			}
 		}
 	}

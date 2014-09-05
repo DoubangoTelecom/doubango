@@ -138,6 +138,17 @@ int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type)
 		self->codecs_allowed = tmedia_codec_id_all;
 		self->bypass_encoding = tmedia_defaults_get_bypass_encoding();
 		self->bypass_decoding = tmedia_defaults_get_bypass_decoding();
+		/* SSL certificates */{
+			const char* priv_path = tsk_null, *pub_path = tsk_null, *ca_path = tsk_null;
+			tsk_bool_t verify = tsk_false;
+			if ((ret = tmedia_defaults_get_ssl_certs(&priv_path, &pub_path, &ca_path, &verify))) {
+				return ret;
+			}
+			self->dtls.file_pvk = tsk_strdup(priv_path);
+			self->dtls.file_pbk = tsk_strdup(pub_path);
+			self->dtls.file_ca = tsk_strdup(ca_path);
+			self->dtls.verify = verify;
+		}
 		/* load associated codecs */
 		ret = _tmedia_session_load_codecs(self);
 	}

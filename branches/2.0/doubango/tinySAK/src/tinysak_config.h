@@ -41,7 +41,12 @@
 // Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define TSK_UNDER_WINDOWS	1
-#	define TSK_STDCALL __stdcall
+#	if defined(_WIN32_WCE) || defined(UNDER_CE)
+#		define TSK_UNDER_WINDOWS_CE	1
+#		define TSK_STDCALL			__cdecl
+#	else
+#		define TSK_STDCALL __stdcall
+#	endif
 #	if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP || WINAPI_FAMILY == WINAPI_FAMILY_APP)
 #		define TSK_UNDER_WINDOWS_RT		1
 #	endif
@@ -101,11 +106,13 @@
 #endif
 
 /*	Features */
-#if TSK_UNDER_WINDOWS
-#	define HAVE_GETTIMEOFDAY				0
-#else
-#	define HAVE_GETTIMEOFDAY				1
-#endif
+#if !defined (HAVE_GETTIMEOFDAY)
+	#if TSK_UNDER_WINDOWS
+	#	define HAVE_GETTIMEOFDAY				0
+	#else
+	#	define HAVE_GETTIMEOFDAY				1
+	#endif
+#endif /* HAVE_GETTIMEOFDAY */
 
 #if ANDROID
 #	define HAVE_CLOCK_GETTIME				1

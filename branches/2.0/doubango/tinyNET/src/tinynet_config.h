@@ -41,6 +41,9 @@
 // Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define TNET_UNDER_WINDOWS	1
+#	if defined(_WIN32_WCE) || defined(UNDER_CE)
+#		define TNET_UNDER_WINDOWS_CE	1
+#	endif
 #	if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP || WINAPI_FAMILY == WINAPI_FAMILY_APP)
 #		define TNET_UNDER_WINDOWS_RT		1
 #		if WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP
