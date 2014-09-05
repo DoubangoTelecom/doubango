@@ -49,6 +49,9 @@ typedef struct tdav_session_av_s
 	enum tmedia_profile_e media_profile;
 	enum tmedia_mode_e avpf_mode_set;
 	enum tmedia_mode_e avpf_mode_neg;
+	tsk_bool_t is_fb_fir_neg; // a=rtcp-fb:* ccm fir
+	tsk_bool_t is_fb_nack_neg; // a=rtcp-fb:* nack
+	tsk_bool_t is_fb_googremb_neg; // a=rtcp-fb:* goog-remb
 	tsk_bool_t use_srtp;
 	tsk_bool_t is_webrtc2sip_mode_enabled;
 	uint32_t rtp_ssrc;
