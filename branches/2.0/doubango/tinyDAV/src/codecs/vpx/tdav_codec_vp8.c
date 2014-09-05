@@ -978,7 +978,7 @@ static void tdav_codec_vp8_rtp_callback(tdav_codec_vp8_t *self, const void *data
 	if(TMEDIA_CODEC_VIDEO(self)->out.callback){
 		TMEDIA_CODEC_VIDEO(self)->out.result.buffer.ptr = self->encoder.rtp.ptr;
 		TMEDIA_CODEC_VIDEO(self)->out.result.buffer.size = (size + TDAV_VP8_PAY_DESC_SIZE);
-		TMEDIA_CODEC_VIDEO(self)->out.result.duration =  (1./(double)TMEDIA_CODEC_VIDEO(self)->out.fps) * TMEDIA_CODEC(self)->plugin->rate;
+		TMEDIA_CODEC_VIDEO(self)->out.result.duration = (uint32_t) ((1./(double)TMEDIA_CODEC_VIDEO(self)->out.fps) * TMEDIA_CODEC(self)->plugin->rate);
 		TMEDIA_CODEC_VIDEO(self)->out.result.last_chunck = last;
 		TMEDIA_CODEC_VIDEO(self)->out.callback(&TMEDIA_CODEC_VIDEO(self)->out.result);
 	}
