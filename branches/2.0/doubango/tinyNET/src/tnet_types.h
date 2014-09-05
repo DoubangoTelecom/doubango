@@ -115,7 +115,10 @@ static const char* TNET_DTLS_HASH_NAMES[TNET_DTLS_HASH_TYPE_MAX] =
 #	define TNET_ERROR_INTR					WSAEINTR
 #	define TNET_ERROR_ISCONN				WSAEISCONN
 #	define TNET_ERROR_EAGAIN				TNET_ERROR_WOULDBLOCK /* WinSock FIX */
-#	if TNET_UNDER_WINDOWS_RT /* gai_strerrorA() links against FormatMessageA which is not allowed on the store */
+#	if (TNET_UNDER_WINDOWS_RT || TNET_UNDER_WINDOWS_CE) /* gai_strerrorA() links against FormatMessageA which is not allowed on the store */
+#		if !defined (WC_ERR_INVALID_CHARS)
+#			define WC_ERR_INVALID_CHARS 0
+#		endif
 		static TNET_INLINE const char* tnet_gai_strerror(int ecode)
 		{
 			static char aBuff[1024] = {0};

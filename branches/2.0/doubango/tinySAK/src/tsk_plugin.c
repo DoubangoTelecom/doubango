@@ -37,7 +37,13 @@ typedef tsk_plugin_def_ptr_const_t (*symbol_get_def_at)(int index);
 #	include <dlfcn.h>
 #endif
 
+#if !TSK_UNDER_WINDOWS_CE
 #include <sys/stat.h> /* stat() */
+#endif
+
+#if (TSK_UNDER_WINDOWS_RT || TSK_UNDER_WINDOWS_CE)
+static const wchar_t* szFormat = L"%hs";
+#endif
 
 static int _tsk_plugin_handle_destroy(tsk_plugin_handle_t** self);
 static tsk_plugin_symbol_t* _tsk_plugin_handle_get_symbol(tsk_plugin_handle_t* handle, const char* symbol_name);
@@ -87,16 +93,22 @@ tsk_plugin_t* tsk_plugin_create(const char* path)
 #if TSK_UNDER_WINDOWS
 #	if TSK_UNDER_WINDOWS_RT
 	wchar_t* szPath = (wchar_t*)tsk_calloc(tsk_strlen(path) + 1, sizeof(wchar_t));
-	static const wchar_t* szFormat = L"%hs";
 	swprintf(szPath, tsk_strlen(path) * sizeof(wchar_t), szFormat, path);
 	handle = LoadPackagedLibrary(szPath, 0x00000000);
 	TSK_FREE(szPath);
-#	else /* Windows desktop */
+#	else /* Windows desktop/CE */
+#if TSK_UNDER_WINDOWS_CE
+	wchar_t* szPath = (wchar_t*)tsk_calloc(tsk_strlen(path) + 1, sizeof(wchar_t));
+	swprintf_s(szPath, tsk_strlen(path) * sizeof(wchar_t), szFormat, path);
+	handle = LoadLibrary(szPath);
+	TSK_FREE(szPath);
+#else
 	UINT currErrMode = SetErrorMode(SEM_FAILCRITICALERRORS); // save current ErrorMode. GetErrorMode() not supported on XP.
 	SetErrorMode(currErrMode | SEM_FAILCRITICALERRORS);
 	handle = LoadLibraryA(path);
 	SetErrorMode(currErrMode); // restore ErrorMode
-#	endif
+#endif /* !TSK_UNDER_WINDOWS_CE */
+#	endif /*end-of-else-TSK_UNDER_WINDOWS_RT*/
 #else
 	handle = dlopen(path, RTLD_NOW);
 #endif
@@ -182,9 +194,18 @@ tsk_plugin_symbol_t* tsk_plugin_get_symbol(tsk_plugin_t* self, const char* symbo
 
 tsk_bool_t tsk_plugin_file_exist(const char* path)
 {
-	if(path){
+	if (path) {
+#if TSK_UNDER_WINDOWS_CE
+		wchar_t* szPath = (wchar_t*)tsk_calloc(tsk_strlen(path) + 1, sizeof(wchar_t));
+		DWORD dwAttrib;
+		swprintf_s(szPath, tsk_strlen(path) * sizeof(wchar_t), szFormat, path);
+		dwAttrib = GetFileAttributes(szPath);
+		TSK_FREE(szPath);
+		return ((dwAttrib != INVALID_FILE_ATTRIBUTES) && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY) == 0);
+#else
 		struct stat _stat;
 		return (stat(path, &_stat) == 0 && _stat.st_size > 0);
+#endif /* TSK_UNDER_WINDOWS_CE */
 	}
 	return tsk_false;
 }
@@ -196,7 +217,7 @@ static tsk_plugin_symbol_t* _tsk_plugin_handle_get_symbol(tsk_plugin_handle_t* h
 		return tsk_null;
 	}
 #if TSK_UNDER_WINDOWS
-	return (tsk_plugin_symbol_t*)GetProcAddress((HMODULE)handle, symbol_name);
+	return (tsk_plugin_symbol_t*)GetProcAddressA((HMODULE)handle, symbol_name);
 #else
 	return (tsk_plugin_symbol_t*)dlsym(handle, symbol_name);
 #endif

@@ -40,7 +40,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #endif
 
 // Shared libraries not allowed on WP8 and iOS
-#if !TDAV_UNDER_WINDOWS_PHONE && !TDAV_UNDER_IPHONE
+#if !TDAV_UNDER_WINDOWS_PHONE && !TDAV_UNDER_WINDOWS_CE && !TDAV_UNDER_IPHONE
 #include "tsk_plugin.h"
 #	if TDAV_UNDER_WINDOWS
 #		define TDAV_HAVE_PLUGIN_EXT_WIN32	1

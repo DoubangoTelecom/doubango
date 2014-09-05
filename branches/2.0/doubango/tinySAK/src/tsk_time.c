@@ -34,6 +34,9 @@
 #if TSK_UNDER_WINDOWS
 #	include <Winsock2.h> // timeval
 #	include <windows.h>
+#	if TSK_UNDER_WINDOWS_CE && HAVE_WCECOMPAT
+#		include <sys/time.h>
+#	endif
 #elif defined(__SYMBIAN32__)
 #	include <_timeval.h> 
 #else
@@ -59,13 +62,16 @@
 #define DELTA_EPOCH_IN_MICROSECS 11644473600000000ULL
 #endif
 
+#if TSK_UNDER_WINDOWS_CE
+#endif 
+
 struct timezone 
 {  
 	int  tz_minuteswest; // minutes W of Greenwich  
 	int  tz_dsttime;     // type of dst correction
 };
 
-int gettimeofday(struct timeval *tv, struct timezone *tz) 
+static int gettimeofday(struct timeval *tv, struct timezone *tz) 
 {  
 	FILETIME ft;
 	uint64_t tmpres = 0;  
@@ -73,13 +79,13 @@ int gettimeofday(struct timeval *tv, struct timezone *tz)
 
 	if(tv)   
 	{    
-#ifdef _WIN32_WCE
+#if TSK_UNDER_WINDOWS_CE
 		SYSTEMTIME st;
 		GetSystemTime(&st);
 		SystemTimeToFileTime(&st, &ft);
 #else
 		GetSystemTimeAsFileTime(&ft);
-#endif
+#endif /* TSK_UNDER_WINDOWS_CE */
 
 		tmpres |= ft.dwHighDateTime;   
 		tmpres <<= 32; 
@@ -92,16 +98,18 @@ int gettimeofday(struct timeval *tv, struct timezone *tz)
 		tv->tv_usec = (long)(tmpres % 1000000UL); 
 	}
 
+#if !TSK_UNDER_WINDOWS_CE
 	if (tz){   
 		if (!tzflag){
 #if !TSK_UNDER_WINDOWS_RT
 			_tzset();
-#endif
+#endif /* TSK_UNDER_WINDOWS_RT */
 			tzflag++;  
 		}   
 		tz->tz_minuteswest = _timezone / 60;
 		tz->tz_dsttime = _daylight;
 	}
+#endif /* TSK_UNDER_WINDOWS_CE */
 
 	return 0; 
 }

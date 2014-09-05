@@ -30,6 +30,12 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
+#if TDAV_UNDER_WINDOWS_CE
+static const BOOL bitmapBuffSrcOwnMemory = FALSE;
+#else
+static const BOOL bitmapBuffSrcOwnMemory = TRUE;
+#endif /* TDAV_UNDER_WINDOWS_CE */
+
 #if !defined(kMaxFrameRate)
 #	define kMaxFrameRate 4 // FIXME
 #endif /* kMaxFrameRate */
@@ -298,16 +304,28 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self
     nWidth  = rcSrc.right - rcSrc.left;
     nHeight = rcSrc.bottom - rcSrc.top;	
 
-	 // create a bitmap compatible with the screen DC
+	p_self->bitmapInfoSrc.bmiHeader.biWidth = nWidth;
+	p_self->bitmapInfoSrc.bmiHeader.biHeight = nHeight;
+	p_self->bitmapInfoSrc.bmiHeader.biSizeImage = nWidth * nHeight * (p_self->bitmapInfoSrc.bmiHeader.biBitCount >> 3);
+
+	// create a bitmap compatible with the screen DC
+#if TDAV_UNDER_WINDOWS_CE
+	{
+		void* pvBits = NULL;
+		hBitmap = CreateDIBSection(hSrcDC, &p_self->bitmapInfoSrc, DIB_RGB_COLORS, &pvBits, NULL, 0);
+		if (!hBitmap || !pvBits) {
+			TSK_DEBUG_ERROR("Failed to create bitmap(%dx%d)", nWidth, nHeight);
+			goto bail;
+		}
+		p_self->p_buff_src = pvBits;
+		p_self->n_buff_src = p_self->bitmapInfoSrc.bmiHeader.biSizeImage;
+	}
+#else
     hBitmap = CreateCompatibleBitmap(hSrcDC, nWidth, nHeight);
 	if (!hBitmap) {
 		TSK_DEBUG_ERROR("Failed to create bitmap(%dx%d)", nWidth, nHeight);
 		goto bail;
 	}
-
-	p_self->bitmapInfoSrc.bmiHeader.biWidth = nWidth;
-	p_self->bitmapInfoSrc.bmiHeader.biHeight = nHeight;
-	p_self->bitmapInfoSrc.bmiHeader.biSizeImage = nWidth * nHeight * (p_self->bitmapInfoSrc.bmiHeader.biBitCount >> 3);
 
 	if (p_self->n_buff_src < p_self->bitmapInfoSrc.bmiHeader.biSizeImage) {
 		if (p_self->p_buff_src) VirtualFree(p_self->p_buff_src, 0, MEM_RELEASE);
@@ -318,6 +336,7 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self
 		}
 		p_self->n_buff_src = p_self->bitmapInfoSrc.bmiHeader.biSizeImage;
 	}
+#endif /* TDAV_UNDER_WINDOWS_CE */
 
     // select new bitmap into memory DC
     hOldBitmap = (HBITMAP) SelectObject(hMemDC, hBitmap);
@@ -329,8 +348,12 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self
     // bitmap of the screen   
     hBitmap = (HBITMAP)  SelectObject(hMemDC, hOldBitmap);
 
-    // Copy the bitmap data into the provided BYTE buffer
+	// Copy the bitmap data into the provided BYTE buffer
+#if TDAV_UNDER_WINDOWS_CE
+	// memory already retrieved using "CreateDIBSection"
+#else
     GetDIBits(hSrcDC, hBitmap, 0, nHeight, p_self->p_buff_src, &p_self->bitmapInfoSrc, DIB_RGB_COLORS);
+#endif
 	
 	// resize
 	ResizeRGB(&p_self->bitmapInfoSrc.bmiHeader,
@@ -389,6 +412,10 @@ bail:
 
 	if (hBitmap) {
         DeleteObject(hBitmap);
+		if (!bitmapBuffSrcOwnMemory) {
+			p_self->p_buff_src = NULL;
+			p_self->n_buff_src = 0;
+		}
 	}
 
 	return ret;
@@ -459,7 +486,9 @@ static tsk_object_t* _tdav_producer_screencast_gdi_dtor(tsk_object_t * self)
 			p_gdi->p_buff_neg = NULL;
 		}
 		if (p_gdi->p_buff_src) {
-			VirtualFree(p_gdi->p_buff_src, 0, MEM_RELEASE);
+			if (bitmapBuffSrcOwnMemory) {
+				VirtualFree(p_gdi->p_buff_src, 0, MEM_RELEASE);
+			}
 			p_gdi->p_buff_src = NULL;
 		}
 		tsk_safeobj_deinit(p_gdi);
@@ -481,8 +510,11 @@ static const tsk_object_def_t tdav_producer_screencast_gdi_def_s =
 static const tmedia_producer_plugin_def_t tdav_producer_screencast_gdi_plugin_def_s = 
 {
 	&tdav_producer_screencast_gdi_def_s,
-	
+#if SIN_CITY
+	tmedia_video,
+#else
 	tmedia_bfcp_video,
+#endif
 	"Microsoft GDI screencast producer",
 	
 	_tdav_producer_screencast_gdi_set,
