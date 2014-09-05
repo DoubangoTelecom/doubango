@@ -217,7 +217,11 @@ static tsk_plugin_symbol_t* _tsk_plugin_handle_get_symbol(tsk_plugin_handle_t* h
 		return tsk_null;
 	}
 #if TSK_UNDER_WINDOWS
-	return (tsk_plugin_symbol_t*)GetProcAddressA((HMODULE)handle, symbol_name);
+#	if TSK_UNDER_WINDOWS_CE
+		return (tsk_plugin_symbol_t*)GetProcAddressA((HMODULE)handle, symbol_name);
+#	else
+		return (tsk_plugin_symbol_t*)GetProcAddress((HMODULE)handle, symbol_name);
+#	endif
 #else
 	return (tsk_plugin_symbol_t*)dlsym(handle, symbol_name);
 #endif
