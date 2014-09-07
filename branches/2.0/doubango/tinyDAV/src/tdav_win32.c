@@ -139,9 +139,9 @@ const char* tdav_get_current_directory_const()
 	static char CURRENT_DIR_PATH[MAX_PATH] = { 0 };
 	static DWORD CURRENT_DIR_PATH_LEN = 0;
 	if(CURRENT_DIR_PATH_LEN == 0) {
-		static wchar_t TMP_CURRENT_DIR_PATH[MAX_PATH] = { 0 };
 		// NULL HMODULE will get the path to the executable not the DLL. When runing the code in Internet Explorer this is a BIG issue as the path is where IE.exe is installed.
 #if TDAV_UNDER_WINDOWS_CE
+		static wchar_t TMP_CURRENT_DIR_PATH[MAX_PATH] = { 0 };
 		if ((CURRENT_DIR_PATH_LEN = GetModuleFileName(GetCurrentModule(), TMP_CURRENT_DIR_PATH, sizeof(TMP_CURRENT_DIR_PATH)))) {
 			if ((CURRENT_DIR_PATH_LEN = wcstombs(CURRENT_DIR_PATH, TMP_CURRENT_DIR_PATH, sizeof(CURRENT_DIR_PATH) - 1))) {
 				int idx = tsk_strLastIndexOf(CURRENT_DIR_PATH, CURRENT_DIR_PATH_LEN, "\\");
@@ -152,10 +152,11 @@ const char* tdav_get_current_directory_const()
 			}
 		}
 #else
-		if ((CURRENT_DIR_PATH_LEN = GetModuleFileName(GetCurrentModule(), TMP_CURRENT_DIR_PATH, sizeof(TMP_CURRENT_DIR_PATH)))) {
-			if (!PathRemoveFileSpec(TMP_CURRENT_DIR_PATH)) {
-				TSK_DEBUG_ERROR("PathRemoveFileSpec(%s) failed: %x", TMP_CURRENT_DIR_PATH, GetLastError());
+		if ((CURRENT_DIR_PATH_LEN = GetModuleFileNameA(GetCurrentModule(), CURRENT_DIR_PATH, sizeof(CURRENT_DIR_PATH)))) {
+			if (!PathRemoveFileSpecA(CURRENT_DIR_PATH)) {
+				TSK_DEBUG_ERROR("PathRemoveFileSpec(%s) failed: %x", CURRENT_DIR_PATH, GetLastError());
 				memset(CURRENT_DIR_PATH, 0, sizeof(CURRENT_DIR_PATH));
+				CURRENT_DIR_PATH_LEN = 0;
 			}
 		}
 #endif /* TDAV_UNDER_WINDOWS_CE */
