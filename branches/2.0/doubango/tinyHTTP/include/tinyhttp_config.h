@@ -59,7 +59,9 @@
 /* Disable some well-known warnings
 */
 #ifdef _MSC_VER
-#	define _CRT_SECURE_NO_WARNINGS
+#	if !defined(_CRT_SECURE_NO_WARNINGS)
+#		define _CRT_SECURE_NO_WARNINGS
+#	endif /* _CRT_SECURE_NO_WARNINGS */
 #endif
 
 /* Detecting C99 compilers

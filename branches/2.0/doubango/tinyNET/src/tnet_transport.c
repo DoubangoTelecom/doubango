@@ -249,7 +249,7 @@ int tnet_transport_tls_set_certs(tnet_transport_handle_t *handle, const char* ca
 				continue;
 			}
 			SSL_CTX_set_verify(contexts[i], transport->tls.verify ? (SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT) : SSL_VERIFY_NONE, tsk_null);
-			if(!tsk_strnullORempty(transport->tls.ca) || !tsk_strnullORempty(transport->tls.pvk) || !tsk_strnullORempty(transport->tls.ca)){
+			if(!tsk_strnullORempty(transport->tls.pbk) || !tsk_strnullORempty(transport->tls.pvk) || !tsk_strnullORempty(transport->tls.ca)){
 				/* Sets Public key (cert) */
 				if(!tsk_strnullORempty(transport->tls.pbk) && (ret = SSL_CTX_use_certificate_file(contexts[i], transport->tls.pbk, SSL_FILETYPE_PEM)) != 1) {
 					TSK_DEBUG_ERROR("SSL_CTX_use_certificate_file failed [%d,%s]", ret, ERR_error_string(ERR_get_error(), tsk_null));

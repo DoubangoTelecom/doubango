@@ -119,7 +119,11 @@ static int _tdav_producer_screencast_gdi_prepare(tmedia_producer_t* p_self, cons
 		goto bail;
 	}
 	
+#if SIN_CITY
+	TMEDIA_PRODUCER(p_gdi)->video.fps = TMEDIA_CODEC_VIDEO(pc_codec)->out.fps;
+#else
 	TMEDIA_PRODUCER(p_gdi)->video.fps = TSK_MIN(TMEDIA_CODEC_VIDEO(pc_codec)->out.fps, kMaxFrameRate);
+#endif
 	TMEDIA_PRODUCER(p_gdi)->video.width = TMEDIA_CODEC_VIDEO(pc_codec)->out.width;
 	TMEDIA_PRODUCER(p_gdi)->video.height = TMEDIA_CODEC_VIDEO(pc_codec)->out.height;
 
