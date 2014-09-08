@@ -46,7 +46,7 @@ TSK_BEGIN_DECLS
 		int len = (int)(te  - ts);  \
 		if(len >0) \
 		{ \
-			string = tsk_calloc(len+1, sizeof(char)), memcpy(string, ts, len); \
+			string = (char*)tsk_calloc(len+1, sizeof(char)), memcpy(string, ts, len); \
 		} \
 	}
 
@@ -68,10 +68,10 @@ TSK_BEGIN_DECLS
 		int len = (int)(te  - ts); \
 		if(len>=0) \
 		{ \
-			char* tmp = tsk_calloc(len+1, sizeof(char)); \
+			char* tmp = (char*)tsk_calloc(len+1, sizeof(char)); \
 			memcpy(tmp, ts, len); \
 			integer = atoi(tmp); \
-			tsk_free(&tmp); \
+			tsk_free((void**)&tmp); \
 		} \
 	}
 
@@ -82,10 +82,10 @@ TSK_BEGIN_DECLS
 		int len = (int)(p  - tag_start); \
 		if(len>=0) \
 		{ \
-			char* tmp = tsk_calloc(len+1, sizeof(char)); \
+			char* tmp = (char*)tsk_calloc(len+1, sizeof(char)); \
 			memcpy(tmp, tag_start, len); \
 			retval = (type) func(tmp); \
-			tsk_free(&tmp); \
+			tsk_free((void**)&tmp); \
 		} \
 	}
 /**@ingroup tsk_ragel_state_group
@@ -144,7 +144,7 @@ TSK_BEGIN_DECLS
 	{ \
 		tsk_size_t len = (tsk_size_t)(p  - tag_start); \
 		tsk_string_t *string = tsk_string_create(tsk_null); \
-		string->value = tsk_calloc(len+1, sizeof(char)), memcpy(string->value, tag_start, len); \
+		string->value = (char*)tsk_calloc(len+1, sizeof(char)), memcpy(string->value, tag_start, len); \
 		if(!dest)  \
 		{  \
 			dest = tsk_list_create(); \

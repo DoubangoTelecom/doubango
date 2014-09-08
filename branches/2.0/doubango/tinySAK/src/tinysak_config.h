@@ -101,7 +101,9 @@
 
 /* Disable some well-known warnings for M$ Visual Studio*/
 #ifdef _MSC_VER
-#	define _CRT_SECURE_NO_WARNINGS
+#	if !defined(_CRT_SECURE_NO_WARNINGS)
+#		define _CRT_SECURE_NO_WARNINGS
+#	endif /* _CRT_SECURE_NO_WARNINGS */
 #	pragma warning( disable : 4996 )
 #endif
 
