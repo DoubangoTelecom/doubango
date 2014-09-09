@@ -705,9 +705,10 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 		self->encoder.cfg.g_threads = SystemInfo.dwNumberOfProcessors;
 	}
 #endif
-	self->encoder.cfg.rc_dropframe_thresh = 30;
 	self->encoder.cfg.rc_end_usage = VPX_CBR;
 	self->encoder.cfg.g_pass = VPX_RC_ONE_PASS;
+#if 0
+	self->encoder.cfg.rc_dropframe_thresh = 30;
 	self->encoder.cfg.rc_resize_allowed = 0;
 	self->encoder.cfg.rc_min_quantizer = 2;
 	self->encoder.cfg.rc_max_quantizer = 56;
@@ -716,6 +717,7 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 	self->encoder.cfg.rc_buf_initial_sz = 500;
 	self->encoder.cfg.rc_buf_optimal_sz = 600;
 	self->encoder.cfg.rc_buf_sz = 1000;
+#endif
 
 	enc_flags = 0; //VPX_EFLAG_XXX
 
@@ -726,7 +728,7 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 	self->encoder.pic_id = /*(rand() ^ rand()) % 0x7FFF*/0/*Use zero: why do you want to make your life harder?*/;
 	self->encoder.initialized = tsk_true;
 
-	vpx_codec_control(&self->encoder.context, VP8E_SET_STATIC_THRESHOLD, 800);
+	/* vpx_codec_control(&self->encoder.context, VP8E_SET_STATIC_THRESHOLD, 800); */
 #if !TDAV_UNDER_MOBILE /* must not remove: crash on Android for sure and probably on iOS also (all ARM devices ?) */
 	vpx_codec_control(&self->encoder.context, VP8E_SET_NOISE_SENSITIVITY, 2);
 #endif
