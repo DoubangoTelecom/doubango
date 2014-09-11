@@ -507,14 +507,14 @@ int tnet_ice_ctx_start(tnet_ice_ctx_t* self)
 	}
 	runnable_started = tsk_true;
 
+	self->is_started = tsk_true; // needed by FSM -> "Must" be before fsm_ast()
+	self->is_active = tsk_true;
+
 	if((ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatherHostCandidates))){
 		err = "FSM execution failed";
 		TSK_DEBUG_ERROR("%s", err);
 		goto bail;
 	}
-
-	self->is_started = tsk_true;
-	self->is_active = tsk_true;
 	
 bail:
 	tsk_safeobj_unlock(self);
@@ -527,6 +527,8 @@ bail:
 		if(runnable_started){
 			tsk_runnable_stop(TSK_RUNNABLE(self));
 		}
+		self->is_started = tsk_false;
+		self->is_active = tsk_false;
 	}
 	return ret;
 }
