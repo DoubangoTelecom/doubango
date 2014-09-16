@@ -33,7 +33,7 @@
 
 #if defined(_MSC_VER)
 #	pragma comment(lib, "dsound.lib")
-#	pragma comment(lib, "dxguid.lib")
+// #	pragma comment(lib, "dxguid.lib")
 #endif
 
 #if !defined(SEND_SILENCE_ON_MUTE)

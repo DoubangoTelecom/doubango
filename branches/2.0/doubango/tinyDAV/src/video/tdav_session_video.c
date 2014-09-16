@@ -444,7 +444,7 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 			// update one-shot parameters
 			tmedia_converter_video_set(video->conv.toYUV420, base->producer->video.rotation, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip, video->encoder.scale_rotated_frames);
 			
-			yuv420p_size = tmedia_converter_video_process(video->conv.toYUV420, buffer, &video->encoder.conv_buffer, &video->encoder.conv_buffer_size);
+			yuv420p_size = tmedia_converter_video_process(video->conv.toYUV420, buffer, size, &video->encoder.conv_buffer, &video->encoder.conv_buffer_size);
 			if(!yuv420p_size || !video->encoder.conv_buffer){
 				TSK_DEBUG_ERROR("Failed to convert XXX buffer to YUV42P");
 				ret = -6;
@@ -874,7 +874,7 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 			// update one-shot parameters
 			tmedia_converter_video_set_flip(self->conv.fromYUV420, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.flip);
 			// convert data to the consumer's chroma
-			out_size = tmedia_converter_video_process(self->conv.fromYUV420, self->decoder.buffer, &self->decoder.conv_buffer, &self->decoder.conv_buffer_size);
+			out_size = tmedia_converter_video_process(self->conv.fromYUV420, self->decoder.buffer, self->decoder.buffer_size, &self->decoder.conv_buffer, &self->decoder.conv_buffer_size);
 			if(!out_size || !self->decoder.conv_buffer){
 				TSK_DEBUG_ERROR("Failed to convert YUV420 buffer to consumer's chroma");
 				ret = -4;

@@ -188,7 +188,7 @@ bail:
 	return 0;
 }
 
-static tsk_size_t plugin_win_mf_converter_video_ms_process(tmedia_converter_video_t* _self, const void* buffer, void** output, tsk_size_t* output_max_size)
+static tsk_size_t plugin_win_mf_converter_video_ms_process(tmedia_converter_video_t* _self, const void* buffer, tsk_size_t buffer_size, void** output, tsk_size_t* output_max_size)
 {
 	plugin_win_mf_converter_video_ms_t* pSelf = (plugin_win_mf_converter_video_ms_t*)_self;
 

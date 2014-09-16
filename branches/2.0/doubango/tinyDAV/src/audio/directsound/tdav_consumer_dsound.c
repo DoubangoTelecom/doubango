@@ -31,7 +31,7 @@
 
 #if defined(_MSC_VER)
 #	pragma comment(lib, "dsound.lib")
-#	pragma comment(lib, "dxguid.lib")
+// #	pragma comment(lib, "dxguid.lib")
 #endif
 
 #include "tsk_string.h"

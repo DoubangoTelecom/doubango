@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="tinySIP"
 	ProjectGUID="{4CE20732-9978-4A88-B586-CFEFCB63E82D}"
 	RootNamespace="tinySIP"
@@ -44,6 +44,7 @@
 				AdditionalIncludeDirectories="..\thirdparties\common\include\libxml2;..\thirdparties\common\include;..\thirdparties\win32\include;..\tinySIP\include;..\tinySAK\src;..\tinyNET\src;..\tinyHTTP\include;..\tinySIGCOMP\src;..\tinyIPSec\src;..\tinySDP\include;..\tinyMEDIA\include"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;BODILESS_INVITE=0;HAVE_LIBXML2=1;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSIP_EXPORTS;_WIN32_WINNT 0x0501"
 				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -62,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyIPSec.lib $(OutDir)\tinySigComp.lib &quot;..\thirdparties\win32\lib\libxml2\libxml2_a.lib&quot;"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyIPSec.lib $(OutDir)\tinySigComp.lib &quot;..\thirdparties\win32\lib\libxml2\libxml2_a_dll.lib&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -138,7 +139,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyIPSec.lib $(OutDir)\tinySigComp.lib &quot;..\thirdparties\win32\lib\libxml2\libxml2_a.lib&quot;"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyIPSec.lib $(OutDir)\tinySigComp.lib &quot;..\thirdparties\win32\lib\libxml2\libxml2_a_dll.lib&quot;"
 				LinkIncremental="1"
 				GenerateDebugInformation="false"
 				SubSystem="2"

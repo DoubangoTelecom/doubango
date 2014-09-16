@@ -83,8 +83,8 @@ tmedia_converter_video_t;
 		(self)->scale_rotated_frames  = (_scale_rotated_frames); \
 	}
 
-#define tmedia_converter_video_process(self, buffer, output, output_max_size) \
-	(self)->plugin->process((self), (buffer), (output), (output_max_size))
+#define tmedia_converter_video_process(_self, _buffer, _size, _output, _output_max_size) \
+	(_self)->plugin->process((_self), (_buffer), (_size), (_output), (_output_max_size))
 
 /** Virtual table used to define a consumer plugin */
 typedef struct tmedia_converter_video_plugin_def_s
@@ -93,7 +93,7 @@ typedef struct tmedia_converter_video_plugin_def_s
 	const tsk_object_def_t* objdef;
 
 	int (* init) ( struct tmedia_converter_video_s* self, tsk_size_t srcWidth, tsk_size_t srcHeight, tmedia_chroma_t srcChroma, tsk_size_t dstWidth, tsk_size_t dstHeight, tmedia_chroma_t dstChroma );
-	tsk_size_t (* process) ( struct tmedia_converter_video_s* self, const void* buffer, void** output, tsk_size_t* output_max_size );
+	tsk_size_t (* process) ( struct tmedia_converter_video_s* self, const void* buffer, tsk_size_t buffer_size, void** output, tsk_size_t* output_max_size );
 }
 tmedia_converter_video_plugin_def_t;
 
