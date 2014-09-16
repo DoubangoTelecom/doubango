@@ -145,7 +145,7 @@ static int tdav_converter_video_libyuv_init(tmedia_converter_video_t* self, tsk_
 	return 0;
 }
 
-static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* _self, const void* buffer, void** output, tsk_size_t* output_max_size)
+static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* _self, const void* buffer, tsk_size_t buffer_size, void** output, tsk_size_t* output_max_size)
 {
 	#define RESIZE_BUFFER(buff, curr_size, new_size) \
 		if((int)(curr_size) < (new_size)){ \
@@ -555,7 +555,7 @@ static int tdav_converter_video_ffmpeg_init(tmedia_converter_video_t* self, tsk_
 	return 0;
 }
 
-static tsk_size_t tdav_converter_video_ffmpeg_process(tmedia_converter_video_t* _self, const void* buffer, void** output, tsk_size_t* output_max_size)
+static tsk_size_t tdav_converter_video_ffmpeg_process(tmedia_converter_video_t* _self, const void* buffer, tsk_size_t buffer_size, void** output, tsk_size_t* output_max_size)
 {
 	int ret, size;
 	tsk_bool_t _rotate = tsk_false;
