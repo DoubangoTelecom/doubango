@@ -469,6 +469,7 @@ AM_CONDITIONAL([USE_VPX], [test $have_vpx = yes])
 have_yuv=no
 want_yuv=check
 path_yuv=undef
+AC_SUBST(LIBYUV_LIBADD, "")
 AC_SUBST(LIBYUV_INCLUDE, "")
 AC_SUBST(LIBYUV_LIB, "")
 AC_ARG_WITH(yuv,
@@ -502,10 +503,10 @@ fi
 	CPPFLAGS="${CPPFLAGS} -I${LIBYUV_INCLUDE}"
 	# check for lib and headers
 	AC_CHECK_HEADERS(libyuv/libyuv.h,
-       	AC_CHECK_LIB(yuv, I420Scale, AC_DEFINE_UNQUOTED(HAVE_LIBYUV, 1, HAVE_LIBYUV) [have_yuv=yes], 
+       	AC_CHECK_LIB(yuv, I420Scale, AC_DEFINE_UNQUOTED(HAVE_LIBYUV, 1, HAVE_LIBYUV) [have_yuv=yes] AC_SUBST(LIBYUV_LIBADD, "-lyuv"), 
 		AC_DEFINE_UNQUOTED(HAVE_LIBYUV, 0, HAVE_LIBYUV) [have_yuv=no]
 	))	  
-	test $have_yuv = yes && LIBYUV_LIB="${LIBYUV_LIB} -lyuv"
+	test $have_yuv = yes && LIBYUV_LIB="${LIBYUV_LIB}"
 	# if opus not found and requested then, die.
   	test $have_yuv:$want_yuv = no:yes &&  
 		AC_MSG_ERROR([You requested LIBYUV but not found...die])
