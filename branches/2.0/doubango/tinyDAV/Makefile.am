@@ -32,7 +32,7 @@ libtinyDAV_la_LIBADD += ${LIBVPX_LIBADD}
 endif
 
 if USE_YUV
-libtinyDAV_la_LIBADD += ${LIBYUV_LIB}
+libtinyDAV_la_LIBADD += ${LIBYUV_LIB} ${LIBYUV_LIBADD}
 libtinyDAV_la_CPPFLAGS += ${LIBYUV_INCLUDE}
 endif
 

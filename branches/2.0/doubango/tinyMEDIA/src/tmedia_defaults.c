@@ -59,7 +59,7 @@ static uint16_t __rtp_port_range_stop = 65535;
 static tsk_bool_t __rtp_symetric_enabled = tsk_false; // This option is force symetric RTP for remote size. Local: always ON
 static tmedia_type_t __media_type = tmedia_audio;
 static int32_t __volume = 100;
-static char* __producer_friendly_name[2] = { tsk_null/*audio*/, tsk_null/*video*/ }; // pref. camera(index=1) and sound card(index=0) friendly names (e.g. Logitech HD Pro Webcam C920).
+static char* __producer_friendly_name[3] = { tsk_null/*audio*/, tsk_null/*video*/, tsk_null/*bfcpvideo*/ }; // pref. camera(index=1) and sound card(index=0) friendly names (e.g. Logitech HD Pro Webcam C920).
 static int32_t __inv_session_expires = 0; // Session Timers: 0: disabled
 static char* __inv_session_refresher = tsk_null;
 static tmedia_srtp_mode_t __srtp_mode = tmedia_srtp_mode_none;
@@ -358,19 +358,19 @@ int32_t tmedia_defaults_get_volume(){
 }
 
 int tmedia_producer_set_friendly_name(tmedia_type_t media_type, const char* friendly_name) {
-	if(media_type != tmedia_audio && media_type != tmedia_video) {
+	if(media_type != tmedia_audio && media_type != tmedia_video && media_type != tmedia_bfcp_video) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	tsk_strupdate(&__producer_friendly_name[(media_type == tmedia_audio) ? 0 : 1], friendly_name);
+	tsk_strupdate(&__producer_friendly_name[(media_type == tmedia_audio) ? 0 : (media_type == tmedia_bfcp_video ? 2 : 1)], friendly_name);
 	return 0;
 }
 const char* tmedia_producer_get_friendly_name(tmedia_type_t media_type){
-	if(media_type != tmedia_audio && media_type != tmedia_video) {
+	if(media_type != tmedia_audio && media_type != tmedia_video && media_type != tmedia_bfcp_video) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
-	return __producer_friendly_name[(media_type == tmedia_audio) ? 0 : 1];
+	return __producer_friendly_name[(media_type == tmedia_audio) ? 0 : (media_type == tmedia_bfcp_video ? 2 : 1)];
 }
 
 int32_t tmedia_defaults_get_inv_session_expires(){
