@@ -68,6 +68,11 @@ tdav_converter_video_libyuv_t;
 #define TDAV_CONVERTER_VIDEO_LIBYUV(self) ((tdav_converter_video_libyuv_t*)(self))
 #define LIBYUV_INPUT_BUFFER_PADDING_SIZE	32
 
+static inline tsk_bool_t _tdav_converter_video_libyuv_is_chroma_varsize(tmedia_chroma_t chroma)
+{
+	return chroma == tmedia_chroma_mjpeg;
+}
+
 static inline tsk_size_t _tdav_converter_video_libyuv_get_size(tmedia_chroma_t chroma, tsk_size_t w, tsk_size_t h)
 {
 	switch(chroma){
@@ -88,6 +93,8 @@ static inline tsk_size_t _tdav_converter_video_libyuv_get_size(tmedia_chroma_t c
 			return ((w * h) << 1);
 		case tmedia_chroma_yuv420p:
 			return ((w * h * 3) >> 1);
+		case tmedia_chroma_mjpeg:
+			return 0;
 		default:
 			TSK_DEBUG_ERROR("Invalid chroma %d", (int)chroma);
 			return 0;
@@ -114,6 +121,8 @@ static inline enum FourCC _tdav_converter_video_libyuv_get_pixfmt(tmedia_chroma_
 			return FOURCC_YUY2;
 		case tmedia_chroma_yuv420p:
 			return FOURCC_I420;
+		case tmedia_chroma_mjpeg:
+			return FOURCC_MJPG;
 		default:
 			TSK_DEBUG_ERROR("Invalid chroma %d", (int)chroma);
 			return FOURCC_ANY;
@@ -183,8 +192,16 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 	src_w = _self->srcWidth , src_h = _self->srcHeight;
 	
 	if(self->toI420){
+		tsk_size_t x_in_size;
+		// check input size
+		x_in_size = _tdav_converter_video_libyuv_is_chroma_varsize(_self->srcChroma) ? buffer_size : _tdav_converter_video_libyuv_get_size(_self->srcChroma, src_w, src_h);
+		if (x_in_size != buffer_size) {
+			TSK_DEBUG_ERROR("Invalid input size: %u<>%u", x_in_size, buffer_size);
+			return 0;
+		}
+
 		dst_w = src_w, dst_h = src_h; // because no scaling when converting to I420
-        ls = src_w * src_h;
+        	ls = src_w * src_h;
 		s = ((ls * 3) >> 1);
 		if(scale || rotation != kRotate0){
 			RESIZE_BUFFER(self->chroma.ptr, self->chroma.size, s);
@@ -201,7 +218,7 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 		
 		// convert to I420 without scaling or rotation
 		ret = ConvertToI420(
-					(const uint8*)buffer, _tdav_converter_video_libyuv_get_size(_self->srcChroma, src_w, src_h),
+					(const uint8*)buffer, x_in_size,
 					dst_y, dst_y_stride,
 					dst_u, dst_u_stride,
 					dst_v, dst_v_stride,
@@ -212,7 +229,7 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 					(uint32) self->srcFormat);
 		
 		if(ret){
-			TSK_DEBUG_ERROR("ConvertToI420 failed with error code = %d", ret);
+			TSK_DEBUG_ERROR("ConvertToI420 failed with error code = %d, in_size:%u", ret, x_in_size);
 			return 0;
 		}
 
@@ -609,7 +626,7 @@ static tsk_size_t tdav_converter_video_ffmpeg_process(tmedia_converter_video_t* 
 		}
 	}
 
-	/*FIXME: For now only 90° rotation is supported this is why we always use libyuv on mobile devices */
+	/*FIXME: For now only 90\B0 rotation is supported this is why we always use libyuv on mobile devices */
 	_rotate = (PIX_FMT_YUV420P == self->dstFormat) && _self->rotation==90;
 
 	// if no rotation then, flip while scaling othersize do it after rotation

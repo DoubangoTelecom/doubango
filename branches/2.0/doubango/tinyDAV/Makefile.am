@@ -36,6 +36,10 @@ libtinyDAV_la_LIBADD += ${LIBYUV_LIB} ${LIBYUV_LIBADD}
 libtinyDAV_la_CPPFLAGS += ${LIBYUV_INCLUDE}
 endif
 
+if USE_JPEG
+libtinyDAV_la_LIBADD += ${LIBJPEG_LIBADD}
+endif
+
 if USE_OPUS
 libtinyDAV_la_LIBADD += ${LIBOPUS_LIBADD}
 endif
@@ -88,6 +92,8 @@ libtinyDAV_la_SOURCES += src/video/tdav_consumer_video.c \
 	src/video/tdav_session_video.c \
 	src/video/jb/tdav_video_frame.c \
 	src/video/jb/tdav_video_jb.c
+
+libtinyDAV_la_SOURCES += src/video/v4linux/tdav_producer_video_v4l2.c
 
 libtinyDAV_la_SOURCES += src/bfcp/tdav_session_bfcp.c
 	

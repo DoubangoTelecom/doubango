@@ -203,9 +203,15 @@ static int _tdav_producer_screencast_gdi_start(tmedia_producer_t* p_self)
 	}
 
 bail:
+	if (ret) {
+		p_gdi->b_started = tsk_false;
+		if (p_gdi->p_timer_mgr) {
+			tsk_timer_manager_start(p_gdi->p_timer_mgr);
+		}
+	}
 	tsk_safeobj_unlock(p_gdi);
 
-	return 0;
+	return ret;
 }
 
 static int _tdav_producer_screencast_gdi_pause(tmedia_producer_t* p_self)
@@ -219,7 +225,7 @@ static int _tdav_producer_screencast_gdi_pause(tmedia_producer_t* p_self)
 
 	tsk_safeobj_lock(p_gdi);
 
-	p_gdi->b_paused = tsk_false;
+	p_gdi->b_paused = tsk_true;
 	goto bail;
 
 bail:
@@ -452,7 +458,7 @@ bail:
 }
 
 //
-//	WaveAPI producer object definition
+//	GDI screencast producer object definition
 //
 /* constructor */
 static tsk_object_t* _tdav_producer_screencast_gdi_ctor(tsk_object_t *self, va_list * app)

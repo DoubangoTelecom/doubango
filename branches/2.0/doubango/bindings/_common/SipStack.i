@@ -261,6 +261,7 @@ typedef enum tmedia_chroma_e
 	tmedia_chroma_yuv422p,
 	tmedia_chroma_uyvy422, // used by iOS4 producer (iPhone and iPod Touch 3G)
 	tmedia_chroma_yuv420p, // Default
+	tmedia_chroma_mjpeg, // Compressed. e.g. used by VirtualBox (Windows as host and Ubuntu as guest)
 }
 tmedia_chroma_t;
 
