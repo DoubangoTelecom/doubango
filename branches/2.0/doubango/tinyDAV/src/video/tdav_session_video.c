@@ -1,7 +1,7 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2010-2014 Mamadou DIOP.
+* Copyright (C) 2011-2014 Doubango Telecom.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,8 +22,6 @@
 
 /**@file tdav_session_video.c
  * @brief Video Session plugin.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  */
 #include "tinydav/video/tdav_session_video.h"
@@ -390,9 +388,10 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 			return 0;
 		}
 	
+#define PRODUCER_OUTPUT_FIXSIZE (base->producer->video.chroma != tmedia_chroma_mjpeg) // whether the output data has a fixed size/length
 #define PRODUCER_OUTPUT_RAW (base->producer->encoder.codec_id == tmedia_codec_id_none) // Otherwise, frames from the producer are already encoded
 #define PRODUCER_SIZE_CHANGED (video->conv.producerWidth && video->conv.producerWidth != base->producer->video.width) || (video->conv.producerHeight && video->conv.producerHeight != base->producer->video.height) \
-|| (video->conv.xProducerSize && video->conv.xProducerSize != size)
+|| (video->conv.xProducerSize && (video->conv.xProducerSize != size && PRODUCER_OUTPUT_FIXSIZE))
 #define ENCODED_NEED_FLIP TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip
 #define ENCODED_NEED_RESIZE (base->producer->video.width != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.width || base->producer->video.height != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.height)
 #define PRODUCED_FRAME_NEED_ROTATION (base->producer->video.rotation != 0)

@@ -6,7 +6,7 @@
 #
 
 AC_PREREQ([2.0])
-AC_INIT(libdoubango, 2.0.1095, doubango(at)googlegroups(dot)com)
+AC_INIT(libdoubango, 2.0.1147, doubango(at)googlegroups(dot)com)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIR([m4])
@@ -218,7 +218,7 @@ AC_TRY_COMPILE([#include <stdlib.h>],
 AC_DEFINE(USE_POLL, 1, [Setting USE_POLL to 1 for backward compatibility])
 AC_CHECK_FUNCS([inet_pton inet_ntop poll getdtablesize opendir closedir getpid])
 
-AC_CHECK_HEADERS([arpa/inet.h net/if_types.h net/if_dl.h poll.h unistd.h dirent.h fcntl.h sys/param.h sys/resource.h])
+AC_CHECK_HEADERS([arpa/inet.h net/if_types.h net/if_dl.h poll.h unistd.h dirent.h fcntl.h sys/param.h sys/resource.h linux/videodev2.h])
 
 AC_CHECK_FUNC(getifaddrs, AC_DEFINE(HAVE_GETIFADDRS, 1 ,[Define to 1 if you have the 'getifaddrs' function]))
 AH_TEMPLATE([HAVE_IFADDRS_H], [Define if <ifaddrs.h> header exist])
@@ -282,6 +282,10 @@ AC_CHECK_LIB([rt], [clock_gettime],
     [have_rt=yes], 
     AC_SUBST(LIBRT_LIBADD, "")
     )
+
+have_v4l2=no
+AH_TEMPLATE([HAVE_LINUX_VIDEODEV2_H], [Define if <linux/videodev2.h> header exist])
+AC_CHECK_HEADER([linux/videodev2.h], AC_DEFINE(HAVE_LINUX_VIDEODEV2_H, 1) [have_v4l2=yes], AC_DEFINE(HAVE_LINUX_VIDEODEV2_H, 0), [])
 
 AH_TEMPLATE([TNET_HAVE_SS_LEN], [Define if sockaddr_storage.ss_len exists])
 AC_CHECK_MEMBER([struct sockaddr_storage.ss_len], AC_DEFINE(TNET_HAVE_SS_LEN, 1), AC_DEFINE(TNET_HAVE_SS_LEN,0), [#include <sys/socket.h>])
@@ -515,6 +519,42 @@ fi
 	AC_LANG_POP([C++])
 fi
 AM_CONDITIONAL([USE_YUV], [test $have_yuv = yes])
+
+########################################################
+# JPEG 
+# --with-jpeg / --without-jpeg as argument to configure
+########################################################
+have_jpeg=no
+want_jpeg=check
+path_jpeg=undef
+AC_SUBST(LIBJPEG_LIBADD, "")
+AC_ARG_WITH(jpeg,
+[  --with-jpeg=PATH             Build with JPEG compression (requires libjpeg[-turbo] library). PATH is optional.],
+    if test "x$withval" = "xyes"; then
+      want_jpeg=yes
+      path_jpeg=undef
+    elif test "x$withval" = "xno"; then
+      want_jpeg=no
+      path_jpeg=undef
+    elif test "$withval"; then
+      want_jpeg=yes
+      path_jpeg=$withval
+    fi,
+)
+# only if --without-jpeg not used
+if test $want_jpeg != no; then
+	# check for lib and headers
+	AC_CHECK_HEADERS(jpeglib.h jerror.h,
+       	AC_CHECK_LIB(jpeg, jpeg_CreateDecompress, [have_jpeg=yes] LIBJPEG_LIBADD="-ljpeg", [have_jpeg=no]
+	))
+	# if jpeg not found and requested then, die.
+  	test $have_jpeg:$want_jpeg = no:yes &&  
+		AC_MSG_ERROR([You requested JPEG library but not found...die])
+	# define HAVE_LIBJPEG 1
+	test $have_jpeg:$enable_nonfree = yes:yes &&
+		AC_DEFINE_UNQUOTED(HAVE_LIBJPEG, 1, HAVE_LIBJPEG)
+fi
+AM_CONDITIONAL([USE_JPEG], [test $have_jpeg:$enable_nonfree = yes:yes])
 
 
 ########################################################
@@ -929,6 +969,7 @@ G.722 audio codec:   yes
 G.711 audio codec:   yes
 
 YUV:                 $have_yuv
+JPEG:                $have_jpeg
 SPEEX DSP:           $have_speexdsp
 
 SSL:                 $have_ssl
@@ -941,6 +982,8 @@ WebRTC:              Enabled($have_webrtc): AEC($have_webrtc_aec), NS($have_webr
 
 Monotonic timers:    $have_rt
 RESOLV:              $have_resolv
+
+V4L2:                $have_v4l2
 
 DEBUG:               $enable_debug
 

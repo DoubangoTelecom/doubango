@@ -111,6 +111,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #include "tinydav/audio/waveapi/tdav_producer_waveapi.h"
 #include "tinydav/audio/directsound/tdav_producer_dsound.h"
 #include "tinydav/video/gdi/tdav_producer_screencast_gdi.h"
+#include "tinydav/video/v4linux/tdav_producer_video_v4l2.h"
 #include "tinydav/audio/coreaudio/tdav_producer_audioqueue.h"
 #include "tinydav/audio/coreaudio/tdav_producer_audiounit.h"
 #include "tinydav/audio/wasapi/tdav_producer_wasapi.h"
@@ -379,6 +380,10 @@ int tdav_init()
 #if HAVE_WINM // Windows Media (WP8)
 	tmedia_producer_plugin_register(tdav_producer_winm_plugin_def_t);
 #endif
+#if HAVE_LINUX_VIDEODEV2_H // V4L2
+	tmedia_producer_plugin_register(tdav_producer_video_v4l2_plugin_def_t);
+	tmedia_producer_plugin_register(tdav_producer_screencast_v4l2_plugin_def_t);
+#endif
 	
 #if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit
 	tmedia_producer_plugin_register(tdav_producer_audiounit_plugin_def_t);
@@ -609,6 +614,10 @@ int tdav_deinit()
 #endif
 #if HAVE_WINM // Windows Media (WP8)
 	tmedia_producer_plugin_unregister(tdav_producer_winm_plugin_def_t);
+#endif
+#if HAVE_LINUX_VIDEODEV2_H // V4L2
+	tmedia_producer_plugin_unregister(tdav_producer_video_v4l2_plugin_def_t);
+	tmedia_producer_plugin_unregister(tdav_producer_screencast_v4l2_plugin_def_t);
 #endif
 
 #if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit

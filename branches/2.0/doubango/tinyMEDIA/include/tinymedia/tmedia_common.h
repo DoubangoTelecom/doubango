@@ -234,6 +234,7 @@ typedef enum tmedia_chroma_e
 	tmedia_chroma_yuv422p,
 	tmedia_chroma_uyvy422, // used by iOS4 producer (iPhone and iPod Touch 3G) - Microsoft: MFVideoFormat_YUY2
 	tmedia_chroma_yuv420p, // Default
+	tmedia_chroma_mjpeg, // VirtualBox default camera mode (Windows as host and Linux as guest)
 }
 tmedia_chroma_t;
 
