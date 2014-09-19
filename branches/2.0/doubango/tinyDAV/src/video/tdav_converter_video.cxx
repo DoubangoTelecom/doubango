@@ -90,6 +90,7 @@ static inline tsk_size_t _tdav_converter_video_libyuv_get_size(tmedia_chroma_t c
 		case tmedia_chroma_yuv422p:
 			return ((w * h) << 1);
 		case tmedia_chroma_uyvy422:
+		case tmedia_chroma_yuyv422:
 			return ((w * h) << 1);
 		case tmedia_chroma_yuv420p:
 			return ((w * h * 3) >> 1);
@@ -118,6 +119,8 @@ static inline enum FourCC _tdav_converter_video_libyuv_get_pixfmt(tmedia_chroma_
 		case tmedia_chroma_yuv422p:
 			return FOURCC_I422;
 		case tmedia_chroma_uyvy422:
+			return FOURCC_UYVY;
+		case tmedia_chroma_yuyv422:
 			return FOURCC_YUY2;
 		case tmedia_chroma_yuv420p:
 			return FOURCC_I420;
@@ -547,6 +550,8 @@ static inline enum PixelFormat _tdav_converter_video_ffmpeg_get_pixfmt(tmedia_ch
 			return PIX_FMT_YUV422P;
 		case tmedia_chroma_uyvy422:
 			return PIX_FMT_UYVY422;
+		case tmedia_chroma_yuyv422:
+			return PIX_FMT_YUYV422;
 		case tmedia_chroma_yuv420p:
 			return PIX_FMT_YUV420P;
 		default:
