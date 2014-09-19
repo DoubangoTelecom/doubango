@@ -70,7 +70,8 @@ static const VideoSubTypeGuidPair PreferredVideoSubTypeGuidPairs[] =
 {
 	{ tmedia_chroma_yuv420p, MFVideoFormat_I420 },
 	{ tmedia_chroma_nv12, MFVideoFormat_NV12 },
-	{ tmedia_chroma_uyvy422, MFVideoFormat_YUY2 },
+	{ tmedia_chroma_uyvy422, MFVideoFormat_UYVY },
+	{ tmedia_chroma_yuyv422, MFVideoFormat_YUY2 },
 	/* TODO: Add more YUV formats */
 	{ tmedia_chroma_rgb565le, MFVideoFormat_RGB565 },
 	{ tmedia_chroma_bgr24, MFVideoFormat_RGB24 },

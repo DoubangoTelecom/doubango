@@ -372,6 +372,7 @@ static inline tsk_size_t _plugin_win_mf_converter_video_ms_get_size(tmedia_chrom
 		case tmedia_chroma_yuv422p:
 			return ((w * h) << 1);
 		case tmedia_chroma_uyvy422:
+		case tmedia_chroma_yuyv422:
 			return ((w * h) << 1);
 		case tmedia_chroma_yuv420p:
 			return ((w * h * 3) >> 1);
@@ -394,8 +395,10 @@ static inline const GUID& _plugin_win_mf_converter_video_ms_get_pixfmt(tmedia_ch
 			return MFVideoFormat_NV12;
 		case tmedia_chroma_yuv420p:
 			return MFVideoFormat_I420;
-		case tmedia_chroma_uyvy422:
+		case tmedia_chroma_yuyv422:
 			return MFVideoFormat_YUY2;
+		case tmedia_chroma_uyvy422:
+			return MFVideoFormat_UYVY;
 		default:
 			TSK_DEBUG_ERROR("Invalid chroma %d", (int)chroma);
 			return GUID_NULL;

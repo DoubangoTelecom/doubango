@@ -198,7 +198,7 @@ static int _tdav_producer_video_v4l2_prepare(tmedia_producer_t* p_self, const tm
 			TMEDIA_PRODUCER(p_v4l2)->video.chroma = tmedia_chroma_nv21;
 			break;
 		case V4L2_PIX_FMT_YUYV:
-			TMEDIA_PRODUCER(p_v4l2)->video.chroma = tmedia_chroma_yuv422p;
+			TMEDIA_PRODUCER(p_v4l2)->video.chroma = tmedia_chroma_yuyv422;
 			break;
 		case V4L2_PIX_FMT_UYVY:
 			TMEDIA_PRODUCER(p_v4l2)->video.chroma = tmedia_chroma_uyvy422; // SINCITY
