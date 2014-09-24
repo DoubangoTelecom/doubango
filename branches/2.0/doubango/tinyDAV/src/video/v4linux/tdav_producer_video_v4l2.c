@@ -90,6 +90,7 @@ typedef struct tdav_producer_video_v4l2_s
 
 	tsk_bool_t b_muted;
 	tsk_bool_t b_started;
+	tsk_bool_t b_prepared;
 	tsk_bool_t b_paused;
 	
 	int fd;
@@ -177,7 +178,7 @@ static int _tdav_producer_video_v4l2_prepare(tmedia_producer_t* p_self, const tm
 	p_v4l2->u_timout_grab = (1000/TMEDIA_PRODUCER(p_v4l2)->video.fps);
 	
 	// prepare()
-	if ((ret != _v4l2_prepare(p_v4l2))) {
+	if ((ret = _v4l2_prepare(p_v4l2))) {
 		goto bail;
 	}
 	
@@ -224,10 +225,130 @@ static int _tdav_producer_video_v4l2_prepare(tmedia_producer_t* p_self, const tm
 		TMEDIA_PRODUCER(p_v4l2)->video.width,
 		TMEDIA_PRODUCER(p_v4l2)->video.height,
 		TMEDIA_PRODUCER(p_v4l2)->video.chroma);
+	p_v4l2->b_prepared = (ret == 0) ? tsk_true : tsk_false;
 	
 bail:
 	tsk_safeobj_unlock(p_v4l2);
 	return ret;
+}
+
+static int _tdav_producer_video_v4l2_start(tmedia_producer_t* p_self)
+{
+	tdav_producer_video_v4l2_t* p_v4l2 = (tdav_producer_video_v4l2_t*)p_self;
+	int ret = 0;
+		
+	if (!p_v4l2) {
+		V4L2_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tsk_safeobj_lock(p_v4l2);
+
+	if (!p_v4l2->b_prepared) {
+		V4L2_DEBUG_INFO("Not prepared");
+		ret = -1;
+		goto bail;
+	}
+
+	p_v4l2->b_paused = tsk_false;
+
+	if (p_v4l2->b_started) {
+		V4L2_DEBUG_INFO("Already started");
+		goto bail;
+	}
+
+	if ((ret = tsk_timer_manager_start(p_v4l2->p_timer_mgr))) {
+		goto bail;
+	}
+	
+	// start()
+	if ((ret = _v4l2_start(p_v4l2))) {
+		goto bail;	
+	}
+
+	p_v4l2->b_started = tsk_true;
+
+	// Schedule frame grabbing
+	p_v4l2->id_timer_grab = tsk_timer_manager_schedule(p_v4l2->p_timer_mgr, p_v4l2->u_timout_grab, _tdav_producer_video_v4l2_timer_cb, p_v4l2);
+	if (!TSK_TIMER_ID_IS_VALID(p_v4l2->id_timer_grab)) {
+		V4L2_DEBUG_ERROR("Failed to schedule timer with timeout=%llu", p_v4l2->u_timout_grab);
+		ret = -2;
+		goto bail;
+	}
+
+bail:
+	if (ret) {
+		_v4l2_stop(p_v4l2);
+		p_v4l2->b_started = tsk_false;
+		if (p_v4l2->p_timer_mgr) {
+			tsk_timer_manager_stop(p_v4l2->p_timer_mgr);
+		}
+	}
+	else {
+		V4L2_DEBUG_INFO("Started :)");
+	}
+	tsk_safeobj_unlock(p_v4l2);
+
+	return ret;
+}
+
+static int _tdav_producer_video_v4l2_pause(tmedia_producer_t* p_self)
+{
+	tdav_producer_video_v4l2_t* p_v4l2 = (tdav_producer_video_v4l2_t*)p_self;
+	int ret;
+
+	if (!p_v4l2) {
+		V4L2_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tsk_safeobj_lock(p_v4l2);
+
+	if ((ret = _v4l2_pause(p_v4l2))) {
+		goto bail;	
+	}
+
+	p_v4l2->b_paused = tsk_true;
+	goto bail;
+
+bail:
+	tsk_safeobj_unlock(p_v4l2);
+
+	return ret;
+}
+
+static int _tdav_producer_video_v4l2_stop(tmedia_producer_t* p_self)
+{
+	tdav_producer_video_v4l2_t* p_v4l2 = (tdav_producer_video_v4l2_t*)p_self;
+
+	if (!p_v4l2) {
+		V4L2_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tsk_safeobj_lock(p_v4l2);
+	
+	if (!p_v4l2->b_started) {
+		V4L2_DEBUG_INFO("Already stopped");
+		goto bail;
+	}
+	
+	if (p_v4l2->p_timer_mgr) {
+		tsk_timer_manager_stop(p_v4l2->p_timer_mgr);
+	}
+	
+	// next start will be called after prepare()
+	_v4l2_unprepare(p_v4l2); // stop() then unprepare()
+	
+	p_v4l2->b_started = tsk_false;
+	p_v4l2->b_paused = tsk_false;
+	p_v4l2->b_prepared = tsk_false;
+
+bail:
+	tsk_safeobj_unlock(p_v4l2);
+	V4L2_DEBUG_INFO("Stopped");
+
+	return 0;
 }
 
 static int _v4l2_prepare(tdav_producer_video_v4l2_t* p_self)
@@ -400,118 +521,6 @@ bail:
 	return err;
 }
 
-static int _tdav_producer_video_v4l2_start(tmedia_producer_t* p_self)
-{
-	tdav_producer_video_v4l2_t* p_v4l2 = (tdav_producer_video_v4l2_t*)p_self;
-	int ret = 0;
-		
-	if (!p_v4l2) {
-		V4L2_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-
-	tsk_safeobj_lock(p_v4l2);
-
-	p_v4l2->b_paused = tsk_false;
-
-	if (p_v4l2->b_started) {
-		V4L2_DEBUG_INFO("Already started");
-		goto bail;
-	}
-
-	if ((ret = tsk_timer_manager_start(p_v4l2->p_timer_mgr))) {
-		goto bail;
-	}
-	
-	// start()
-	if ((ret = _v4l2_start(p_v4l2))) {
-		goto bail;	
-	}
-
-	p_v4l2->b_started = tsk_true;
-
-	// Schedule frame grabbing
-	p_v4l2->id_timer_grab = tsk_timer_manager_schedule(p_v4l2->p_timer_mgr, p_v4l2->u_timout_grab, _tdav_producer_video_v4l2_timer_cb, p_v4l2);
-	if (!TSK_TIMER_ID_IS_VALID(p_v4l2->id_timer_grab)) {
-		V4L2_DEBUG_ERROR("Failed to schedule timer with timeout=%llu", p_v4l2->u_timout_grab);
-		ret = -2;
-		goto bail;
-	}
-
-bail:
-	if (ret) {
-		_v4l2_stop(p_v4l2);
-		p_v4l2->b_started = tsk_false;
-		if (p_v4l2->p_timer_mgr) {
-			tsk_timer_manager_start(p_v4l2->p_timer_mgr);
-		}
-	}
-	else {
-		V4L2_DEBUG_INFO("Started :)");
-	}
-	tsk_safeobj_unlock(p_v4l2);
-
-	return ret;
-}
-
-static int _tdav_producer_video_v4l2_pause(tmedia_producer_t* p_self)
-{
-	tdav_producer_video_v4l2_t* p_v4l2 = (tdav_producer_video_v4l2_t*)p_self;
-	int ret;
-
-	if (!p_v4l2) {
-		V4L2_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-
-	tsk_safeobj_lock(p_v4l2);
-
-	if ((ret = _v4l2_pause(p_v4l2))) {
-		goto bail;	
-	}
-
-	p_v4l2->b_paused = tsk_true;
-	goto bail;
-
-bail:
-	tsk_safeobj_unlock(p_v4l2);
-
-	return ret;
-}
-
-static int _tdav_producer_video_v4l2_stop(tmedia_producer_t* p_self)
-{
-	tdav_producer_video_v4l2_t* p_v4l2 = (tdav_producer_video_v4l2_t*)p_self;
-
-	if (!p_v4l2) {
-		V4L2_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-
-	tsk_safeobj_lock(p_v4l2);
-	
-	if (!p_v4l2->b_started) {
-		V4L2_DEBUG_INFO("Already stopped");
-		goto bail;
-	}
-	
-	if (p_v4l2->p_timer_mgr) {
-		tsk_timer_manager_stop(p_v4l2->p_timer_mgr);
-	}
-
-	
-	// next start will be called after prepare()
-	_v4l2_unprepare(p_v4l2); // stop() then unprepare()
-	
-	p_v4l2->b_started = tsk_false;
-	p_v4l2->b_paused = tsk_false;
-
-bail:
-	tsk_safeobj_unlock(p_v4l2);
-	V4L2_DEBUG_INFO("Stopped");
-
-	return 0;
-}
 
 static int _v4l2_start(tdav_producer_video_v4l2_t* p_self)
 {
