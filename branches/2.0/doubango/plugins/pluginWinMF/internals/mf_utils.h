@@ -55,6 +55,7 @@ public:
 static HRESULT Startup();
 static HRESULT Shutdown();
 
+static BOOL IsD3D9Supported();
 static BOOL IsLowLatencyH264Supported();
 
 static HRESULT IsAsyncMFT(
@@ -243,6 +244,9 @@ private:
 
 	static BOOL g_bLowLatencyH264Checked;
 	static BOOL g_bLowLatencyH264Supported;
+
+	static BOOL g_bD3D9Checked;
+	static BOOL g_bD3D9Supported;
 
 public:
 	static const TOPOID g_ullTopoIdSinkMain;

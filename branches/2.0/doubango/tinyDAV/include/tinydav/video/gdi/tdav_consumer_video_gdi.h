@@ -1,4 +1,4 @@
-/* Copyright (C) 2011-2014 Doubango Telecom <http://www.doubango.org>
+/* Copyright (C) 2014 Mamadou DIOP
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -26,7 +26,7 @@
 
 TDAV_BEGIN_DECLS
 
-TINYDAV_GEXTERN const tmedia_consumer_plugin_def_t *tdav_consumer_gdi_plugin_def_t;
+TINYDAV_GEXTERN const tmedia_consumer_plugin_def_t *tdav_consumer_video_gdi_plugin_def_t;
 
 TDAV_END_DECLS
 

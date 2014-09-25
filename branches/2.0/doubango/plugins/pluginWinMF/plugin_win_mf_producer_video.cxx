@@ -625,6 +625,8 @@ static tsk_object_t* plugin_win_mf_producer_video_ctor(tsk_object_t * self, va_l
 		TMEDIA_PRODUCER(pSelf)->video.fps = 15;
 		TMEDIA_PRODUCER(pSelf)->video.width = 352;
 		TMEDIA_PRODUCER(pSelf)->video.height = 288;
+
+		TSK_DEBUG_INFO("Create WinMF video producer");
 	}
 	return self;
 }

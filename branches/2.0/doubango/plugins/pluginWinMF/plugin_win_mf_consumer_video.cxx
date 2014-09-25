@@ -137,9 +137,7 @@ static int plugin_win_mf_consumer_video_set(tmedia_consumer_t *self, const tmedi
 					hr = ResetDevice(pSelf);
 				}
 				tsk_safeobj_unlock(pSelf); // unblock consumer thread
-			}
-
-			
+			}			
 		}
 	}
 	else if(param->value_type == tmedia_pvt_int32)
@@ -1536,6 +1534,8 @@ static tsk_object_t* plugin_win_mf_consumer_video_ctor(tsk_object_t * self, va_l
 		TMEDIA_CONSUMER(pSelf)->video.display.width = 0; // use codec value
 		TMEDIA_CONSUMER(pSelf)->video.display.height = 0; // use codec value
 		TMEDIA_CONSUMER(pSelf)->video.display.auto_resize = tsk_true;
+
+		TSK_DEBUG_INFO("Create WinMF video consumer");
 	}
 	return self;
 }
