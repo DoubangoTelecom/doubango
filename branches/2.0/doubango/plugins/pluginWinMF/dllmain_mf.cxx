@@ -132,9 +132,12 @@ tsk_plugin_def_type_t __plugin_get_def_type_at(int index)
 #endif
 #if PLUGIN_MF_ENABLE_VIDEO_IO
 		case PLUGIN_INDEX_VIDEO_CONSUMER: 
+			{
+				return MFUtils::IsD3D9Supported() ? tsk_plugin_def_type_consumer : tsk_plugin_def_type_none;
+			}
 		case PLUGIN_INDEX_VIDEO_PRODUCER:
 			{
-				return (index == PLUGIN_INDEX_VIDEO_CONSUMER) ? tsk_plugin_def_type_consumer : tsk_plugin_def_type_producer;
+				return tsk_plugin_def_type_producer;
 			}
 #endif
 #if PLUGIN_MF_ENABLE_VIDEO_CONVERTER
@@ -168,6 +171,9 @@ tsk_plugin_def_media_type_t	__plugin_get_def_media_type_at(int index)
 #endif
 #if PLUGIN_MF_ENABLE_VIDEO_IO
 		case PLUGIN_INDEX_VIDEO_CONSUMER: 
+			{
+				return MFUtils::IsD3D9Supported() ? tsk_plugin_def_media_type_video : tsk_plugin_def_media_type_none;
+			}
 		case PLUGIN_INDEX_VIDEO_PRODUCER:
 			{
 				return tsk_plugin_def_media_type_video;
@@ -202,7 +208,7 @@ tsk_plugin_def_ptr_const_t __plugin_get_def_at(int index)
 			}
 		case PLUGIN_INDEX_VIDEO_CONSUMER: 
 			{
-				return plugin_win_mf_consumer_video_plugin_def_t;
+				return MFUtils::IsD3D9Supported() ? plugin_win_mf_consumer_video_plugin_def_t : tsk_null;
 			}
 #endif
 #if PLUGIN_MF_ENABLE_AUDIO_IO

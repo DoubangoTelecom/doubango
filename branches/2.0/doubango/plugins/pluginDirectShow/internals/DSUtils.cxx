@@ -19,6 +19,7 @@
 
 #include <atlbase.h>
 #include <atlstr.h>
+#include <d3d9.h>
 
 #include "tsk_debug.h"
 
@@ -44,6 +45,74 @@ bool IsMainThread()
 		return (mainTid == currentTid);
 	}
 	return false;
+}
+
+bool IsD3D9Supported()
+{
+	static bool g_bChecked = false;
+	static bool g_bSupported = false;
+
+	if (g_bChecked) {
+		return g_bSupported;
+	}
+	g_bChecked = true;
+	HRESULT hr = S_OK;
+	IDirect3D9* pD3D = NULL;
+	D3DDISPLAYMODE mode = { 0 };
+	D3DPRESENT_PARAMETERS pp = {0};
+	IDirect3DDevice9* pDevice = NULL;
+
+	if (!(pD3D = Direct3DCreate9(D3D_SDK_VERSION))) {
+        hr = E_OUTOFMEMORY;
+		goto bail;
+    }
+
+    hr = pD3D->GetAdapterDisplayMode(
+        D3DADAPTER_DEFAULT,
+        &mode
+        );
+	if (FAILED(hr)) {
+		goto bail;
+	}
+
+    hr = pD3D->CheckDeviceType(
+        D3DADAPTER_DEFAULT,
+        D3DDEVTYPE_HAL,
+        mode.Format,
+        D3DFMT_X8R8G8B8,
+        TRUE    // windowed
+        );
+	if (FAILED(hr)) {
+		goto bail;
+	}
+    pp.BackBufferFormat = D3DFMT_X8R8G8B8;
+    pp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+    pp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+	pp.Windowed = TRUE;
+	pp.hDeviceWindow = GetDesktopWindow();
+    hr = pD3D->CreateDevice(
+        D3DADAPTER_DEFAULT,
+        D3DDEVTYPE_HAL,
+        pp.hDeviceWindow,
+        D3DCREATE_HARDWARE_VERTEXPROCESSING,
+        &pp,
+        &pDevice
+        );
+	if (FAILED(hr)) {
+		goto bail;
+	}
+
+	// Everythings is OK
+	g_bSupported = TRUE;
+	TSK_DEBUG_INFO("D3D9 supported");
+
+bail:
+	if (!g_bSupported) {
+		TSK_DEBUG_WARN("D3D9 not supported");
+	}
+	SAFE_RELEASE(pDevice);
+	SAFE_RELEASE(pD3D);
+	return g_bSupported;
 }
 
 IPin *GetPin(IBaseFilter *filter, PIN_DIRECTION direction)

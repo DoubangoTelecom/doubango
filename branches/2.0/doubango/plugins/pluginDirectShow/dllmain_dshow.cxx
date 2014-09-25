@@ -23,6 +23,8 @@
 #include "tsk_plugin.h"
 #include "tsk_debug.h"
 
+#include "internals/DSUtils.h"
+
 #include <streams.h>
 
 #if !defined(ENABLE_SCREENCAST)
@@ -87,7 +89,7 @@ tsk_plugin_def_type_t __plugin_get_def_type_at(int index)
 {
 	switch(index){
 		case PLUGIN_INDEX_VIDEO_CONSUMER: 
-			return tsk_plugin_def_type_consumer;
+			return IsD3D9Supported() ? tsk_plugin_def_type_consumer : tsk_plugin_def_type_none;
 		case PLUGIN_INDEX_VIDEO_PRODUCER: 
 #if ENABLE_SCREENCAST
 		case PLUGIN_INDEX_SCREENCAST_PRODUCER:
@@ -105,6 +107,9 @@ tsk_plugin_def_media_type_t	__plugin_get_def_media_type_at(int index)
 {
 	switch(index){
 		case PLUGIN_INDEX_VIDEO_CONSUMER: 
+			{
+				return IsD3D9Supported() ? tsk_plugin_def_media_type_video : tsk_plugin_def_media_type_none;
+			}
 		case PLUGIN_INDEX_VIDEO_PRODUCER:
 			{
 				return tsk_plugin_def_media_type_video;
@@ -128,7 +133,7 @@ tsk_plugin_def_ptr_const_t __plugin_get_def_at(int index)
 	switch(index){
 		case PLUGIN_INDEX_VIDEO_CONSUMER: 
 			{
-				return plugin_video_dshow_consumer_plugin_def_t;
+				return IsD3D9Supported() ? plugin_video_dshow_consumer_plugin_def_t : tsk_null;
 			}
 		case PLUGIN_INDEX_VIDEO_PRODUCER:
 			{

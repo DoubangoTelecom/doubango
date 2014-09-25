@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="tinyDAV"
 	ProjectGUID="{8E2F0B2E-2596-4010-BF4A-2F688975B5C1}"
 	RootNamespace="tinyDAV"
@@ -523,6 +523,10 @@
 					Name="gdi"
 					>
 					<File
+						RelativePath=".\include\tinydav\video\gdi\tdav_consumer_video_gdi.h"
+						>
+					</File>
+					<File
 						RelativePath=".\include\tinydav\video\gdi\tdav_producer_screencast_gdi.h"
 						>
 					</File>
@@ -918,6 +922,10 @@
 				<Filter
 					Name="gdi"
 					>
+					<File
+						RelativePath=".\src\video\gdi\tdav_consumer_video_gdi.c"
+						>
+					</File>
 					<File
 						RelativePath=".\src\video\gdi\tdav_producer_screencast_gdi.c"
 						>

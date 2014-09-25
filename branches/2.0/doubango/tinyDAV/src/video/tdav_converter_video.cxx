@@ -132,8 +132,6 @@ static inline enum FourCC _tdav_converter_video_libyuv_get_pixfmt(tmedia_chroma_
 	}
 }
 
-
-
 static int tdav_converter_video_libyuv_init(tmedia_converter_video_t* self, tsk_size_t srcWidth, tsk_size_t srcHeight, tmedia_chroma_t srcChroma, tsk_size_t dstWidth, tsk_size_t dstHeight, tmedia_chroma_t dstChroma)
 {
 	TSK_DEBUG_INFO("Initializing new LibYUV Video Converter src=(%dx%d@%d) dst=(%dx%d@%d)", srcWidth, srcHeight, srcChroma, dstWidth, dstHeight, dstChroma);

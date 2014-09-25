@@ -105,6 +105,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #include "tinydav/audio/wasapi/tdav_consumer_wasapi.h"
 #include "tinydav/video/winm/tdav_consumer_winm.h"
 #include "tinydav/video/mf/tdav_consumer_video_mf.h"
+#include "tinydav/video/gdi/tdav_consumer_video_gdi.h"
 #include "tinydav/t140/tdav_consumer_t140.h"
 
 // Producers
@@ -351,6 +352,9 @@ int tdav_init()
 #elif HAVE_WASAPI
 	tmedia_consumer_plugin_register(tdav_consumer_wasapi_plugin_def_t);
 #endif
+#if TDAV_UNDER_WINDOWS && !TDAV_UNDER_WINDOWS_RT // Windows GDI
+	tmedia_consumer_plugin_register(tdav_consumer_video_gdi_plugin_def_t);
+#endif
 #if HAVE_WINM // Windows Media (WP8)
 	tmedia_consumer_plugin_register(tdav_consumer_winm_plugin_def_t);
 #endif
@@ -587,6 +591,9 @@ int tdav_deinit()
 #endif
 #if HAVE_WASAPI
 	tmedia_consumer_plugin_unregister(tdav_consumer_wasapi_plugin_def_t);
+#endif
+#if TDAV_UNDER_WINDOWS && !TDAV_UNDER_WINDOWS_RT // Windows GDI
+	tmedia_consumer_plugin_unregister(tdav_consumer_video_gdi_plugin_def_t);
 #endif
 #if HAVE_WINM // Windows Media (WP8)
 	tmedia_consumer_plugin_unregister(tdav_consumer_winm_plugin_def_t);

@@ -25,12 +25,14 @@
 
 #include <initguid.h>
 #include <wmcodecdsp.h>
+#include <d3d9.h>
 #include <assert.h>
 
 
 #ifdef _MSC_VER
 #pragma comment(lib, "strmiids.lib")
 #pragma comment(lib, "wmcodecdspuuid.lib")
+#pragma comment(lib, "d3d9")
 #endif
 
 #if !defined(PLUGIN_MF_DISABLE_CODECS)
@@ -59,6 +61,9 @@ DWORD MFUtils::g_dwMinorVersion = -1;
 
 BOOL MFUtils::g_bLowLatencyH264Checked = FALSE;
 BOOL MFUtils::g_bLowLatencyH264Supported = FALSE;
+
+BOOL MFUtils::g_bD3D9Checked = FALSE;
+BOOL MFUtils::g_bD3D9Supported = FALSE;
 
 const TOPOID MFUtils::g_ullTopoIdSinkMain = 111;
 const TOPOID MFUtils::g_ullTopoIdSinkPreview = 222;
@@ -132,6 +137,77 @@ HRESULT MFUtils::Shutdown()
 		return S_OK;
 	}
 	return S_OK;
+}
+
+BOOL MFUtils::IsD3D9Supported()
+{
+	if (MFUtils::g_bD3D9Checked)
+	{
+		return MFUtils::g_bD3D9Supported;
+	}
+	MFUtils::g_bD3D9Checked = TRUE;
+	HRESULT hr = S_OK;
+	IDirect3D9* pD3D = NULL;
+	D3DDISPLAYMODE mode = { 0 };
+	D3DPRESENT_PARAMETERS pp = {0};
+	IDirect3DDevice9* pDevice = NULL;
+
+	CHECK_HR(hr = MFUtils::Startup());
+
+	if (!(pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
+    {
+        CHECK_HR(hr = E_OUTOFMEMORY);
+    }
+
+    hr = pD3D->GetAdapterDisplayMode(
+        D3DADAPTER_DEFAULT,
+        &mode
+        );
+	if (FAILED(hr))
+	{
+		goto bail;
+	}
+
+    hr = pD3D->CheckDeviceType(
+        D3DADAPTER_DEFAULT,
+        D3DDEVTYPE_HAL,
+        mode.Format,
+        D3DFMT_X8R8G8B8,
+        TRUE    // windowed
+        );
+	if (FAILED(hr))
+	{
+		goto bail;
+	}
+    pp.BackBufferFormat = D3DFMT_X8R8G8B8;
+    pp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+    pp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+	pp.Windowed = TRUE;
+	pp.hDeviceWindow = GetDesktopWindow();
+    hr = pD3D->CreateDevice(
+        D3DADAPTER_DEFAULT,
+        D3DDEVTYPE_HAL,
+        pp.hDeviceWindow,
+        D3DCREATE_HARDWARE_VERTEXPROCESSING,
+        &pp,
+        &pDevice
+        );
+	if (FAILED(hr))
+	{
+		goto bail;
+	}
+
+	// Everythings is OK
+	MFUtils::g_bD3D9Supported = TRUE;
+	TSK_DEBUG_INFO("D3D9 supported");
+
+bail:
+	if (!MFUtils::g_bD3D9Supported) {
+		TSK_DEBUG_WARN("D3D9 not supported");
+	}
+	SafeRelease(&pDevice);
+	SafeRelease(&pD3D);
+	return MFUtils::g_bD3D9Supported;
 }
 
 BOOL MFUtils::IsLowLatencyH264Supported()

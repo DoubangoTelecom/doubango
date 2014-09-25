@@ -829,7 +829,7 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
     }
     
 	if ((rlen = write(s, rtm, l)) < 0) {
-		printf("writing to routing socket");
+		TSK_DEBUG_INFO("writing to routing socket");
         // TODO
 	}
     do {

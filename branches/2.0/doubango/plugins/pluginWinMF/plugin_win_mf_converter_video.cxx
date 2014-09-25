@@ -386,6 +386,7 @@ static inline const GUID& _plugin_win_mf_converter_video_ms_get_pixfmt(tmedia_ch
 {
 	switch(chroma){
 		case tmedia_chroma_rgb24:
+		case tmedia_chroma_bgr24:
 			return MFVideoFormat_RGB24;
 		case tmedia_chroma_rgb565le:
 			return MFVideoFormat_RGB565;
