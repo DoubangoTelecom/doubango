@@ -312,7 +312,7 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
                 return numberOfBytesSent;
             }
         }
-        while (to_send > 0 && (sent = CFWriteStreamWrite(sock->cf_write_stream, &buff_ptr[numberOfBytesSent], (CFIndex) to_send)) > 0) {
+        while (to_send > 0 && (sent = (int)CFWriteStreamWrite(sock->cf_write_stream, &buff_ptr[numberOfBytesSent], (CFIndex) to_send)) > 0) {
             numberOfBytesSent += sent;
             to_send = TSK_MIN(max_size_to_send, (size - numberOfBytesSent));
         }
@@ -321,7 +321,7 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
             goto bail;
         }
     } else {
-        if ((numberOfBytesSent = send(from, buf, size, 0)) < size) {
+        if ((numberOfBytesSent = (int)send(from, buf, size, 0)) < size) {
             TNET_PRINT_LAST_ERROR("Send have failed");
             goto bail;
         }
@@ -460,6 +460,12 @@ int removeSocketAtIndex(int index, transport_context_t *context)
     
 	if (index < (int)context->count) {
         transport_socket_xt *sock = context->sockets[index];
+        
+        // Remove from runloop
+        if (context->cf_run_loop && sock->cf_run_loop_source) {
+            CFRunLoopRemoveSource(context->cf_run_loop, sock->cf_run_loop_source, kCFRunLoopCommonModes);
+            CFRelease(sock->cf_run_loop_source), sock->cf_run_loop_source = NULL;
+        }
 		
 		// Invalidate CFSocket
         if (sock->cf_socket) {
@@ -467,6 +473,7 @@ int removeSocketAtIndex(int index, transport_context_t *context)
                 CFSocketInvalidate(sock->cf_socket);
             }
             CFRelease(sock->cf_socket);
+            sock->cf_socket = NULL;
         }
         
         // Close and free write stream
@@ -657,9 +664,11 @@ void __CFReadStreamClientCallBack(CFReadStreamRef stream, CFStreamEventType even
         case kCFStreamEventOpenCompleted:
         {
             TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> kCFStreamEventOpenCompleted(fd=%d)", sock->fd);
-            sock->readable = tsk_true;
-            if(sock->writable){
-                TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, sock->fd);
+            if (!sock->readable) {
+                sock->readable = tsk_true;
+                if (sock->writable) {
+                    TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, sock->fd);
+                }
             }
             break;
         }
@@ -738,9 +747,11 @@ void __CFWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventType ev
         {
             // To avoid blocking, call this function only if CFWriteStreamCanAcceptBytes returns true or after the stream’s client (set with CFWriteStreamSetClient) is notified of a kCFStreamEventCanAcceptBytes event.
             TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> kCFStreamEventCanAcceptBytes(fd=%d)", sock->fd);
-            sock->writable = tsk_true;
-            if(sock->readable){
-                TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, sock->fd);
+            if (!sock->writable) {
+                sock->writable = tsk_true;
+                if (sock->readable) {
+                    TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, sock->fd);
+                }
             }
             break;
         }
@@ -800,8 +811,33 @@ void __CFSocketCallBack(CFSocketRef s, CFSocketCallBackType callbackType, CFData
         }
         case kCFSocketAcceptCallBack:
         case kCFSocketConnectCallBack:
-        case kCFSocketDataCallBack:
         case kCFSocketWriteCallBack:
+        {
+            TSK_DEBUG_INFO("__CFSocketCallBack(fd=%d), callbackType=%lu", sock->fd, callbackType);
+            wrapSocket(transport, sock);
+            break;
+        }
+        case kCFSocketDataCallBack:
+        {
+            if (data) {
+                const UInt8 *ptr = CFDataGetBytePtr((CFDataRef)data);
+                int len = (int)CFDataGetLength((CFDataRef)data);
+                if (ptr && len > 0) {
+                    tnet_transport_event_t* e = tnet_transport_event_create(event_data, transport->callback_data, sock->fd);
+                    if (e) {
+                        e->data = tsk_malloc(len);
+                        if (e->data) {
+                            memcpy(e->data, ptr, len);
+                            e->size = len;
+                        }
+                        memcpy(&e->remote_addr, (struct sockaddr*)address, tnet_get_sockaddr_size((struct sockaddr*)address));
+                        TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(transport), e);
+                    }
+                }
+            }
+            break;
+        }
+        
         default:
         {
             // Not Implemented
@@ -826,41 +862,64 @@ int wrapSocket(tnet_transport_t *transport, transport_socket_xt *sock)
 	}
     
     // If the socket is already wrapped in a CFSocket or mainthead not started yet then return
-    if (!context->cf_run_loop || sock->cf_socket || sock->cf_read_stream) {
+    if (!context->cf_run_loop) {
         return 0;
     }
     
     // Put a reference to the transport context 
     const CFSocketContext socket_context = { 0, transport, NULL, NULL, NULL };
     
-    if (TNET_SOCKET_TYPE_IS_DGRAM(sock->type)) {
-        
-        // Create a CFSocket from the native socket and register for Read events
-        sock->cf_socket = CFSocketCreateWithNative(kCFAllocatorDefault, 
+    // Wrap socket and listen to events
+    if (!sock->cf_socket && !sock->cf_read_stream && !sock->cf_write_stream) {
+        sock->cf_socket = CFSocketCreateWithNative(kCFAllocatorDefault,
                                                    sock->fd,
-                                                   kCFSocketReadCallBack, 
-                                                   &__CFSocketCallBack, 
+                                                   kCFSocketReadCallBack | kCFSocketConnectCallBack | kCFSocketWriteCallBack | kCFSocketAcceptCallBack | kCFSocketDataCallBack,
+                                                   &__CFSocketCallBack,
                                                    &socket_context);
         
         // Don't close the socket if the CFSocket is invalidated
         CFOptionFlags flags = CFSocketGetSocketFlags(sock->cf_socket);
         flags = flags & ~kCFSocketCloseOnInvalidate;
         CFSocketSetSocketFlags(sock->cf_socket, flags);
-		
         
         // Create a new RunLoopSource and register it with the main thread RunLoop
         sock->cf_run_loop_source = CFSocketCreateRunLoopSource(kCFAllocatorDefault, sock->cf_socket, 0);
-        CFRunLoopAddSource(context->cf_run_loop, sock->cf_run_loop_source, kCFRunLoopDefaultMode);
-        CFRelease(sock->cf_run_loop_source), sock->cf_run_loop_source = NULL;
+        CFRunLoopAddSource(context->cf_run_loop, sock->cf_run_loop_source, kCFRunLoopCommonModes);
+    }
+    
+    if (TNET_SOCKET_TYPE_IS_DGRAM(sock->type)) {
+        // Nothing to do
         
     } else if (TNET_SOCKET_TYPE_IS_STREAM(sock->type)) {
-        
-        // Create a pair of streams (read/write) from the socket
-        CFStreamCreatePairWithSocket(kCFAllocatorDefault, sock->fd, &sock->cf_read_stream, &sock->cf_write_stream);
-        
-        // Don't close underlying socket
-        CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanFalse);
-        CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanFalse);
+        if (!sock->cf_read_stream && !sock->cf_write_stream) {
+            // Create a pair of streams (read/write) from the socket
+            CFStreamCreatePairWithSocket(kCFAllocatorDefault, sock->fd, &sock->cf_read_stream, &sock->cf_write_stream);
+            
+            // Don't close underlying socket
+            CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanFalse);
+            CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanFalse);
+            
+            // Mark the stream for VoIP usage
+            CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
+            CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
+            
+            // Setup a context for the streams
+            CFStreamClientContext streamContext = { 0, transport, NULL, NULL, NULL };
+            
+            // Set the client callback for the stream
+            CFReadStreamSetClient(sock->cf_read_stream,
+                                  kCFStreamEventOpenCompleted | kCFStreamEventHasBytesAvailable | kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered,
+                                  &__CFReadStreamClientCallBack,
+                                  &streamContext);
+            CFWriteStreamSetClient(sock->cf_write_stream,
+                                   kCFStreamEventOpenCompleted | kCFStreamEventErrorOccurred | kCFStreamEventCanAcceptBytes |kCFStreamEventEndEncountered,
+                                   &__CFWriteStreamClientCallBack,
+                                   &streamContext);
+            
+            // Enroll streams in the run-loop
+            CFReadStreamScheduleWithRunLoop(sock->cf_read_stream, context->cf_run_loop, kCFRunLoopCommonModes);
+            CFWriteStreamScheduleWithRunLoop(sock->cf_write_stream, context->cf_run_loop, kCFRunLoopCommonModes);
+        }
         
         if (TNET_SOCKET_TYPE_IS_TLS(sock->type)) {
             CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
@@ -904,34 +963,28 @@ int wrapSocket(tnet_transport_t *transport, transport_socket_xt *sock)
             CFRelease(settings);
         }
         
-        // Mark the stream for VoIP usage
-        CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
-        CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamNetworkServiceType, kCFStreamNetworkServiceTypeVoIP);
-        
-        // Setup a context for the streams
-        CFStreamClientContext streamContext = { 0, transport, NULL, NULL, NULL };
-        
-        // Set the client callback for the stream
-        CFReadStreamSetClient(sock->cf_read_stream, 
-                              kCFStreamEventOpenCompleted | kCFStreamEventHasBytesAvailable | kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered,
-                              &__CFReadStreamClientCallBack, 
-                              &streamContext);
-        CFWriteStreamSetClient(sock->cf_write_stream, 
-                               kCFStreamEventOpenCompleted | kCFStreamEventErrorOccurred | kCFStreamEventCanAcceptBytes |kCFStreamEventEndEncountered,
-                               &__CFWriteStreamClientCallBack, 
-                               &streamContext);
-        
-        // Enroll streams in the run-loop
-        CFReadStreamScheduleWithRunLoop(sock->cf_read_stream, context->cf_run_loop, kCFRunLoopDefaultMode);
-        CFWriteStreamScheduleWithRunLoop(sock->cf_write_stream, context->cf_run_loop, kCFRunLoopDefaultMode);
-        
-        if (!CFReadStreamOpen(sock->cf_read_stream)) {
-            TSK_DEBUG_ERROR("CFReadStreamOpen(fd=%d) failed", sock->fd);
-            return -1;
-        }
-        if (!CFWriteStreamOpen(sock->cf_write_stream)) {
-            TSK_DEBUG_ERROR("CFWriteStreamOpen(fd=%d) failed", sock->fd);
-            return -1;
+        // Open streams only if ready (otherwise, fails on iOS8)
+        if (tnet_sockfd_waitUntilReadable(sock->fd, 1) == 0 || tnet_sockfd_waitUntilWritable(sock->fd, 1) == 0) {
+            // switch from cf_socket to streams
+            if (sock->cf_run_loop_source) {
+                CFRunLoopRemoveSource(context->cf_run_loop, sock->cf_run_loop_source, kCFRunLoopCommonModes);
+                CFRelease(sock->cf_run_loop_source), sock->cf_run_loop_source = NULL;
+            }
+            if (sock->cf_socket) {
+                CFSocketInvalidate(sock->cf_socket);
+                CFRelease(sock->cf_socket);
+                sock->cf_socket = NULL;
+            }
+            
+            // Open streams
+            if (!CFReadStreamOpen(sock->cf_read_stream)) {
+                TSK_DEBUG_ERROR("CFReadStreamOpen(fd=%d) failed", sock->fd);
+                return -1;
+            }
+            if (!CFWriteStreamOpen(sock->cf_write_stream)) {
+                TSK_DEBUG_ERROR("CFWriteStreamOpen(fd=%d) failed", sock->fd);
+                return -1;
+            }
         }
     }
     
@@ -951,7 +1004,7 @@ void *tnet_transport_mainthread(void *param)
 		goto bail;
 	}
 	
-	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
+	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d} with fd {%d}...", transport->description, transport->master->ip, transport->master->port, transport->master->fd);
     
     // Set the RunLoop of the context
     context->cf_run_loop = CFRunLoopGetCurrent();
