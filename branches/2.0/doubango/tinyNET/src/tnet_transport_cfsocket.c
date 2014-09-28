@@ -916,51 +916,51 @@ int wrapSocket(tnet_transport_t *transport, transport_socket_xt *sock)
                                    &__CFWriteStreamClientCallBack,
                                    &streamContext);
             
+            if (TNET_SOCKET_TYPE_IS_TLS(sock->type)) {
+                CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
+                CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
+                
+                CFMutableDictionaryRef settings = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+                CFDictionaryAddValue(settings, kCFStreamSSLAllowsExpiredCertificates, kCFBooleanTrue);
+                CFDictionaryAddValue(settings, kCFStreamSSLAllowsAnyRoot, kCFBooleanTrue);
+                CFDictionaryAddValue(settings, kCFStreamSSLValidatesCertificateChain, transport->tls.verify ?kCFBooleanTrue : kCFBooleanFalse);
+                CFDictionaryAddValue(settings, kCFStreamSSLIsServer, sock->is_client ? kCFBooleanFalse : kCFBooleanTrue);
+                CFDictionaryAddValue(settings, kCFStreamSSLPeerName, kCFNull);
+                
+                
+#ifdef __OBJC__
+                // Set certificates (DER format)
+                if(!tsk_strnullORempty(transport->tls.ca)){
+                    NSString *ca = [NSString stringWithCString:transport->tls.ca encoding: NSUTF8StringEncoding];
+                    NSString *certPath = [[NSBundle mainBundle] pathForResource:ca ofType:@"cer"];
+                    NSData *certData = [[NSData alloc] initWithContentsOfFile:certPath];
+                    if(certData){
+                        CFDataRef certDataRef = (CFDataRef)certData;
+                        SecCertificateRef cert = SecCertificateCreateWithData(NULL, certDataRef);
+                        [certData release];
+                        
+                        SecCertificateRef certArray[1] = { cert };
+                        CFArrayRef certs = CFArrayCreate(
+                                                         NULL, (void *)certArray,
+                                                         1, NULL);
+                        if(certs){
+                            CFDictionaryAddValue(settings, kCFStreamSSLCertificates, certs);
+                            CFRelease(certs);
+                        }
+                    }
+                }
+#endif /* __OBJC__ */
+                
+                // Set the SSL settings
+                CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamPropertySSLSettings, settings);
+                CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamPropertySSLSettings, settings);
+                
+                CFRelease(settings);
+            }
+            
             // Enroll streams in the run-loop
             CFReadStreamScheduleWithRunLoop(sock->cf_read_stream, context->cf_run_loop, kCFRunLoopCommonModes);
             CFWriteStreamScheduleWithRunLoop(sock->cf_write_stream, context->cf_run_loop, kCFRunLoopCommonModes);
-        }
-        
-        if (TNET_SOCKET_TYPE_IS_TLS(sock->type)) {
-            CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
-            CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
-            
-            CFMutableDictionaryRef settings = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-            CFDictionaryAddValue(settings, kCFStreamSSLAllowsExpiredCertificates, kCFBooleanTrue);
-            CFDictionaryAddValue(settings, kCFStreamSSLAllowsAnyRoot, kCFBooleanTrue);
-            CFDictionaryAddValue(settings, kCFStreamSSLValidatesCertificateChain, transport->tls.verify ?kCFBooleanTrue : kCFBooleanFalse);
-            CFDictionaryAddValue(settings, kCFStreamSSLIsServer, sock->is_client ? kCFBooleanFalse : kCFBooleanTrue);
-            CFDictionaryAddValue(settings, kCFStreamSSLPeerName, kCFNull);
-            
-            
-#ifdef __OBJC__
-            // Set certificates (DER format)
-            if(!tsk_strnullORempty(transport->tls.ca)){
-                NSString *ca = [NSString stringWithCString:transport->tls.ca encoding: NSUTF8StringEncoding];
-                NSString *certPath = [[NSBundle mainBundle] pathForResource:ca ofType:@"cer"];
-                NSData *certData = [[NSData alloc] initWithContentsOfFile:certPath];
-                if(certData){
-                    CFDataRef certDataRef = (CFDataRef)certData;
-                    SecCertificateRef cert = SecCertificateCreateWithData(NULL, certDataRef);
-                    [certData release];
-                    
-                    SecCertificateRef certArray[1] = { cert };
-                    CFArrayRef certs = CFArrayCreate(
-                                                     NULL, (void *)certArray,
-                                                     1, NULL);
-                    if(certs){
-                        CFDictionaryAddValue(settings, kCFStreamSSLCertificates, certs);
-                        CFRelease(certs);
-                    }
-                }
-            }
-#endif /* __OBJC__ */
-            
-            // Set the SSL settings
-            CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamPropertySSLSettings, settings);
-            CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamPropertySSLSettings, settings);
-            
-            CFRelease(settings);
         }
         
         // Open streams only if ready (otherwise, fails on iOS8)
