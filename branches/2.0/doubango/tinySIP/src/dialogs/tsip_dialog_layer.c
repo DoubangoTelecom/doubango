@@ -192,6 +192,26 @@ tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const cha
 	return ret;
 }
 
+tsk_size_t tsip_dialog_layer_count_active_calls(tsip_dialog_layer_t *self)
+{
+	tsk_size_t count = 0;
+
+	tsip_dialog_t *dialog;
+	tsk_list_item_t *item;
+
+	tsk_safeobj_lock(self);
+
+	tsk_list_foreach(item, self->dialogs) {
+		if ((dialog = item->data) && dialog->type == tsip_dialog_INVITE && dialog->state != tsip_initial && dialog->state != tsip_terminated) {
+			++count;
+		}
+	}
+
+	tsk_safeobj_unlock(self);
+
+	return count;
+}
+
 /** Hangup all dialogs starting by non-REGISTER  */
 int tsip_dialog_layer_shutdownAll(tsip_dialog_layer_t *self)
 {
