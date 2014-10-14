@@ -292,7 +292,7 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
 	}
 
     const transport_socket_xt* sock = getSocket(transport->context, from);
-    if (TNET_SOCKET_TYPE_IS_STREAM(sock->type) && sock->cf_write_stream) {
+    if (sock && TNET_SOCKET_TYPE_IS_STREAM(sock->type) && sock->cf_write_stream) {
         int sent = 0, to_send;
         const uint8_t* buff_ptr = (const uint8_t*)buf;
         // on iOS when TLS is enabled sending more than 1024 bytes could fails
