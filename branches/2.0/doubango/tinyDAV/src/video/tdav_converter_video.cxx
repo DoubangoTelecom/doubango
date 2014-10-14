@@ -196,8 +196,8 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 		tsk_size_t x_in_size;
 		// check input size
 		x_in_size = _tdav_converter_video_libyuv_is_chroma_varsize(_self->srcChroma) ? buffer_size : _tdav_converter_video_libyuv_get_size(_self->srcChroma, src_w, src_h);
-		if (x_in_size != buffer_size) {
-			TSK_DEBUG_ERROR("Invalid input size: %u<>%u", x_in_size, buffer_size);
+		if (x_in_size > buffer_size) { // Ignore any extra data. For example, "CVPixelBufferGetDataSize()" will return size padded with 8 extra bytes for RGB32.
+			TSK_DEBUG_ERROR("Invalid input size: %u>%u", x_in_size, buffer_size);
 			return 0;
 		}
 
