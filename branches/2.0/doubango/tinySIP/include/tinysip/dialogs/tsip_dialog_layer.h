@@ -68,6 +68,8 @@ tsip_dialog_t* tsip_dialog_layer_find_by_ssid(tsip_dialog_layer_t *self, tsip_ss
 tsip_dialog_t* tsip_dialog_layer_find_by_callid(tsip_dialog_layer_t *self, const char* callid);
 tsk_bool_t tsip_dialog_layer_have_dialog_with_callid(const tsip_dialog_layer_t *self, const char* callid);
 
+tsk_size_t tsip_dialog_layer_count_active_calls(tsip_dialog_layer_t *self);
+
 
 TINYSIP_API int tsip_dialog_layer_shutdownAll(tsip_dialog_layer_t *self);
 int tsip_dialog_layer_signal_stack_disconnected(tsip_dialog_layer_t *self);
