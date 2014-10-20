@@ -19,8 +19,8 @@ UpdateVersion()
     sed -i "s/[0-9]\+\,[0-9]\+\,[0-9]\+\,[0-9]\+/$VERSION_MAJOR\,$VERSION_MINOR\,$VERSION_MICRO\,${SVN_REVISION[0]}/g" $1
     sed -i "s/[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+/$VERSION_MAJOR\.$VERSION_MINOR\.$VERSION_MICRO\.${SVN_REVISION[0]}/g" $1
     
-    #sed -i "s/2.0.0.1113M/2.0.0.1113/g" $1
-    #sed -i "s/2,0,0,1113M/2,0,0,1113/g" $1
+    #sed -i "s/2.0.0.1128/2.0.0.1156/g" $1
+    #sed -i "s/2,0,0,1128/2,0,0,1156/g" $1
 }
 
 UpdateVersion tinyBFCP/version.rc
