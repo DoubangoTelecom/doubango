@@ -141,6 +141,9 @@ typedef enum tnet_stun_method_e {
     tnet_stun_method_data = 0x0007,  /**< rfc5766 - Data              (only indication semantics defined) */
     tnet_stun_method_createpermission = 0x0008,  /**< rfc5766 - CreatePermission  (only request/response semantics defined */
     tnet_stun_method_channelbind = 0x0009,  /**< rfc5766 - ChannelBind       (only request/response semantics defined) */
+	tnet_stun_method_connect = 0x000a,/**< rfc6062 - Connect */
+	tnet_stun_method_connectionbind = 0x000b,/**< rfc6062 - ConnectionBind */
+	tnet_stun_method_connectionattempt = 0x000c,/**< rfc6062 - ConnectionAttempt */
 }
 tnet_stun_method_t;
 
@@ -161,6 +164,13 @@ typedef enum tnet_stun_address_family_e {
     tnet_stun_address_family_ipv4 = 0x01,
     tnet_stun_address_family_ipv6 = 0x02
 } tnet_stun_address_family_t;
+
+// rfc5766 - 14.7.  REQUESTED-TRANSPORT
+typedef enum tnet_turn_transport_e {
+	tnet_turn_transport_udp = 17,
+	tnet_turn_transport_tcp = 6
+}
+tnet_turn_transport_t;
 
 // RFC 5389  - 15.6.  ERROR-CODE
 #define kStunErrorClassTryAlternate						3
@@ -246,6 +256,9 @@ typedef enum tnet_stun_attr_type_e {
     tnet_stun_attr_type_ice_use_candidate = 0x0025, /**< 21.2. STUN Attributes */
     tnet_stun_attr_type_ice_controlled = 0x8029, /**< 21.2. STUN Attributes */
     tnet_stun_attr_type_ice_controlling = 0x802A, /**< 21.2. STUN Attributes */
+
+	/* rfc6062 */
+	tnet_stun_attr_type_connection_id = 0x002a, /**< 6.2.  New STUN Attributes */
 } tnet_stun_attr_type_t;
 
 
@@ -302,6 +315,18 @@ typedef enum tnet_stun_pkt_type_e {
     tnet_stun_pkt_type_channelbind_indication = (tnet_stun_method_channelbind | tnet_stun_mask_indication),
     tnet_stun_pkt_type_channelbind_success_response = (tnet_stun_method_channelbind | tnet_stun_mask_success),
     tnet_stun_pkt_type_channelbind_error_response = (tnet_stun_method_channelbind | tnet_stun_mask_error),
+
+	tnet_stun_pkt_type_connect_request = (tnet_stun_method_connect | tnet_stun_mask_request),
+    tnet_stun_pkt_type_connect_indication = (tnet_stun_method_connect | tnet_stun_mask_indication),
+    tnet_stun_pkt_type_connect_success_response = (tnet_stun_method_connect | tnet_stun_mask_success),
+    tnet_stun_pkt_type_connect_error_response = (tnet_stun_method_connect | tnet_stun_mask_error),
+
+	tnet_stun_pkt_type_connectionbind_request = (tnet_stun_method_connectionbind | tnet_stun_mask_request),
+    tnet_stun_pkt_type_connectionbind_indication = (tnet_stun_method_connectionbind | tnet_stun_mask_indication),
+    tnet_stun_pkt_type_connectionbind_success_response = (tnet_stun_method_connectionbind | tnet_stun_mask_success),
+    tnet_stun_pkt_type_connectionbind_error_response = (tnet_stun_method_connectionbind | tnet_stun_mask_error),
+
+	tnet_stun_pkt_type_connectionattempt_indication = (tnet_stun_method_connectionattempt | tnet_stun_mask_indication),	
 }
 tnet_stun_pkt_type_t;
 

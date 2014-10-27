@@ -20,14 +20,24 @@
 #ifndef TNET_TEST_ICE_H
 #define TNET_TEST_ICE_H
 
+#undef kStunUsrName
+#undef kStunPwd
+
 #define kStunUsrName			"bossiel@yahoo.fr"
 #define kStunPwd				"tinynet"
 #define kStunServerIP			"ns313841.ovh.net" /*"numb.viagenie.ca"*/ /*stun.ekiga.net*/
 
-#define kSkipHosts				0
+#define kSkipHosts				1
 #define kSkipReflexives			1 // server reflexive: STUN
 #define kSkipPeers				1 // peer reflexive
 #define kSkipRelays				0 // relays: TURN
+
+#define kTurnTrue				1
+#define kStunTrue				1
+#define kTurnFalse				0
+#define kStunFalse				0
+
+static const tsk_bool_t use_rtcp = tsk_false;
 
 static struct tnet_ice_ctx_s *p_ice_ctx1 = tsk_null;
 static struct tnet_ice_ctx_s *p_ice_ctx2 = tsk_null;
@@ -73,7 +83,11 @@ static int test_ice_rtp_callback(const void* callback_data, const uint8_t* data_
 {
 	struct tnet_ice_ctx_s *p_ice_ctx = (struct tnet_ice_ctx_s *)callback_data;
 
-	TSK_DEBUG_INFO("\n\nICE rtp callback: %.*s\n\n", data_size, data_ptr);
+	TSK_DEBUG_INFO("\n\nICE rtp callback (incoming data): %.*s\n\n", data_size, data_ptr);
+
+#if 0
+	tnet_ice_ctx_send_turn_rtp(p_ice_ctx, data_ptr, data_size);
+#endif
 
 	return 0;
 }
@@ -117,6 +131,8 @@ static int test_ice_state_callback(const tnet_ice_event_t *e)
 			{
 				const char kTurnData[] = "TURN data to send for testing";
 				const tnet_ice_candidate_t *candidate_offer, *candidate_answer_src, *candidate_answer_dest;
+
+				// === RTP === //
 				ret = tnet_ice_ctx_get_nominated_symetric_candidates(p_ice_ctx, TNET_ICE_CANDIDATE_COMPID_RTP, &candidate_offer, &candidate_answer_src, &candidate_answer_dest);
 				if (ret == 0) {
 					TSK_DEBUG_INFO("Nominated candidate(RTP): Offer=[[%s]], AnswerSrc=[[%s]], AnswerDest=[[%s]]",
@@ -128,14 +144,17 @@ static int test_ice_state_callback(const tnet_ice_event_t *e)
 						tnet_ice_ctx_send_turn_rtp(p_ice_ctx, kTurnData, sizeof(kTurnData));
 					}
 				}
-				ret = tnet_ice_ctx_get_nominated_symetric_candidates(p_ice_ctx, TNET_ICE_CANDIDATE_COMPID_RTCP, &candidate_offer, &candidate_answer_src, &candidate_answer_dest);
-				if (ret == 0) {
-					TSK_DEBUG_INFO("Nominated candidate(RTCP): Offer=[[%s]], AnswerSrc=[[%s]], AnswerDest=[[%s]]",
-						tnet_ice_candidate_tostring((tnet_ice_candidate_t*)candidate_offer),
-						tnet_ice_candidate_tostring((tnet_ice_candidate_t*)candidate_answer_src),
-						tnet_ice_candidate_tostring((tnet_ice_candidate_t*)candidate_answer_dest));
-					if (tnet_ice_ctx_is_turn_rtcp_active(p_ice_ctx)) {
-						tnet_ice_ctx_send_turn_rtcp(p_ice_ctx, kTurnData, sizeof(kTurnData));
+				// === RTCP === //
+				if (use_rtcp) {
+					ret = tnet_ice_ctx_get_nominated_symetric_candidates(p_ice_ctx, TNET_ICE_CANDIDATE_COMPID_RTCP, &candidate_offer, &candidate_answer_src, &candidate_answer_dest);
+					if (ret == 0) {
+						TSK_DEBUG_INFO("Nominated candidate(RTCP): Offer=[[%s]], AnswerSrc=[[%s]], AnswerDest=[[%s]]",
+							tnet_ice_candidate_tostring((tnet_ice_candidate_t*)candidate_offer),
+							tnet_ice_candidate_tostring((tnet_ice_candidate_t*)candidate_answer_src),
+							tnet_ice_candidate_tostring((tnet_ice_candidate_t*)candidate_answer_dest));
+						if (tnet_ice_ctx_is_turn_rtcp_active(p_ice_ctx)) {
+							tnet_ice_ctx_send_turn_rtcp(p_ice_ctx, kTurnData, sizeof(kTurnData));
+						}
 					}
 				}
 				break;
@@ -150,7 +169,6 @@ void test_ice()
 {
 	int ret;
 	static const tsk_bool_t use_ipv6 = tsk_false;
-	static const tsk_bool_t use_rtcp = tsk_true;
 	static const tsk_bool_t use_ice_jingle = tsk_false;
 	static const tsk_bool_t use_video = tsk_false;
 	
@@ -184,12 +202,19 @@ void test_ice()
 	if ((ret = tnet_ice_ctx_rtp_callback(p_ice_ctx2, test_ice_rtp_callback, p_ice_ctx2))) {
 		goto bail;
 	}
+#if 0 //@deprecated
 	if ((ret = tnet_ice_ctx_set_stun(p_ice_ctx1, kStunServerIP, 3478, kStunSoftware, kStunUsrName, kStunPwd))) {
 		goto bail;
 	}
 	if ((ret = tnet_ice_ctx_set_stun(p_ice_ctx2, kStunServerIP, 3478, kStunSoftware, kStunUsrName, kStunPwd))) {
 		goto bail;
 	}
+#else
+	tnet_ice_ctx_add_server(p_ice_ctx1, "udp", kStunServerIP, 3478, kTurnFalse, kStunTrue, kStunUsrName, kStunPwd); // STUN-UDP
+	tnet_ice_ctx_add_server(p_ice_ctx1, "tcp", kStunServerIP, 3478, kTurnTrue, kStunFalse, kStunUsrName, kStunPwd); // TURN-TCP
+	tnet_ice_ctx_add_server(p_ice_ctx2, "udp", kStunServerIP, 3478, kTurnFalse, kStunTrue, kStunUsrName, kStunPwd); // STUN-UDP
+	tnet_ice_ctx_add_server(p_ice_ctx2, "tcp", kStunServerIP, 3478, kTurnTrue, kStunFalse, kStunUsrName, kStunPwd); // TURN-TCP
+#endif
 	if ((ret = tnet_ice_ctx_start(p_ice_ctx1))) {
 		goto bail;
 	}

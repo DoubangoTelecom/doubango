@@ -22,6 +22,7 @@
 #include "tnet_ice_candidate.h"
 #include "tnet_ice_utils.h"
 #include "tnet_utils.h"
+#include "turn/tnet_turn_session.h"
 
 #include "tsk_md5.h"
 #include "tsk_memory.h"
@@ -281,14 +282,21 @@ const char* tnet_ice_candidate_tostring(tnet_ice_candidate_t* self)
 		return tsk_null;
 	}
 	
-	_transport_str = self->transport_str ? self->transport_str : _tnet_ice_candidate_get_transport_str(self->transport_e);
-	if(self->is_ice_jingle){
-		tsk_size_t i, s = tsk_strlen(_transport_str);
-		memset(__str, 0, sizeof(__str));
-		for(i = 0; i < s && i < sizeof(__str)/sizeof(__str[0]); ++i){
-			__str[i] = tolower(_transport_str[i]);
+	if (self->type_e == tnet_ice_cand_type_relay && self->turn.ss) {
+		enum tnet_turn_transport_e e_req_transport = tnet_turn_transport_udp;
+		tnet_turn_session_get_req_transport(self->turn.ss, &e_req_transport);
+		_transport_str = (e_req_transport == tnet_turn_transport_tcp) ? "tcp" : "udp";
+	}
+	else {
+		_transport_str = self->transport_str ? self->transport_str : _tnet_ice_candidate_get_transport_str(self->transport_e);
+		if(self->is_ice_jingle){
+			tsk_size_t i, s = tsk_strlen(_transport_str);
+			memset(__str, 0, sizeof(__str));
+			for(i = 0; i < s && i < sizeof(__str)/sizeof(__str[0]); ++i){
+				__str[i] = tolower(_transport_str[i]);
+			}
+			_transport_str = &__str[0];
 		}
-		_transport_str = &__str[0];
 	}
 
 	_tnet_ice_candidate_tostring(
@@ -344,7 +352,7 @@ const char* tnet_ice_candidate_tostring(tnet_ice_candidate_t* self)
 	return self->tostring;
 }
 
-int tnet_ice_candidate_send_stun_bind_request(tnet_ice_candidate_t* self, struct sockaddr_storage* server_addr, const char* username, const char* password)
+int tnet_ice_candidate_send_stun_bind_request(tnet_ice_candidate_t* self, const struct sockaddr_storage* server_addr, const char* username, const char* password)
 {
 	tnet_stun_pkt_t *request = tsk_null; 
 	tsk_buffer_t *buffer = tsk_null;

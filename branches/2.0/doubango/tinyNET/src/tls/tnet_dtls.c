@@ -36,7 +36,7 @@ typedef struct tnet_dtls_socket_s
 {
 	TSK_DECLARE_OBJECT;
 	
-	tnet_fd_t fd; /* not owner: do not try to close */
+	struct tnet_socket_s* wrapped_sock; /* not owner: do not try to close */
 	tsk_bool_t verify_peer;
 	tsk_bool_t use_srtp;
 	tsk_bool_t handshake_completed;
@@ -292,7 +292,7 @@ int tnet_dtls_get_fingerprint(const char* certfile, tnet_fingerprint_t* fingerpr
 #endif
 }
 
-tnet_dtls_socket_handle_t* tnet_dtls_socket_create(tnet_fd_t fd, struct ssl_ctx_st* ssl_ctx)
+tnet_dtls_socket_handle_t* tnet_dtls_socket_create(struct tnet_socket_s* wrapped_sock, struct ssl_ctx_st* ssl_ctx)
 {
 #if !HAVE_OPENSSL || !HAVE_OPENSSL_DTLS
 	TSK_DEBUG_ERROR("OpenSSL or DTLS not enabled");
@@ -300,19 +300,19 @@ tnet_dtls_socket_handle_t* tnet_dtls_socket_create(tnet_fd_t fd, struct ssl_ctx_
 #else
 	tnet_dtls_socket_t* socket;
 
-	if(fd <= 0 || !ssl_ctx){
+	if(!wrapped_sock || !ssl_ctx){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
 	if((socket = tsk_object_new(tnet_dtls_socket_def_t))){
-		socket->fd = fd;
+		socket->wrapped_sock = tsk_object_ref(wrapped_sock);
 		if(!(socket->ssl = SSL_new(ssl_ctx))){
 			TSK_DEBUG_ERROR("SSL_new(CTX) failed [%s]", ERR_error_string(ERR_get_error(), tsk_null));
 			TSK_OBJECT_SAFE_FREE(socket);
 			return tsk_null;
 		}
 		if(!(socket->rbio = BIO_new(BIO_s_mem())) || !(socket->wbio = BIO_new(BIO_s_mem()))){
-			TSK_DEBUG_ERROR("BIO_new_socket(%d) failed [%s]", socket->fd, ERR_error_string(ERR_get_error(), tsk_null));
+			TSK_DEBUG_ERROR("BIO_new_socket(%d) failed [%s]", socket->wrapped_sock->fd, ERR_error_string(ERR_get_error(), tsk_null));
 			if(socket->rbio){
 				BIO_free(socket->rbio);
 			}
@@ -346,7 +346,7 @@ tnet_dtls_socket_handle_t* tnet_dtls_socket_create(tnet_fd_t fd, struct ssl_ctx_
 
 tnet_fd_t tnet_dtls_socket_get_fd(const tnet_dtls_socket_handle_t* handle)
 {
-	return handle ? ((const tnet_dtls_socket_t*)handle)->fd : TNET_INVALID_FD;
+	return handle ? ((const tnet_dtls_socket_t*)handle)->wrapped_sock->fd : TNET_INVALID_FD;
 }
 
 const struct sockaddr_storage* tnet_dtls_socket_get_remote_addr(const tnet_dtls_socket_handle_t* handle)
@@ -535,7 +535,12 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 			tnet_ip_t ip;
 			tnet_get_sockip_n_port((const struct sockaddr *)&socket->remote.addr, &ip, &port);
 			TSK_DEBUG_INFO("DTLS data handshake to send with len = %d, ip = %.*s and port = %d", len, sizeof(ip), ip, port);
-			len = tnet_sockfd_sendto(socket->fd, (const struct sockaddr *)&socket->remote.addr, out_data, len);
+			if (TNET_SOCKET_TYPE_IS_DGRAM(socket->wrapped_sock->type)) { // UDP
+				len = tnet_sockfd_sendto(socket->wrapped_sock->fd, (const struct sockaddr *)&socket->remote.addr, out_data, len);
+			}
+			else { // TCP, TLS, WSS...
+				len = tnet_socket_send_stream(socket->wrapped_sock, out_data, len);
+			}
 			TSK_DEBUG_INFO("DTLS data handshake sent len = %d", len);
 		}
 	}
@@ -719,6 +724,7 @@ static tsk_object_t* tnet_dtls_socket_dtor(tsk_object_t * self)
 		}
 #endif
 		TSK_FREE(socket->handshake_data.ptr);
+		TSK_OBJECT_SAFE_FREE(socket->wrapped_sock);
 		tsk_safeobj_deinit(socket);
 	}
 	return self;

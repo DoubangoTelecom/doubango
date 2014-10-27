@@ -742,28 +742,32 @@ void *tnet_transport_mainthread(void *param)
 					goto TNET_POLLIN_DONE;
 				}
 				
-				if(!(buffer = tsk_calloc(len, sizeof(uint8_t)))){
+				if (!(buffer = tsk_calloc(len, sizeof(uint8_t)))) {
 					TSK_DEBUG_ERROR("TSK_CALLOC FAILED");
 					goto TNET_POLLIN_DONE;
 				}
 				
+				// Retrieve the remote address
+				if (TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)) {
+					ret = tnet_getpeername(active_socket->fd, &remote_addr);
+				}
 				
 				// Receive the waiting data
-				if(active_socket->tlshandle){
+				if (active_socket->tlshandle) {
 					int isEncrypted;
 					tsk_size_t tlslen = len;
-					if((ret = tnet_tls_socket_recv(active_socket->tlshandle, &buffer, &tlslen, &isEncrypted)) == 0){
-						if(isEncrypted){
+					if ((ret = tnet_tls_socket_recv(active_socket->tlshandle, &buffer, &tlslen, &isEncrypted)) == 0) {
+						if (isEncrypted) {
 							TSK_FREE(buffer);
 							goto TNET_POLLIN_DONE;
 						}
-						if(ret == 0){
+						if (ret == 0) {
 							len = ret = tlslen;
 						}
 					}
 				}
 				else {
-					if(is_stream){
+					if (is_stream) {
 						ret = tnet_sockfd_recv(active_socket->fd, buffer, len, 0);
 					}
 					else {

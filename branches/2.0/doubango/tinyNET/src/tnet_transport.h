@@ -96,6 +96,7 @@ TINYNET_API int tnet_transport_pause_socket(const tnet_transport_handle_t *handl
 TINYNET_API int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t* fd);
 TINYNET_API tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port, tnet_socket_type_t type);
 #define tnet_transport_connectto_2(handle, host, port) tnet_transport_connectto(handle, host, port, tnet_transport_get_type(handle))
+TINYNET_API tnet_fd_t tnet_transport_connectto_3(const tnet_transport_handle_t *handle, struct tnet_socket_s* socket, const char* host, tnet_port_t port, tnet_socket_type_t type);
 TINYNET_API tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, tsk_size_t size);
 TINYNET_API tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, tsk_size_t size);
 

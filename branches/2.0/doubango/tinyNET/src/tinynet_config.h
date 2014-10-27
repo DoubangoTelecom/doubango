@@ -84,8 +84,17 @@
 #	define TINYNET_GEXTERN	extern
 #endif
 
-/* Guards against C++ name mangling 
-*/
+/* define "TNET_DEPRECATED(func)" macro */
+#if defined(__GNUC__)
+#	define TNET_DEPRECATED(func) func __attribute__ ((deprecated))
+#elif defined(_MSC_VER)
+#	define TNET_DEPRECATED(func) __declspec(deprecated) func
+#else
+#	pragma message("WARNING: Deprecated not supported for this compiler")
+#	define TNET_DEPRECATED(func) func
+#endif
+
+/* Guards against C++ name mangling  */
 #ifdef __cplusplus
 #	define TNET_BEGIN_DECLS extern "C" {
 #	define TNET_END_DECLS }

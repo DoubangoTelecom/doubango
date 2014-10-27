@@ -82,7 +82,7 @@ typedef struct trtp_manager_s
 		char* remote_ip;
 		tnet_port_t remote_port;
 		struct sockaddr_storage remote_addr;
-
+	
 		char* public_ip;
 		tnet_port_t public_port;
 

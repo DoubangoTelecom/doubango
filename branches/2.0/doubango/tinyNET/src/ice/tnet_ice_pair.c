@@ -173,6 +173,7 @@ int tnet_ice_pair_send_conncheck(tnet_ice_pair_t *self)
 
 	if (self->candidate_offer->turn.ss) {
 		enum tnet_stun_state_e e_state;
+		enum tnet_turn_transport_e e_req_transport;
 		if ((ret = tnet_turn_session_get_state_createperm(self->candidate_offer->turn.ss, self->turn_peer_id, &e_state))) {
 			goto bail;
 		}
@@ -180,6 +181,21 @@ int tnet_ice_pair_send_conncheck(tnet_ice_pair_t *self)
 			TSK_DEBUG_INFO("TURN CreatePerm not ready yet... to send STUN ConnCheck");
 			goto bail;
 		}
+		
+		if ((ret = tnet_turn_session_get_req_transport(self->candidate_offer->turn.ss, &e_req_transport))) {
+			goto bail;
+		}
+		if (e_req_transport == tnet_turn_transport_tcp) {
+			// Make sure "ConnectionBind" sent and underlaying socket is connected 
+			tsk_bool_t b_connected;
+			if ((ret = tnet_turn_session_is_stream_connected(self->candidate_offer->turn.ss, self->turn_peer_id, &b_connected))) {
+				goto bail;
+			}
+			if (!b_connected) {
+				TSK_DEBUG_INFO("TURN/TCP not connected yet... to send STUN ConnCheck");
+				goto bail;
+			}
+		}		
 	}
 
 	if (!self->last_request) {
@@ -675,10 +691,10 @@ const tnet_ice_pair_t* tnet_ice_pairs_find_by_fd_and_addr(tnet_ice_pairs_L_t* pa
 	}
 
 	tsk_list_foreach(item, pairs){
-		if(!(pair = item->data) || !pair->candidate_offer || !pair->candidate_offer->socket || pair->candidate_offer->socket->fd != local_fd){
+		if (!(pair = item->data) || !pair->candidate_offer || !pair->candidate_offer->socket || pair->candidate_offer->socket->fd != local_fd) {
 			continue;
 		}
-		if(!tsk_striequals(pair->candidate_answer->connection_addr, remote_ip) || pair->candidate_answer->port != remote_port){
+		if (!tsk_striequals(pair->candidate_answer->connection_addr, remote_ip) || pair->candidate_answer->port != remote_port) {
 			continue;
 		}
 

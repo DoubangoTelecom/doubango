@@ -120,7 +120,7 @@ int tnet_ice_candidate_set_rflx_addr(tnet_ice_candidate_t* self, const char* add
 TINYNET_API const char* tnet_ice_candidate_get_att_value(const tnet_ice_candidate_t* self, const char* att_name);
 int tnet_ice_candidate_set_local_pref(tnet_ice_candidate_t* self, uint16_t local_pref);
 TINYNET_API const char* tnet_ice_candidate_tostring(tnet_ice_candidate_t* self);
-int tnet_ice_candidate_send_stun_bind_request(tnet_ice_candidate_t* self, struct sockaddr_storage* server_addr, const char* username, const char* password);
+int tnet_ice_candidate_send_stun_bind_request(tnet_ice_candidate_t* self, const struct sockaddr_storage* server_addr, const char* username, const char* password);
 int tnet_ice_candidate_process_stun_response(tnet_ice_candidate_t* self, const tnet_stun_pkt_resp_t* response, tnet_fd_t fd);
 const tnet_ice_candidate_t* tnet_ice_candidate_find_by_fd(tnet_ice_candidates_L_t* candidates, tnet_fd_t fd);
 const char* tnet_ice_candidate_get_ufrag(const tnet_ice_candidate_t* self);

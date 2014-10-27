@@ -21,6 +21,7 @@
 
 #include "tinynet_config.h"
 #include "stun/tnet_stun_types.h"
+#include "tnet_types.h"
 
 #include "tsk_common.h" /* tsk_bool_t  */
 
@@ -42,6 +43,10 @@ typedef enum tnet_turn_session_event_type_e
 	tnet_turn_session_event_type_recv_data,
 	tnet_turn_session_event_type_chanbind_ok,
 	tnet_turn_session_event_type_chanbind_nok,
+	tnet_turn_session_event_type_connect_ok,
+	tnet_turn_session_event_type_connect_nok,
+	tnet_turn_session_event_type_connectionbind_ok,
+	tnet_turn_session_event_type_connectionbind_nok,
 }
 tnet_turn_session_event_type_t;
 
@@ -59,26 +64,34 @@ typedef struct tnet_turn_session_event_xs {
 
 typedef int (*tnet_turn_session_callback_f)(const struct tnet_turn_session_event_xs *e);
 
-TINYNET_API int tnet_turn_session_create(struct tnet_socket_s* p_lcl_sock, const char* pc_srv_ip, uint16_t u_srv_port, struct tnet_turn_session_s** pp_self);
-TINYNET_API int tnet_turn_session_create_2(const char* pc_lcl_ip, uint16_t u_lcl_port, enum tnet_socket_type_e e_lcl_type, const char* pc_srv_ip, uint16_t u_srv_port, struct tnet_turn_session_s** pp_self);
-#define tnet_turn_session_create_3(e_lcl_type, pc_srv_ip, u_srv_port, pp_self) tnet_turn_session_create_2(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, (e_lcl_type), (pc_srv_ip), (u_srv_port), (pp_self))
-#define tnet_turn_session_create_udp_ipv4(pc_srv_ip, u_srv_port, pp_self) tnet_turn_session_create_3(tnet_socket_type_udp_ipv4, pc_srv_ip, u_srv_port, pp_self)
-#define tnet_turn_session_create_udp_ipv6(pc_srv_ip, u_srv_port, pp_self) tnet_turn_session_create_3(tnet_socket_type_udp_ipv6, pc_srv_ip, u_srv_port, pp_self)
-#define tnet_turn_session_create_udp_ipv46(pc_srv_ip, u_srv_port, pp_self) tnet_turn_session_create_3(tnet_socket_type_udp_ipv46, pc_srv_ip, u_srv_port, pp_self)
+TINYNET_API int tnet_turn_session_create(struct tnet_socket_s* p_lcl_sock, enum tnet_turn_transport_e e_req_transport, const char* pc_srv_host, uint16_t u_srv_port, struct tnet_turn_session_s** pp_self);
+TINYNET_API int tnet_turn_session_create_2(const char* pc_lcl_ip, uint16_t u_lcl_port, enum tnet_socket_type_e e_lcl_type, enum tnet_turn_transport_e e_req_transport, const char* pc_srv_host, uint16_t u_srv_port, struct tnet_turn_session_s** pp_self);
+TINYNET_API int tnet_turn_session_create_4(struct tnet_socket_s* p_lcl_sock, enum tnet_turn_transport_e e_req_transport, const char* pc_srv_host, uint16_t u_srv_port, enum tnet_socket_type_e e_srv_type, struct tnet_turn_session_s** pp_self);
+#define tnet_turn_session_create_3(e_lcl_type, e_req_transport, pc_srv_host, u_srv_port, pp_self) tnet_turn_session_create_2(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, (e_lcl_type), (e_req_transport), (pc_srv_host), (u_srv_port), (pp_self))
+#define tnet_turn_session_create_udp_ipv4(e_req_transport, pc_srv_host, u_srv_port, pp_self) tnet_turn_session_create_3(tnet_socket_type_udp_ipv4, e_req_transport, pc_srv_host, u_srv_port, pp_self)
+#define tnet_turn_session_create_udp_ipv6(pc_srv_host, u_srv_port, pp_self) tnet_turn_session_create_3(tnet_socket_type_udp_ipv6, pc_srv_host, u_srv_port, pp_self)
+#define tnet_turn_session_create_udp_ipv46(e_req_transport, pc_srv_host, u_srv_port, pp_self) tnet_turn_session_create_3(tnet_socket_type_udp_ipv46, e_req_transport, pc_srv_host, u_srv_port, pp_self)
 TINYNET_API int tnet_turn_session_set_cred(struct tnet_turn_session_s* p_self, const char* pc_usr_name, const char* pc_pwd);
 TINYNET_API int tnet_turn_session_set_callback(struct tnet_turn_session_s* p_self, tnet_turn_session_callback_f f_fun, const void* pc_usr_data);
+TINYNET_API int tnet_turn_session_set_ssl_certs(struct tnet_turn_session_s* p_self, const char* path_priv, const char* path_pub, const char* path_ca, tsk_bool_t verify);
 TINYNET_API int tnet_turn_session_prepare(struct tnet_turn_session_s* p_self);
 TINYNET_API int tnet_turn_session_start(struct tnet_turn_session_s* p_self);
 TINYNET_API int tnet_turn_session_allocate(struct tnet_turn_session_s* p_self);
 TINYNET_API int tnet_turn_session_get_relayed_addr(const struct tnet_turn_session_s* p_self, char** pp_ip, uint16_t *pu_port, tsk_bool_t *pb_ipv6);
 TINYNET_API int tnet_turn_session_get_srflx_addr(const struct tnet_turn_session_s* p_self, char** pp_ip, uint16_t *pu_port, tsk_bool_t *pb_ipv6);
 TINYNET_API int tnet_turn_session_get_state_alloc(const struct tnet_turn_session_s* pc_self, enum tnet_stun_state_e *pe_state);
+TINYNET_API int tnet_turn_session_get_socket_local(struct tnet_turn_session_s* p_self, struct tnet_socket_s** pp_lcl_sock);
 TINYNET_API int tnet_turn_session_get_state_createperm(const struct tnet_turn_session_s* pc_self, tnet_turn_peer_id_t u_peer_id, enum tnet_stun_state_e *pe_state);
+TINYNET_API int tnet_turn_session_get_state_connbind(const struct tnet_turn_session_s* pc_self, tnet_turn_peer_id_t u_peer_id, enum tnet_stun_state_e *pe_state);
+TINYNET_API int tnet_turn_session_get_req_transport(const struct tnet_turn_session_s* pc_self, enum tnet_turn_transport_e *pe_transport);
 TINYNET_API int tnet_turn_session_createpermission(struct tnet_turn_session_s* p_self, const char* pc_peer_addr, uint16_t u_peer_port, tnet_turn_peer_id_t* pu_peer_id);
 TINYNET_API int tnet_turn_session_deletepermission(struct tnet_turn_session_s* p_self, tnet_turn_peer_id_t u_peer_id);
 TINYNET_API int tnet_turn_session_chanbind(struct tnet_turn_session_s* p_self, tnet_turn_peer_id_t u_peer_id);
+TINYNET_API int tnet_turn_session_connect(struct tnet_turn_session_s* p_self, tnet_turn_peer_id_t u_peer_id);
 TINYNET_API int tnet_turn_session_send_data(struct tnet_turn_session_s* p_self, tnet_turn_peer_id_t u_peer_id, const void* pc_data_ptr, uint16_t u_data_size);
 TINYNET_API int tnet_turn_session_is_active(const struct tnet_turn_session_s* pc_self, tnet_turn_peer_id_t u_peer_id, tsk_bool_t *pb_active);
+TINYNET_API int tnet_turn_session_is_stream(const struct tnet_turn_session_s* pc_self, tsk_bool_t *pb_stream);
+TINYNET_API int tnet_turn_session_is_stream_connected(const struct tnet_turn_session_s* pc_self, tnet_turn_peer_id_t u_peer_id, tsk_bool_t *pb_connected);
 TINYNET_API int tnet_turn_session_stop(struct tnet_turn_session_s* p_self);
 
 TNET_END_DECLS

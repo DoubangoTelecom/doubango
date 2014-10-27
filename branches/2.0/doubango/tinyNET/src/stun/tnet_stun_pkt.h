@@ -138,6 +138,9 @@ tnet_stun_pkt_attr_add_t;
 // rfc5245(ICE) - 19.1.  New Attributes (ICE-CONTROLLED)
 #define TNET_STUN_PKT_ATTR_ADD_ICE_CONTROLLING(U64_CONTROLLING)						TNET_STUN_PKT_ATTR_ADD_UINT64(tnet_stun_attr_type_ice_controlling, U64_CONTROLLING)
 
+// rfc6062 - 6.2.  New STUN Attributes (CONNECTION-ID)
+#define TNET_STUN_PKT_ATTR_ADD_CONNECTION_ID(U32_CONNECTION_ID)						TNET_STUN_PKT_ATTR_ADD_UINT32(tnet_stun_attr_type_connection_id, U32_CONNECTION_ID)
+
 typedef struct tnet_stun_pkt_s {
     TSK_DECLARE_OBJECT;
     enum tnet_stun_pkt_type_e e_type;

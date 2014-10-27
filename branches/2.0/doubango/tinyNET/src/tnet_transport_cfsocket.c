@@ -149,6 +149,7 @@ int recvData(tnet_transport_t *transport, transport_socket_xt* active_socket)
         
         // Receive the waiting data
         if(is_stream){
+			ret = tnet_getpeername(active_socket->fd, &remote_addr);
             if(active_socket->cf_read_stream){
                 ret = CFReadStreamRead(active_socket->cf_read_stream, buffer, (CFIndex)len);
             }

@@ -241,6 +241,22 @@ tnet_socket_t* tnet_socket_create(const char* host, tnet_port_t port, tnet_socke
 }
 
 /**@ingroup tnet_socket_group
+* Returns the number of bytes sent (or negative value on error)
+*/
+int tnet_socket_send_stream(tnet_socket_t* self, const void* data, tsk_size_t size)
+{
+	if (!self || self->fd == TNET_INVALID_FD || !data || !size || !TNET_SOCKET_TYPE_IS_STREAM(self->type)) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	if (self->tlshandle && TNET_SOCKET_TYPE_IS_TLS(self->type) || TNET_SOCKET_TYPE_IS_WSS(self->type)) {
+		return tnet_tls_socket_send(self->tlshandle, data, size) == 0 ? (int)size : -1; // returns zero on success
+	}
+	
+	return (int)tnet_sockfd_send(self->fd, data, size, 0);
+}
+
+/**@ingroup tnet_socket_group
  * 	Closes a socket.
  * @param sock The socket to close. 
  * @retval	Zero if succeed and nonzero error code otherwise. 

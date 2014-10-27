@@ -222,13 +222,13 @@ bail:
 
 static void test_turn_session()
 {
-	BAIL_IF_ERR(tnet_turn_session_create_udp_ipv4(kStunServerIP, kStunServerPort, &__pc_ss1));
+	BAIL_IF_ERR(tnet_turn_session_create_udp_ipv4(tnet_turn_transport_udp, kStunServerIP, kStunServerPort, &__pc_ss1));
 	BAIL_IF_ERR(tnet_turn_session_set_callback(__pc_ss1, _test_turn_session_callback, __pc_ss1));
 	BAIL_IF_ERR(tnet_turn_session_set_cred(__pc_ss1, kStunUsrName, kStunPwd));
 	BAIL_IF_ERR(tnet_turn_session_prepare(__pc_ss1));
 	BAIL_IF_ERR(tnet_turn_session_start(__pc_ss1));
 
-	BAIL_IF_ERR(tnet_turn_session_create_udp_ipv4(kStunServerIP, kStunServerPort, &__pc_ss2));
+	BAIL_IF_ERR(tnet_turn_session_create_udp_ipv4(tnet_turn_transport_udp, kStunServerIP, kStunServerPort, &__pc_ss2));
 	BAIL_IF_ERR(tnet_turn_session_set_callback(__pc_ss2, _test_turn_session_callback, __pc_ss2));
 	BAIL_IF_ERR(tnet_turn_session_set_cred(__pc_ss2, kStunUsrName, kStunPwd));
 	BAIL_IF_ERR(tnet_turn_session_prepare(__pc_ss2));
