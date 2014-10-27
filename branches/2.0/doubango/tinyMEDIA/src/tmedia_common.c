@@ -58,6 +58,7 @@ static const fmtp_size_t fmtp_sizes[] =
 	{"16CIF", tmedia_pref_video_size_16cif, tsk_true, 1408, 1152},
 	{"720P", tmedia_pref_video_size_720p, tsk_false, 1280, 720},
 	{"480P", tmedia_pref_video_size_480p, tsk_false, 852, 480},
+	{"WVGA", tmedia_pref_video_size_wvga, tsk_false, 800, 480},
 	{"SVGA", tmedia_pref_video_size_svga, tsk_false, 800, 600},
 	{"4CIF", tmedia_pref_video_size_4cif, tsk_true, 704, 576},
 	{"VGA", tmedia_pref_video_size_vga, tsk_false, 640, 480},

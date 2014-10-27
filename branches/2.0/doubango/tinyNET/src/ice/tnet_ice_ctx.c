@@ -70,7 +70,21 @@
 #define TNET_ICE_TURN_ENABLED			0 // Relay candidates
 #define TNET_ICE_STUN_ENABLED			1 // Reflexive candidates
 
+#define TNET_ICE_CANDIDATES_COUNT_MAX	40
+#define TNET_ICE_SERVERS_COUNT_MAX		10
+
+typedef tsk_list_t tnet_ice_servers_L_t;
+
 static const char* foundation_default = tsk_null;
+
+typedef enum tnet_ice_server_proto_e
+{
+	tnet_ice_server_proto_none = 0x00,
+	tnet_ice_server_proto_stun = (0x01 << 0),
+	tnet_ice_server_proto_turn = (0x01 << 1),
+	tnet_ice_server_proto_all = 0xFF
+}
+tnet_ice_server_proto_t;
 
 static int _tnet_ice_ctx_fsm_act(struct tnet_ice_ctx_s* self, tsk_fsm_action_id action_id);
 static int _tnet_ice_ctx_signal_async(struct tnet_ice_ctx_s* self, tnet_ice_event_type_t type, const char* phrase);
@@ -97,9 +111,97 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_l
 static int _tnet_ice_ctx_fsm_ConnChecking_2_Terminated_X_Failure(va_list *app);
 static int _tnet_ice_ctx_fsm_Any_2_Terminated_X_AnyNotStarted(va_list *app); // Any action if not started
 
+static int _tnet_ice_ctx_servers_clear(struct tnet_ice_ctx_s* self);
+static int _tnet_ice_ctx_server_add(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto, 
+	enum tnet_socket_type_e e_transport, 
+	const char* str_server_addr, uint16_t u_server_port,
+	const char* str_software,
+	const char* str_username, const char* str_password);
+static int _tnet_ice_ctx_server_remove(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto, enum tnet_socket_type_e e_transport, const char* str_server_addr, uint16_t u_server_port);
+static const struct tnet_ice_server_s* _tnet_ice_ctx_server_find(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto, enum tnet_socket_type_e e_transport, const char* str_server_addr, uint16_t u_server_port);
+static tsk_bool_t _tnet_ice_ctx_server_exists(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto, enum tnet_socket_type_e e_transport, const char* str_server_addr, uint16_t u_server_port);
+static tsk_size_t _tnet_ice_ctx_servers_count_by_proto(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto);
+static tnet_ice_servers_L_t* _tnet_ice_ctx_servers_copy(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto);
+
 static int _tnet_ice_ctx_fsm_OnTerminated(struct tnet_ice_ctx_s* self);
 static tsk_bool_t _tnet_ice_ctx_fsm_cond_NotStarted(struct tnet_ice_ctx_s* self, const void* _any);
 static int _tnet_ice_ctx_turn_callback(const struct tnet_turn_session_event_xs *e);
+
+typedef struct tnet_ice_server_s
+{
+	TSK_DECLARE_OBJECT;
+	
+	enum tnet_socket_type_e e_transport;
+	tnet_ice_server_proto_t e_proto;
+	char* str_server_addr;
+	uint16_t u_server_port;
+	struct sockaddr_storage obj_server_addr;
+	char* str_software;
+	char* str_username; 
+	char* str_password;
+}
+tnet_ice_server_t;
+
+static tsk_object_t* tnet_ice_server_ctor(tsk_object_t * self, va_list * app)
+{
+	tnet_ice_server_t *ice_server = self;
+	if (ice_server) {
+	}
+	return self;
+}
+static tsk_object_t* tnet_ice_server_dtor(tsk_object_t * self)
+{ 
+	tnet_ice_server_t *ice_server = self;
+	if (ice_server) {
+		TSK_FREE(ice_server->str_server_addr);
+		TSK_FREE(ice_server->str_software);
+		TSK_FREE(ice_server->str_username);
+		TSK_FREE(ice_server->str_password);
+
+		TSK_DEBUG_INFO("*** ICE server destroyed ***");
+	}
+	return self;
+}
+static const tsk_object_def_t tnet_ice_server_def_s = 
+{
+	sizeof(tnet_ice_server_t),
+	tnet_ice_server_ctor, 
+	tnet_ice_server_dtor,
+	tsk_null, 
+};
+
+static tnet_ice_server_t* tnet_ice_server_create(
+	enum tnet_ice_server_proto_e e_proto, 
+	enum tnet_socket_type_e e_transport, 
+	const char* str_server_addr, uint16_t u_server_port,
+	const char* str_software,
+	const char* str_username, const char* str_password)
+{
+	tnet_ice_server_t *ice_server;
+	struct sockaddr_storage obj_server_addr;
+	
+	if (tsk_strnullORempty(str_server_addr) || !u_server_port) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	if (tnet_sockaddr_init(str_server_addr, u_server_port, e_transport, &obj_server_addr) != 0) {
+		TSK_DEBUG_ERROR("Invalid server address (host=%s, port=%d, transport=%d)", str_server_addr, u_server_port, e_transport);
+		return tsk_null;
+	}
+	
+	if ((ice_server = tsk_object_new(&tnet_ice_server_def_s))) {
+		ice_server->e_proto = e_proto;
+		ice_server->e_transport = e_transport;
+		tsk_strupdate(&ice_server->str_server_addr, str_server_addr);
+		ice_server->u_server_port = u_server_port;
+		tsk_strupdate(&ice_server->str_software, str_software);
+		tsk_strupdate(&ice_server->str_username, str_username);
+		tsk_strupdate(&ice_server->str_password, str_password);
+		memcpy(&ice_server->obj_server_addr, &obj_server_addr, sizeof(struct sockaddr_storage));
+	}
+	return ice_server;
+}
 
 typedef struct tnet_ice_ctx_s
 {
@@ -129,6 +231,8 @@ typedef struct tnet_ice_ctx_s
 	const void* rtp_callback_data;
 	tnet_ice_rtp_callback_f rtp_callback;
 
+	tnet_ice_servers_L_t *servers;
+
 	char* ufrag;
 	char* pwd;
 
@@ -146,13 +250,12 @@ typedef struct tnet_ice_ctx_s
 	uint16_t RTO; /**< Estimate of the round-trip time (RTT) in millisecond */
 	uint16_t Rc; /**< Number of retransmissions for UDP in millisecond */
 
-	struct{
-		char* username; /**< The username to use to authenticate (long-term) against the STUN/TURN server */
-		char* password; /**< The password to use to authenticate (long-term) against the STUN/TURN server */
-		char* software; /**< The stun client name */
-		char* server_addr; /**< STUN server address (could be FQDN or IP) */
-		tnet_port_t server_port; /**< STUN server port */
-	} stun;
+	struct {
+		char* path_priv;
+		char* path_pub;
+		char* path_ca;
+		tsk_bool_t verify;
+	} ssl;
 
 	struct {
 		tsk_condwait_handle_t* condwait;
@@ -263,9 +366,12 @@ static tsk_object_t* tnet_ice_ctx_ctor(tsk_object_t * self, va_list * app)
 			TSK_DEBUG_ERROR("Failed to create candidates list");
 			return tsk_null;
 		}
-
-		TSK_SAFE_FREE(ctx->ufrag);
-		TSK_SAFE_FREE(ctx->pwd);
+		
+		// Create list objects to hold the servers
+		if(!(ctx->servers = tsk_list_create())){
+			TSK_DEBUG_ERROR("Failed to create server list");
+			return tsk_null;
+		}
 
 		tsk_runnable_set_important(TSK_RUNNABLE(self), tsk_false);
 
@@ -297,11 +403,6 @@ static tsk_object_t* tnet_ice_ctx_dtor(tsk_object_t * self)
 			tsk_timer_manager_destroy(&ctx->h_timer_mgr);
 		}
 
-		TSK_SAFE_FREE(ctx->stun.username);
-		TSK_SAFE_FREE(ctx->stun.password);
-		TSK_SAFE_FREE(ctx->stun.software);
-		TSK_SAFE_FREE(ctx->stun.server_addr);
-
 		TSK_OBJECT_SAFE_FREE(ctx->fsm);
 		TSK_OBJECT_SAFE_FREE(ctx->candidates_local);
 		TSK_OBJECT_SAFE_FREE(ctx->candidates_remote);
@@ -312,6 +413,11 @@ static tsk_object_t* tnet_ice_ctx_dtor(tsk_object_t * self)
 		if (ctx->turn.condwait) {
 			tsk_condwait_destroy(&ctx->turn.condwait);
 		}
+		TSK_OBJECT_SAFE_FREE(ctx->servers);
+
+		TSK_FREE(ctx->ssl.path_priv);
+		TSK_FREE(ctx->ssl.path_pub);
+		TSK_FREE(ctx->ssl.path_ca);
 
 		tsk_safeobj_deinit(ctx);
 	}
@@ -401,6 +507,7 @@ int tnet_ice_ctx_set_userdata(tnet_ice_ctx_t* self, const void* userdata)
 	return 0;
 }
 
+// @deprecated: use "tnet_ice_ctx_add_server()"
 int tnet_ice_ctx_set_stun(
 	tnet_ice_ctx_t* self, 
 	const char* server_addr, 
@@ -409,18 +516,68 @@ int tnet_ice_ctx_set_stun(
 	const char* username, 
 	const char* password)
 {
-	if(!self){
+	_tnet_ice_ctx_servers_clear(self);
+	return tnet_ice_ctx_add_server(
+		self,
+		"udp",
+		server_addr, 
+		server_port,
+		(!tsk_strnullORempty(username) && !tsk_strnullORempty(password)), /* use_turn*/
+		tsk_true, /* use_stun*/
+		username, 
+		password);
+}
+
+int tnet_ice_ctx_add_server(
+	struct tnet_ice_ctx_s* self,
+	const char* transport_proto, // "udp", "tcp", "tls", "ws", "wss"
+	const char* server_addr, 
+	uint16_t server_port,
+	tsk_bool_t use_turn,
+	tsk_bool_t use_stun,
+	const char* username, 
+	const char* password)
+{
+	tnet_socket_type_t socket_type;
+	tnet_ice_server_proto_t e_proto = tnet_ice_server_proto_none;
+	if (!self || tsk_strnullORempty(server_addr) || !server_port) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+	if (!use_turn && !use_stun) {
+		TSK_DEBUG_ERROR("'use_stun' or 'use_turn' must be true");
+		return -1;
+	}
+	if (use_stun) {
+		e_proto |= tnet_ice_server_proto_stun;
+	}
+	if (use_turn) {
+		e_proto |= tnet_ice_server_proto_turn;
+	}
 
-	tsk_strupdate(&self->stun.server_addr, server_addr);
-	self->stun.server_port = server_port;
-	tsk_strupdate(&self->stun.software, software);
-	tsk_strupdate(&self->stun.username, username);
-	tsk_strupdate(&self->stun.password, password);
-
-	return 0;
+	if (tsk_striequals(transport_proto, "udp")) {
+		socket_type = self->use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4;
+	}
+	else if (tsk_striequals(transport_proto, "tcp")) {
+		socket_type = self->use_ipv6 ? tnet_socket_type_tcp_ipv6 : tnet_socket_type_tcp_ipv4;
+	}
+	else if (tsk_striequals(transport_proto, "tls")) {
+		socket_type = self->use_ipv6 ? tnet_socket_type_tls_ipv6 : tnet_socket_type_tls_ipv4;
+	}
+	else if (tsk_striequals(transport_proto, "ws")) {
+		socket_type = self->use_ipv6 ? tnet_socket_type_ws_ipv6 : tnet_socket_type_ws_ipv4;
+	}
+	else if (tsk_striequals(transport_proto, "wss")) {
+		socket_type = self->use_ipv6 ? tnet_socket_type_wss_ipv6 : tnet_socket_type_wss_ipv4;
+	}
+	else {
+		TSK_DEBUG_ERROR("'%s' not a valid transport proto", transport_proto);
+		return -1;
+	}	
+	return _tnet_ice_ctx_server_add(self, e_proto, 
+		socket_type, server_addr, server_port,
+		kStunSoftware,
+		username, password);
 }
 
 int tnet_ice_ctx_set_sync_mode(tnet_ice_ctx_t* self, tsk_bool_t sync_mode)
@@ -622,11 +779,24 @@ int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candida
 
 int tnet_ice_ctx_set_rtcpmux(tnet_ice_ctx_t* self, tsk_bool_t use_rtcpmux)
 {
-	if(!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	self->use_rtcpmux = use_rtcpmux;
+	return 0;
+}
+
+int tnet_ice_ctx_set_ssl_certs(struct tnet_ice_ctx_s* self, const char* path_priv, const char* path_pub, const char* path_ca, tsk_bool_t verify)
+{
+	if (!self) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	tsk_strupdate(&self->ssl.path_priv, path_priv);
+	tsk_strupdate(&self->ssl.path_pub, path_pub);
+	tsk_strupdate(&self->ssl.path_ca, path_ca);
+	self->ssl.verify = verify;
 	return 0;
 }
 
@@ -952,13 +1122,13 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidates_2_GatheringHostCandidatesDo
 	self = va_arg(*app, tnet_ice_ctx_t *);
 	
 	ret = _tnet_ice_ctx_signal_async(self, tnet_ice_event_type_gathering_host_candidates_succeed, "Gathering host candidates succeed");
-	if(ret == 0){
-		if (self->is_stun_enabled && !tsk_strnullORempty(self->stun.server_addr) && self->stun.server_port > 0) {
-			TSK_DEBUG_INFO("ICE using STUN server: %s:%u", self->stun.server_addr, self->stun.server_port);
+	if (ret == 0) {
+		if (self->is_stun_enabled && _tnet_ice_ctx_servers_count_by_proto(self, tnet_ice_server_proto_stun) > 0) {
+			TSK_DEBUG_INFO("ICE-STUN enabled and we have STUN servers");
 			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatherReflexiveCandidates);
 		}
 		else {
-			TSK_DEBUG_INFO("Do not gather reflexive candidates because ICE-STUN is disabled");
+			TSK_DEBUG_INFO("Do not gather reflexive candidates because ICE-STUN is disabled or no server defined");
 			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatheringComplet);
 		}
 	}
@@ -982,17 +1152,17 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 		STUN indications are not retransmitted; thus, indication transactions over UDP 
 		are not reliable.
 	*/
-	int ret;
-	struct sockaddr_storage server_addr;
+	int ret = 0;
+	tnet_ice_servers_L_t* ice_servers = tsk_null;
+	const tnet_ice_server_t* ice_server;
 	tnet_ice_ctx_t* self;
-	tnet_socket_type_t socket_type;
 	uint16_t i, k, rto, rc;
 	struct timeval tv;
 	tnet_stun_pkt_resp_t *response = tsk_null;
-	const tsk_list_item_t *item;
+	const tsk_list_item_t *item, *item_server;
 	tnet_ice_candidate_t* candidate;
-	tnet_fd_t fds[40] = { TNET_INVALID_FD }; // -1, then zeros
-	tnet_fd_t fds_skipped[40] = { TNET_INVALID_FD }; // -1, then zeros
+	tnet_fd_t fds[TNET_ICE_CANDIDATES_COUNT_MAX] = { TNET_INVALID_FD }; // -1, then zeros
+	tnet_fd_t fds_skipped[TNET_ICE_CANDIDATES_COUNT_MAX] = { TNET_INVALID_FD }; // -1, then zeros
 	uint16_t fds_count = 0;
 	tnet_fd_t fd_max = -1;
 	fd_set set;
@@ -1001,10 +1171,10 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 
 	self = va_arg(*app, tnet_ice_ctx_t *);
 
-	socket_type = self->use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4;
-
-	if((ret = tnet_sockaddr_init(self->stun.server_addr, self->stun.server_port, socket_type, &server_addr))){
-		TSK_DEBUG_ERROR("tnet_sockaddr_init(%s, %d) failed", self->stun.server_addr, self->stun.server_port);
+	// Get ICE servers to use to gather reflexive candidates
+	ice_servers = _tnet_ice_ctx_servers_copy(self, tnet_ice_server_proto_stun);
+	if (!ice_servers || TSK_LIST_IS_EMPTY(ice_servers)) { // not expected to be null or empty because we checked the number of such servers before calling this transition
+		TSK_DEBUG_WARN("No valid STUN server could be used to gather reflexive candidates");
 		goto bail;
 	}
 
@@ -1023,15 +1193,15 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 	tv.tv_usec = tv_usec = 0;
 
 	// load fds for both rtp and rtcp sockets
-	tsk_list_foreach(item, self->candidates_local){
-		if(!(candidate = item->data)){
+	tsk_list_foreach(item, self->candidates_local) {
+		if (!(candidate = item->data)) {
 			continue;
 		}
 		
 		++host_addr_count;
-		if((fds_count < sizeof(fds)/sizeof(fds[0])) && candidate->socket){
+		if ((fds_count < sizeof(fds)/sizeof(fds[0])) && candidate->socket) {
 			fds[fds_count++] = candidate->socket->fd;
-			if(candidate->socket->fd > fd_max){
+			if (candidate->socket->fd > fd_max) {
 				fd_max = candidate->socket->fd;
 			}
 		}
@@ -1045,144 +1215,147 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 
 		e.g. 0 ms, 500 ms, 1500 ms, 3500 ms, 7500ms, 15500 ms, and 31500 ms
 	*/
-	for(i = 0; (i < rc && self->is_started && ((srflx_addr_count_added + srflx_addr_count_skipped) < host_addr_count)); ++i){
+	for (i = 0; (i < rc && self->is_started && ((srflx_addr_count_added + srflx_addr_count_skipped) < host_addr_count)); ++i) {
 		tv_sec += rto/1000;
 		tv_usec += (rto % 1000) * 1000;
-        if(tv_usec >= 1000000){ // > 1000000 is invalid and produce EINVAL when passed to select(iOS)
+        if (tv_usec >= 1000000) { // > 1000000 is invalid and produce EINVAL when passed to select(iOS)
             tv_usec -= 1000000;
             tv_sec++;
         }
         // restore values for new select
         tv.tv_sec = tv_sec;
         tv.tv_usec = tv_usec;
-        
-        TSK_DEBUG_INFO("ICE reflexive candidates gathering ...%lu,%lu", tv_sec, tv_usec);
-		
-		FD_ZERO(&set);
-		for(k = 0; k < fds_count; ++k){
-			FD_SET(fds[k], &set);
-		}
-		
-		// sends STUN  binding requets
-		tsk_list_foreach(item, self->candidates_local){
-			if(!(candidate = (tnet_ice_candidate_t*)item->data)){
+
+		// Try gathering the reflexive candidate for each server
+		tsk_list_foreach (item_server, ice_servers) {
+			if (!(ice_server = item_server->data)) {
+				continue; // must never happen
+			}
+			TSK_DEBUG_INFO("ICE reflexive candidates gathering ...srv_addr=%s,srv_port=%u,tv_sec=%lu,tv_usec=%lu", ice_server->str_server_addr, ice_server->u_server_port, tv_sec, tv_usec);
+			
+			FD_ZERO(&set);
+			for (k = 0; k < fds_count; ++k) {
+				FD_SET(fds[k], &set);
+			}
+			
+			// sends STUN binding requets
+			tsk_list_foreach(item, self->candidates_local){
+				if (!(candidate = (tnet_ice_candidate_t*)item->data)) {
+					continue;
+				}
+				if (candidate->socket && tsk_strnullORempty(candidate->stun.srflx_addr)) {
+					ret = tnet_ice_candidate_send_stun_bind_request(candidate, &ice_server->obj_server_addr, ice_server->str_username, ice_server->str_password);
+				}
+			}
+
+			if ((ret = select(fd_max+1, &set, NULL, NULL, &tv))<0) {
+				TSK_DEBUG_ERROR("select() failed with error code = %d", tnet_geterrno());
+				goto bail;
+			}
+			else if (ret == 0) {
+				// timeout
+				TSK_DEBUG_INFO("STUN request timedout at %d/%d", i, rc-1);
+				rto <<= 1;
 				continue;
 			}
-			if(candidate->socket && tsk_strnullORempty(candidate->stun.srflx_addr)){
-				ret = tnet_ice_candidate_send_stun_bind_request(candidate, &server_addr, self->stun.username, self->stun.password);
-			}
-		}
+			else if (ret > 0) {
+				// there is data to read
+				for (k = 0; k < fds_count; ++k) {
+					tnet_fd_t fd = fds[k];
+					if (FD_ISSET(fd, &set)) {
+						tsk_size_t len = 0;
+						void* data = 0;
+						const tnet_ice_candidate_t* candidate_curr;
 
-		if((ret = select(fd_max+1, &set, NULL, NULL, &tv))<0){
-            TSK_DEBUG_ERROR("select() failed with error code = %d", tnet_geterrno());
-			goto bail;
-		}
-		else if(ret == 0){
-			// timeout
-			TSK_DEBUG_INFO("STUN request timedout at %d/%d", i, rc-1);
-			rto <<= 1;
-			continue;
-		}
-		else if(ret > 0){
-			// there is data to read
-			for(k = 0; k < fds_count; ++k){
-				tnet_fd_t fd = fds[k];
-				if(FD_ISSET(fd, &set)){
-					tsk_size_t len = 0;
-					void* data = 0;
-					const tnet_ice_candidate_t* candidate_curr;
+						// Check how many bytes are pending
+						if ((ret = tnet_ioctlt(fd, FIONREAD, &len))<0) {
+							TSK_DEBUG_ERROR("tnet_ioctlt() failed");
+							continue;
+						}
+						
+						if (len==0) {
+							TSK_DEBUG_INFO("tnet_ioctlt() retured zero bytes");
+							continue;
+						}
 
-					// Check how many bytes are pending
-					if((ret = tnet_ioctlt(fd, FIONREAD, &len))<0){
-                        TSK_DEBUG_ERROR("tnet_ioctlt() failed");
-						continue;
-					}
-					
-					if(len==0){
-						TSK_DEBUG_INFO("tnet_ioctlt() retured zero bytes");
-						continue;
-					}
+						// Receive pending data
+						data = tsk_calloc(len, sizeof(uint8_t));
+						if ((ret = tnet_sockfd_recv(fd, data, len, 0)) < 0) {
+							TSK_FREE(data);
+											
+							TSK_DEBUG_ERROR("Recving STUN dgrams failed with error code:%d", tnet_geterrno());
+							continue;
+						}
 
-					// Receive pending data
-					data = tsk_calloc(len, sizeof(uint8_t));
-					if((ret = tnet_sockfd_recv(fd, data, len, 0)) < 0){
+						// Parse the incoming response
+						if ((ret = tnet_stun_pkt_read(data, (tsk_size_t)ret, &response))) {
+							TSK_FREE(data);
+							continue;
+						}
 						TSK_FREE(data);
-										
-						TSK_DEBUG_ERROR("Recving STUN dgrams failed with error code:%d", tnet_geterrno());
-						continue;
-					}
+						if (response) {
+							ret = 0;
+							if ((candidate_curr = tnet_ice_candidate_find_by_fd(self->candidates_local, fd))) {
+								if (tsk_strnullORempty(candidate_curr->stun.srflx_addr)) { // "srflx" candidate?
+									ret = tnet_ice_candidate_process_stun_response((tnet_ice_candidate_t*)candidate_curr, response, fd);
+									if (!tsk_strnullORempty(candidate_curr->stun.srflx_addr)) { // ...and now (after processing the response)...is it "srflx" candidate?
+										if (tsk_striequals(candidate_curr->connection_addr, candidate_curr->stun.srflx_addr) && candidate_curr->port == candidate_curr->stun.srflx_port) {
+											tsk_size_t j;
+											tsk_bool_t already_skipped = tsk_false;
+											/* refc 5245- 4.1.3.  Eliminating Redundant Candidates
 
-					// Parse the incoming response
-					if ((ret = tnet_stun_pkt_read(data, (tsk_size_t)ret, &response))) {
-						TSK_FREE(data);
-						continue;
-					}
-					TSK_FREE(data);
-					if (response) {
-						ret = 0;
-						if ((candidate_curr = tnet_ice_candidate_find_by_fd(self->candidates_local, fd))) {
-							if (tsk_strnullORempty(candidate_curr->stun.srflx_addr)) { // "srflx" candidate?
-								ret = tnet_ice_candidate_process_stun_response((tnet_ice_candidate_t*)candidate_curr, response, fd);
-								if (!tsk_strnullORempty(candidate_curr->stun.srflx_addr)) { // ...and now (after processing the response)...is it "srflx" candidate?
-									if (tsk_striequals(candidate_curr->connection_addr, candidate_curr->stun.srflx_addr) && candidate_curr->port == candidate_curr->stun.srflx_port) {
-										tsk_size_t j;
-										tsk_bool_t already_skipped = tsk_false;
-										/* refc 5245- 4.1.3.  Eliminating Redundant Candidates
-
-										   Next, the agent eliminates redundant candidates.  A candidate is
-										   redundant if its transport address equals another candidate, and its
-										   base equals the base of that other candidate.  Note that two
-										   candidates can have the same transport address yet have different
-										   bases, and these would not be considered redundant.  Frequently, a
-										   server reflexive candidate and a host candidate will be redundant
-										   when the agent is not behind a NAT.  The agent SHOULD eliminate the
-										   redundant candidate with the lower priority. */
-										for (j = 0; (fds_skipped[j] != TNET_INVALID_FD && j < (sizeof(fds_skipped)/sizeof(fds_skipped[0]))); ++j) {
-											if (fds_skipped[j] == fd) {
-												already_skipped = tsk_true;
-												break;
+											   Next, the agent eliminates redundant candidates.  A candidate is
+											   redundant if its transport address equals another candidate, and its
+											   base equals the base of that other candidate.  Note that two
+											   candidates can have the same transport address yet have different
+											   bases, and these would not be considered redundant.  Frequently, a
+											   server reflexive candidate and a host candidate will be redundant
+											   when the agent is not behind a NAT.  The agent SHOULD eliminate the
+											   redundant candidate with the lower priority. */
+											for (j = 0; (fds_skipped[j] != TNET_INVALID_FD && j < (sizeof(fds_skipped)/sizeof(fds_skipped[0]))); ++j) {
+												if (fds_skipped[j] == fd) {
+													already_skipped = tsk_true;
+													break;
+												}
 											}
-										}
 
-										if (!already_skipped) {
-											++srflx_addr_count_skipped;
-											fds_skipped[j] = fd;
+											if (!already_skipped) {
+												++srflx_addr_count_skipped;
+												fds_skipped[j] = fd;
+											}
+											TSK_DEBUG_INFO("Skipping redundant candidate address=%s and port=%d, fd=%d, already_skipped(%u)=%s", 
+												candidate_curr->stun.srflx_addr, 
+												candidate_curr->stun.srflx_port,
+												fd,
+												j, already_skipped ? "yes" : "no");
 										}
-										TSK_DEBUG_INFO("Skipping redundant candidate address=%s and port=%d, fd=%d, already_skipped(%u)=%s", 
-											candidate_curr->stun.srflx_addr, 
-											candidate_curr->stun.srflx_port,
-											fd,
-											j, already_skipped ? "yes" : "no");
-									}
-									else {
-										char* foundation = tsk_strdup(TNET_ICE_CANDIDATE_TYPE_SRFLX);
-										tnet_ice_candidate_t* new_cand;
-										tsk_strcat(&foundation, (const char*)candidate_curr->foundation);
-										new_cand = tnet_ice_candidate_create(tnet_ice_cand_type_srflx, candidate_curr->socket, candidate_curr->is_ice_jingle, candidate_curr->is_rtp, self->is_video, self->ufrag, self->pwd, foundation);
-										TSK_FREE(foundation);
-										if (new_cand) {
-											++srflx_addr_count_added;
-											tsk_list_lock(self->candidates_local);
-											tnet_ice_candidate_set_rflx_addr(new_cand, candidate_curr->stun.srflx_addr, candidate_curr->stun.srflx_port);
-											tsk_list_push_back_data(self->candidates_local, (void**)&new_cand);
-											tsk_list_unlock(self->candidates_local);
+										else {
+											char* foundation = tsk_strdup(TNET_ICE_CANDIDATE_TYPE_SRFLX);
+											tnet_ice_candidate_t* new_cand;
+											tsk_strcat(&foundation, (const char*)candidate_curr->foundation);
+											new_cand = tnet_ice_candidate_create(tnet_ice_cand_type_srflx, candidate_curr->socket, candidate_curr->is_ice_jingle, candidate_curr->is_rtp, self->is_video, self->ufrag, self->pwd, foundation);
+											TSK_FREE(foundation);
+											if (new_cand) {
+												++srflx_addr_count_added;
+												tsk_list_lock(self->candidates_local);
+												tnet_ice_candidate_set_rflx_addr(new_cand, candidate_curr->stun.srflx_addr, candidate_curr->stun.srflx_port);
+												tsk_list_push_back_data(self->candidates_local, (void**)&new_cand);
+												tsk_list_unlock(self->candidates_local);
+											}
 										}
 									}
 								}
 							}
 						}
+						TSK_OBJECT_SAFE_FREE(response);
 					}
-					TSK_OBJECT_SAFE_FREE(response);
 				}
 			}
-			
-			//goto bail;
-		}
-		else{
-			continue;
-		}
-	}
-
+			else {
+				continue;
+			}
+		} // tsk_list_foreach (item, ice_servers)...
+	} // for (i = 0; (i < rc....
 
 bail:
 	TSK_DEBUG_INFO("srflx_addr_count_added=%u, srflx_addr_count_skipped=%u", srflx_addr_count_added, srflx_addr_count_skipped);
@@ -1196,12 +1369,13 @@ bail:
 		}
 	}
 
-	tsk_list_foreach(item, self->candidates_local){
+	tsk_list_foreach(item, self->candidates_local) {
 		if (!(candidate = (tnet_ice_candidate_t*)item->data)) {
 			continue;
 		}
 		TSK_DEBUG_INFO("Candidate: %s", tnet_ice_candidate_tostring(candidate));
 	}
+	TSK_OBJECT_SAFE_FREE(ice_servers);
 	return ret;
 }
 
@@ -1217,11 +1391,8 @@ static int _tnet_ice_ctx_fsm_GatheringReflexiveCandidates_2_GatheringReflexiveCa
 		if (ret == 0) {
 			enum _fsm_action_e action_next = _fsm_action_GatheringComplet;
 			if (self->is_turn_enabled) {
-				if (tsk_strnullORempty(self->stun.server_addr) || !self->stun.server_port) {
-					TSK_DEBUG_WARN("TURN is enabled but server address/port are missing");
-				}
-				else if (tsk_strnullORempty(self->stun.username) || tsk_strnullORempty(self->stun.password)) {
-					TSK_DEBUG_WARN("TURN is enabled but credentials (login/password) are missing");
+				if (_tnet_ice_ctx_servers_count_by_proto(self, tnet_ice_server_proto_turn) == 0) {
+					TSK_DEBUG_WARN("TURN is enabled but no TURN server could be found");
 				}
 				else {
 					action_next = _fsm_action_GatherRelayCandidates;
@@ -1248,12 +1419,14 @@ static int _tnet_ice_ctx_fsm_GatheringReflexiveCandidatesDone_2_GatheringRelayCa
 {
 	tnet_ice_ctx_t* self = va_arg(*app, tnet_ice_ctx_t *);
 	int ret = 0;
-	tsk_list_item_t *item;
+	tsk_list_item_t *item, *item_server = tsk_null;
 	tnet_ice_candidate_t* candidate;
 	uint16_t i, rto, rc;
 	tsk_size_t relay_addr_count_ok = 0, relay_addr_count_nok = 0, relay_addr_count_added = 0, host_addr_count = 0;
 	uint64_t u_t0, u_t1;
 	enum tnet_stun_state_e e_tunrn_state;
+	tnet_ice_servers_L_t* ice_servers = tsk_null;
+	tnet_ice_server_t* ice_server;
 
 	// Create TURN condwait handle if not already done
 	if (!self->turn.condwait && !(self->turn.condwait = tsk_condwait_create())) {
@@ -1262,55 +1435,74 @@ static int _tnet_ice_ctx_fsm_GatheringReflexiveCandidatesDone_2_GatheringRelayCa
 		goto bail;
 	}
 
+	// Take reference to the TURN servers
+	ice_servers = _tnet_ice_ctx_servers_copy(self, tnet_ice_server_proto_turn);
+	if (!ice_servers || TSK_LIST_IS_EMPTY(ice_servers)) {
+		TSK_DEBUG_WARN("TURN enabled but no server could be found"); // should never happen...but who knows?
+		goto bail;
+	}
+next_server:
+	if (!self->is_started) {
+		goto bail;
+	}
+	relay_addr_count_ok = 0, relay_addr_count_nok = 0, relay_addr_count_added = 0, host_addr_count = 0;
+	if (!item_server) {
+		item_server = ice_servers->head;
+	}
+	else {
+		item_server = item_server->next;
+	}
+	if (!item_server) {
+		TSK_DEBUG_INFO("We have reached the end of TURN servers");
+		goto bail;
+	}
+	ice_server = (tnet_ice_server_t*)item_server->data;
+
 	// Create TURN sessions for each local host candidate
     tsk_list_foreach(item, self->candidates_local) {
         if (!(candidate = item->data)) {
            continue;
         }
+		TSK_DEBUG_INFO("Gathering relay candidate: local addr=%s=%d, TURN server=%s:%d", candidate->connection_addr, candidate->port, ice_server->str_server_addr, ice_server->u_server_port);
         
 		// Destroy previvious TURN session (if exist)
 		TSK_OBJECT_SAFE_FREE(candidate->turn.ss);
 		if (candidate->type_e == tnet_ice_cand_type_host && candidate->socket) { // do not create TURN session for reflexive candidates
 			// create the TURN session
-#if 1
-			if ((ret = tnet_turn_session_create(candidate->socket, self->stun.server_addr, self->stun.server_port, &candidate->turn.ss))) {
-				goto bail;
+			// FIXME: For now we support UDP relaying only (like Chrome): more info at https://groups.google.com/forum/#!topic/turn-server-project-rfc5766-turn-server/vR_2OAV9a_w
+			// This is not an issue even if both peers requires TCP/TLS connection to the TURN server. UDP relaying will be local to the servers.
+			// 
+			static enum tnet_turn_transport_e __e_req_transport = tnet_turn_transport_udp; // We should create two TURN sessions: #1 UDP relay + #1 TCP relay
+			if ((ret = tnet_turn_session_create_4(candidate->socket, __e_req_transport, ice_server->str_server_addr, ice_server->u_server_port, ice_server->e_transport, &candidate->turn.ss))) {
+				continue;
 			}
-#else
-			// Use another socket (same IP and port) to avoid poll()ing the same "fd"
-			if ((ret = tnet_sockfd_reuseaddr(candidate->socket->fd, 1))) {
-				goto bail;
-			}
-			if ((ret = tnet_turn_session_create_2(candidate->socket->ip, candidate->socket->port, candidate->socket->type, self->stun.server_addr, self->stun.server_port, &candidate->turn.ss))) {
-				goto bail;
-			}
-			if ((ret = tnet_sockfd_reuseaddr(candidate->socket->fd, 0))) {
-				goto bail;
-			}
-#endif
 			// set TURN callback
 			if ((ret = tnet_turn_session_set_callback(candidate->turn.ss, _tnet_ice_ctx_turn_callback, self))) {
-				goto bail;
+				continue;
+			}
+			// set SSL certificates
+			if ((ret = tnet_turn_session_set_ssl_certs(candidate->turn.ss, self->ssl.path_priv, self->ssl.path_pub, self->ssl.path_ca, self->ssl.verify))) {
+				continue;
 			}
 			// set TURN credentials
-			if ((ret = tnet_turn_session_set_cred(candidate->turn.ss, self->stun.username, self->stun.password))) {
-				goto bail;
+			if ((ret = tnet_turn_session_set_cred(candidate->turn.ss, ice_server->str_username, ice_server->str_password))) {
+				continue;
 			}
 			// prepare()
 			if ((ret = tnet_turn_session_prepare(candidate->turn.ss))) {
-				goto bail;
+				continue;
 			}
 			// start()
 			if ((ret = tnet_turn_session_start(candidate->turn.ss))) {
-				goto bail;
+				continue;
 			}
 			// allocate()
 			if ((ret = tnet_turn_session_allocate(candidate->turn.ss))) {
-				goto bail;
+				continue;
 			}
 			++host_addr_count;
 		}
-	}
+	} // tsk_list_foreach(item, self->candidates_local) {
 
 	rto = self->RTO;
     rc = self->Rc;
@@ -1363,6 +1555,7 @@ static int _tnet_ice_ctx_fsm_GatheringReflexiveCandidatesDone_2_GatheringRelayCa
 			char* relay_addr = tsk_null;
 			tnet_port_t relay_port;
 			tnet_ice_candidate_t* new_cand = tsk_null;
+			struct tnet_socket_s* p_lcl_sock = tsk_null;
 
 			if ((ret = tnet_turn_session_get_relayed_addr(candidate->turn.ss, &relay_addr, &relay_port, &__b_ipv6))) {
 				goto bail;
@@ -1372,9 +1565,13 @@ static int _tnet_ice_ctx_fsm_GatheringReflexiveCandidatesDone_2_GatheringRelayCa
 				TSK_FREE(relay_addr);
 				continue;
 			}
+			if ((ret = tnet_turn_session_get_socket_local(candidate->turn.ss, &p_lcl_sock))) {
+				goto bail;
+			}
 			tsk_strcat_2(&foundation, "%s%s", TNET_ICE_CANDIDATE_TYPE_RELAY, (const char*)candidate->foundation);
-			new_cand = tnet_ice_candidate_create(tnet_ice_cand_type_relay, candidate->socket, candidate->is_ice_jingle, candidate->is_rtp, self->is_video, self->ufrag, self->pwd, foundation);
+			new_cand = tnet_ice_candidate_create(tnet_ice_cand_type_relay, p_lcl_sock, candidate->is_ice_jingle, candidate->is_rtp, self->is_video, self->ufrag, self->pwd, foundation);
 			TSK_FREE(foundation);
+			TSK_OBJECT_SAFE_FREE(p_lcl_sock);
 			if (new_cand) {
 				tsk_list_lock(self->candidates_local);
 				new_cand->turn.ss = candidate->turn.ss, candidate->turn.ss = tsk_null;
@@ -1392,6 +1589,10 @@ static int _tnet_ice_ctx_fsm_GatheringReflexiveCandidatesDone_2_GatheringRelayCa
 		}
 	}
 	
+	// Try next TURN server
+	if (self->is_started && item_server && relay_addr_count_added == 0) {
+		goto next_server;
+	}
 
 bail:
 	if (self->is_started) {
@@ -1402,6 +1603,7 @@ bail:
 			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_Failure);
         }
 	}
+	TSK_OBJECT_SAFE_FREE(ice_servers);
 	return ret;
 }
 
@@ -1546,7 +1748,8 @@ start_conneck:
 				if (e_state == tnet_stun_state_none) {
 					ret = tnet_turn_session_createpermission(((tnet_ice_pair_t *)pair)->candidate_offer->turn.ss, pair->candidate_answer->connection_addr, pair->candidate_answer->port, &((tnet_ice_pair_t *)pair)->turn_peer_id);
 					if (ret) {
-						goto bail;
+						continue;
+						// goto bail;
 					}
 				}
 				fds_turn[fds_turn_count++] = pair->candidate_offer->socket->fd;
@@ -1953,6 +2156,7 @@ static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, 
 	const tsk_list_item_t *item_local, *item_remote;
 	const tnet_ice_candidate_t *cand_local, *cand_remote;
 	tnet_ice_pair_t *pair;
+	enum tnet_turn_transport_e e_req_transport;
 	if (TSK_LIST_IS_EMPTY(local_candidates) || TSK_LIST_IS_EMPTY(remote_candidates) || !result_pairs) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
@@ -1980,9 +2184,30 @@ static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, 
 			if (!(cand_remote = item_remote->data)) {
 				continue;
 			}
-
-			if ((cand_remote->comp_id != cand_local->comp_id) || (cand_remote->transport_e != cand_local->transport_e)){
+			// Hack for Chrome bug (candidate with port=zero) to avoid printing errors.
+			if (cand_remote->port == 0) {
+				TSK_DEBUG_INFO("Skipping remote ICE candidate with port = 0");
 				continue;
+			}
+
+			if ((cand_remote->comp_id != cand_local->comp_id)){
+				continue;
+			}
+			if (cand_local->turn.ss) {
+				if (tnet_turn_session_get_req_transport(cand_local->turn.ss, &e_req_transport) != 0) {
+					continue;
+				}
+				if (e_req_transport == tnet_turn_transport_udp && !TNET_SOCKET_TYPE_IS_DGRAM(cand_remote->transport_e)) {
+					continue;
+				}
+				if (e_req_transport == tnet_turn_transport_tcp && !TNET_SOCKET_TYPE_IS_STREAM(cand_remote->transport_e)) {
+					continue;
+				}
+			}
+			else {
+				if (cand_remote->transport_e != cand_local->transport_e) {
+					continue;
+				}
 			}
 
 			TSK_DEBUG_INFO("ICE Pair: [%s %u %s %d] -> [%s %u %s %d]",
@@ -2085,6 +2310,7 @@ static int _tnet_ice_ctx_turn_callback(const struct tnet_turn_session_event_xs *
 		case tnet_turn_session_event_type_alloc_ok:
 		case tnet_turn_session_event_type_refresh_ok:		
 		case tnet_turn_session_event_type_chanbind_ok:
+		case tnet_turn_session_event_type_connect_ok:
 		default:
 			{
 				break;
@@ -2094,6 +2320,7 @@ static int _tnet_ice_ctx_turn_callback(const struct tnet_turn_session_event_xs *
 		case tnet_turn_session_event_type_refresh_nok:
 		case tnet_turn_session_event_type_perm_nok:
 		case tnet_turn_session_event_type_chanbind_nok:
+		case tnet_turn_session_event_type_connect_nok:
 			{
 				// Do not raise error event if no nominated candidate because.
 				// TURN error could be raised by the session when we're in "conncheck" state and this is a normal case.
@@ -2105,13 +2332,25 @@ static int _tnet_ice_ctx_turn_callback(const struct tnet_turn_session_event_xs *
 				break;
 			}
 
-
 		case tnet_turn_session_event_type_perm_ok:
 			{
-				// Bind a channel (not required). If succeed, will be used to save bandwidth usage.
-				// TODO: should be done only if first "get_state(chanbind)==none". Not an issue, if it already exists then, will be refreshed.
-				if ((ret = tnet_turn_session_chanbind((struct tnet_turn_session_s*)e->pc_session, e->u_peer_id))) {
+				enum tnet_turn_transport_e e_req_transport;
+				if ((ret = tnet_turn_session_get_req_transport(e->pc_session, &e_req_transport))) {
 					goto bail;
+				}
+				
+				if (e_req_transport == tnet_turn_transport_tcp) {
+					// TCP-Connect: rfc6062 - 4.3.  Initiating a Connection
+					if ((ret = tnet_turn_session_connect((struct tnet_turn_session_s*)e->pc_session, e->u_peer_id))) {
+						goto bail;
+					}
+				}
+				else {
+					// Bind a channel (not required). If succeed, will be used to save bandwidth usage.
+					// TODO: should be done only if first "get_state(chanbind)==none". Not an issue, if it already exists then, will be refreshed.
+					if ((ret = tnet_turn_session_chanbind((struct tnet_turn_session_s*)e->pc_session, e->u_peer_id))) {
+						goto bail;
+					}
 				}
 				break;
 			}
@@ -2225,4 +2464,139 @@ exit:
 	TSK_DEBUG_INFO("ICE CTX::run -- STOP");
 
 	return 0;
+}
+
+static int _tnet_ice_ctx_servers_clear(struct tnet_ice_ctx_s* self)
+{
+	int ret = -1;
+	if (!self) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	tsk_list_lock(self->servers);
+	tsk_list_clear_items(self->servers);
+	tsk_list_unlock(self->servers);
+	return 0;
+}
+
+static int _tnet_ice_ctx_server_add(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto, 
+	enum tnet_socket_type_e e_transport, 
+	const char* str_server_addr, uint16_t u_server_port,
+	const char* str_software,
+	const char* str_username, const char* str_password)
+{
+	struct tnet_ice_server_s* ice_server;
+	int ret = -1;
+	if (!self || !e_proto || !str_server_addr || !u_server_port) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	// TURN requires credentials
+	if ((e_proto & tnet_ice_server_proto_turn) == tnet_ice_server_proto_turn && (tsk_strnullORempty(str_username) || tsk_strnullORempty(str_password))) {
+		TSK_DEBUG_ERROR("TURN requires credentials");
+		return -1;
+	}
+	// Create and add the ICE server
+	tsk_list_lock(self->servers);
+	if (_tnet_ice_ctx_server_exists(self, e_proto, e_transport, str_server_addr, u_server_port)) {
+		TSK_DEBUG_WARN("ICE server (proto=%d, transport=%d, addr=%d, port=%u) already exists", e_proto, e_transport, str_server_addr, u_server_port);
+		ret = 0; // Not an error
+		goto bail;
+	}
+	if (!(ice_server = tnet_ice_server_create(e_proto, e_transport, str_server_addr, u_server_port, str_software, str_username, str_password))) {
+		TSK_DEBUG_ERROR("Failed to create ICE server(proto=%d, transport=%d, addr=%d, port=%u)", e_proto, e_transport, str_server_addr, u_server_port);
+		goto bail;
+	}
+	tsk_list_push_back_data(self->servers, (void**)&ice_server);
+	TSK_OBJECT_SAFE_FREE(ice_server);
+
+	ret = 0;
+bail:
+	tsk_list_unlock(self->servers);
+	return ret;
+}
+
+static int _tnet_ice_ctx_server_remove(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto, enum tnet_socket_type_e e_transport, const char* str_server_addr, uint16_t u_server_port)
+{
+	const struct tnet_ice_server_s* _pc_ice_srv;
+	const tsk_list_item_t *pc_item;
+	if (!self) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	tsk_list_lock(self->servers);
+	tsk_list_foreach(pc_item, self->servers) {
+		if ((_pc_ice_srv = pc_item->data)) {
+			if (_pc_ice_srv->e_proto == e_proto && _pc_ice_srv->e_transport == e_transport && _pc_ice_srv->u_server_port == u_server_port && tsk_striequals(_pc_ice_srv->str_server_addr, str_server_addr)) {
+				tsk_list_remove_item(self->servers, (tsk_list_item_t *)pc_item);
+				break;
+			}
+		}
+	}
+	tsk_list_unlock(self->servers);
+	return 0;
+}
+
+static const struct tnet_ice_server_s* _tnet_ice_ctx_server_find(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto, enum tnet_socket_type_e e_transport, const char* str_server_addr, uint16_t u_server_port)
+{
+	const struct tnet_ice_server_s* pc_ice_srv = tsk_null;
+	const struct tnet_ice_server_s* _pc_ice_srv;
+	const tsk_list_item_t *pc_item;
+	if (!self) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+	tsk_list_lock(self->servers);
+	tsk_list_foreach(pc_item, self->servers) {
+		if ((_pc_ice_srv = pc_item->data)) {
+			if (_pc_ice_srv->e_proto == e_proto && _pc_ice_srv->e_transport == e_transport && _pc_ice_srv->u_server_port == u_server_port && tsk_striequals(_pc_ice_srv->str_server_addr, str_server_addr)) {
+				pc_ice_srv = _pc_ice_srv;
+				break;
+			}
+		}
+	}
+	tsk_list_unlock(self->servers);
+	return pc_ice_srv;
+}
+
+static tsk_bool_t _tnet_ice_ctx_server_exists(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto, enum tnet_socket_type_e e_transport, const char* str_server_addr, uint16_t u_server_port)
+{
+	return _tnet_ice_ctx_server_find(self, e_proto, e_transport, str_server_addr, u_server_port) ? tsk_true : tsk_false;
+}
+
+static tsk_size_t _tnet_ice_ctx_servers_count_by_proto(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto)
+{
+	tsk_size_t count = 0;
+	if (self) {
+		const struct tnet_ice_server_s* _pc_ice_srv;
+		const tsk_list_item_t *pc_item;
+		tsk_list_lock(self->servers);
+		tsk_list_foreach(pc_item, self->servers) {
+			if ((_pc_ice_srv = pc_item->data) && (_pc_ice_srv->e_proto & e_proto) == e_proto) {
+				++count;
+			}
+		}
+		tsk_list_unlock(self->servers);
+	}
+	return count;
+}
+
+// Up to the caller to free the returned list
+static tnet_ice_servers_L_t* _tnet_ice_ctx_servers_copy(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto)
+{
+	tnet_ice_servers_L_t* copy = tsk_list_create();
+	if (copy) {
+		const struct tnet_ice_server_s* _pc_ice_srv;
+		const tsk_list_item_t *pc_item;
+		tsk_list_lock(self->servers);
+		tsk_list_foreach(pc_item, self->servers) {
+			if ((_pc_ice_srv = pc_item->data) && (_pc_ice_srv->e_proto & e_proto) == e_proto) {
+				tnet_ice_server_t* srv = (tnet_ice_server_t*)tsk_object_ref(pc_item->data);
+				tsk_list_push_back_data(copy, (void**)&srv);
+			}
+		}
+		tsk_list_unlock(self->servers);
+	}
+	return copy;
 }

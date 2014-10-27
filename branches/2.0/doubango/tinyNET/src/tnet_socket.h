@@ -193,6 +193,7 @@ typedef tsk_list_t tnet_sockets_L_t; /**< List of @ref tnet_socket_t elements. *
 
 TINYNET_API tnet_socket_t* tnet_socket_create_2(const char*host, tnet_port_t port, tnet_socket_type_t type, tsk_bool_t nonblocking, tsk_bool_t bindsocket);
 TINYNET_API tnet_socket_t* tnet_socket_create(const char* host, tnet_port_t port, tnet_socket_type_t type);
+TINYNET_API int tnet_socket_send_stream(tnet_socket_t* self, const void* data, tsk_size_t size);
 
 TINYNET_GEXTERN const tsk_object_def_t *tnet_socket_def_t;
 

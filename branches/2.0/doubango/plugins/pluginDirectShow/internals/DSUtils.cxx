@@ -103,7 +103,7 @@ bool IsD3D9Supported()
 	}
 
 	// Everythings is OK
-	g_bSupported = TRUE;
+	g_bSupported = true;
 	TSK_DEBUG_INFO("D3D9 supported");
 
 bail:

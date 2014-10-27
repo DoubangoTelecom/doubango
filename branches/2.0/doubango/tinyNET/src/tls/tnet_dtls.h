@@ -30,6 +30,7 @@
 TNET_BEGIN_DECLS
 
 struct ssl_ctx_st;
+struct tnet_socket_s;
 
 typedef void tnet_dtls_socket_handle_t;
 
@@ -52,7 +53,7 @@ TINYNET_API tsk_bool_t tnet_dtls_is_supported();
 TINYNET_API tnet_dtls_hash_type_t tnet_dtls_get_hash_from_string(const char* hash);
 TINYNET_API tnet_dtls_setup_t tnet_dtls_get_setup_from_string(const char* setup);
 TINYNET_API int tnet_dtls_get_fingerprint(const char* certfile, tnet_fingerprint_t* fingerprint, tnet_dtls_hash_type_t hash);
-TINYNET_API tnet_dtls_socket_handle_t* tnet_dtls_socket_create(tnet_fd_t fd, struct ssl_ctx_st* ssl_ctx);
+TINYNET_API tnet_dtls_socket_handle_t* tnet_dtls_socket_create(struct tnet_socket_s* wrapped_sock, struct ssl_ctx_st* ssl_ctx);
 TINYNET_API tnet_fd_t tnet_dtls_socket_get_fd(const tnet_dtls_socket_handle_t* handle);
 TINYNET_API const struct sockaddr_storage* tnet_dtls_socket_get_remote_addr(const tnet_dtls_socket_handle_t* handle);
 TINYNET_API int tnet_dtls_socket_set_callback(tnet_dtls_socket_handle_t* handle, const void* usrdata, tnet_dtls_socket_cb_f func);

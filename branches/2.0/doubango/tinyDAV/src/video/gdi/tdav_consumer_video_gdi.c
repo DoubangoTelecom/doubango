@@ -476,6 +476,7 @@ static tsk_object_t* tdav_consumer_video_gdi_ctor(tsk_object_t * self, va_list *
 		TMEDIA_CONSUMER(p_gdi)->video.display.width = 352;
 		TMEDIA_CONSUMER(p_gdi)->video.display.height = 288;
 		TMEDIA_CONSUMER(p_gdi)->video.display.auto_resize = tsk_true;
+		tsk_safeobj_init(p_gdi);
 	}
 	return self;
 }

@@ -486,8 +486,8 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	}
 	
 	/* Start listening */
-	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
-		if((ret = tnet_sockfd_listen(transport->master->fd, WSA_MAXIMUM_WAIT_EVENTS))){
+	if (TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)) {
+		if ((ret = tnet_sockfd_listen(transport->master->fd, WSA_MAXIMUM_WAIT_EVENTS))) {
 			TNET_PRINT_LAST_ERROR("listen have failed.");
 			goto bail;
 		}
@@ -496,13 +496,13 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	/* Add the master socket to the context. */
 	// don't take ownership: will be closed by the dctor() when refCount==0
 	// otherwise will be closed twice: dctor() and removeSocket()
-	if((ret = addSocket(transport->master->fd, transport->master->type, transport, tsk_false, tsk_false, tsk_null))){
+	if ((ret = addSocket(transport->master->fd, transport->master->type, transport, tsk_false, tsk_false, tsk_null))) {
 		TSK_DEBUG_ERROR("Failed to add master socket");
 		goto bail;
 	}
 	
 	/* set events on master socket */
-	if((ret = WSAEventSelect(transport->master->fd, context->events[context->count - 1], FD_ALL_EVENTS) == SOCKET_ERROR)){
+	if ((ret = WSAEventSelect(transport->master->fd, context->events[context->count - 1], FD_ALL_EVENTS) == SOCKET_ERROR)) {
 		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
 		goto bail;
 	}
@@ -603,13 +603,13 @@ void* TSK_STDCALL tnet_transport_mainthread(void *param)
 			}
 			
 			/* Accept the connection */
-			if((fd = WSAAccept(active_socket->fd, NULL, NULL, AcceptCondFunc, (DWORD_PTR)context)) != INVALID_SOCKET){
+			if ((fd = WSAAccept(active_socket->fd, NULL, NULL, AcceptCondFunc, (DWORD_PTR)context)) != INVALID_SOCKET) {
 				/* Add the new fd to the server context */
 				addSocket(fd, transport->master->type, transport, tsk_true, tsk_false, tsk_null);
-				if(active_socket->tlshandle){
+				if (active_socket->tlshandle) {
 					transport_socket_xt* tls_socket;
-					if((tls_socket = getSocket(context, fd))){
-						if(tnet_tls_socket_accept(tls_socket->tlshandle)){
+					if ((tls_socket = getSocket(context, fd))) {
+						if (tnet_tls_socket_accept(tls_socket->tlshandle)) {
 							tnet_transport_remove_socket(transport, &fd);
 							TNET_PRINT_LAST_ERROR("SSL_accept() failed");
 							goto done;
@@ -638,12 +638,14 @@ void* TSK_STDCALL tnet_transport_mainthread(void *param)
 		{
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_CONNECT", transport->description);
 
-			if(networkEvents.iErrorCode[FD_CONNECT_BIT]){
-				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
+			if (networkEvents.iErrorCode[FD_CONNECT_BIT]) {
+				tnet_fd_t fd = active_socket->fd; 
+				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, fd);
+				tnet_transport_remove_socket(transport, &fd);
 				TNET_PRINT_LAST_ERROR("CONNECT FAILED.");
 				goto done;
 			}
-			else{
+			else {
 				TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, active_socket->fd);
 				active_socket->connected = 1;
 			}
@@ -664,55 +666,60 @@ void* TSK_STDCALL tnet_transport_mainthread(void *param)
 				goto FD_READ_DONE;
 			}
 			
-			if(networkEvents.iErrorCode[FD_READ_BIT]){
+			if (networkEvents.iErrorCode[FD_READ_BIT]) {
 				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
 				TNET_PRINT_LAST_ERROR("READ FAILED.");
 				goto done;
 			}
 
 			/* Retrieve the amount of pending data */
-			if(tnet_ioctlt(active_socket->fd, FIONREAD, &(wsaBuffer.len)) < 0){
+			if (tnet_ioctlt(active_socket->fd, FIONREAD, &(wsaBuffer.len)) < 0) {
 				TNET_PRINT_LAST_ERROR("IOCTLT FAILED.");
 				goto done;
 			}
 
-			if(!wsaBuffer.len){
+			if (!wsaBuffer.len) {
 				goto done;
 			}
 
 			/* Alloc data */
-			if(!(wsaBuffer.buf = tsk_calloc(wsaBuffer.len, sizeof(uint8_t)))){
+			if (!(wsaBuffer.buf = tsk_calloc(wsaBuffer.len, sizeof(uint8_t)))) {
 				goto done;
 			}
 
+			/* Retrieve the remote address */
+			if (TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)) {
+				ret = tnet_getpeername(active_socket->fd, &remote_addr);
+			}
+
 			/* Receive the waiting data. */
-			if(active_socket->tlshandle){
+			if (active_socket->tlshandle) {
 				int isEncrypted;
 				tsk_size_t len = wsaBuffer.len;
-				if(!(ret = tnet_tls_socket_recv(active_socket->tlshandle, &wsaBuffer.buf, &len, &isEncrypted))){
-					if(isEncrypted){
+				if (!(ret = tnet_tls_socket_recv(active_socket->tlshandle, &wsaBuffer.buf, &len, &isEncrypted))) {
+					if (isEncrypted) {
 						TSK_FREE(wsaBuffer.buf);
 						goto done;
 					}
 					wsaBuffer.len = len;
 				}
 			}
-			else{
-				if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
+			else {
+				if (TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)) {
 					ret = WSARecv(active_socket->fd, &wsaBuffer, 1, &readCount, &flags, 0, 0);
 				}
-				else{
+				else {
 					int len = sizeof(remote_addr);
 					ret = WSARecvFrom(active_socket->fd, &wsaBuffer, 1, &readCount, &flags, 
 						(struct sockaddr*)&remote_addr, &len, 0, 0);
 				}
-				if(readCount < wsaBuffer.len){
+				if (readCount < wsaBuffer.len) {
 					wsaBuffer.len = readCount;
 					/* wsaBuffer.buf = tsk_realloc(wsaBuffer.buf, readCount); */
 				}
 			}
 
-			if(ret){
+			if (ret) {
 				ret = WSAGetLastError();
 				if (ret == WSAEWOULDBLOCK) {
 					// Doesn't (always) mean congestion but... another thread is also poll()ing the FD. For example, when TURN session has a reference to the fd.

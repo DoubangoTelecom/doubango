@@ -47,7 +47,7 @@
 #define IS_VDATA_UINT16(e_type) \
 	(e_type == tnet_stun_attr_type_channel_number)
 #define IS_VDATA_UINT32(e_type) \
-	(e_type == tnet_stun_attr_type_fingerprint || e_type == tnet_stun_attr_type_lifetime || e_type == tnet_stun_attr_type_ice_priority)
+	(e_type == tnet_stun_attr_type_fingerprint || e_type == tnet_stun_attr_type_lifetime || e_type == tnet_stun_attr_type_ice_priority || e_type == tnet_stun_attr_type_connection_id)
 #define IS_VDATA_UINT64(e_type) \
 	(e_type == tnet_stun_attr_type_ice_controlled || e_type == tnet_stun_attr_type_ice_controlling)
 
@@ -99,7 +99,8 @@ static int _tnet_stun_attr_get_size_in_octetunits(const tnet_stun_attr_t* pc_sel
     case tnet_stun_attr_type_ice_use_candidate:
     case tnet_stun_attr_type_ice_priority:
     case tnet_stun_attr_type_ice_controlled:
-    case tnet_stun_attr_type_ice_controlling: {
+    case tnet_stun_attr_type_ice_controlling:
+	case tnet_stun_attr_type_connection_id: {
         extern const tsk_object_def_t *tnet_stun_attr_vdata_def_t;
         const tnet_stun_attr_vdata_t* _pc_self = (const tnet_stun_attr_vdata_t*)pc_self;
         if (pc_self->__def__ != tnet_stun_attr_vdata_def_t) {
@@ -210,7 +211,8 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
     case tnet_stun_attr_type_ice_use_candidate:
     case tnet_stun_attr_type_ice_priority:
     case tnet_stun_attr_type_ice_controlled:
-    case tnet_stun_attr_type_ice_controlling: {
+    case tnet_stun_attr_type_ice_controlling:
+	case tnet_stun_attr_type_connection_id: {
         extern const tsk_object_def_t *tnet_stun_attr_vdata_def_t;
         const tnet_stun_attr_vdata_t* _pc_self = (const tnet_stun_attr_vdata_t*)pc_self;
         if (pc_self->__def__ != tnet_stun_attr_vdata_def_t) {
@@ -389,6 +391,7 @@ int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8
     case tnet_stun_attr_type_ice_priority:
     case tnet_stun_attr_type_ice_controlled:
     case tnet_stun_attr_type_ice_controlling:
+	case tnet_stun_attr_type_connection_id:
     default: {
         tnet_stun_attr_vdata_t* p_attr;
         if (IS_VDATA_UINT16(Type) && Length == 2) {

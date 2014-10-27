@@ -128,11 +128,7 @@ static int tdav_codec_vp8_set(tmedia_codec_t* self, const tmedia_param_t* param)
 	tdav_codec_vp8_t* vp8 = (tdav_codec_vp8_t*)self;
 	vpx_codec_err_t vpx_ret = VPX_CODEC_OK;
 	tsk_bool_t reconf = tsk_false;
-
-	if (!vp8->encoder.initialized) {
-		TSK_DEBUG_ERROR("Codec not initialized");
-		return -1;
-	}
+	
 	if (param->value_type == tmedia_pvt_int32) {
 		if (tsk_striequals(param->key, "action")) {
 			tmedia_codec_action_t action = (tmedia_codec_action_t)TSK_TO_INT32((uint8_t*)param->value);
@@ -181,22 +177,19 @@ static int tdav_codec_vp8_set(tmedia_codec_t* self, const tmedia_param_t* param)
 			int32_t rotation = *((int32_t*)param->value);
 			if(vp8->encoder.rotation != rotation){
 				vp8->encoder.rotation = rotation;
-				if (vp8->encoder.initialized){
-					vp8->encoder.cfg.g_w = (rotation == 90 || rotation == 270) ? TMEDIA_CODEC_VIDEO(vp8)->out.height : TMEDIA_CODEC_VIDEO(vp8)->out.width;
-					vp8->encoder.cfg.g_h = (rotation == 90 || rotation == 270) ? TMEDIA_CODEC_VIDEO(vp8)->out.width : TMEDIA_CODEC_VIDEO(vp8)->out.height;
-					reconf = tsk_true;
-				}
-				else {
-					return 0;
-				}
+				vp8->encoder.cfg.g_w = (rotation == 90 || rotation == 270) ? TMEDIA_CODEC_VIDEO(vp8)->out.height : TMEDIA_CODEC_VIDEO(vp8)->out.width;
+				vp8->encoder.cfg.g_h = (rotation == 90 || rotation == 270) ? TMEDIA_CODEC_VIDEO(vp8)->out.width : TMEDIA_CODEC_VIDEO(vp8)->out.height;
+				reconf = tsk_true;
 			}
 		}
 	}
 
 	if (reconf) {
-		if ((vpx_ret = vpx_codec_enc_config_set(&vp8->encoder.context, &vp8->encoder.cfg)) != VPX_CODEC_OK) {
-			TSK_DEBUG_ERROR("vpx_codec_enc_config_set failed with error =%s", vpx_codec_err_to_string(vpx_ret));
-		}
+		if (vp8->encoder.initialized) {
+			if ((vpx_ret = vpx_codec_enc_config_set(&vp8->encoder.context, &vp8->encoder.cfg)) != VPX_CODEC_OK) {
+				TSK_DEBUG_ERROR("vpx_codec_enc_config_set failed with error =%s", vpx_codec_err_to_string(vpx_ret));
+			}
+		}		
 		return (vpx_ret == VPX_CODEC_OK) ? 0 : -2;
 	}
 	

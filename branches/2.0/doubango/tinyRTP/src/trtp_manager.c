@@ -699,8 +699,9 @@ static int _trtp_manager_srtp_start(trtp_manager_t* self, tmedia_srtp_type_t srt
 
 static int _trtp_manager_ice_init(trtp_manager_t* self)
 {
-	int ret;
+	int ret = 0;
 	const tnet_ice_candidate_t *candidate_offer, *candidate_answer_src, *candidate_answer_dest;
+	struct tnet_socket_s *rtp_socket = tsk_null;
 
 	if (!self || !self->ice_ctx) {
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -720,14 +721,26 @@ static int _trtp_manager_ice_init(trtp_manager_t* self)
 			if (!(candidate_offer = tnet_ice_ctx_get_local_candidate_first(self->ice_ctx))) {
 				// Must never happen as we always have at least one local "host" candidate
 				TSK_DEBUG_ERROR("ICE context not ready");
-				return -3;
+				ret = -3;
+				goto bail;
 			}
+		}
+		
+		// Get RTP socket
+		if (self->is_ice_turn_active && candidate_offer->turn.ss) {
+			if ((ret = tnet_turn_session_get_socket_local(candidate_offer->turn.ss, &rtp_socket))) {
+				goto bail;
+			}
+		}
+		else {
+			rtp_socket = tsk_object_ref(candidate_offer->socket);
 		}
 
 		// create transport
-		if (!(self->transport = tnet_transport_create_2(candidate_offer->socket, TRTP_TRANSPORT_NAME))) {
-			TSK_DEBUG_ERROR("Failed to create transport(%s:%u)", candidate_offer->socket->ip, candidate_offer->socket->port);
-			return -4;
+		if (!(self->transport = tnet_transport_create_2(rtp_socket, TRTP_TRANSPORT_NAME))) {
+			TSK_DEBUG_ERROR("Failed to create transport(%s:%u)", rtp_socket->ip, rtp_socket->port);
+			ret = -4;
+			goto bail;
 		}
 		// set rtp local and remote IPs and ports
 		if (candidate_answer_dest) { // could be "null" if remote peer is ICE-lite
@@ -748,7 +761,16 @@ static int _trtp_manager_ice_init(trtp_manager_t* self)
 				tsk_strupdate(&self->rtcp.public_ip, candidate_offer->connection_addr);
 				self->rtcp.public_port = candidate_offer->port;
 				TSK_OBJECT_SAFE_FREE(self->rtcp.local_socket);
-				self->rtcp.local_socket = tsk_object_ref((tsk_object_t*)candidate_offer->socket);
+				// Get RTCP socket
+				if (self->is_ice_turn_active && candidate_offer->turn.ss) {
+					ret = tnet_turn_session_get_socket_local(candidate_offer->turn.ss, &self->rtcp.local_socket);
+					if (ret) {
+						goto bail;
+					}
+				}
+				else {
+					self->rtcp.local_socket = tsk_object_ref(candidate_offer->socket);
+				}
 			}
 		}
 	}
@@ -757,6 +779,8 @@ static int _trtp_manager_ice_init(trtp_manager_t* self)
 	ret = tnet_transport_set_callback(self->transport, _trtp_transport_layer_cb, self); // NetTransport -> RtpManager
 	ret = tnet_ice_ctx_rtp_callback(self->ice_ctx, (tnet_ice_rtp_callback_f)_trtp_manager_recv_data, self); // ICE -> RtpManager
 
+bail:
+	TSK_OBJECT_SAFE_FREE(rtp_socket);
 	return ret;
 }
 
@@ -853,7 +877,7 @@ int trtp_manager_prepare(trtp_manager_t* self)
 			}
 
 			/* RTCP */
-			if(self->use_rtcp){
+			if (self->use_rtcp) {
 				if(!(self->rtcp.local_socket = tnet_socket_create(self->local_ip, local_port+1, socket_type))){
 					TSK_DEBUG_WARN("Failed to bind to %d", local_port+1);
 					TSK_OBJECT_SAFE_FREE(self->transport);
@@ -1318,6 +1342,7 @@ int trtp_manager_start(trtp_manager_t* self)
 		TSK_DEBUG_ERROR("Invalid RTP host:port [%s:%u]", self->rtp.remote_ip, self->rtp.remote_port);
 		goto bail;
 	}
+	TSK_DEBUG_INFO("rtp.remote_ip=%s, rtp.remote_port=%d, rtp.local_fd=%d", self->rtp.remote_ip, self->rtp.remote_port, self->transport->master->fd);
 
 	/* RTCP */
 	if(self->use_rtcp){
@@ -1529,6 +1554,7 @@ tsk_size_t trtp_manager_send_rtp_raw(trtp_manager_t* self, const void* data, tsk
 	}
 	tsk_safeobj_lock(self);
 	if (self->is_ice_turn_active) {
+		// Send UDP/TCP/TLS buffer using TURN sockets
 		ret = (tnet_ice_ctx_send_turn_rtp(self->ice_ctx, data, size) == 0) ? size : 0; // returns #0 if ok
 	}
 	else {
