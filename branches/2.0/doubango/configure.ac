@@ -283,6 +283,19 @@ AC_CHECK_LIB([rt], [clock_gettime],
     AC_SUBST(LIBRT_LIBADD, "")
     )
 
+have_alsa=no
+AH_TEMPLATE([HAVE_ALSA_ASOUNDLIB_H], [Define if <alsa/asoundlib.h> header exist])
+AM_CONDITIONAL(USE_ALSA, false)
+AC_CHECK_LIB([asound], [snd_pcm_open],
+    AC_SUBST(LIBASOUND_LIBADD, "-lasound")
+    AM_CONDITIONAL(USE_ALSA, true)
+    [have_alsa=yes], 
+    AC_SUBST(LIBASOUND_LIBADD, "")
+    )
+# check for <alsa/asoundlib.h> only if libasound exist
+test $have_alsa = yes &&  
+	AC_CHECK_HEADER([alsa/asoundlib.h], AC_DEFINE(HAVE_ALSA_ASOUNDLIB_H, 1), AC_DEFINE(HAVE_ALSA_ASOUNDLIB_H, 0) [have_alsa=no], [])
+
 have_v4l2=no
 AH_TEMPLATE([HAVE_LINUX_VIDEODEV2_H], [Define if <linux/videodev2.h> header exist])
 AC_CHECK_HEADER([linux/videodev2.h], AC_DEFINE(HAVE_LINUX_VIDEODEV2_H, 1) [have_v4l2=yes], AC_DEFINE(HAVE_LINUX_VIDEODEV2_H, 0), [])
@@ -983,6 +996,7 @@ WebRTC:              Enabled($have_webrtc): AEC($have_webrtc_aec), NS($have_webr
 Monotonic timers:    $have_rt
 RESOLV:              $have_resolv
 
+ALSA:                $have_alsa
 V4L2:                $have_v4l2
 
 DEBUG:               $enable_debug

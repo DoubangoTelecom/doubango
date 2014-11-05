@@ -85,6 +85,14 @@ if USE_ILBC
 libtinyWRAP_la_LIBADD += ${LIBILBC_LIBADD}
 endif
 
+if USE_WEBRTC
+libtinyWRAP_la_LIBADD += ${LIBWEBRTC_LIBADD}
+endif
+
+if USE_ALSA
+libtinyWRAP_la_LIBADD += ${LIBASOUND_LIBADD}
+endif
+
 libtinyWRAP_la_SOURCES  = \
 	_common/ActionConfig.cxx \
 	_common/AudioResampler.cxx \
