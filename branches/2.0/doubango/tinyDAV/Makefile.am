@@ -72,6 +72,10 @@ if USE_WEBRTC
 libtinyDAV_la_LIBADD += ${LIBWEBRTC_LIBADD}
 endif
 
+if USE_ALSA
+libtinyDAV_la_LIBADD += ${LIBASOUND_LIBADD}
+endif
+
 libtinyDAV_la_SOURCES = \
 	src/tdav.c \
 	src/tdav_session_av.c
@@ -94,6 +98,10 @@ libtinyDAV_la_SOURCES += src/video/tdav_consumer_video.c \
 	src/video/jb/tdav_video_jb.c
 
 libtinyDAV_la_SOURCES += src/video/v4linux/tdav_producer_video_v4l2.c
+
+libtinyDAV_la_SOURCES += src/audio/alsa/tdav_common_alsa.c \
+	src/audio/alsa/tdav_consumer_alsa.c \
+	src/audio/alsa/tdav_producer_alsa.c
 
 libtinyDAV_la_SOURCES += src/bfcp/tdav_session_bfcp.c
 	
