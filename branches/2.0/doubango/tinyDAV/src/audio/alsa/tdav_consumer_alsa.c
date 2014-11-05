@@ -20,6 +20,104 @@
 #if HAVE_ALSA_ASOUNDLIB_H
 
 
+#include "tsk_thread.h"
+#include "tsk_memory.h"
+#include "tsk_debug.h"
 
+#define tdav_consumer_alsa_set	tsk_null
+
+typedef struct tdav_consumer_alsa_s
+{
+	TDAV_DECLARE_CONSUMER_AUDIO;
+
+	tsk_bool_t b_started;
+}
+tdav_consumer_alsa_t;
+
+/* ============ Media Consumer Interface ================= */
+static int tdav_consumer_alsa_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
+{
+	return 0;
+}
+
+static int tdav_consumer_alsa_start(tmedia_consumer_t* self)
+{
+	return 0;
+}
+
+static int tdav_consumer_alsa_consume(tmedia_consumer_t* self, const void* buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
+{
+	return 0;
+}
+
+static int tdav_consumer_alsa_pause(tmedia_consumer_t* self)
+{
+	return 0;
+}
+
+static int tdav_consumer_alsa_stop(tmedia_consumer_t* self)
+{
+
+	return 0;
+}
+
+
+//
+//	ALSA consumer object definition
+//
+/* constructor */
+static tsk_object_t* tdav_consumer_alsa_ctor(tsk_object_t * self, va_list * app)
+{
+	tdav_consumer_alsa_t *consumer = self;
+	if (consumer) {
+		/* init base */
+		tdav_consumer_audio_init(TDAV_CONSUMER_AUDIO(consumer));
+		/* init self */
+	}
+	return self;
+}
+/* destructor */
+static tsk_object_t* tdav_consumer_alsa_dtor(tsk_object_t * self)
+{ 
+	tdav_consumer_alsa_t *consumer = self;
+	if (consumer) {
+		tsk_size_t i;
+
+		/* stop */
+		if (consumer->b_started) {
+			tdav_consumer_alsa_stop(self);
+		}
+
+		/* deinit base */
+		tdav_consumer_audio_deinit(TDAV_CONSUMER_AUDIO(consumer));
+		/* deinit self */
+	}
+
+	return self;
+}
+/* object definition */
+static const tsk_object_def_t tdav_consumer_alsa_def_s = 
+{
+	sizeof(tdav_consumer_alsa_t),
+	tdav_consumer_alsa_ctor, 
+	tdav_consumer_alsa_dtor,
+	tdav_consumer_audio_cmp, 
+};
+/* plugin definition*/
+static const tmedia_consumer_plugin_def_t tdav_consumer_alsa_plugin_def_s = 
+{
+	&tdav_consumer_alsa_def_s,
+	
+	tmedia_audio,
+	"Microsoft alsa consumer",
+	
+	tdav_consumer_alsa_set,
+	tdav_consumer_alsa_prepare,
+	tdav_consumer_alsa_start,
+	tdav_consumer_alsa_consume,
+	tdav_consumer_alsa_pause,
+	tdav_consumer_alsa_stop
+};
+const tmedia_consumer_plugin_def_t *tdav_consumer_alsa_plugin_def_t = &tdav_consumer_alsa_plugin_def_s;
 
 #endif /* #if HAVE_ALSA_ASOUNDLIB_H */
