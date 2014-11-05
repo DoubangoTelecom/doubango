@@ -173,6 +173,8 @@ audio_includedir = $(includedir)/tinydav/tinydav/audio
 audio_include_HEADERS = include/tinydav/audio/*.h
 video_includedir = $(includedir)/tinydav/tinydav/video
 video_include_HEADERS = include/tinydav/video/*.h
+bfcp_includedir = $(includedir)/tinydav/tinydav/bfcp
+bfcp_include_HEADERS = include/tinydav/bfcp/*.h
 
 
 pkgconfigdir = $(libdir)/pkgconfig
