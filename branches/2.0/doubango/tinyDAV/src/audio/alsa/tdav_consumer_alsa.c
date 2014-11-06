@@ -24,7 +24,13 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-#define tdav_consumer_alsa_set	tsk_null
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <linux/soundcard.h>
 
 typedef struct tdav_consumer_alsa_s
 {
@@ -35,6 +41,16 @@ typedef struct tdav_consumer_alsa_s
 tdav_consumer_alsa_t;
 
 /* ============ Media Consumer Interface ================= */
+static int tdav_consumer_alsa_set(tmedia_consumer_t* self, const tmedia_param_t* param)
+{
+	tdav_consumer_alsa_t* p_alsa = (tdav_consumer_alsa_t*)self;
+	int ret = 0;
+
+	ret = tdav_consumer_audio_set(TDAV_CONSUMER_AUDIO(self), param);
+
+	return ret;
+}
+
 static int tdav_consumer_alsa_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
 	return 0;
@@ -109,7 +125,7 @@ static const tmedia_consumer_plugin_def_t tdav_consumer_alsa_plugin_def_s =
 	&tdav_consumer_alsa_def_s,
 	
 	tmedia_audio,
-	"Microsoft alsa consumer",
+	"Linux ALSA consumer",
 	
 	tdav_consumer_alsa_set,
 	tdav_consumer_alsa_prepare,
