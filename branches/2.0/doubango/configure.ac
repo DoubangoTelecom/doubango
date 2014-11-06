@@ -8,7 +8,7 @@
 AC_PREREQ([2.0])
 AC_INIT(libdoubango, 2.0.1158, doubango(at)googlegroups(dot)com)
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([tinySAK/src/tsk.c])
