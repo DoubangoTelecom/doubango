@@ -957,7 +957,7 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 					const char* fp_str = trtp_manager_get_dtls_local_fingerprint(self->rtp_manager, TDAV_DFAULT_FP_HASH);
 					if(fp_str){
 						tsk_sprintf(&str, "%s %s", TNET_DTLS_HASH_NAMES[TDAV_DFAULT_FP_HASH], fp_str);
-						//!\ From RFC 5763 (DTLS-SRTP Framework) §5: The endpoint MUST NOT use the connection attribute defined in [RFC4145].
+						//!\ From RFC 5763 (DTLS-SRTP Framework) \A75: The endpoint MUST NOT use the connection attribute defined in [RFC4145].
 #if TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT
 						tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("fingerprint", str), tsk_null);
 						tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("setup", TNET_DTLS_SETUP_NAMES[self->dtls.local.setup]), tsk_null);

@@ -76,7 +76,7 @@ int tdav_common_alsa_prepare(tdav_common_alsa_t* p_self, tsk_bool_t is_capture, 
 	}
 	p_self->b_capture = is_capture;
 	
-	if ((err = snd_pcm_open(&p_self->p_handle, p_self->p_device_name, is_capture ? SND_PCM_STREAM_CAPTURE : SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK | SND_PCM_ASYNC)) != 0) {
+	if ((err = snd_pcm_open(&p_self->p_handle, p_self->p_device_name, is_capture ? SND_PCM_STREAM_CAPTURE : SND_PCM_STREAM_PLAYBACK, /*SND_PCM_NONBLOCK | SND_PCM_ASYNC*/0)) != 0) {
 		ALSA_DEBUG_ERROR("Failed to open audio device %s (%s)", p_self->p_device_name, snd_strerror(err));
 		goto bail;
 	}
@@ -141,7 +141,6 @@ int tdav_common_alsa_prepare(tdav_common_alsa_t* p_self, tsk_bool_t is_capture, 
 	ALSA_DEBUG_INFO("device('%s') prepared", p_self->p_device_name);
 	
 	// everything is OK
-	err = 0;
 	p_self->b_prepared = tsk_true;
 bail:
 	if (err) {
@@ -197,6 +196,7 @@ int tdav_common_alsa_start(tdav_common_alsa_t* p_self)
 
 	if (p_self->b_started) {
 		ALSA_DEBUG_WARN("Already started");
+		err = - 3;
 		goto bail;
 	}
 	if (!p_self->b_prepared) {
