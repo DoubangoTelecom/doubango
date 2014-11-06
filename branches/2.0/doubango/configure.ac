@@ -296,6 +296,10 @@ AC_CHECK_LIB([asound], [snd_pcm_open],
 test $have_alsa = yes &&  
 	AC_CHECK_HEADER([alsa/asoundlib.h], AC_DEFINE(HAVE_ALSA_ASOUNDLIB_H, 1), AC_DEFINE(HAVE_ALSA_ASOUNDLIB_H, 0) [have_alsa=no], [])
 
+have_oss=no
+AH_TEMPLATE([HAVE_LINUX_SOUNDCARD_H], [Define if <linux/soundcard.h> header exist])
+AC_CHECK_HEADER([linux/soundcard.h], AC_DEFINE(HAVE_LINUX_SOUNDCARD_H, 1) [have_oss=yes], AC_DEFINE(HAVE_LINUX_SOUNDCARD_H, 0), [])
+
 have_v4l2=no
 AH_TEMPLATE([HAVE_LINUX_VIDEODEV2_H], [Define if <linux/videodev2.h> header exist])
 AC_CHECK_HEADER([linux/videodev2.h], AC_DEFINE(HAVE_LINUX_VIDEODEV2_H, 1) [have_v4l2=yes], AC_DEFINE(HAVE_LINUX_VIDEODEV2_H, 0), [])
@@ -996,8 +1000,9 @@ WebRTC:              Enabled($have_webrtc): AEC($have_webrtc_aec), NS($have_webr
 Monotonic timers:    $have_rt
 RESOLV:              $have_resolv
 
-ALSA:                $have_alsa
-V4L2:                $have_v4l2
+ALSA (audio):        $have_alsa
+OSS (audio):         $have_oss
+V4L2 (video):        $have_v4l2
 
 DEBUG:               $enable_debug
 

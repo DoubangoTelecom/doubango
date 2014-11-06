@@ -104,6 +104,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #include "tinydav/audio/coreaudio/tdav_consumer_audiounit.h"
 #include "tinydav/audio/wasapi/tdav_consumer_wasapi.h"
 #include "tinydav/audio/alsa/tdav_consumer_alsa.h"
+#include "tinydav/audio/oss/tdav_consumer_oss.h"
 #include "tinydav/video/winm/tdav_consumer_winm.h"
 #include "tinydav/video/mf/tdav_consumer_video_mf.h"
 #include "tinydav/video/gdi/tdav_consumer_video_gdi.h"
@@ -118,6 +119,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #include "tinydav/audio/coreaudio/tdav_producer_audiounit.h"
 #include "tinydav/audio/wasapi/tdav_producer_wasapi.h"
 #include "tinydav/audio/alsa/tdav_producer_alsa.h"
+#include "tinydav/audio/oss/tdav_producer_oss.h"
 #include "tinydav/video/winm/tdav_producer_winm.h"
 #include "tinydav/video/mf/tdav_producer_video_mf.h"
 #include "tinydav/t140/tdav_producer_t140.h"
@@ -363,6 +365,9 @@ int tdav_init()
 #if HAVE_ALSA_ASOUNDLIB_H // Linux
 	tmedia_consumer_plugin_register(tdav_consumer_alsa_plugin_def_t);
 #endif
+#if HAVE_LINUX_SOUNDCARD_H // Linux
+	tmedia_consumer_plugin_register(tdav_consumer_oss_plugin_def_t);
+#endif
 
 #if HAVE_COREAUDIO_AUDIO_UNIT // CoreAudio based on AudioUnit
 	tmedia_consumer_plugin_register(tdav_consumer_audiounit_plugin_def_t);
@@ -391,6 +396,9 @@ int tdav_init()
 #endif
 #if HAVE_ALSA_ASOUNDLIB_H // Linux
 	tmedia_producer_plugin_register(tdav_producer_alsa_plugin_def_t);
+#endif
+#if HAVE_LINUX_SOUNDCARD_H // Linux
+	tmedia_producer_plugin_register(tdav_producer_oss_plugin_def_t);
 #endif
 #if HAVE_LINUX_VIDEODEV2_H // V4L2 (Linux)
 	tmedia_producer_plugin_register(tdav_producer_video_v4l2_plugin_def_t);
@@ -615,6 +623,9 @@ int tdav_deinit()
 #if HAVE_ALSA_ASOUNDLIB_H // Linux
 	tmedia_consumer_plugin_unregister(tdav_consumer_alsa_plugin_def_t);
 #endif
+#if HAVE_LINUX_SOUNDCARD_H // Linux
+	tmedia_consumer_plugin_unregister(tdav_consumer_oss_plugin_def_t);
+#endif
 
 	/* === UnRegister producers === */
 	tmedia_producer_plugin_unregister(tdav_producer_t140_plugin_def_t); /* T140 */
@@ -635,6 +646,9 @@ int tdav_deinit()
 #endif
 #if HAVE_ALSA_ASOUNDLIB_H // Linux
 	tmedia_producer_plugin_unregister(tdav_producer_alsa_plugin_def_t);
+#endif
+#if HAVE_LINUX_SOUNDCARD_H // Linux
+	tmedia_producer_plugin_unregister(tdav_producer_oss_plugin_def_t);
 #endif
 #if HAVE_LINUX_VIDEODEV2_H // V4L2 (Linux)
 	tmedia_producer_plugin_unregister(tdav_producer_video_v4l2_plugin_def_t);

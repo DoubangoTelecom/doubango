@@ -103,6 +103,9 @@ libtinyDAV_la_SOURCES += src/audio/alsa/tdav_common_alsa.c \
 	src/audio/alsa/tdav_consumer_alsa.c \
 	src/audio/alsa/tdav_producer_alsa.c
 
+libtinyDAV_la_SOURCES += src/audio/oss/tdav_consumer_oss.c \
+	src/audio/oss/tdav_producer_oss.c
+
 libtinyDAV_la_SOURCES += src/bfcp/tdav_session_bfcp.c
 	
 libtinyDAV_la_SOURCES += src/t140/tdav_consumer_t140.c \
