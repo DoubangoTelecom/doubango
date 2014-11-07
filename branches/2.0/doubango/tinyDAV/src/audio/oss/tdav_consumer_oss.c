@@ -19,6 +19,7 @@
 
 #if HAVE_LINUX_SOUNDCARD_H
 
+#include "tsk_string.h"
 #include "tsk_thread.h"
 #include "tsk_memory.h"
 #include "tsk_safeobj.h"

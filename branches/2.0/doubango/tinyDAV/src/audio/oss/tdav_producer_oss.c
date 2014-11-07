@@ -19,6 +19,7 @@
 
 #if HAVE_LINUX_SOUNDCARD_H
 
+#include "tsk_string.h"
 #include "tsk_thread.h"
 #include "tsk_memory.h"
 #include "tsk_safeobj.h"
@@ -45,6 +46,7 @@ typedef struct tdav_producer_oss_s
 	tsk_bool_t b_started;
 	tsk_bool_t b_prepared;
 	tsk_bool_t b_muted;
+	int n_bits_per_sample;
 	
 	int fd;
 	tsk_thread_handle_t* tid[1];
@@ -52,15 +54,37 @@ typedef struct tdav_producer_oss_s
 	tsk_size_t n_buff_size_in_bytes;
 	tsk_size_t n_buff_size_in_samples;
 	uint8_t* p_buff_ptr;
+
+	tsk_size_t n_buff16_size_in_bytes;
+	tsk_size_t n_buff16_size_in_samples;
+	uint16_t* p_buff16_ptr;
 	
 	TSK_DECLARE_SAFEOBJ;
 }
 tdav_producer_oss_t;
 
+static int __oss_from_8bits_to_16bits(const void* p_src, void* p_dst, tsk_size_t n_samples)
+{
+	tsk_size_t i;
+	const uint8_t *_p_src = (const uint8_t*)p_src;
+	uint16_t *_p_dst = (uint16_t*)p_dst;
+
+	if (!p_src || !p_dst || !n_samples) {
+		OSS_DEBUG_ERROR("invalid parameter");
+		return -1;
+	}
+	for (i = 0; i < n_samples; ++i) {
+		_p_dst[i] = _p_src[i];
+	}
+	return 0;
+}
+
 static void* TSK_STDCALL _tdav_producer_oss_record_thread(void *param)
 {
 	tdav_producer_oss_t*  p_oss = (tdav_producer_oss_t*)param;
 	int err;
+	const void* p_buffer = ((p_oss->n_bits_per_sample == 8) ? (const void*)p_oss->p_buff16_ptr: (const void*)p_oss->p_buff_ptr);
+	tsk_size_t n_buffer_in_bytes = (p_oss->n_bits_per_sample == 8) ?  p_oss->n_buff16_size_in_bytes :  p_oss->n_buff_size_in_bytes;
 
 	OSS_DEBUG_INFO("__record_thread -- START");
 
@@ -68,13 +92,19 @@ static void* TSK_STDCALL _tdav_producer_oss_record_thread(void *param)
 	
 	while (p_oss->b_started) {
 		tsk_safeobj_lock(p_oss);
-		if ((err = read(p_oss->fd, p_oss->p_buff_ptr, p_oss->n_buff_size_in_samples)) != p_oss->n_buff_size_in_samples) {
+		if ((err = read(p_oss->fd, p_oss->p_buff_ptr, p_oss->n_buff_size_in_bytes)) != p_oss->n_buff_size_in_bytes) {
 			OSS_DEBUG_ERROR ("Failed to read data from audio interface failed (%d -> %s)", err , strerror(errno));
 			tsk_safeobj_unlock(p_oss);
 			goto bail;
+		}	
+		if (p_oss->n_bits_per_sample == 8) {
+			if ((err = __oss_from_8bits_to_16bits(p_oss->p_buff_ptr, p_oss->p_buff16_ptr, p_oss->n_buff_size_in_samples))) {
+				tsk_safeobj_unlock(p_oss);
+				goto bail;
+			}
 		}
 		if (!p_oss->b_muted && TMEDIA_PRODUCER(p_oss)->enc_cb.callback) {
-			TMEDIA_PRODUCER(p_oss)->enc_cb.callback(TMEDIA_PRODUCER(p_oss)->enc_cb.callback_data, p_oss->p_buff_ptr, p_oss->n_buff_size_in_bytes);
+			TMEDIA_PRODUCER(p_oss)->enc_cb.callback(TMEDIA_PRODUCER(p_oss)->enc_cb.callback_data, p_buffer, n_buffer_in_bytes);
 		}
 		tsk_safeobj_unlock(p_oss);
 	}
@@ -125,19 +155,24 @@ static int tdav_producer_oss_prepare(tmedia_producer_t* self, const tmedia_codec
 	// Set using requested
 	channels = TMEDIA_CODEC_CHANNELS_AUDIO_ENCODING(codec);
 	sample_rate = TMEDIA_CODEC_RATE_ENCODING(codec);
-	bits_per_sample = TMEDIA_PRODUCER(p_oss)->audio.bits_per_sample;
+	bits_per_sample = TMEDIA_PRODUCER(p_oss)->audio.bits_per_sample; // 16
 
 	// Prepare
-	if ((err = ioctl(p_oss->fd, SOUND_PCM_READ_BITS, &bits_per_sample)) != 0) {
-		OSS_DEBUG_ERROR("ioctl(SOUND_PCM_READ_BITS, %d) failed: %d->%s", bits_per_sample, err, strerror(errno));
+	if ((err = ioctl(p_oss->fd, SOUND_PCM_WRITE_BITS, &bits_per_sample)) != 0) {
+		OSS_DEBUG_ERROR("ioctl(SOUND_PCM_WRITE_BITS, %d) failed: %d->%s", bits_per_sample, err, strerror(errno));
 		goto bail;
 	}
-	if ((err = ioctl(p_oss->fd, SOUND_PCM_READ_CHANNELS, &channels)) != 0) {
-		OSS_DEBUG_ERROR("ioctl(SOUND_PCM_READ_CHANNELS, %d) failed: %d->%s", channels, err, strerror(errno));
+	if (bits_per_sample != 16 && bits_per_sample != 8) {
+		OSS_DEBUG_ERROR("bits_per_sample=%d not supported", bits_per_sample);
+		err = -3;
 		goto bail;
 	}
-	if ((err = ioctl(p_oss->fd, SOUND_PCM_READ_RATE, &sample_rate)) != 0) {
-		OSS_DEBUG_ERROR("ioctl(SOUND_PCM_READ_RATE, %d) failed: %d->%s", sample_rate, err, strerror(errno));
+	if ((err = ioctl(p_oss->fd, SOUND_PCM_WRITE_CHANNELS, &channels)) != 0) {
+		OSS_DEBUG_ERROR("ioctl(SOUND_PCM_WRITE_CHANNELS, %d) failed: %d->%s", channels, err, strerror(errno));
+		goto bail;
+	}
+	if ((err = ioctl(p_oss->fd, SOUND_PCM_WRITE_RATE, &sample_rate)) != 0) {
+		OSS_DEBUG_ERROR("ioctl(SOUND_PCM_WRITE_RATE, %d) failed: %d->%s", sample_rate, err, strerror(errno));
 		goto bail;
 	}
 
@@ -148,6 +183,15 @@ static int tdav_producer_oss_prepare(tmedia_producer_t* self, const tmedia_codec
 		goto bail;
 	}
 	p_oss->n_buff_size_in_samples = (p_oss->n_buff_size_in_bytes / (bits_per_sample >> 3));
+	if (bits_per_sample == 8) {
+		p_oss->n_buff16_size_in_bytes = p_oss->n_buff_size_in_bytes << 1;
+		if (!(p_oss->p_buff16_ptr = tsk_realloc(p_oss->p_buff16_ptr, p_oss->n_buff16_size_in_bytes))) {
+			OSS_DEBUG_ERROR("Failed to allocate buffer with size = %u", p_oss->n_buff_size_in_bytes);
+			err = -5;
+			goto bail;
+		}
+		p_oss->n_buff16_size_in_samples = p_oss->n_buff_size_in_samples;
+	}
 	
 	OSS_DEBUG_INFO("prepared: req_bits_per_sample=%d; req_channels=%d; req_rate=%d, resp_bits_per_sample=%d; resp_channels=%d; resp_rate=%d /// n_buff_size_in_samples=%u;n_buff_size_in_bytes=%u",
 		TMEDIA_PRODUCER(p_oss)->audio.bits_per_sample, TMEDIA_PRODUCER(p_oss)->audio.channels, TMEDIA_PRODUCER(p_oss)->audio.rate,
@@ -158,8 +202,9 @@ static int tdav_producer_oss_prepare(tmedia_producer_t* self, const tmedia_codec
 	TMEDIA_PRODUCER(p_oss)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_ENCODING(codec);
 	TMEDIA_PRODUCER(p_oss)->audio.channels = channels;
 	TMEDIA_PRODUCER(p_oss)->audio.rate = sample_rate;
-	TMEDIA_PRODUCER(p_oss)->audio.bits_per_sample = bits_per_sample;
+	// TMEDIA_PRODUCER(p_oss)->audio.bits_per_sample = bits_per_sample;
 
+	p_oss->n_bits_per_sample = bits_per_sample;
 	p_oss->b_prepared = tsk_true;
 
 bail:
@@ -289,6 +334,7 @@ static tsk_object_t* tdav_producer_oss_dtor(tsk_object_t * self)
 			p_oss->fd = -1;
 		}
 		TSK_FREE(p_oss->p_buff_ptr);
+		TSK_FREE(p_oss->p_buff16_ptr);
 		tsk_safeobj_deinit(p_oss);
 
 		OSS_DEBUG_INFO("*** destroyed ***");
