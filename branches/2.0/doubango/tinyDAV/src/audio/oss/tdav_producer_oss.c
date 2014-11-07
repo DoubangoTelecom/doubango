@@ -301,7 +301,7 @@ static int tdav_producer_oss_stop(tmedia_producer_t* self)
 
 
 //
-//	ALSA producer object definition
+//	Linux OSS producer object definition
 //
 /* constructor */
 static tsk_object_t* tdav_producer_oss_ctor(tsk_object_t * self, va_list * app)
@@ -356,7 +356,7 @@ static const tmedia_producer_plugin_def_t tdav_producer_oss_plugin_def_s =
 	&tdav_producer_oss_def_s,
 	
 	tmedia_audio,
-	"Microsoft oss producer",
+	"Linux OSS producer",
 	
 	tdav_producer_oss_set,
 	tdav_producer_oss_prepare,

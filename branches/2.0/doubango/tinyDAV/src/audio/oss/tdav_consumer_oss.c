@@ -166,7 +166,7 @@ bail:
 
 
 //
-//	OSS consumer object definition
+//	Linux OSS consumer object definition
 //
 /* constructor */
 static tsk_object_t* tdav_consumer_oss_ctor(tsk_object_t * self, va_list * app)
