@@ -1,5 +1,5 @@
-/*Copyright (C) 2013 Mamadou Diop
-* Copyright (C) 2013 Doubango Telecom <http://www.doubango.org>
+/*Copyright (C) 2013 Mamadou DIOP
+* Copyright (C) 2013-2014 Doubango Telecom <http://www.doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -16,7 +16,7 @@
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 */
-/**@file tdav_producer_wasapi.h
+/**@file tdav_producer_wasapi.cxx
  * @brief Microsoft Windows Audio Session API (WASAPI) producer.
  * http://msdn.microsoft.com/en-us/library/windows/desktop/dd316551(v=vs.85).aspx
  */

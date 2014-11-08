@@ -252,6 +252,8 @@ static tsk_object_t* tdav_speex_denoise_ctor(tsk_object_t * self, va_list * app)
 		/* init base */
 		tmedia_denoise_init(TMEDIA_DENOISE(denoise));
 		/* init self */
+
+		TSK_DEBUG_INFO("Create SpeexDSP denoiser");
 	}
 	return self;
 }
@@ -295,7 +297,7 @@ static const tmedia_denoise_plugin_def_t tdav_speex_denoise_plugin_def_s =
 {
 	&tdav_speex_denoise_def_s,
 
-	"Audio Denoiser based on Speex",
+	"Audio Denoiser based on SpeexDSP",
 
 	tdav_speex_denoise_set,
 	tdav_speex_denoise_open,
