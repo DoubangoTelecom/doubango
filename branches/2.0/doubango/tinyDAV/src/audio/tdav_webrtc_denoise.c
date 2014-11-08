@@ -323,6 +323,8 @@ static tsk_object_t* tdav_webrtc_denoise_ctor(tsk_object_t * _self, va_list * ap
 		tmedia_denoise_init(TMEDIA_DENOISE(self));
 		/* init self */
 		tsk_safeobj_init(self);
+
+		TSK_DEBUG_INFO("Create WebRTC denoiser");
 	}
 	return self;
 }
@@ -335,6 +337,8 @@ static tsk_object_t* tdav_webrtc_denoise_dtor(tsk_object_t * _self)
 		tmedia_denoise_deinit(TMEDIA_DENOISE(self));
 		/* deinit self */
 		tsk_safeobj_deinit(self);
+
+		TSK_DEBUG_INFO("*** Destroy WebRTC denoiser ***");
 	}
 
 	return self;

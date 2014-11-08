@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2011-2014 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -19,13 +17,6 @@
 * along with DOUBANGO.
 *
 */
-
-/**@file tdav_speex_resampler.c
- * @brief Speex Audio resampler Plugin
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
-
- */
 #include "tinydav/audio/tdav_speex_resampler.h"
 
 #if HAVE_SPEEX_DSP && (!defined(HAVE_SPEEX_RESAMPLER) || HAVE_SPEEX_RESAMPLER)
@@ -117,20 +108,33 @@ static tsk_size_t tdav_speex_resampler_process(tmedia_resampler_t* self, const u
 					    (spx_int16_t *)out_data, &out_len);
 	}
 	else {
-		if(resampler->in_channels == 1){
+		if (resampler->in_channels == 1) {
+#if 0 // WP8 -> noise
 			// in_channels = 1, out_channels = 2
 			spx_int16_t* pout_data = (spx_int16_t*)(out_data);
 			speex_resampler_set_output_stride(resampler->state, 2);
 			err = speex_resampler_process_int(resampler->state, 0, 
 				(const spx_int16_t *)in_data, (spx_uint32_t *)&in_size, 
 				pout_data, &out_len);
-			if(err == RESAMPLER_ERR_SUCCESS) {
+			if (err == RESAMPLER_ERR_SUCCESS) {
 				spx_uint32_t i;
 				// duplicate
-				for(i = 0; i < out_len; i += 2){
+				for (i = 0; i < out_len; i += 2) {
 					pout_data[i + 1] = pout_data[i];
 				}
 			}
+#else
+			out_len = out_size;
+			err = speex_resampler_process_int(resampler->state, 0, (const spx_int16_t *)in_data, (spx_uint32_t *)&in_size, resampler->tmp_buffer.ptr, &out_len);
+			if (err == RESAMPLER_ERR_SUCCESS) {
+				spx_uint32_t i, j;
+				spx_int16_t* pout_data = (spx_int16_t*)(out_data);
+				out_len = TSK_MIN(out_len, out_size);
+				for (i = 0, j = 0; i < out_len; ++i, j += 2) {
+					pout_data[j] = pout_data[j + 1] = resampler->tmp_buffer.ptr[i];
+				}
+			}
+#endif
 		}
 		else {
 			// in_channels = 2, out_channels = 1
