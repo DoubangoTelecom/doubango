@@ -70,8 +70,8 @@ TINYNET_API int tnet_ice_ctx_add_server(
 	tnet_ice_ctx_add_server((self), (transport_proto), (server_addr), (server_port), tsk_false/*use_turn*/, tsk_true/*use_stun*/, (username), (password))
 TINYNET_API int tnet_ice_ctx_set_sync_mode(struct tnet_ice_ctx_s* self, tsk_bool_t sync_mode);
 TINYNET_API int tnet_ice_ctx_set_silent_mode(struct tnet_ice_ctx_s* self, tsk_bool_t silent_mode);
-TNET_DEPRECATED(TINYNET_API int tnet_ice_ctx_set_stun_enabled(struct tnet_ice_ctx_s* self, tsk_bool_t stun_enabled));
-TNET_DEPRECATED(TINYNET_API int tnet_ice_ctx_set_turn_enabled(struct tnet_ice_ctx_s* self, tsk_bool_t turn_enabled));
+TINYNET_API int tnet_ice_ctx_set_stun_enabled(struct tnet_ice_ctx_s* self, tsk_bool_t stun_enabled);
+TINYNET_API int tnet_ice_ctx_set_turn_enabled(struct tnet_ice_ctx_s* self, tsk_bool_t turn_enabled);
 TINYNET_API int tnet_ice_ctx_start(struct tnet_ice_ctx_s* self);
 TINYNET_API int tnet_ice_ctx_rtp_callback(struct tnet_ice_ctx_s* self, tnet_ice_rtp_callback_f rtp_callback, const void* rtp_callback_data);
 TINYNET_API int tnet_ice_ctx_set_concheck_timeout(struct tnet_ice_ctx_s* self, int64_t timeout);
