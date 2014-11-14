@@ -1823,7 +1823,7 @@ start_conneck:
 		else if(ret == 0) {
 			// timeout
 			// TSK_DEBUG_INFO("STUN request timedout");
-			continue;
+			goto check_nomination; //!\ continue == possible endless loop
 		}
 		else if(ret > 0) {
 			// there is data to read
@@ -1898,7 +1898,7 @@ check_nomination:
 		if(self->have_nominated_offer && self->have_nominated_answer){
 			self->have_nominated_symetric = tnet_ice_pairs_have_nominated_symetric(self->candidates_pairs, check_rtcp);
 		}
-	}
+	} // while (self->is_started...
 
 	// "ret" could be "<>0" if last function used was "select()", "recvfrom()", "ioctlt()"...this is why we set the value to #0. 
 	// if there was an error then, we'll jump to "bail:" and next code is skipped
