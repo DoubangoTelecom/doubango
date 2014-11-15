@@ -19,6 +19,7 @@
 
 #if HAVE_ALSA_ASOUNDLIB_H
 
+#include "tinydav/audio/alsa/tdav_common_alsa.h"
 
 #include "tsk_thread.h"
 #include "tsk_memory.h"
@@ -36,9 +37,44 @@ typedef struct tdav_consumer_alsa_s
 {
 	TDAV_DECLARE_CONSUMER_AUDIO;
 
+	tsk_bool_t b_muted;
 	tsk_bool_t b_started;
+	tsk_bool_t b_paused;
+
+	tsk_thread_handle_t* tid[1];
+	
+	struct tdav_common_alsa_s alsa_common;
 }
 tdav_consumer_alsa_t;
+
+static void* TSK_STDCALL _tdav_producer_alsa_playback_thread(void *param)
+{
+	tdav_consumer_alsa_t*  p_alsa = (tdav_consumer_alsa_t*)param;
+	int err;
+
+	ALSA_DEBUG_INFO("__playback_thread -- START");
+
+	tsk_thread_set_priority_2(TSK_THREAD_PRIORITY_TIME_CRITICAL);
+	
+	while (p_alsa->b_started) {
+		tdav_common_alsa_lock(&p_alsa->alsa_common);
+		err = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(p_alsa), p_alsa->alsa_common.p_buff_ptr, p_alsa->alsa_common.n_buff_size_in_bytes); // requires 16bits, thread-safe
+		if (err < p_alsa->alsa_common.n_buff_size_in_bytes) {
+			memset(((uint8_t*)p_alsa->alsa_common.p_buff_ptr) + err, 0, (p_alsa->alsa_common.n_buff_size_in_bytes - err));
+		}
+		if ((err = snd_pcm_writei(p_alsa->alsa_common.p_handle, p_alsa->alsa_common.p_buff_ptr, p_alsa->alsa_common.n_buff_size_in_samples)) != p_alsa->alsa_common.n_buff_size_in_samples) {
+			ALSA_DEBUG_ERROR ("Failed to read data from audio interface failed (%d->%s)", err, snd_strerror(err));
+			tdav_common_alsa_unlock(&p_alsa->alsa_common);
+			goto bail;
+		}
+		tdav_consumer_audio_tick(TDAV_CONSUMER_AUDIO(p_alsa));
+		tdav_common_alsa_unlock(&p_alsa->alsa_common);
+	}
+bail:
+	ALSA_DEBUG_INFO("__record_thread -- STOP");
+	return tsk_null;
+}
+
 
 /* ============ Media Consumer Interface ================= */
 static int tdav_consumer_alsa_set(tmedia_consumer_t* self, const tmedia_param_t* param)
@@ -53,17 +89,102 @@ static int tdav_consumer_alsa_set(tmedia_consumer_t* self, const tmedia_param_t*
 
 static int tdav_consumer_alsa_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
-	return 0;
+	tdav_consumer_alsa_t*  p_alsa = (tdav_consumer_alsa_t*)self;
+	int err = 0;
+	ALSA_DEBUG_INFO("******* tdav_consumer_alsa_prepare ******");
+
+	if (! p_alsa || !codec && codec->plugin) {
+		ALSA_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tdav_common_alsa_lock(&p_alsa->alsa_common);
+
+	// Set using requested
+	TMEDIA_CONSUMER(p_alsa)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_DECODING(codec);
+    	TMEDIA_CONSUMER(p_alsa)->audio.in.channels = TMEDIA_CODEC_CHANNELS_AUDIO_DECODING(codec);
+    	TMEDIA_CONSUMER(p_alsa)->audio.in.rate = TMEDIA_CODEC_RATE_DECODING(codec);
+	
+	// Prepare
+	err = tdav_common_alsa_prepare(&p_alsa->alsa_common, tsk_false/*is_record*/, TMEDIA_CONSUMER( p_alsa)->audio.ptime, TMEDIA_CONSUMER( p_alsa)->audio.in.channels, TMEDIA_CONSUMER( p_alsa)->audio.in.rate);
+	if (err) {
+		goto bail;
+	}
+	
+	ALSA_DEBUG_INFO("prepared: req_channels=%d; req_rate=%d, resp_channels=%d; resp_rate=%d",
+		TMEDIA_CONSUMER(p_alsa)->audio.in.channels, TMEDIA_CONSUMER(p_alsa)->audio.in.rate,
+		p_alsa->alsa_common.channels, p_alsa->alsa_common.sample_rate);
+
+	// Set using supported (up to the resampler to convert to requested)
+	TMEDIA_CONSUMER(p_alsa)->audio.out.channels = p_alsa->alsa_common.channels;
+	TMEDIA_CONSUMER(p_alsa)->audio.out.rate = p_alsa->alsa_common.sample_rate;
+	
+bail:
+	tdav_common_alsa_unlock(&p_alsa->alsa_common);
+	return err;
 }
 
 static int tdav_consumer_alsa_start(tmedia_consumer_t* self)
 {
-	return 0;
+	tdav_consumer_alsa_t* p_alsa = (tdav_consumer_alsa_t*)self;
+	int err = 0;
+
+	ALSA_DEBUG_INFO("******* tdav_consumer_alsa_start ******");
+
+	if (!p_alsa) {
+		ALSA_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	tdav_common_alsa_lock(&p_alsa->alsa_common);
+
+	if (p_alsa->b_started) {
+		ALSA_DEBUG_WARN("Already started");
+		goto bail;
+	}
+
+	/* start device */
+	err = tdav_common_alsa_start(&p_alsa->alsa_common);
+	if (err) {
+		goto bail;
+	}
+
+	 /* start thread */
+	 p_alsa->b_started = tsk_true;
+	 tsk_thread_create(&p_alsa->tid[0], _tdav_producer_alsa_playback_thread,  p_alsa);
+
+	ALSA_DEBUG_INFO("started");
+
+bail:
+	tdav_common_alsa_unlock(&p_alsa->alsa_common);
+	return err;
 }
 
 static int tdav_consumer_alsa_consume(tmedia_consumer_t* self, const void* buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
 {
-	return 0;
+	int err = 0;
+	tdav_consumer_alsa_t* p_alsa = (tdav_consumer_alsa_t*)self;
+	
+	if (!p_alsa || !buffer || !size) {
+		OSS_DEBUG_ERROR("Invalid paramter");
+		return -1;
+	}
+
+	//tdav_common_alsa_lock(&p_alsa->alsa_common);
+	
+	if (!p_alsa->b_started) {
+		OSS_DEBUG_WARN("Not started");
+		err = -2;
+		goto bail;
+	}
+	if ((err = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(p_alsa), buffer, size, proto_hdr))/*thread-safe*/) {
+		OSS_DEBUG_WARN("Failed to put audio data to the jitter buffer");
+		goto bail;
+	}
+	
+bail:
+	//tdav_common_alsa_unlock(&p_alsa->alsa_common);
+	return err;
 }
 
 static int tdav_consumer_alsa_pause(tmedia_consumer_t* self)
@@ -73,7 +194,26 @@ static int tdav_consumer_alsa_pause(tmedia_consumer_t* self)
 
 static int tdav_consumer_alsa_stop(tmedia_consumer_t* self)
 {
+	tdav_consumer_alsa_t*  p_alsa = (tdav_consumer_alsa_t*)self;
+	int err;
 
+	if (!p_alsa) {
+		ALSA_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	/* should be done here */
+	p_alsa->b_started = tsk_false;
+
+	err = tdav_common_alsa_stop(&p_alsa->alsa_common);
+
+	/* stop thread */
+	if (p_alsa->tid[0]) {
+		tsk_thread_join(&(p_alsa->tid[0]));
+	}
+	
+	ALSA_DEBUG_INFO("stopped");
+	
 	return 0;
 }
 
@@ -84,29 +224,32 @@ static int tdav_consumer_alsa_stop(tmedia_consumer_t* self)
 /* constructor */
 static tsk_object_t* tdav_consumer_alsa_ctor(tsk_object_t * self, va_list * app)
 {
-	tdav_consumer_alsa_t *consumer = self;
-	if (consumer) {
+	tdav_consumer_alsa_t *p_alsa = self;
+	if (p_alsa) {
+		ALSA_DEBUG_INFO("create");
 		/* init base */
-		tdav_consumer_audio_init(TDAV_CONSUMER_AUDIO(consumer));
+		tdav_consumer_audio_init(TDAV_CONSUMER_AUDIO(p_alsa));
 		/* init self */
+		tdav_common_alsa_init(&p_alsa->alsa_common);
 	}
 	return self;
 }
 /* destructor */
 static tsk_object_t* tdav_consumer_alsa_dtor(tsk_object_t * self)
 { 
-	tdav_consumer_alsa_t *consumer = self;
-	if (consumer) {
-		tsk_size_t i;
-
+	tdav_consumer_alsa_t *p_alsa = self;
+	if (p_alsa) {
 		/* stop */
-		if (consumer->b_started) {
-			tdav_consumer_alsa_stop(self);
+		if (p_alsa->b_started) {
+			tdav_consumer_alsa_stop((tmedia_consumer_t*)p_alsa);
 		}
 
 		/* deinit base */
-		tdav_consumer_audio_deinit(TDAV_CONSUMER_AUDIO(consumer));
+		tdav_consumer_audio_deinit(TDAV_CONSUMER_AUDIO(p_alsa));
 		/* deinit self */
+		tdav_common_alsa_deinit(&p_alsa->alsa_common);
+
+		ALSA_DEBUG_INFO("*** destroyed ***");
 	}
 
 	return self;
