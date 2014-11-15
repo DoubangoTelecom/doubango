@@ -21,17 +21,10 @@
 
 #include "tinydav/audio/alsa/tdav_common_alsa.h"
 
-#include "tsk_thread.h"
-#include "tsk_memory.h"
-#include "tsk_debug.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/ioctl.h>
-#include <fcntl.h>
-#include <linux/soundcard.h>
+#define ALSA_DEBUG_INFO(FMT, ...) TSK_DEBUG_INFO("[ALSA Consumer] " FMT, ##__VA_ARGS__)
+#define ALSA_DEBUG_WARN(FMT, ...) TSK_DEBUG_WARN("[ALSA Consumer] " FMT, ##__VA_ARGS__)
+#define ALSA_DEBUG_ERROR(FMT, ...) TSK_DEBUG_ERROR("[ALSA Consumer] " FMT, ##__VA_ARGS__)
+#define ALSA_DEBUG_FATAL(FMT, ...) TSK_DEBUG_FATAL("[ALSA Consumer] " FMT, ##__VA_ARGS__)
 
 typedef struct tdav_consumer_alsa_s
 {
