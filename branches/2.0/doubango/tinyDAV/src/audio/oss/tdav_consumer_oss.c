@@ -79,7 +79,7 @@ static int __oss_from_16bits_to_8bits(const void* p_src, void* p_dst, tsk_size_t
 	return 0;
 }
 
-static void* TSK_STDCALL _tdav_consumer_oss_record_thread(void *param)
+static void* TSK_STDCALL _tdav_consumer_oss_playback_thread(void *param)
 {
 	tdav_consumer_oss_t*  p_oss = (tdav_consumer_oss_t*)param;
 	int err;
@@ -90,13 +90,13 @@ static void* TSK_STDCALL _tdav_consumer_oss_record_thread(void *param)
 	const void* _p_buffer;
 	tsk_size_t _n_buffer_in_bytes;
 
-	OSS_DEBUG_INFO("__record_thread -- START");
+	OSS_DEBUG_INFO("__playback_thread -- START");
 
 	tsk_thread_set_priority_2(TSK_THREAD_PRIORITY_TIME_CRITICAL);
 	
 	while (p_oss->b_started) {
 		tsk_safeobj_lock(p_oss);
-		err = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(p_oss), p_buffer, n_buffer_in_bytes); // requires 16bits
+		err = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(p_oss), p_buffer, n_buffer_in_bytes); // requires 16bits, thread-safe
 		if (err >= 0) {
 			_p_buffer = p_buffer;
 			_n_buffer_in_bytes = n_buffer_in_bytes;
@@ -114,6 +114,8 @@ static void* TSK_STDCALL _tdav_consumer_oss_record_thread(void *param)
 				goto bail;
 			}
 		}
+		tdav_consumer_audio_tick(TDAV_CONSUMER_AUDIO(p_oss));		
+
 		tsk_safeobj_unlock(p_oss);
 	}
 bail:
@@ -247,7 +249,7 @@ static int tdav_consumer_oss_start(tmedia_consumer_t* self)
 
 	 /* start thread */
 	 p_oss->b_started = tsk_true;
-	 tsk_thread_create(&p_oss->tid[0], _tdav_consumer_oss_record_thread,  p_oss);
+	 tsk_thread_create(&p_oss->tid[0], _tdav_consumer_oss_playback_thread,  p_oss);
 
 	OSS_DEBUG_INFO("started");
 
@@ -266,20 +268,20 @@ static int tdav_consumer_oss_consume(tmedia_consumer_t* self, const void* buffer
 		return -1;
 	}
 
-	tsk_safeobj_lock(p_oss);
+	//tsk_safeobj_lock(p_oss);
 	
 	if (!p_oss->b_started) {
 		OSS_DEBUG_WARN("Not started");
 		err = -2;
 		goto bail;
 	}
-	if ((err = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(p_oss), buffer, size, proto_hdr))) {
+	if ((err = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(p_oss), buffer, size, proto_hdr))/*thread-safe*/) {
 		OSS_DEBUG_WARN("Failed to put audio data");
 		goto bail;
 	}
 	
 bail:
-	tsk_safeobj_unlock(p_oss);
+	//tsk_safeobj_unlock(p_oss);
 	return err;
 }
 
