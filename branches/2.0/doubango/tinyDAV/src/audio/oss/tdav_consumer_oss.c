@@ -25,6 +25,7 @@
 #include "tsk_safeobj.h"
 #include "tsk_debug.h"
 
+#include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -44,12 +45,81 @@ typedef struct tdav_consumer_oss_s
 
 	tsk_bool_t b_started;
 	tsk_bool_t b_prepared;
+	tsk_bool_t b_muted;
+	int n_bits_per_sample;
 	
 	int fd;
+	tsk_thread_handle_t* tid[1];
+
+	tsk_size_t n_buff_size_in_bytes;
+	tsk_size_t n_buff_size_in_samples;
+	uint8_t* p_buff_ptr;
+
+	tsk_size_t n_buff16_size_in_bytes;
+	tsk_size_t n_buff16_size_in_samples;
+	uint16_t* p_buff16_ptr;
 	
 	TSK_DECLARE_SAFEOBJ;
 }
 tdav_consumer_oss_t;
+
+static int __oss_from_16bits_to_8bits(const void* p_src, void* p_dst, tsk_size_t n_samples)
+{
+	tsk_size_t i;
+	uint16_t *_p_src = (uint16_t*)p_src;
+	uint8_t *_p_dst = (uint8_t*)p_dst;
+
+	if (!p_src || !p_dst || !n_samples) {
+		OSS_DEBUG_ERROR("invalid parameter");
+		return -1;
+	}
+	for (i = 0; i < n_samples; ++i) {
+		_p_dst[i] = _p_src[i];
+	}
+	return 0;
+}
+
+static void* TSK_STDCALL _tdav_consumer_oss_record_thread(void *param)
+{
+	tdav_consumer_oss_t*  p_oss = (tdav_consumer_oss_t*)param;
+	int err;
+	void* p_buffer = ((p_oss->n_bits_per_sample == 8) ? (void*)p_oss->p_buff16_ptr: (void*)p_oss->p_buff_ptr);
+	tsk_size_t n_buffer_in_bytes = (p_oss->n_bits_per_sample == 8) ?  p_oss->n_buff16_size_in_bytes :  p_oss->n_buff_size_in_bytes;
+	tsk_size_t n_buffer_in_samples = p_oss->n_buff_size_in_samples;
+
+	const void* _p_buffer;
+	tsk_size_t _n_buffer_in_bytes;
+
+	OSS_DEBUG_INFO("__record_thread -- START");
+
+	tsk_thread_set_priority_2(TSK_THREAD_PRIORITY_TIME_CRITICAL);
+	
+	while (p_oss->b_started) {
+		tsk_safeobj_lock(p_oss);
+		err = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(p_oss), p_buffer, n_buffer_in_bytes); // requires 16bits
+		if (err >= 0) {
+			_p_buffer = p_buffer;
+			_n_buffer_in_bytes = n_buffer_in_bytes;
+			if (err < n_buffer_in_bytes) {
+				memset(((uint8_t*)p_buffer) + err, 0, (n_buffer_in_bytes - err));
+			}
+			if (p_oss->n_bits_per_sample == 8) {
+				__oss_from_16bits_to_8bits(p_buffer, p_oss->p_buff_ptr, n_buffer_in_samples);
+				_p_buffer = p_oss->p_buff_ptr;
+				_n_buffer_in_bytes >>= 1; 
+			}
+			if ((err = write(p_oss->fd, _p_buffer, _n_buffer_in_bytes)) != _n_buffer_in_bytes) {
+				OSS_DEBUG_ERROR ("Failed to read data from audio interface failed (%d -> %s)", err , strerror(errno));
+				tsk_safeobj_unlock(p_oss);
+				goto bail;
+			}
+		}
+		tsk_safeobj_unlock(p_oss);
+	}
+bail:
+	OSS_DEBUG_INFO("__record_thread -- STOP");
+	return tsk_null;
+}
 
 /* ============ Media Consumer Interface ================= */
 static int tdav_consumer_oss_set(tmedia_consumer_t* self, const tmedia_param_t* param)
@@ -64,52 +134,122 @@ static int tdav_consumer_oss_set(tmedia_consumer_t* self, const tmedia_param_t* 
 
 static int tdav_consumer_oss_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
-	int err = 0;
-	tdav_consumer_oss_t* p_oss = (tdav_consumer_oss_t*)self;
-	
-	if (!p_oss || !codec) {
-		OSS_DEBUG_ERROR("Invalid paramter");
+	tdav_consumer_oss_t*  p_oss = (tdav_consumer_oss_t*)self;
+	int err = 0, channels, sample_rate, bits_per_sample;
+
+	if (!p_oss || !codec && codec->plugin) {
+		OSS_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
 	tsk_safeobj_lock(p_oss);
+
+	if (p_oss->fd == -1) {
+		if ((p_oss->fd = open("/dev/dsp", O_WRONLY)) < 0) {
+			OSS_DEBUG_ERROR("open('/dev/dsp') failed: %s", strerror(errno));
+			err = -2;
+			goto bail;
+		}
+	}
+
+	TMEDIA_CONSUMER(p_oss)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_DECODING(codec);
+    	TMEDIA_CONSUMER(p_oss)->audio.in.channels = TMEDIA_CODEC_CHANNELS_AUDIO_DECODING(codec);
+    	TMEDIA_CONSUMER(p_oss)->audio.in.rate = TMEDIA_CODEC_RATE_DECODING(codec);
 	
-	if (p_oss->b_started) {
-		OSS_DEBUG_ERROR("You must stop the consumer first");
-		err = -2;
+	// Set using requested
+	channels = TMEDIA_CONSUMER(p_oss)->audio.in.channels;
+	sample_rate = TMEDIA_CONSUMER(p_oss)->audio.in.rate;
+	bits_per_sample = TMEDIA_CONSUMER(p_oss)->audio.bits_per_sample; // 16
+
+	// Prepare
+	if ((err = ioctl(p_oss->fd, SOUND_PCM_WRITE_BITS, &bits_per_sample)) != 0) {
+		OSS_DEBUG_ERROR("ioctl(SOUND_PCM_WRITE_BITS, %d) failed: %d->%s", bits_per_sample, err, strerror(errno));
+		goto bail;
+	}
+	if (bits_per_sample != 16 && bits_per_sample != 8) {
+		OSS_DEBUG_ERROR("bits_per_sample=%d not supported", bits_per_sample);
+		err = -3;
+		goto bail;
+	}
+	if ((err = ioctl(p_oss->fd, SOUND_PCM_WRITE_CHANNELS, &channels)) != 0) {
+		OSS_DEBUG_ERROR("ioctl(SOUND_PCM_WRITE_CHANNELS, %d) failed: %d->%s", channels, err, strerror(errno));
+		goto bail;
+	}
+	if ((err = ioctl(p_oss->fd, SOUND_PCM_WRITE_RATE, &sample_rate)) != 0) {
+		OSS_DEBUG_ERROR("ioctl(SOUND_PCM_WRITE_RATE, %d) failed: %d->%s", sample_rate, err, strerror(errno));
 		goto bail;
 	}
 
+	p_oss->n_buff_size_in_bytes = (TMEDIA_CONSUMER(p_oss)->audio.ptime * sample_rate * ((bits_per_sample >> 3) * channels)) / 1000;
+	if (!(p_oss->p_buff_ptr = tsk_realloc(p_oss->p_buff_ptr, p_oss->n_buff_size_in_bytes))) {
+		OSS_DEBUG_ERROR("Failed to allocate buffer with size = %u", p_oss->n_buff_size_in_bytes);
+		err = -4;
+		goto bail;
+	}
+	p_oss->n_buff_size_in_samples = (p_oss->n_buff_size_in_bytes / (bits_per_sample >> 3));
+	if (bits_per_sample == 8) {
+		p_oss->n_buff16_size_in_bytes = p_oss->n_buff_size_in_bytes << 1;
+		if (!(p_oss->p_buff16_ptr = tsk_realloc(p_oss->p_buff16_ptr, p_oss->n_buff16_size_in_bytes))) {
+			OSS_DEBUG_ERROR("Failed to allocate buffer with size = %u", p_oss->n_buff_size_in_bytes);
+			err = -5;
+			goto bail;
+		}
+		p_oss->n_buff16_size_in_samples = p_oss->n_buff_size_in_samples;
+	}
+	
+	OSS_DEBUG_INFO("prepared: req_bits_per_sample=%d; req_channels=%d; req_rate=%d, resp_bits_per_sample=%d; resp_channels=%d; resp_rate=%d /// n_buff_size_in_samples=%u;n_buff_size_in_bytes=%u",
+		TMEDIA_CONSUMER(p_oss)->audio.bits_per_sample, TMEDIA_CONSUMER(p_oss)->audio.in.channels, TMEDIA_CONSUMER(p_oss)->audio.in.rate,
+		bits_per_sample, channels, sample_rate,
+		p_oss->n_buff_size_in_samples, p_oss->n_buff_size_in_bytes);
+
+	// Set using supported (up to the resampler to convert to requested)
+	TMEDIA_CONSUMER(p_oss)->audio.out.channels = channels;
+	TMEDIA_CONSUMER(p_oss)->audio.out.rate = sample_rate;
+	// TMEDIA_CONSUMER(p_oss)->audio.bits_per_sample = bits_per_sample;
+
+	p_oss->n_bits_per_sample = bits_per_sample;
 	p_oss->b_prepared = tsk_true;
 
 bail:
+	if (err) {
+		if (p_oss->fd != -1) {
+			close(p_oss->fd);
+			p_oss->fd = -1;
+		}
+	}	
 	tsk_safeobj_unlock(p_oss);
+	
 	return err;
 }
 
 static int tdav_consumer_oss_start(tmedia_consumer_t* self)
 {
-	int err = 0;
 	tdav_consumer_oss_t* p_oss = (tdav_consumer_oss_t*)self;
-	
-	if (!p_oss) {
-		OSS_DEBUG_ERROR("Invalid paramter");
+	int err = 0;
+
+	if (! p_oss) {
+		OSS_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
 	tsk_safeobj_lock(p_oss);
-	
+
 	if (!p_oss->b_prepared) {
-		OSS_DEBUG_ERROR("Not prepared");
+		OSS_DEBUG_WARN("Not prepared");
 		err = -2;
 		goto bail;
 	}
+
 	if (p_oss->b_started) {
 		OSS_DEBUG_WARN("Already started");
 		goto bail;
 	}
 
-	p_oss->b_started = tsk_true;
+	 /* start thread */
+	 p_oss->b_started = tsk_true;
+	 tsk_thread_create(&p_oss->tid[0], _tdav_consumer_oss_record_thread,  p_oss);
+
+	OSS_DEBUG_INFO("started");
 
 bail:
 	tsk_safeobj_unlock(p_oss);
@@ -133,7 +273,11 @@ static int tdav_consumer_oss_consume(tmedia_consumer_t* self, const void* buffer
 		err = -2;
 		goto bail;
 	}
-
+	if ((err = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(p_oss), buffer, size, proto_hdr))) {
+		OSS_DEBUG_WARN("Failed to put audio data");
+		goto bail;
+	}
+	
 bail:
 	tsk_safeobj_unlock(p_oss);
 	return err;
@@ -146,22 +290,34 @@ static int tdav_consumer_oss_pause(tmedia_consumer_t* self)
 
 static int tdav_consumer_oss_stop(tmedia_consumer_t* self)
 {
-	int err = 0;
-	tdav_consumer_oss_t* p_oss = (tdav_consumer_oss_t*)self;
-	
+	tdav_consumer_oss_t*  p_oss = (tdav_consumer_oss_t*)self;
+	int err;
+
 	if (!p_oss) {
-		OSS_DEBUG_ERROR("Invalid paramter");
+		OSS_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
 	tsk_safeobj_lock(p_oss);
-	
-	p_oss->b_started = tsk_false;
-	p_oss->b_prepared = tsk_false;
 
-bail:
+	/* should be done here */
+	p_oss->b_started = tsk_false;
+
+	/* stop thread */
+	if (p_oss->tid[0]) {
+		tsk_thread_join(&(p_oss->tid[0]));
+	}
+	if (p_oss->fd != -1) {
+		close(p_oss->fd);
+		p_oss->fd = -1;
+	}
+	p_oss->b_prepared = tsk_false;
+	
+	OSS_DEBUG_INFO("stopped");
+	
 	tsk_safeobj_unlock(p_oss);
-	return err;
+	
+	return 0;
 }
 
 
@@ -202,6 +358,8 @@ static tsk_object_t* tdav_consumer_oss_dtor(tsk_object_t * self)
 			close(p_oss->fd);
 			p_oss->fd = -1;
 		}
+		TSK_FREE(p_oss->p_buff_ptr);
+		TSK_FREE(p_oss->p_buff16_ptr);
 		tsk_safeobj_deinit(p_oss);
 		
 		OSS_DEBUG_INFO("*** destroyed ***");
