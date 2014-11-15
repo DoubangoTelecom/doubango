@@ -51,20 +51,32 @@ static void* TSK_STDCALL _tdav_producer_alsa_playback_thread(void *param)
 	
 	while (p_alsa->b_started) {
 		tdav_common_alsa_lock(&p_alsa->alsa_common);
+		//snd_pcm_wait(p_alsa->alsa_common.p_handle, 20);
+		//ALSA_DEBUG_INFO ("get (%d)", p_alsa->alsa_common.n_buff_size_in_bytes);
 		err = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(p_alsa), p_alsa->alsa_common.p_buff_ptr, p_alsa->alsa_common.n_buff_size_in_bytes); // requires 16bits, thread-safe
+		//ALSA_DEBUG_INFO ("get returned %d", err);
 		if (err < p_alsa->alsa_common.n_buff_size_in_bytes) {
 			memset(((uint8_t*)p_alsa->alsa_common.p_buff_ptr) + err, 0, (p_alsa->alsa_common.n_buff_size_in_bytes - err));
+			
 		}
 		if ((err = snd_pcm_writei(p_alsa->alsa_common.p_handle, p_alsa->alsa_common.p_buff_ptr, p_alsa->alsa_common.n_buff_size_in_samples)) != p_alsa->alsa_common.n_buff_size_in_samples) {
+			if (err == -EPIPE) { // pipe broken
+				err = snd_pcm_recover(p_alsa->alsa_common.p_handle, err, 0);
+				if (err == 0) {
+					ALSA_DEBUG_INFO ("recovered");
+					goto next;
+				}
+			}
 			ALSA_DEBUG_ERROR ("Failed to read data from audio interface failed (%d->%s)", err, snd_strerror(err));
 			tdav_common_alsa_unlock(&p_alsa->alsa_common);
 			goto bail;
 		}
 		tdav_consumer_audio_tick(TDAV_CONSUMER_AUDIO(p_alsa));
+next:
 		tdav_common_alsa_unlock(&p_alsa->alsa_common);
 	}
 bail:
-	ALSA_DEBUG_INFO("__record_thread -- STOP");
+	ALSA_DEBUG_INFO("__playback_thread -- STOP");
 	return tsk_null;
 }
 
@@ -170,7 +182,8 @@ static int tdav_consumer_alsa_consume(tmedia_consumer_t* self, const void* buffe
 		err = -2;
 		goto bail;
 	}
-	if ((err = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(p_alsa), buffer, size, proto_hdr))/*thread-safe*/) {
+	
+	if ((err = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(p_alsa), buffer, size, proto_hdr))) {//thread-safe
 		OSS_DEBUG_WARN("Failed to put audio data to the jitter buffer");
 		goto bail;
 	}

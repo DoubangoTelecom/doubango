@@ -118,6 +118,15 @@ int tdav_common_alsa_prepare(tdav_common_alsa_t* p_self, tsk_bool_t is_capture, 
 	ALSA_DEBUG_INFO("channels: req=%d, resp=%d", channels, val);
 	p_self->channels = val;
 
+#if 1
+	val = ((ptime * p_self->sample_rate * p_self->channels) / 1000);
+	if ((err = snd_pcm_hw_params_set_period_size_near(p_self->p_handle, p_self->p_params, &val, 0)) != 0) {
+		ALSA_DEBUG_ERROR ("Failed to prepare device (channels=%d, rate=%d, device=%s, err=%s)", p_self->channels, p_self->sample_rate, p_self->p_device_name, snd_strerror(err));
+		goto bail;
+	}
+	ALSA_DEBUG_INFO("period size: req=%d, resp=%d", val, val); // FIXME
+#endif
+
 	if ((err = snd_pcm_hw_params (p_self->p_handle, p_self->p_params)) != 0) {
 		ALSA_DEBUG_ERROR ("Failed to set parameters (channels=%d, rate=%d, device=%s, err=%s)", p_self->channels, p_self->sample_rate, p_self->p_device_name, snd_strerror(err));
 		goto bail;
@@ -229,7 +238,7 @@ int tdav_common_alsa_stop(tdav_common_alsa_t* p_self)
 	
 	if (p_self->b_started) {
 		p_self->b_started = tsk_false;
-		err = snd_pcm_drain(p_self->p_handle);
+		//err = snd_pcm_drain(p_self->p_handle);
 		ALSA_DEBUG_INFO("device('%s') stopped", p_self->p_device_name);
 	}
 	if (p_self->b_prepared) {
