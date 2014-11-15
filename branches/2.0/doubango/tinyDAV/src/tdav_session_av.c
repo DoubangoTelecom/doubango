@@ -242,23 +242,23 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 	tsk_safeobj_init(self);
 	
 	// session id
-	if(!(session_id = TMEDIA_SESSION(self)->id)){ // set the session id if not already done
+	if (!(session_id = TMEDIA_SESSION(self)->id)) { // set the session id if not already done
 		TMEDIA_SESSION(self)->id = session_id = tmedia_session_get_unique_id();
 	}
 	// consumer
 	TSK_OBJECT_SAFE_FREE(self->consumer);
-	if(!(self->consumer = tmedia_consumer_create((self->media_type & tmedia_video || (self->media_type & tmedia_bfcp_video) == tmedia_bfcp_video) ? tmedia_video : tmedia_audio, session_id))){ // get an audio (or video) consumer and ignore "bfcp" part
+	if (!(self->consumer = tmedia_consumer_create((self->media_type & tmedia_video || (self->media_type & tmedia_bfcp_video) == tmedia_bfcp_video) ? tmedia_video : tmedia_audio, session_id))){ // get an audio (or video) consumer and ignore "bfcp" part
 		TSK_DEBUG_ERROR("Failed to create consumer for media type = %d", self->media_type);
 	}
 	// producer
 	TSK_OBJECT_SAFE_FREE(self->producer);
-	if(!(self->producer = tmedia_producer_create(self->media_type, session_id))){
+	if (!(self->producer = tmedia_producer_create(self->media_type, session_id))){
 		TSK_DEBUG_ERROR("Failed to create producer for media type = %d", self->media_type);
 	}
 
 	// sdp caps
 	TSK_OBJECT_SAFE_FREE(self->sdp_caps);
-	if(!(self->sdp_caps = tdav_sdp_caps_create())){
+	if (!(self->sdp_caps = tdav_sdp_caps_create())) {
 		TSK_DEBUG_ERROR("Failed to create SDP caps");
 		return -1;
 	}
@@ -511,7 +511,7 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 		}
 	}
 
-	if(self->rtp_manager){
+	if (self->rtp_manager) {
 		int ret;
 		tmedia_param_t* media_param = tsk_null;
 		static const int32_t __ByPassIsYes = 1;
@@ -553,14 +553,13 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 			// forward up/down bandwidth info to rctp session (used in RTCP-REMB)
 			ret = trtp_manager_set_app_bandwidth_max(self->rtp_manager, bandwidth_max_upload_kbps, bandwidth_max_download_kbps);
 		}
-		ret = trtp_manager_start(self->rtp_manager);
 
 		// because of AudioUnit under iOS => prepare both consumer and producer then start() at the same time
 		/* prepare consumer and producer */
 		// Producer could output encoded frames:
 		//	- On WP8 with built-in H.264 encoder
 		//	- When Intel Quick Sync is used for encoding and added on the same Topology as the producer (camera MFMediaSource)
-		if(self->producer) {
+		if (self->producer) {
 			if((ret = tmedia_producer_prepare(self->producer, best_codec)) == 0) {
 				media_param = tmedia_param_create(tmedia_pat_set,
 											best_codec->type,
@@ -577,8 +576,8 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 		// Consumer could accept encoded frames as input:
 		//	- On WP8 with built-in H.264 decoder
 		//	- When IMFTransform decoder is used for decoding and added on the same Topology as the consumer (EVR)
-		if(self->consumer) {
-			if((ret = tmedia_consumer_prepare(self->consumer, best_codec)) == 0) {
+		if (self->consumer) {
+			if ((ret = tmedia_consumer_prepare(self->consumer, best_codec)) == 0) {
 				media_param = tmedia_param_create(tmedia_pat_set,
 											best_codec->type,
 											tmedia_ppt_codec,
@@ -591,19 +590,24 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 				}
 			}
 		}
+
+		// Start RTP manager
+		ret = trtp_manager_start(self->rtp_manager);
 		
 #if HAVE_SRTP
 		self->use_srtp = trtp_manager_is_srtp_activated(self->rtp_manager);
 
 		/* start consumer and producer */
-		if(trtp_manager_is_dtls_activated(self->rtp_manager) && !trtp_manager_is_dtls_started(self->rtp_manager)){
+		if (trtp_manager_is_dtls_activated(self->rtp_manager) && !trtp_manager_is_dtls_started(self->rtp_manager)) {
 			// delay starting util DTLS-SRTP negotiation terminates (handshaking succeed)
 			TSK_DEBUG_INFO("Delaying consumer/producer starting until DTLS-SRTP negotiation complete");
 		}
 		else{
 #endif /* HAVE_SRTP */
-			if(self->consumer) ret = tmedia_consumer_start(self->consumer);
-			if(self->producer) ret = tmedia_producer_start(self->producer);
+			tsk_safeobj_lock(self);
+			if (self->consumer && !self->consumer->is_started) ret = tmedia_consumer_start(self->consumer);
+			if (self->producer && !self->producer->is_started) ret = tmedia_producer_start(self->producer);
+			tsk_safeobj_unlock(self);
 #if HAVE_SRTP
 		}
 #endif /* HAVE_SRTP */
@@ -630,17 +634,17 @@ int tdav_session_av_stop(tdav_session_av_t* self)
 	}
 	
 	/* stop Producer */
-	if(self->producer){
+	if (self->producer) {
 		ret = tmedia_producer_stop(self->producer);
 	}
 
 	/* stop RTP/RTCP manager */
-	if(self->rtp_manager){
+	if (self->rtp_manager) {
 		ret = trtp_manager_stop(self->rtp_manager);
 	}
 
 	/* stop Consumer (after RTP manager to silently discard in coming packets) */
-	if(self->consumer){
+	if (self->consumer) {
 		ret = tmedia_consumer_stop(self->consumer);
 	}
 
@@ -1718,9 +1722,9 @@ static int _tdav_session_av_srtp_dtls_cb(const void* usrdata, enum trtp_srtp_dtl
 		case trtp_srtp_dtls_event_type_started:
 			{
 				// start producer and consumer
-				if(self->rtp_manager && self->rtp_manager->is_started){
-					if(self->consumer) tmedia_consumer_start(self->consumer);
-					if(self->producer) tmedia_producer_start(self->producer);
+				if (self->rtp_manager && self->rtp_manager->is_started) {
+					if (self->consumer && !self->consumer->is_started) tmedia_consumer_start(self->consumer);
+					if (self->producer && !self->producer->is_started) tmedia_producer_start(self->producer);
 				}
 				break;
 			}
