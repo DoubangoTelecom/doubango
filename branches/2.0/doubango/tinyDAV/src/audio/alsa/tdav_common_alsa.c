@@ -127,7 +127,7 @@ int tdav_common_alsa_prepare(tdav_common_alsa_t* p_self, tsk_bool_t is_capture, 
 		goto bail;
 	}
 
-	if (is_capture) {
+	/*if (is_capture)*/ {
 		p_self->n_buff_size_in_bytes = (ptime * p_self->sample_rate * (2/*SND_PCM_FORMAT_S16_LE*/ * p_self->channels)) / 1000;
 		if (!(p_self->p_buff_ptr = tsk_realloc(p_self->p_buff_ptr, p_self->n_buff_size_in_bytes))) {
 			ALSA_DEBUG_ERROR("Failed to allocate buffer with size = %u", p_self->n_buff_size_in_bytes);
