@@ -877,32 +877,53 @@ int tmedia_session_mgr_set_natt_ctx(tmedia_session_mgr_t* self, struct tnet_nat_
 	return 0;
 }
 
+// @deprecated
 int tmedia_session_mgr_set_ice_ctx(tmedia_session_mgr_t* self, struct tnet_ice_ctx_s* ctx_audio, struct tnet_ice_ctx_s* ctx_video)
 {
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-
-	TSK_OBJECT_SAFE_FREE(self->ice.ctx_audio);
-	TSK_OBJECT_SAFE_FREE(self->ice.ctx_video);
-	
-	self->ice.ctx_audio = tsk_object_ref(ctx_audio);
-	self->ice.ctx_video = tsk_object_ref(ctx_video);
-	
-	if(self->type & tmedia_audio){
-		tmedia_session_mgr_set(self,
-			TMEDIA_SESSION_SET_POBJECT(tmedia_audio, "ice-ctx", self->ice.ctx_audio),
-			TMEDIA_SESSION_SET_NULL());
+	TSK_OBJECT_SAFE_FREE(self->ice.ctx_audio); // backward compatibility
+	TSK_OBJECT_SAFE_FREE(self->ice.ctx_video); // backward compatibility
+	if (self->type & tmedia_audio) {
+		tmedia_session_mgr_set_ice_ctx_2(self, tmedia_audio, ctx_audio);
 	}
-
-	if(self->type & tmedia_video){
-		tmedia_session_mgr_set(self,
-			TMEDIA_SESSION_SET_POBJECT(tmedia_video, "ice-ctx", self->ice.ctx_video),
-			TMEDIA_SESSION_SET_NULL());
+	if (self->type & tmedia_video) {
+		tmedia_session_mgr_set_ice_ctx_2(self, tmedia_video, ctx_video);
 	}
-
 	return 0;
+}
+
+int tmedia_session_mgr_set_ice_ctx_2(tmedia_session_mgr_t* self, tmedia_type_t type, struct tnet_ice_ctx_s* ctx)
+{
+	if (!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	if ((self->type & type) == type) {
+		struct tnet_ice_ctx_s **_ctx = tsk_null;
+		switch (type) {
+			case tmedia_audio: _ctx = &self->ice.ctx_audio; break;
+			case tmedia_video: _ctx = &self->ice.ctx_video; break;
+			case tmedia_bfcp_video: _ctx = &self->ice.ctx_bfcpvid; break;
+			default: TSK_DEBUG_ERROR("Media type(%d) not supported by this session manager", type); return -2;
+		}
+		TSK_OBJECT_SAFE_FREE((*_ctx));
+		*_ctx = tsk_object_ref(ctx);
+		return tmedia_session_mgr_set(self,
+			TMEDIA_SESSION_SET_POBJECT(type, "ice-ctx", ctx),
+			TMEDIA_SESSION_SET_NULL());
+	}
+	else if (!ctx) { //cleanup
+		switch (type) {
+			case tmedia_audio: TSK_OBJECT_SAFE_FREE(self->ice.ctx_audio); return 0;
+			case tmedia_video: TSK_OBJECT_SAFE_FREE(self->ice.ctx_video); return 0;
+			case tmedia_bfcp_video: TSK_OBJECT_SAFE_FREE(self->ice.ctx_bfcpvid); return 0;
+		}
+	}
+	TSK_DEBUG_ERROR("Ignoring ICE context definition for media type %d", type);
+	return -2;
 }
 
 /**@ingroup tmedia_session_group
@@ -1168,7 +1189,8 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	had_ro_sdp = (self->sdp.ro != tsk_null);
 	had_ro_provisional = (had_ro_sdp && self->ro_provisional);
 	is_ice_active = (self->ice.ctx_audio && (self->type & tmedia_audio) && tnet_ice_ctx_is_active(self->ice.ctx_audio))
-					|| (self->ice.ctx_video && (self->type & tmedia_video) && tnet_ice_ctx_is_active(self->ice.ctx_video));
+					|| (self->ice.ctx_video && (self->type & tmedia_video) && tnet_ice_ctx_is_active(self->ice.ctx_video))
+					|| (self->ice.ctx_bfcpvid && (self->type & tmedia_bfcp_video) && tnet_ice_ctx_is_active(self->ice.ctx_bfcpvid));
 
 	// Remove BFCP offer if not locally enabled. Only the client can init BFCP session.
 	if ((ro_type & tmedia_ro_type_offer)) {
@@ -2095,6 +2117,7 @@ static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 		tmedia_session_mgr_set(self,
 				TMEDIA_SESSION_SET_POBJECT(tmedia_audio, "ice-ctx", self->ice.ctx_audio),
 				TMEDIA_SESSION_SET_POBJECT(tmedia_video, "ice-ctx", self->ice.ctx_video),
+				TMEDIA_SESSION_SET_POBJECT(tmedia_bfcp_video, "ice-ctx", self->ice.ctx_bfcpvid),
 
 				TMEDIA_SESSION_SET_STR(self->type, "local-ip", self->addr),
 				TMEDIA_SESSION_SET_STR(self->type, "local-ipver", self->ipv6 ? "ipv6" : "ipv4"),
@@ -2345,6 +2368,7 @@ static tsk_object_t* tmedia_session_mgr_dtor(tsk_object_t * self)
 
 		TSK_OBJECT_SAFE_FREE(mgr->ice.ctx_audio);
 		TSK_OBJECT_SAFE_FREE(mgr->ice.ctx_video);
+		TSK_OBJECT_SAFE_FREE(mgr->ice.ctx_bfcpvid);
 
 		TSK_FREE(mgr->addr);
 

@@ -42,6 +42,11 @@
 #define WASAPI_MILLIS_TO_100NS(MILLIS) (((LONGLONG)(MILLIS)) * 10000ui64)
 #define WASAPI_100NS_TO_MILLIS(NANOS) (((LONGLONG)(NANOS)) / 10000ui64)
 
+#define WASAPI_DEBUG_INFO(FMT, ...) TSK_DEBUG_INFO("[WASAPI Producer] " FMT, ##__VA_ARGS__)
+#define WASAPI_DEBUG_WARN(FMT, ...) TSK_DEBUG_WARN("[WASAPI Producer] " FMT, ##__VA_ARGS__)
+#define WASAPI_DEBUG_ERROR(FMT, ...) TSK_DEBUG_ERROR("[WASAPI Producer] " FMT, ##__VA_ARGS__)
+#define WASAPI_DEBUG_FATAL(FMT, ...) TSK_DEBUG_FATAL("[WASAPI Producer] " FMT, ##__VA_ARGS__)
+
 struct tdav_producer_wasapi_s;
 
 namespace Doubango
@@ -109,12 +114,12 @@ extern "C" void tdav_win32_print_error(const char* func, HRESULT hr);
 static int tdav_producer_wasapi_set(tmedia_producer_t* self, const tmedia_param_t* param)
 {	
 	tdav_producer_wasapi_t* wasapi = (tdav_producer_wasapi_t*)self;
-	if(param->plugin_type == tmedia_ppt_producer){
-		if(param->value_type == tmedia_pvt_int32){
-			if(tsk_striequals(param->key, "volume")){
+	if (param->plugin_type == tmedia_ppt_producer) {
+		if (param->value_type == tmedia_pvt_int32) {
+			if (tsk_striequals(param->key, "volume")) {
 				return 0;
 			}
-			else if(tsk_striequals(param->key, "mute")){
+			else if (tsk_striequals(param->key, "mute")) {
 				//wasapi->mute = (TSK_TO_INT32((uint8_t*)param->value) != 0);
 #if !FIXME_SEND_SILENCE_ON_MUTE
 				//if(wasapi->started){
@@ -140,7 +145,7 @@ static int tdav_producer_wasapi_prepare(tmedia_producer_t* self, const tmedia_co
 	tdav_producer_wasapi_t* wasapi = (tdav_producer_wasapi_t*)self;
 
 	if(!wasapi || !codec || !wasapi->audioCapture){
-		TSK_DEBUG_ERROR("Invalid parameter");
+		WASAPI_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -149,7 +154,7 @@ static int tdav_producer_wasapi_prepare(tmedia_producer_t* self, const tmedia_co
     TMEDIA_PRODUCER(wasapi)->audio.rate = TMEDIA_CODEC_RATE_ENCODING(codec);
     TMEDIA_PRODUCER(wasapi)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_ENCODING(codec);
 
-	TSK_DEBUG_INFO("WASAPI producer: channels=%d, rate=%d, ptime=%d",
+	WASAPI_DEBUG_INFO("channels=%d, rate=%d, ptime=%d",
                        TMEDIA_PRODUCER(wasapi)->audio.channels,
                        TMEDIA_PRODUCER(wasapi)->audio.rate,
                        TMEDIA_PRODUCER(wasapi)->audio.ptime);
@@ -161,10 +166,10 @@ static int tdav_producer_wasapi_start(tmedia_producer_t* self)
 {
 	tdav_producer_wasapi_t* wasapi = (tdav_producer_wasapi_t*)self;
 
-	TSK_DEBUG_INFO("tdav_producer_wasapi_start()");
+	WASAPI_DEBUG_INFO("tdav_producer_wasapi_start()");
 
 	if(!wasapi || !wasapi->audioCapture){
-		TSK_DEBUG_ERROR("Invalid parameter");
+		WASAPI_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -176,7 +181,7 @@ static int tdav_producer_wasapi_pause(tmedia_producer_t* self)
 	tdav_producer_wasapi_t* wasapi = (tdav_producer_wasapi_t*)self;
 
 	if(!wasapi || !wasapi->audioCapture){
-		TSK_DEBUG_ERROR("Invalid parameter");
+		WASAPI_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -187,10 +192,10 @@ static int tdav_producer_wasapi_stop(tmedia_producer_t* self)
 {
 	tdav_producer_wasapi_t* wasapi = (tdav_producer_wasapi_t*)self;
 
-	TSK_DEBUG_INFO("tdav_producer_wasapi_stop()");
+	WASAPI_DEBUG_INFO("tdav_producer_wasapi_stop()");
 
 	if(!wasapi || !wasapi->audioCapture){
-		TSK_DEBUG_ERROR("Invalid parameter");
+		WASAPI_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -246,18 +251,18 @@ int Doubango::VoIP::AudioCapture::Prepare(tdav_producer_wasapi_t* wasapi, const 
 
 	if(m_bPrepared)
 	{
-		TSK_DEBUG_INFO("#WASAPI: Audio producer already prepared");
+		WASAPI_DEBUG_INFO("#WASAPI: Audio producer already prepared");
 		goto bail;
 	}
 
 	if(!wasapi || !codec)
 	{
-		TSK_DEBUG_ERROR("Invalid parameter");
+		WASAPI_DEBUG_ERROR("Invalid parameter");
 		WASAPI_SET_ERROR(-1);
 	}
 
 	if(m_pDevice || m_pClient){
-		TSK_DEBUG_ERROR("Producer already prepared");
+		WASAPI_DEBUG_ERROR("Producer already prepared");
 		WASAPI_SET_ERROR(-2);
 	}
 
@@ -309,7 +314,7 @@ int Doubango::VoIP::AudioCapture::Prepare(tdav_producer_wasapi_t* wasapi, const 
 		{
 			if(!pwfxClosestMatch)
 			{
-				TSK_DEBUG_ERROR("malloc(%d) failed", sizeof(WAVEFORMATEX));
+				WASAPI_DEBUG_ERROR("malloc(%d) failed", sizeof(WAVEFORMATEX));
 				WASAPI_SET_ERROR(-7);
 			}
 			wfx.nChannels = pwfxClosestMatch->nChannels;
@@ -324,7 +329,7 @@ int Doubango::VoIP::AudioCapture::Prepare(tdav_producer_wasapi_t* wasapi, const 
 			TMEDIA_PRODUCER(wasapi)->audio.bits_per_sample = (uint8_t)wfx.wBitsPerSample;
 			TMEDIA_PRODUCER(wasapi)->audio.channels = (uint8_t)wfx.nChannels;
 
-			TSK_DEBUG_INFO("Audio device format fallback: rate=%d, bps=%d, channels=%d", wfx.nSamplesPerSec, wfx.wBitsPerSample, wfx.nChannels);
+			WASAPI_DEBUG_INFO("Audio device format fallback: rate=%d, bps=%d, channels=%d", wfx.nSamplesPerSec, wfx.wBitsPerSample, wfx.nChannels);
 		}
 		if(pwfxClosestMatch)
 		{
@@ -354,7 +359,7 @@ int Doubango::VoIP::AudioCapture::Prepare(tdav_producer_wasapi_t* wasapi, const 
 		tdav_win32_print_error("GetDevicePeriod", hr);
 		WASAPI_SET_ERROR(-10);
 	}
-	TSK_DEBUG_INFO("#WASAPI(Capture): DefaultDevicePeriod=%lld ms, MinimumDevicePeriod=%lldms", WASAPI_100NS_TO_MILLIS(DefaultDevicePeriod), WASAPI_100NS_TO_MILLIS(MinimumDevicePeriod));
+	WASAPI_DEBUG_INFO("#WASAPI(Capture): DefaultDevicePeriod=%lld ms, MinimumDevicePeriod=%lldms", WASAPI_100NS_TO_MILLIS(DefaultDevicePeriod), WASAPI_100NS_TO_MILLIS(MinimumDevicePeriod));
 
 	if(!m_hCaptureEvent){
 		if(!(m_hCaptureEvent = CreateEventEx(NULL, NULL, 0, EVENT_ALL_ACCESS))){
@@ -383,27 +388,27 @@ int Doubango::VoIP::AudioCapture::Prepare(tdav_producer_wasapi_t* wasapi, const 
     
 	int packetperbuffer = (1000 / TMEDIA_PRODUCER(wasapi)->audio.ptime);
 	m_ring.chunck.size = wfx.nSamplesPerSec * (wfx.wBitsPerSample >> 3) / packetperbuffer;
-	TSK_DEBUG_INFO("#WASAPI: Audio producer ring chunk size = %u", m_ring.chunck.size);
+	WASAPI_DEBUG_INFO("#WASAPI: Audio producer ring chunk size = %u", m_ring.chunck.size);
 	// allocate our chunck buffer
 	if(!(m_ring.chunck.buffer = tsk_realloc(m_ring.chunck.buffer, m_ring.chunck.size))){
-		TSK_DEBUG_ERROR("Failed to allocate new buffer");
+		WASAPI_DEBUG_ERROR("Failed to allocate new buffer");
 		WASAPI_SET_ERROR(-15);
 	}
 	// create ringbuffer
 	m_ring.size = TDAV_WASAPI_PRODUCER_NOTIF_POS_COUNT * m_ring.chunck.size;
-	TSK_DEBUG_INFO("#WASAPI: Audio producer ring size = %u", m_ring.size);
+	WASAPI_DEBUG_INFO("#WASAPI: Audio producer ring size = %u", m_ring.size);
 	if(!m_ring.buffer){
 		m_ring.buffer = speex_buffer_init(m_ring.size);
 	}
 	else {
 		int sret;
 		if((sret = speex_buffer_resize(m_ring.buffer, m_ring.size)) < 0){
-			TSK_DEBUG_ERROR("speex_buffer_resize(%d) failed with error code=%d", m_ring.size, sret);
+			WASAPI_DEBUG_ERROR("speex_buffer_resize(%d) failed with error code=%d", m_ring.size, sret);
 			WASAPI_SET_ERROR(-16);
 		}
 	}
 	if(!m_ring.buffer){
-		TSK_DEBUG_ERROR("Failed to create a new ring buffer with size = %d", m_ring.size);
+		WASAPI_DEBUG_ERROR("Failed to create a new ring buffer with size = %d", m_ring.size);
 		WASAPI_SET_ERROR(-17);
 	}
 
@@ -467,12 +472,12 @@ int Doubango::VoIP::AudioCapture::Start()
 
 	if(m_bStarted)
 	{
-		TSK_DEBUG_INFO("#WASAPI: Audio producer already started");
+		WASAPI_DEBUG_INFO("#WASAPI: Audio producer already started");
 		goto bail;
 	}
 	if(!m_bPrepared)
 	{
-		TSK_DEBUG_ERROR("Audio producer not prepared");
+		WASAPI_DEBUG_ERROR("Audio producer not prepared");
 		goto bail;
 	}
 
@@ -554,7 +559,7 @@ void Doubango::VoIP::AudioCapture::AsyncThread(Windows::Foundation::IAsyncAction
 								m_hShutdownEvent		// WAIT_OBJECT1
                             };
 
-	TSK_DEBUG_INFO("#WASAPI: __record_thread -- START");
+	WASAPI_DEBUG_INFO("#WASAPI: __record_thread -- START");
 
 	#define BREAK_WHILE tsk_mutex_unlock(m_hMutex); break;
 
@@ -603,7 +608,7 @@ void Doubango::VoIP::AudioCapture::AsyncThread(Windows::Foundation::IAsyncAction
 	}
 
 
-	TSK_DEBUG_INFO("WASAPI: __record_thread(%s) -- STOP", SUCCEEDED(hr) ? "OK": "NOK");
+	WASAPI_DEBUG_INFO("WASAPI: __record_thread(%s) -- STOP", SUCCEEDED(hr) ? "OK": "NOK");
 }
 
 

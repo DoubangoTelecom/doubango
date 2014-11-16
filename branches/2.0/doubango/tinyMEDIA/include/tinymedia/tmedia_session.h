@@ -331,6 +331,7 @@ typedef struct tmedia_session_mgr_s
 	struct {
 		struct tnet_ice_ctx_s *ctx_audio;
 		struct tnet_ice_ctx_s *ctx_video;
+		struct tnet_ice_ctx_s *ctx_bfcpvid;
 	} ice;
 
 	/* session error callback */
@@ -534,6 +535,7 @@ TINYMEDIA_API int tmedia_session_mgr_set_codecs_supported(tmedia_session_mgr_t* 
 TINYMEDIA_API tmedia_session_t* tmedia_session_mgr_find(tmedia_session_mgr_t* self, tmedia_type_t type);
 TINYMEDIA_API int tmedia_session_mgr_set_natt_ctx(tmedia_session_mgr_t* self, struct tnet_nat_ctx_s* natt_ctx, const char* public_addr);
 TINYMEDIA_API int tmedia_session_mgr_set_ice_ctx(tmedia_session_mgr_t* self, struct tnet_ice_ctx_s* ctx_audio, struct tnet_ice_ctx_s* ctx_video);
+TINYMEDIA_API int tmedia_session_mgr_set_ice_ctx_2(tmedia_session_mgr_t* self, tmedia_type_t type, struct tnet_ice_ctx_s* ctx);
 TINYMEDIA_API int tmedia_session_mgr_start(tmedia_session_mgr_t* self);
 TINYMEDIA_API int tmedia_session_mgr_set(tmedia_session_mgr_t* self, ...);
 TINYMEDIA_API int tmedia_session_mgr_set_2(tmedia_session_mgr_t* self, va_list *app);

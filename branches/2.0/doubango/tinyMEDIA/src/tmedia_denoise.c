@@ -66,36 +66,35 @@ int tmedia_denoise_set(tmedia_denoise_t* self, const tmedia_param_t* param)
 	return 0;
 }
 
-int tmedia_denoise_open(tmedia_denoise_t* self, uint32_t record_frame_size_samples, uint32_t record_sampling_rate, uint32_t playback_frame_size_samples, uint32_t playback_sampling_rate)
+int tmedia_denoise_open(tmedia_denoise_t* self, uint32_t record_frame_size_samples, uint32_t record_sampling_rate, uint32_t record_channels, uint32_t playback_frame_size_samples, uint32_t playback_sampling_rate, uint32_t playback_channels)
 {
-	if(!self || !self->plugin){
+	if (!self || !self->plugin) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if(self->opened){
+	if (self->opened) {
 		TSK_DEBUG_WARN("Denoiser already opened");
 		return 0;
 	}
 
-	if(self->plugin->open){
+	if (self->plugin->open) {
 		int ret;
 
-		// create the buffer. do not use tsk_buffer_create(data,size) which requires a valid buffer pointer
-		if(!self->last_frame && !(self->last_frame = tsk_buffer_create_null())){
-			TSK_DEBUG_ERROR("Failed to realloc the buffer");
+		TSK_OBJECT_SAFE_FREE(self->record_frame);
+		TSK_OBJECT_SAFE_FREE(self->playback_frame);
+		if (!(self->record_frame = tsk_buffer_create(tsk_null, (record_frame_size_samples * sizeof(int16_t))))) {
+			TSK_DEBUG_ERROR("Failed to create record the buffer");
 			return -2;
 		}
-		// resize the buffer
-		if((ret = tsk_buffer_realloc(self->last_frame, (record_frame_size_samples * sizeof(int16_t))))){
-			TSK_DEBUG_ERROR("Failed to realloc the buffer");
-			return ret;
+		if (!(self->playback_frame = tsk_buffer_create(tsk_null, (playback_frame_size_samples * sizeof(int16_t))))) {
+			TSK_DEBUG_ERROR("Failed to create playback the buffer");
+			return -2;
 		}
-
-		if((ret = self->plugin->open(self, record_frame_size_samples, record_sampling_rate, playback_frame_size_samples, playback_sampling_rate))){
+		if ((ret = self->plugin->open(self, record_frame_size_samples, record_sampling_rate, record_channels, playback_frame_size_samples, playback_sampling_rate, playback_channels))) {
 			TSK_DEBUG_ERROR("Failed to open [%s] denoiser", self->plugin->desc);
 			return ret;
 		}
-		else{
+		else {
 			self->opened = tsk_true;
 			return 0;
 		}
@@ -195,16 +194,17 @@ int tmedia_denoise_close(tmedia_denoise_t* self)
 
 int tmedia_denoise_deinit(tmedia_denoise_t* self)
 {
-	if(!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	
-	if(self->opened){
+	if (self->opened) {
 		tmedia_denoise_close(self);
 	}
 
-	TSK_OBJECT_SAFE_FREE(self->last_frame);
+	TSK_OBJECT_SAFE_FREE(self->record_frame);
+	TSK_OBJECT_SAFE_FREE(self->playback_frame);
 
 	return 0;
 }

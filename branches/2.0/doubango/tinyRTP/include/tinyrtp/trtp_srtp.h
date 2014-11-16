@@ -28,6 +28,7 @@
 #if HAVE_SRTP
 #	include "tsk_common.h" 
 #	include <srtp/srtp.h>
+#	include <srtp/crypto_kernel.h> /* crypto_get_random */
 
 struct trtp_manager_s;
 

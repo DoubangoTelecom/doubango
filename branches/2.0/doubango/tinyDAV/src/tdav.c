@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2010-2014 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -19,13 +17,6 @@
 * along with DOUBANGO.
 *
 */
-/**@file tdav.h
- * @brief tinyDAV.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
- */
 #include "tinydav/tdav.h"
 
 static tsk_bool_t __b_initialized = tsk_false;

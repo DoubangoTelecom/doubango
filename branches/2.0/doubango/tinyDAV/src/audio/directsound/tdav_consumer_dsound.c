@@ -84,9 +84,9 @@ static void* TSK_STDCALL _tdav_consumer_dsound_playback_thread(void *param)
 
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
 
-	while(dsound->started){
+	while (dsound->started) {
 		dwEvent = WaitForMultipleObjects(TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT, dsound->notifEvents, FALSE, INFINITE);
-		if(!dsound->started){
+		if (!dsound->started) {
 			break;
 		}
 		
@@ -98,28 +98,30 @@ static void* TSK_STDCALL _tdav_consumer_dsound_playback_thread(void *param)
 			&lpvAudio1, &dwBytesAudio1, 
 			&lpvAudio2, &dwBytesAudio2, 
 			DSBLOCK_FROMWRITECURSOR);
-		if(hr != DS_OK){
+		if (hr != DS_OK) {
 			tdav_win32_print_error("IDirectSoundBuffer_Lock", hr);
 			goto next;
 		}
 
 		out_size = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(dsound), dsound->bytes_per_notif_ptr, dsound->bytes_per_notif_size);
-		if(out_size < dsound->bytes_per_notif_size) {
+		if (out_size < dsound->bytes_per_notif_size) {
 			// fill with silence
 			memset(&dsound->bytes_per_notif_ptr[out_size], 0, (dsound->bytes_per_notif_size - out_size));
 		}
-		if((dwBytesAudio1 + dwBytesAudio2) == dsound->bytes_per_notif_size) {
+		if ((dwBytesAudio1 + dwBytesAudio2) == dsound->bytes_per_notif_size) {
 			memcpy(lpvAudio1, dsound->bytes_per_notif_ptr, dwBytesAudio1);
-			if(lpvAudio2 && dwBytesAudio2) {
+			if (lpvAudio2 && dwBytesAudio2) {
 				memcpy(lpvAudio2, &dsound->bytes_per_notif_ptr[dwBytesAudio1], dwBytesAudio2);
 			}
 		}
 		else {
 			TSK_DEBUG_ERROR("Not expected: %d+%d#%d", dwBytesAudio1, dwBytesAudio2, dsound->bytes_per_notif_size);
 		}
-
+#if 0
+		memset(lpvAudio1, rand(), dwBytesAudio1);
+#endif
 		// unlock
-		if((hr = IDirectSoundBuffer_Unlock(dsound->secondaryBuffer, lpvAudio1, dwBytesAudio1, lpvAudio2, dwBytesAudio2)) != DS_OK){
+		if ((hr = IDirectSoundBuffer_Unlock(dsound->secondaryBuffer, lpvAudio1, dwBytesAudio1, lpvAudio2, dwBytesAudio2)) != DS_OK) {
 			tdav_win32_print_error("IDirectSoundBuffer_UnLock", hr);
 			goto next;
 		}
@@ -203,6 +205,11 @@ static int tdav_consumer_dsound_prepare(tmedia_consumer_t* self, const tmedia_co
 	TMEDIA_CONSUMER(dsound)->audio.in.channels = TMEDIA_CODEC_CHANNELS_AUDIO_DECODING(codec);
 	TMEDIA_CONSUMER(dsound)->audio.in.rate = TMEDIA_CODEC_RATE_DECODING(codec);
 
+#if 0
+	TMEDIA_CONSUMER(dsound)->audio.out.rate = 48000;
+	TMEDIA_CONSUMER(dsound)->audio.out.channels = 2;
+#endif
+
 	/* Create sound device */
 	if((hr = DirectSoundCreate(NULL, &dsound->device, NULL) != DS_OK)){
 		tdav_win32_print_error("DirectSoundCreate", hr);
@@ -219,7 +226,7 @@ static int tdav_consumer_dsound_prepare(tmedia_consumer_t* self, const tmedia_co
 
 	/* Creates the primary buffer and apply format */
 	wfx.wFormatTag = WAVE_FORMAT_PCM;
-	wfx.nChannels = TMEDIA_CONSUMER(dsound)->audio.in.channels;
+	wfx.nChannels = TMEDIA_CONSUMER(dsound)->audio.out.channels ? TMEDIA_CONSUMER(dsound)->audio.out.channels : TMEDIA_CONSUMER(dsound)->audio.in.channels;
 	wfx.nSamplesPerSec = TMEDIA_CONSUMER(dsound)->audio.out.rate ? TMEDIA_CONSUMER(dsound)->audio.out.rate : TMEDIA_CONSUMER(dsound)->audio.in.rate;
 	wfx.wBitsPerSample = TMEDIA_CONSUMER(dsound)->audio.bits_per_sample;
 	wfx.nBlockAlign = (wfx.nChannels * wfx.wBitsPerSample/8);

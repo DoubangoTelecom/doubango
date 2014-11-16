@@ -92,6 +92,12 @@ typedef union {
   uint64_t v64[2];
 } v128_t;
 
+typedef union {
+    uint8_t v8[32];
+    uint16_t v16[16];
+    uint32_t v32[8];
+    uint64_t v64[4];
+} v256_t;
 
 
 /* some useful and simple math functions */
@@ -377,7 +383,7 @@ void
 octet_string_set_to_zero(uint8_t *s, int len);
 
 
-#ifndef SRTP_KERNEL_LINUX
+#if !defined(SRTP_KERNEL_LINUX) && defined(HAVE_CONFIG_H) 
 
 /* 
  * Convert big endian integers to CPU byte order.
@@ -409,7 +415,7 @@ static inline uint32_t be32_to_cpu(uint32_t v) {
 #  define be32_to_cpu(x)	ntohl((x))
 # endif /* HAVE_X86 */
 
-static __inline uint64_t be64_to_cpu(uint64_t v) {
+static inline uint64_t be64_to_cpu(uint64_t v) {
 # ifdef NO_64BIT_MATH
    /* use the make64 functions to do 64-bit math */
    v = make64(htonl(low32(v)),htonl(high32(v)));
@@ -502,5 +508,9 @@ bitvector_left_shift(bitvector_t *x, int index);
 
 char *
 bitvector_bit_string(bitvector_t *x, char* buf, int len);
+
+#ifdef TESTAPP_SOURCE
+int base64_string_to_octet_string(char *raw, int *pad, char *base64, int len);
+#endif
 
 #endif /* _DATATYPES_H */

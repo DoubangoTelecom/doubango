@@ -119,7 +119,7 @@ static void* TSK_STDCALL _tdav_consumer_oss_playback_thread(void *param)
 		tsk_safeobj_unlock(p_oss);
 	}
 bail:
-	OSS_DEBUG_INFO("__record_thread -- STOP");
+	OSS_DEBUG_INFO("__playback_thread -- STOP");
 	return tsk_null;
 }
 
@@ -155,8 +155,8 @@ static int tdav_consumer_oss_prepare(tmedia_consumer_t* self, const tmedia_codec
 	}
 
 	TMEDIA_CONSUMER(p_oss)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_DECODING(codec);
-    	TMEDIA_CONSUMER(p_oss)->audio.in.channels = TMEDIA_CODEC_CHANNELS_AUDIO_DECODING(codec);
-    	TMEDIA_CONSUMER(p_oss)->audio.in.rate = TMEDIA_CODEC_RATE_DECODING(codec);
+    TMEDIA_CONSUMER(p_oss)->audio.in.channels = TMEDIA_CODEC_CHANNELS_AUDIO_DECODING(codec);
+    TMEDIA_CONSUMER(p_oss)->audio.in.rate = TMEDIA_CODEC_RATE_DECODING(codec);
 	
 	// Set using requested
 	channels = TMEDIA_CONSUMER(p_oss)->audio.in.channels;
@@ -276,7 +276,7 @@ static int tdav_consumer_oss_consume(tmedia_consumer_t* self, const void* buffer
 		goto bail;
 	}
 	if ((err = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(p_oss), buffer, size, proto_hdr))/*thread-safe*/) {
-		OSS_DEBUG_WARN("Failed to put audio data");
+		OSS_DEBUG_WARN("Failed to put audio data to the jitter buffer");
 		goto bail;
 	}
 	
