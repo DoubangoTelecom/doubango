@@ -181,22 +181,22 @@ tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, 
 	tsk_safeobj_unlock(self);	
 
 	// denoiser
-	if(self->denoise && self->denoise->opened && (self->denoise->echo_supp_enabled || self->denoise->noise_supp_enabled)){
-		if(self->denoise->echo_supp_enabled){
+	if (self->denoise && self->denoise->opened && (self->denoise->echo_supp_enabled || self->denoise->noise_supp_enabled)) {
+		if (self->denoise->echo_supp_enabled) {
 			// Echo process last frame 
-			if(self->denoise->last_frame && self->denoise->last_frame->size){
-				tmedia_denoise_echo_playback(self->denoise, self->denoise->last_frame->data, self->denoise->last_frame->size);
+			if (self->denoise->playback_frame && self->denoise->playback_frame->size) {
+				tmedia_denoise_echo_playback(self->denoise, self->denoise->playback_frame->data, self->denoise->playback_frame->size);
 			}
-			if(ret_size){
+			if (ret_size){
 				// save
-				tsk_buffer_copy(self->denoise->last_frame, 0, out_data, ret_size);
+				tsk_buffer_copy(self->denoise->playback_frame, 0, out_data, ret_size);
 			}
 		}
 
 #if 1 // suppress noise if not supported by remote party's encoder
 		// suppress noise
-		if(self->denoise->noise_supp_enabled){
-			tmedia_denoise_process_playback(self->denoise, out_data, out_size);
+		if (self->denoise->noise_supp_enabled && ret_size) {
+			tmedia_denoise_process_playback(self->denoise, out_data, ret_size);
 		}
 #endif
 	}

@@ -513,9 +513,9 @@ int Doubango::VoIP::AudioRender::Pause()
 int Doubango::VoIP::AudioRender::Consume(const void* buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
 {
 	int ret;
-	tsk_mutex_lock(m_hMutex);
-	ret = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(m_pWrappedConsumer), buffer, size, proto_hdr);
-	tsk_mutex_unlock(m_hMutex);
+	// tsk_mutex_lock(m_hMutex);
+	ret = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(m_pWrappedConsumer), buffer, size, proto_hdr); // thread-safe
+	// tsk_mutex_unlock(m_hMutex);
 	return ret;
 }
 

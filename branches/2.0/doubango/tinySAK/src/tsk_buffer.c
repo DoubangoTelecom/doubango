@@ -353,9 +353,9 @@ static tsk_object_t* tsk_buffer_ctor(tsk_object_t * self, va_list * app)
 	const void *data = va_arg(*app, const void *);
 	tsk_size_t size = va_arg(*app, tsk_size_t);
 	
-	if(size){
+	if (size) {
 		buffer->data = tsk_calloc((size+1), sizeof(uint8_t));
-		if(data){
+		if (data) {
 			memcpy(buffer->data, data, size);
 		}
 		buffer->size = size;

@@ -102,11 +102,11 @@ int tmedia_consumer_prepare(tmedia_consumer_t *self, const tmedia_codec_t* codec
 int tmedia_consumer_start(tmedia_consumer_t *self)
 {
 	int ret;
-	if(!self || !self->plugin || !self->plugin->start){
+	if (!self || !self->plugin || !self->plugin->start) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if((ret = self->plugin->start(self)) == 0){
+	if ((ret = self->plugin->start(self)) == 0) {
 		self->is_started = tsk_true;
 	}
 	return ret;
@@ -150,11 +150,11 @@ int tmedia_consumer_pause(tmedia_consumer_t *self)
 int tmedia_consumer_stop(tmedia_consumer_t *self)
 {
 	int ret;
-	if(!self || !self->plugin || !self->plugin->stop){
+	if (!self || !self->plugin || !self->plugin->stop) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if((ret = self->plugin->stop(self)) == 0){
+	if ((ret = self->plugin->stop(self)) == 0) {
 		self->is_started = tsk_false;
 	}
 	return ret;

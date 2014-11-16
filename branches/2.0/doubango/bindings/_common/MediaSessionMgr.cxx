@@ -255,20 +255,20 @@ uint64_t MediaSessionMgr::getSessionId(twrap_media_type_t media)const
 	ProxyPluginMgr* manager = ProxyPluginMgr::getInstance();
 	uint64_t id = 0;
 
-	if(media != twrap_media_audio && media != twrap_media_video){
+	if (media != twrap_media_audio && media != twrap_media_video) {
 		TSK_DEBUG_ERROR("Invalid media type");
-		return tsk_null;
+		return 0;
 	}
 
-	if(manager && m_pWrappedMgr){
+	if (manager && m_pWrappedMgr) {
 		tmedia_type_t _media = twrap_get_native_media_type(media);
 		tmedia_session_t* session = tmedia_session_mgr_find(m_pWrappedMgr, _media);
-		if(session){
+		if (session) {
 			id = session->id;
 		}
 		tsk_object_unref(session);
 	}
-	else{
+	else {
 		TSK_DEBUG_ERROR("Invalid state");
 	}
 
@@ -346,7 +346,7 @@ bool MediaSessionMgr::defaultsSetEchoSkew(uint32_t echo_skew)
 
 bool MediaSessionMgr::defaultsSetEchoSuppEnabled(bool echo_supp_enabled)
 {
-	return tmedia_defaults_set_echo_supp_enabled(echo_supp_enabled) == 0;
+	return tmedia_defaults_set_echo_supp_enabled(echo_supp_enabled ? tsk_true : tsk_false) == 0;
 }
 
 bool MediaSessionMgr::defaultsGetEchoSuppEnabled()

@@ -33,7 +33,7 @@
 #include "tsk_object.h"
 
 #ifndef TMEDIA_RESAMPLER_QUALITY
-#	define TMEDIA_RESAMPLER_QUALITY 3
+#	define TMEDIA_RESAMPLER_QUALITY 5
 #endif
 
 TMEDIA_BEGIN_DECLS
@@ -64,15 +64,15 @@ typedef struct tmedia_resampler_plugin_def_s
 	const char* desc;
 
 	// ! quality is from 0-10
-	int (* open) (tmedia_resampler_t* self, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t in_channels, uint32_t out_channels, uint32_t quality);
-	tsk_size_t (* process) (tmedia_resampler_t*, const uint16_t* in_data, tsk_size_t in_size_in_short, uint16_t* out_data, tsk_size_t out_size_in_short);
+	int (* open) (tmedia_resampler_t* self, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t in_channels, uint32_t out_channels, uint32_t quality, uint32_t bits_per_sample);
+	tsk_size_t (* process) (tmedia_resampler_t*, const void* in_data, tsk_size_t in_size_in_sample, void* out_data, tsk_size_t out_size_in_sample);
 	int (* close) (tmedia_resampler_t* );
 }
 tmedia_resampler_plugin_def_t;
 
 TINYMEDIA_API int tmedia_resampler_init(tmedia_resampler_t* self);
-TINYMEDIA_API int tmedia_resampler_open(tmedia_resampler_t* self, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t in_channels, uint32_t out_channels, uint32_t quality);
-TINYMEDIA_API tsk_size_t tmedia_resampler_process(tmedia_resampler_t* self, const uint16_t* in_data, tsk_size_t in_size_in_short, uint16_t* out_data, tsk_size_t out_size_in_short);
+TINYMEDIA_API int tmedia_resampler_open(tmedia_resampler_t* self, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t in_channels, uint32_t out_channels, uint32_t quality, uint32_t bits_per_sample);
+TINYMEDIA_API tsk_size_t tmedia_resampler_process(tmedia_resampler_t* self, const void* in_data, tsk_size_t in_size_in_sample, void* out_data, tsk_size_t out_size_in_sample);
 TINYMEDIA_API int tmedia_resampler_close(tmedia_resampler_t* self);
 TINYMEDIA_API int tmedia_resampler_deinit(tmedia_resampler_t* self);
 

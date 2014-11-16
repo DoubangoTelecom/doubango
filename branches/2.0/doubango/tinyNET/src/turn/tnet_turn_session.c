@@ -760,7 +760,7 @@ int tnet_turn_session_createpermission(struct tnet_turn_session_s* p_self, const
 	}
 	if (TNET_SOCKET_TYPE_IS_STREAM(p_self->p_lcl_sock->type)) {
 		if (!p_peer->p_stream_buff && !(p_peer->p_stream_buff = tsk_buffer_create_null())) {
-			TSK_DEBUG_ERROR("Failed to create stream buffer for peer with id=%lld", p_peer->id);
+			TSK_DEBUG_ERROR("Failed to create stream buffer for peer with id=%ld", p_peer->id);
 			ret = -5;
 			goto bail;
 		}
@@ -1836,7 +1836,7 @@ check_nok:
 				tnet_turn_peer_t* pc_peer = tsk_null;
 				// XOR-PEER-ADDRESS
 				if ((ret = tnet_stun_pkt_attr_find_first(pc_pkt, tnet_stun_attr_type_xor_peer_address, (const tnet_stun_attr_t**)&pc_attr_xor_peer_addr)) == 0 && pc_attr_xor_peer_addr) {
-					if ((ret = _tnet_turn_peer_find_by_xpeer(p_self->p_list_peers, pc_attr_xor_peer_addr, &pc_peer)) == 0 && pc_peer) {
+					if ((ret = _tnet_turn_peer_find_by_xpeer(p_self->p_list_peers, pc_attr_xor_peer_addr, (const tnet_turn_peer_t**)&pc_peer)) == 0 && pc_peer) {
 						if ((ret = _tnet_turn_session_process_success_connect_pkt(p_self, pc_peer, pc_pkt))) {
 							goto bail;
 						}

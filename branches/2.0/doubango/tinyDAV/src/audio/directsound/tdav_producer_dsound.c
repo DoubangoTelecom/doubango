@@ -79,27 +79,32 @@ static void* TSK_STDCALL _tdav_producer_dsound_record_thread(void *param)
 
 	HRESULT hr;
 	LPVOID lpvAudio1, lpvAudio2;
-	DWORD dwBytesAudio1, dwBytesAudio2, dwEvent;
+	DWORD dwBytesAudio1, dwBytesAudio2, dwEvent, dwIndex;
 
-	TSK_DEBUG_INFO("__record_thread -- START");
+	TSK_DEBUG_INFO("_tdav_producer_dsound_record_thread -- START");
 
-	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
 
-	while(dsound->started){
+	while (dsound->started) {
 		dwEvent = WaitForMultipleObjects(TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT, dsound->notifEvents, FALSE, INFINITE);
-		if(!dsound->started){
+		if (!dsound->started) {
 			break;
 		}
+		if (dwEvent < WAIT_OBJECT_0 || dwEvent > (WAIT_OBJECT_0 + TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT)) {
+			TSK_DEBUG_ERROR("Invalid dwEvent(%d)", dwEvent);
+			break;
+		}
+		dwIndex = (dwEvent - WAIT_OBJECT_0);
 		
 		// lock
-		if((hr = IDirectSoundCaptureBuffer_Lock(dsound->captureBuffer, (dwEvent * dsound->bytes_per_notif_size), dsound->bytes_per_notif_size, &lpvAudio1, &dwBytesAudio1, &lpvAudio2, &dwBytesAudio2, 0)) != DS_OK){
+		if ((hr = IDirectSoundCaptureBuffer_Lock(dsound->captureBuffer, (dwIndex * dsound->bytes_per_notif_size), dsound->bytes_per_notif_size, &lpvAudio1, &dwBytesAudio1, &lpvAudio2, &dwBytesAudio2, 0)) != DS_OK) {
 			tdav_win32_print_error("IDirectSoundCaptureBuffer_Lock", hr);
 			continue;
 		}
 
-		if(TMEDIA_PRODUCER(dsound)->enc_cb.callback){
+		if (TMEDIA_PRODUCER(dsound)->enc_cb.callback) {
 #if SEND_SILENCE_ON_MUTE
-			if(dsound->mute){
+			if (dsound->mute) {
 				memset(lpvAudio1, 0, dwBytesAudio1);
 				if(lpvAudio2){
 					memset(lpvAudio2, 0, dwBytesAudio2);
@@ -107,19 +112,19 @@ static void* TSK_STDCALL _tdav_producer_dsound_record_thread(void *param)
 			}
 #endif
 			TMEDIA_PRODUCER(dsound)->enc_cb.callback(TMEDIA_PRODUCER(dsound)->enc_cb.callback_data, lpvAudio1, dwBytesAudio1);
-			if(lpvAudio2){
+			if (lpvAudio2) {
 				TMEDIA_PRODUCER(dsound)->enc_cb.callback(TMEDIA_PRODUCER(dsound)->enc_cb.callback_data, lpvAudio2, dwBytesAudio2);
 			}
 		}
-
+		
 		// unlock
-		if((hr = IDirectSoundCaptureBuffer_Unlock(dsound->captureBuffer, lpvAudio1, dwBytesAudio1, lpvAudio2, dwBytesAudio2)) != DS_OK){
+		if ((hr = IDirectSoundCaptureBuffer_Unlock(dsound->captureBuffer, lpvAudio1, dwBytesAudio1, lpvAudio2, dwBytesAudio2)) != DS_OK) {
 			tdav_win32_print_error("IDirectSoundCaptureBuffer_Unlock", hr);
 			continue;
 		}		
 	}
 
-	TSK_DEBUG_INFO("__record_thread -- STOP");
+	TSK_DEBUG_INFO("_tdav_producer_dsound_record_thread -- STOP");
 	
 
 	return tsk_null;
@@ -127,18 +132,18 @@ static void* TSK_STDCALL _tdav_producer_dsound_record_thread(void *param)
 
 static int _tdav_producer_dsound_unprepare(tdav_producer_dsound_t* dsound)
 {
-	if(dsound){
+	if (dsound) {
 		tsk_size_t i;
-		if(dsound->captureBuffer){
+		if (dsound->captureBuffer) {
 			IDirectSoundCaptureBuffer_Release(dsound->captureBuffer);
 			dsound->captureBuffer = NULL;
 		}
-		if(dsound->device){
+		if (dsound->device) {
 			IDirectSoundCapture_Release(dsound->device);
 			dsound->device = NULL;
 		}
-		for(i = 0; i<sizeof(dsound->notifEvents)/sizeof(dsound->notifEvents[0]); i++){
-			if(dsound->notifEvents[i]){
+		for (i = 0; i<(sizeof(dsound->notifEvents)/sizeof(dsound->notifEvents[0])); i++){
+			if(dsound->notifEvents[i]) {
 				CloseHandle(dsound->notifEvents[i]);
 				dsound->notifEvents[i] = NULL;
 			}
@@ -154,19 +159,19 @@ static int _tdav_producer_dsound_unprepare(tdav_producer_dsound_t* dsound)
 static int tdav_producer_dsound_set(tmedia_producer_t* self, const tmedia_param_t* param)
 {	
 	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)self;
-	if(param->plugin_type == tmedia_ppt_producer){
-		if(param->value_type == tmedia_pvt_int32){
-			if(tsk_striequals(param->key, "volume")){
+	if (param->plugin_type == tmedia_ppt_producer) {
+		if (param->value_type == tmedia_pvt_int32) {
+			if (tsk_striequals(param->key, "volume")) {
 				return 0;
 			}
-			else if(tsk_striequals(param->key, "mute")){
+			else if (tsk_striequals(param->key, "mute")) {
 				dsound->mute = (TSK_TO_INT32((uint8_t*)param->value) != 0);
 #if !SEND_SILENCE_ON_MUTE
-				if(dsound->started){
-					if(dsound->mute){
+				if (dsound->started) {
+					if (dsound->mute) {
 						IDirectSoundCaptureBuffer_Stop(dsound->captureBuffer);
 					}
-					else{
+					else {
 						IDirectSoundCaptureBuffer_Start(dsound->captureBuffer, DSBPLAY_LOOPING);
 					}
 				}
@@ -186,12 +191,12 @@ static int tdav_producer_dsound_prepare(tmedia_producer_t* self, const tmedia_co
 
 	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)self;
 
-	if(!dsound || !codec){
+	if (!dsound || !codec) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if(dsound->device || dsound->captureBuffer){
+	if (dsound->device || dsound->captureBuffer) {
 		TSK_DEBUG_ERROR("Producer already prepared");
 		return -2;
 	}
@@ -200,8 +205,13 @@ static int tdav_producer_dsound_prepare(tmedia_producer_t* self, const tmedia_co
 	TMEDIA_PRODUCER(dsound)->audio.rate = TMEDIA_CODEC_RATE_ENCODING(codec);
 	TMEDIA_PRODUCER(dsound)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_ENCODING(codec);
 
+#if 0
+	TMEDIA_PRODUCER(dsound)->audio.rate = 48000;
+	TMEDIA_PRODUCER(dsound)->audio.channels = 1;
+#endif
+
 	/* Create capture device */
-	if((hr = DirectSoundCaptureCreate(NULL, &dsound->device, NULL) != DS_OK)){
+	if ((hr = DirectSoundCaptureCreate(NULL, &dsound->device, NULL) != DS_OK)) {
 		tdav_win32_print_error("DirectSoundCaptureCreate", hr);
 		return -3;
 	}
@@ -221,7 +231,7 @@ static int tdav_producer_dsound_prepare(tmedia_producer_t* self, const tmedia_co
 	dsbd.dwBufferBytes = (TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT * dsound->bytes_per_notif_size);
 	dsbd.lpwfxFormat = &wfx;
 
-	if((hr = IDirectSoundCapture_CreateCaptureBuffer(dsound->device, &dsbd, &dsound->captureBuffer, NULL)) != DS_OK){
+	if ((hr = IDirectSoundCapture_CreateCaptureBuffer(dsound->device, &dsbd, &dsound->captureBuffer, NULL)) != DS_OK) {
 		tdav_win32_print_error("IDirectSoundCapture_CreateCaptureBuffer", hr);
 		return -4;
 	}	
@@ -234,51 +244,54 @@ static int tdav_producer_dsound_start(tmedia_producer_t* self)
 	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)self;
 
 	tsk_size_t i;
+	DWORD dwOffset;
 	HRESULT hr;
 	LPDIRECTSOUNDNOTIFY lpDSBNotify;
 	DSBPOSITIONNOTIFY pPosNotify[TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT] = {0};
-
-	if(!dsound){
+	
+	if (!dsound) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-
-	if(!dsound->device || !dsound->captureBuffer){
+	
+	if (!dsound->device || !dsound->captureBuffer) {
 		TSK_DEBUG_ERROR("Producer not prepared");
 		return -2;
 	}
-
-	if(dsound->started){
+	
+	if (dsound->started) {
 		return 0;
 	}
-
-	if((hr = IDirectSoundCaptureBuffer_QueryInterface(dsound->captureBuffer, &IID_IDirectSoundNotify, (LPVOID*)&lpDSBNotify)) != DS_OK){
+	
+	if ((hr = IDirectSoundCaptureBuffer_QueryInterface(dsound->captureBuffer, &IID_IDirectSoundNotify, (LPVOID*)&lpDSBNotify)) != DS_OK) {
 		tdav_win32_print_error("IDirectSoundCaptureBuffer_QueryInterface", hr);
 		return -3;
 	}
-
+	
 	/* Events associated to notification points */
-	for(i = 0; i<TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT; i++){
+	dwOffset = dsound->bytes_per_notif_size - 1;
+	for (i = 0; i<(sizeof(dsound->notifEvents)/sizeof(dsound->notifEvents[0])); i++){
 		dsound->notifEvents[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
-		pPosNotify[i].dwOffset = (dsound->bytes_per_notif_size * i) + (dsound->bytes_per_notif_size >> 1);
+		pPosNotify[i].dwOffset = dwOffset;
 		pPosNotify[i].hEventNotify = dsound->notifEvents[i];
+		dwOffset += dsound->bytes_per_notif_size;
 	}
-	if((hr = IDirectSoundNotify_SetNotificationPositions(lpDSBNotify, TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT, pPosNotify)) != DS_OK){
+	if ((hr = IDirectSoundNotify_SetNotificationPositions(lpDSBNotify, TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT, pPosNotify)) != DS_OK) {
 		IDirectSoundNotify_Release(lpDSBNotify);
 		tdav_win32_print_error("IDirectSoundBuffer_QueryInterface", hr);
 		return -4;
 	}
 	
-	if((hr = IDirectSoundNotify_Release(lpDSBNotify))){
+	if ((hr = IDirectSoundNotify_Release(lpDSBNotify))) {
 		tdav_win32_print_error("IDirectSoundNotify_Release", hr);
 	}
-
+	
 	/* Start the buffer */
-	if((hr = IDirectSoundCaptureBuffer_Start(dsound->captureBuffer, DSBPLAY_LOOPING)) != DS_OK){
+	if ((hr = IDirectSoundCaptureBuffer_Start(dsound->captureBuffer, DSBPLAY_LOOPING)) != DS_OK) {
 		tdav_win32_print_error("IDirectSoundCaptureBuffer_Start", hr);
 		return -5;
 	}
-
+	
 	/* start the reader thread */
 	dsound->started = tsk_true;
 	tsk_thread_create(&dsound->tid[0], _tdav_producer_dsound_record_thread, dsound);
@@ -297,12 +310,12 @@ static int tdav_producer_dsound_stop(tmedia_producer_t* self)
 
 	HRESULT hr;
 
-	if(!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if(!dsound->started){
+	if (!dsound->started) {
 		return 0;
 	}
 
@@ -310,18 +323,18 @@ static int tdav_producer_dsound_stop(tmedia_producer_t* self)
 	dsound->started = tsk_false;
 
 #if !SEND_SILENCE_ON_MUTE
-	if(dsound->mute && dsound->notifEvents[0]){
+	if (dsound->mute && dsound->notifEvents[0]) {
 		// thread is paused -> raise event now that "started" is equal to false
 		SetEvent(dsound->notifEvents[0]);
 	}		
 #endif
 
 	// stop thread
-	if(dsound->tid[0]){
+	if (dsound->tid[0]) {
 		tsk_thread_join(&(dsound->tid[0]));
 	}
 
-	if((hr = IDirectSoundCaptureBuffer_Stop(dsound->captureBuffer)) != DS_OK){
+	if ((hr = IDirectSoundCaptureBuffer_Stop(dsound->captureBuffer)) != DS_OK) {
 		tdav_win32_print_error("IDirectSoundCaptureBuffer_Stop", hr);
 	}
 
@@ -340,7 +353,7 @@ static int tdav_producer_dsound_stop(tmedia_producer_t* self)
 static tsk_object_t* tdav_producer_dsound_ctor(tsk_object_t * self, va_list * app)
 {
 	tdav_producer_dsound_t *producer = self;
-	if(producer){
+	if (producer) {
 		/* init base */
 		tdav_producer_audio_init(TDAV_PRODUCER_AUDIO(producer));
 		/* init self */
@@ -352,9 +365,9 @@ static tsk_object_t* tdav_producer_dsound_ctor(tsk_object_t * self, va_list * ap
 static tsk_object_t* tdav_producer_dsound_dtor(tsk_object_t * self)
 { 
 	tdav_producer_dsound_t *dsound = self;
-	if(dsound){
+	if (dsound) {
 		/* stop */
-		if(dsound->started){
+		if (dsound->started) {
 			tdav_producer_dsound_stop(self);
 		}
 

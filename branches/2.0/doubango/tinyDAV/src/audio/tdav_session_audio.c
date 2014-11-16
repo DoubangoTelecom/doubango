@@ -406,6 +406,7 @@ static int tdav_session_audio_start(tmedia_session_t* self)
 		if(audio->denoise){
 			uint32_t record_frame_size_samples = TMEDIA_CODEC_PCM_FRAME_SIZE_AUDIO_ENCODING(audio->encoder.codec);
 			uint32_t record_sampling_rate = TMEDIA_CODEC_RATE_ENCODING(audio->encoder.codec);
+			uint32_t record_channels = TMEDIA_CODEC_CHANNELS_AUDIO_ENCODING(audio->encoder.codec);
 
 			uint32_t playback_frame_size_samples = (base->consumer && base->consumer->audio.ptime && base->consumer->audio.out.rate && base->consumer->audio.out.channels)
 				? ((base->consumer->audio.ptime * base->consumer->audio.out.rate) / 1000) * base->consumer->audio.out.channels
@@ -413,15 +414,19 @@ static int tdav_session_audio_start(tmedia_session_t* self)
 			uint32_t playback_sampling_rate = (base->consumer && base->consumer->audio.out.rate)
 				? base->consumer->audio.out.rate
 				: TMEDIA_CODEC_RATE_DECODING(audio->encoder.codec);
+			uint32_t playback_channels = (base->consumer && base->consumer->audio.out.channels)
+				? base->consumer->audio.out.channels
+				: TMEDIA_CODEC_CHANNELS_AUDIO_DECODING(audio->encoder.codec);
 
-			TSK_DEBUG_INFO("Audio denoiser to be opened(record_frame_size_samples=%u, record_sampling_rate=%u, playback_frame_size_samples=%u, playback_sampling_rate=%u)", record_frame_size_samples, record_sampling_rate, playback_frame_size_samples, playback_sampling_rate);
+			TSK_DEBUG_INFO("Audio denoiser to be opened(record_frame_size_samples=%u, record_sampling_rate=%u, record_channels=%u, playback_frame_size_samples=%u, playback_sampling_rate=%u, playback_channels=%u)", 
+				record_frame_size_samples, record_sampling_rate, record_channels, playback_frame_size_samples, playback_sampling_rate, playback_channels);
 			
 			// close()
 			tmedia_denoise_close(audio->denoise);
 			// open() with new values
 			tmedia_denoise_open(audio->denoise, 
-				record_frame_size_samples, record_sampling_rate,
-				playback_frame_size_samples, playback_sampling_rate);
+				record_frame_size_samples, record_sampling_rate, TSK_CLAMP(1, record_channels, 2),
+				playback_frame_size_samples, playback_sampling_rate, TSK_CLAMP(1, playback_channels, 2));
 		}
 	}
 
@@ -742,19 +747,19 @@ static tmedia_resampler_t* _tdav_session_audio_resampler_create(int32_t bytes_pe
 
 	resampler_buff_size = (((out_freq * frame_duration)/1000) * bytes_per_sample) << (out_channels == 2 ? 1 : 0);
 
-	if(!(resampler = tmedia_resampler_create())){
+	if (!(resampler = tmedia_resampler_create())) {
 		TSK_DEBUG_ERROR("Failed to create audio resampler");
 		return tsk_null;
 	}
 	else {
-		if((ret = tmedia_resampler_open(resampler, in_freq, out_freq, frame_duration, in_channels, out_channels, quality))){
+		if ((ret = tmedia_resampler_open(resampler, in_freq, out_freq, frame_duration, in_channels, out_channels, quality, 16))) {
 			TSK_DEBUG_ERROR("Failed to open audio resampler (%d, %d, %d, %d, %d,%d) with retcode=%d", in_freq, out_freq, frame_duration, in_channels, out_channels, quality, ret);
 			TSK_OBJECT_SAFE_FREE(resampler);
 			goto done;
 		}
 	}
 	// create temp resampler buffer
-	if((*resampler_buffer = tsk_realloc(*resampler_buffer, resampler_buff_size))){
+	if ((*resampler_buffer = tsk_realloc(*resampler_buffer, resampler_buff_size))) {
 		*resampler_buffer_size = resampler_buff_size;
 	}
 	else {

@@ -73,6 +73,7 @@ namespace doubango_rt
 
 			uint64 getSessionId(rt_twrap_media_type_t media);
 		
+		internal: // Must be from SIP service to share same global memory space
 			static bool defaultsSetProfile(rt_tmedia_profile_t profile);
 			static rt_tmedia_profile_t defaultsGetProfile();
 			static bool defaultsSetPrefVideoSize(enum class rt_tmedia_pref_video_size_t pref_video_size);

@@ -38,7 +38,7 @@ static int32_t __bw_video_down_max_kbps = INT_MAX; // <= 0: unrestricted, Unit: 
 static tmedia_pref_video_size_t __pref_video_size = tmedia_pref_video_size_cif; // 352 x 288: Android, iOS, WP7 
 static int32_t __jb_margin_ms = -1; // disable
 static int32_t __jb_max_late_rate_percent = -1; // -1: disable 4: default for speex
-static uint32_t __echo_tail = 20;
+static uint32_t __echo_tail = 100;
 static uint32_t __echo_skew = 0;
 static tsk_bool_t __echo_supp_enabled;
 static tsk_bool_t __agc_enabled = tsk_false;

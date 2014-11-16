@@ -40,20 +40,20 @@ int tmedia_resampler_init(tmedia_resampler_t* self)
 	return 0;
 }
 
-int tmedia_resampler_open(tmedia_resampler_t* self, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t in_channels, uint32_t out_channels, uint32_t quality)
+int tmedia_resampler_open(tmedia_resampler_t* self, uint32_t in_freq, uint32_t out_freq, uint32_t frame_duration, uint32_t in_channels, uint32_t out_channels, uint32_t quality, uint32_t bits_per_sample)
 {
 	int ret;
 
-	if(!self || !self->plugin || !self->plugin->open){
+	if (!self || !self->plugin || !self->plugin->open) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if(self->opened){
+	if (self->opened) {
 		TSK_DEBUG_WARN("Resampler already opened");
 		return 0;
 	}
 	
-	if((ret = self->plugin->open(self, in_freq, out_freq, frame_duration, in_channels, out_channels, quality))){
+	if ((ret = self->plugin->open(self, in_freq, out_freq, frame_duration, in_channels, out_channels, quality, bits_per_sample))) {
 		TSK_DEBUG_ERROR("Failed to open [%s] resamplerr", self->plugin->desc);
 		return ret;
 	}
@@ -63,45 +63,43 @@ int tmedia_resampler_open(tmedia_resampler_t* self, uint32_t in_freq, uint32_t o
 	}
 }
 
-tsk_size_t tmedia_resampler_process(tmedia_resampler_t* self, const uint16_t* in_data, tsk_size_t in_size, uint16_t* out_data, tsk_size_t out_size)
+tsk_size_t tmedia_resampler_process(tmedia_resampler_t* self, const void* in_data, tsk_size_t in_size_in_sample, void* out_data, tsk_size_t out_size_in_sample)
 {
-	if(!self || !in_data || !in_size || !self->plugin || !self->plugin->process){
+	if (!self || !in_data || !in_size_in_sample || !out_size_in_sample || !self->plugin || !self->plugin->process) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
-
-	if(!self->opened){
+	if (!self->opened) {
 		TSK_DEBUG_ERROR("Resampler not opened");
 		return 0;
 	}
-
-	return self->plugin->process(self, in_data, in_size, out_data, out_size);
+	return self->plugin->process(self, in_data, in_size_in_sample, out_data, out_size_in_sample);
 }
 
 int tmedia_resampler_close(tmedia_resampler_t* self)
 {
-	if(!self || !self->plugin){
+	if (!self || !self->plugin) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if(!self->opened){
+	if (!self->opened) {
 		TSK_DEBUG_WARN("Resampler not opened");
 		return 0;
 	}
 
-	if(self->plugin->close){
+	if (self->plugin->close) {
 		int ret;
 
-		if((ret = self->plugin->close(self))){
+		if ((ret = self->plugin->close(self))) {
 			TSK_DEBUG_ERROR("Failed to close [%s] resamplerr", self->plugin->desc);
 			return ret;
 		}
-		else{
+		else {
 			self->opened = tsk_false;
 			return 0;
 		}
 	}
-	else{
+	else {
 		self->opened = tsk_false;
 		return 0;
 	}

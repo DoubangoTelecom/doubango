@@ -114,11 +114,11 @@ int tmedia_producer_set(tmedia_producer_t* self, const tmedia_param_t* param)
 int tmedia_producer_prepare(tmedia_producer_t *self, const tmedia_codec_t* codec)
 {
 	int ret;
-	if(!self || !self->plugin || !self->plugin->prepare || !codec){
+	if (!self || !self->plugin || !self->plugin->prepare || !codec) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if((ret = self->plugin->prepare(self, codec)) == 0){
+	if ((ret = self->plugin->prepare(self, codec)) == 0) {
 		self->is_prepared = tsk_true;
 	}
 	return ret;
@@ -132,11 +132,11 @@ int tmedia_producer_prepare(tmedia_producer_t *self, const tmedia_codec_t* codec
 int tmedia_producer_start(tmedia_producer_t *self)
 {
 	int ret;
-	if(!self || !self->plugin || !self->plugin->start){
+	if (!self || !self->plugin || !self->plugin->start) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if((ret = self->plugin->start(self)) == 0){
+	if ((ret = self->plugin->start(self)) == 0) {
 		self->is_started = tsk_true;
 	}
 	return ret;
@@ -150,7 +150,7 @@ int tmedia_producer_start(tmedia_producer_t *self)
 */
 int tmedia_producer_pause(tmedia_producer_t *self)
 {
-	if(!self || !self->plugin || !self->plugin->pause){
+	if (!self || !self->plugin || !self->plugin->pause) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -166,11 +166,11 @@ int tmedia_producer_pause(tmedia_producer_t *self)
 int tmedia_producer_stop(tmedia_producer_t *self)
 {
 	int ret;
-	if(!self || !self->plugin || !self->plugin->stop){
+	if (!self || !self->plugin || !self->plugin->stop) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if((ret = self->plugin->stop(self)) == 0){
+	if ((ret = self->plugin->stop(self)) == 0) {
 		self->is_started = tsk_false;
 	}
 	return ret;
