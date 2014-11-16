@@ -24,6 +24,8 @@
 #define ALSA_DEBUG_ERROR(FMT, ...) TSK_DEBUG_ERROR("[ALSA Common] " FMT, ##__VA_ARGS__)
 #define ALSA_DEBUG_FATAL(FMT, ...) TSK_DEBUG_FATAL("[ALSA Common] " FMT, ##__VA_ARGS__)
 
+#define ALSA_PLAYBACK_PERIODS 6
+
 int tdav_common_alsa_init(tdav_common_alsa_t* p_self)
 {
 	if (!p_self) {
@@ -117,15 +119,22 @@ int tdav_common_alsa_prepare(tdav_common_alsa_t* p_self, tsk_bool_t is_capture, 
 	}
 	ALSA_DEBUG_INFO("channels: req=%d, resp=%d", channels, val);
 	p_self->channels = val;
-
-#if 1
-	val = ((ptime * p_self->sample_rate * p_self->channels) / 1000);
-	if ((err = snd_pcm_hw_params_set_period_size_near(p_self->p_handle, p_self->p_params, &val, 0)) != 0) {
-		ALSA_DEBUG_ERROR ("Failed to prepare device (channels=%d, rate=%d, device=%s, err=%s)", p_self->channels, p_self->sample_rate, p_self->p_device_name, snd_strerror(err));
+	
+	if (!is_capture) {
+		unsigned int periods = ALSA_PLAYBACK_PERIODS;
+		snd_pcm_uframes_t periodSize = (ptime * p_self->sample_rate * p_self->channels) / 1000;
+		if ((err = snd_pcm_hw_params_set_periods_near(p_self->p_handle, p_self->p_params, &periods, 0)) != 0) {
+			ALSA_DEBUG_ERROR ("Failed to set periods (val=%u, device=%s, err=%s)", periods, p_self->p_device_name, snd_strerror(err));
 		goto bail;
+		}
+		
+		snd_pcm_uframes_t bufferSize = (periodSize * periods);
+		if ((err = snd_pcm_hw_params_set_buffer_size(p_self->p_handle, p_self->p_params, bufferSize)) != 0) {
+			ALSA_DEBUG_ERROR ("Failed to set buffer size (val=%lu, device=%s, err=%s)", bufferSize, p_self->p_device_name, snd_strerror(err));
+		goto bail;
+		}
+		ALSA_DEBUG_INFO("periods=%u, buffersize=%lu", periods, bufferSize);
 	}
-	ALSA_DEBUG_INFO("period size: req=%d, resp=%d", val, val); // FIXME
-#endif
 
 	if ((err = snd_pcm_hw_params (p_self->p_handle, p_self->p_params)) != 0) {
 		ALSA_DEBUG_ERROR ("Failed to set parameters (channels=%d, rate=%d, device=%s, err=%s)", p_self->channels, p_self->sample_rate, p_self->p_device_name, snd_strerror(err));

@@ -171,20 +171,20 @@ static int tdav_consumer_alsa_consume(tmedia_consumer_t* self, const void* buffe
 	tdav_consumer_alsa_t* p_alsa = (tdav_consumer_alsa_t*)self;
 	
 	if (!p_alsa || !buffer || !size) {
-		OSS_DEBUG_ERROR("Invalid paramter");
+		ALSA_DEBUG_ERROR("Invalid paramter");
 		return -1;
 	}
 
 	//tdav_common_alsa_lock(&p_alsa->alsa_common);
 	
 	if (!p_alsa->b_started) {
-		OSS_DEBUG_WARN("Not started");
+		ALSA_DEBUG_WARN("Not started");
 		err = -2;
 		goto bail;
 	}
 	
 	if ((err = tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(p_alsa), buffer, size, proto_hdr))) {//thread-safe
-		OSS_DEBUG_WARN("Failed to put audio data to the jitter buffer");
+		ALSA_DEBUG_WARN("Failed to put audio data to the jitter buffer");
 		goto bail;
 	}
 	
