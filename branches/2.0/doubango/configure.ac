@@ -182,7 +182,7 @@ AC_ARG_WITH(debug-level,
 ### CFLAGS && LDFLAGS
 if test "$target_os" = "android"; then
 	home_dir=`pwd`
-	CFLAGS="${CFLAGS} -I${home_dir}/thirdparties/android/${android_cpu}/include -I${home_dir}/thirdparties/android/common/include -I${home_dir}/thirdparties/common/include/libyuv"
+	CFLAGS="${CFLAGS} -I${home_dir}/thirdparties/android/${android_cpu}/include -I${home_dir}/thirdparties/android/common/include -I${home_dir}/thirdparties/common/include -I${home_dir}/thirdparties/common/include/libyuv"
 	CPPFLAGS=$CFLAGS
 	LDFLAGS="${LDFLAGS} -L${home_dir}/thirdparties/android/${android_cpu}/lib/dist"
 	if test "$enable_gpl" = yes; then
@@ -873,22 +873,22 @@ if test $want_webrtc != no; then
 	have_webrtc_aec=no
 	if test "$target_os" = "android"; then
 		AC_CHECK_HEADERS(webrtc/echo_control_mobile.h,
-       		AC_CHECK_LIB(webrtc_aecm, WebRtcAecm_Create, [have_webrtc_aec=yes], [LIBWEBRTC_LIBADD="-lwebrtc_aecm ${LIBWEBRTC_LIBADD}"], [-lwebrtc_apm_utility -lwebrtc_system_wrappers -lwebrtc_spl])
+       		AC_CHECK_LIB(audio_processing, WebRtcAecm_Create, [have_webrtc_aec=yes], [], [-lsystem_wrappers -lcommon_audio])
 		)
 	else
 		AC_CHECK_HEADERS(webrtc/echo_cancellation.h,
-       		AC_CHECK_LIB(webrtc_aec, WebRtcAec_Create, [have_webrtc_aec=yes], [LIBWEBRTC_LIBADD="-lwebrtc_aec ${LIBWEBRTC_LIBADD}"], [-lwebrtc_apm_utility -lwebrtc_system_wrappers -lwebrtc_spl])
+       		AC_CHECK_LIB(audio_processing, WebRtcAec_Create, [have_webrtc_aec=yes], [], [-lsystem_wrappers -lcommon_audio])
 		)
 	fi
 	# WebRTC NS
 	have_webrtc_ns=no
 	if test "$target_os" = "android"; then
 		AC_CHECK_HEADERS(webrtc/noise_suppression_x.h,
-       		AC_CHECK_LIB(webrtc_nsx, WebRtcNsx_Process, [have_webrtc_ns=yes] [LIBWEBRTC_LIBADD="-lwebrtc_nsx ${LIBWEBRTC_LIBADD}"], [], [-lwebrtc_apm_utility -lwebrtc_system_wrappers -lwebrtc_spl])
+       		AC_CHECK_LIB(audio_processing, WebRtcNsx_Process, [have_webrtc_ns=yes] [], [], [-lsystem_wrappers -lcommon_audio])
 		)
 	else
 		AC_CHECK_HEADERS(webrtc/noise_suppression.h,
-       		AC_CHECK_LIB(webrtc_ns, WebRtcNs_Process, [have_webrtc_ns=yes] [LIBWEBRTC_LIBADD="-lwebrtc_ns ${LIBWEBRTC_LIBADD}"], [], [-lwebrtc_apm_utility -lwebrtc_system_wrappers -lwebrtc_spl])
+       		AC_CHECK_LIB(audio_processing, WebRtcNs_Process, [have_webrtc_ns=yes] [], [], [-lsystem_wrappers -lcommon_audio])
 		)
 	fi
 
@@ -896,7 +896,7 @@ if test $want_webrtc != no; then
 		have_webrtc=yes
 		AC_DEFINE_UNQUOTED(HAVE_WEBRTC, 1, HAVE_WEBRTC)
 		AC_DEFINE_UNQUOTED(HAVE_WEBRTC_DENOISE, 1, HAVE_WEBRTC_DENOISE)
-		LIBWEBRTC_LIBADD="${LIBWEBRTC_LIBADD} -lwebrtc_apm_utility -lwebrtc_system_wrappers -lwebrtc_spl"
+		LIBWEBRTC_LIBADD="-laudio_processing -lcommon_audio -lsystem_wrappers"
 	fi
 	
   	test $have_webrtc:$want_webrtc = no:yes &&  

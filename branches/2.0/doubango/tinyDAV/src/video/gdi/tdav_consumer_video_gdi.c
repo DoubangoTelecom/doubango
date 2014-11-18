@@ -78,7 +78,6 @@ static int tdav_consumer_video_gdi_set(tmedia_consumer_t *self, const tmedia_par
 	else if(param->value_type == tmedia_pvt_int32) {
 		if(tsk_striequals(param->key, "fullscreen")) {
 			BOOL bFullScreen = !!*((int32_t*)param->value);
-			// FIXME: full screen not supported yet
 			TSK_DEBUG_INFO("[GDI video consumer] Full Screen = %d", bFullScreen);
 		    CHECK_HR(hr = SetFullscreen(p_gdi, bFullScreen));
 		}

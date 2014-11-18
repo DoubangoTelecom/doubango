@@ -229,7 +229,7 @@ static const tmedia_consumer_plugin_def_t twrap_consumer_proxy_audio_plugin_def_
 	twrap_consumer_proxy_audio_stop
 };
 
-TINYWRAP_GEXTERN const tmedia_consumer_plugin_def_t *twrap_consumer_proxy_audio_plugin_def_t = &twrap_consumer_proxy_audio_plugin_def_s;
+/*TINYWRAP_GEXTERN*/ const tmedia_consumer_plugin_def_t *twrap_consumer_proxy_audio_plugin_def_t = &twrap_consumer_proxy_audio_plugin_def_s;
 
 
 
@@ -612,7 +612,7 @@ static const tmedia_consumer_plugin_def_t twrap_consumer_proxy_video_plugin_def_
 	twrap_consumer_proxy_video_stop
 };
 
-TINYWRAP_GEXTERN const tmedia_consumer_plugin_def_t *twrap_consumer_proxy_video_plugin_def_t = &twrap_consumer_proxy_video_plugin_def_s;
+/*TINYWRAP_GEXTERN*/ const tmedia_consumer_plugin_def_t *twrap_consumer_proxy_video_plugin_def_t = &twrap_consumer_proxy_video_plugin_def_s;
 
 
 

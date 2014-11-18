@@ -12,7 +12,7 @@ echo "--->Java...<---"
 swig -c++ -java -package org.doubango.tinyWRAP -outdir java -o java/tinyWRAP_wrap.cxx java/java.i
 echo "Java(Google Dalvik)..."
 echo "Google Android special tasks"
-swig -c++ -java -package org.doubango.tinyWRAP -outdir java/android -o java/android/tinyWRAP_wrap.cxx java/java.i
+swig -noexcept -c++ -java -package org.doubango.tinyWRAP -outdir java/android -o java/android/tinyWRAP_wrap.cxx java/java.i
 sed -i 's/dynamic_cast/static_cast/g' java/android/tinyWRAP_wrap.cxx
 #sed -i 's/AttachCurrentThread((void \*\*)/AttachCurrentThread((JNIEnv \*\*)/g' java/android/tinyWRAP_wrap.cxx
 #sed -i 's/AttachCurrentThreadAsDaemon((void \*\*)/AttachCurrentThreadAsDaemon((JNIEnv \*\*)/g' java/android/tinyWRAP_wrap.cxx
