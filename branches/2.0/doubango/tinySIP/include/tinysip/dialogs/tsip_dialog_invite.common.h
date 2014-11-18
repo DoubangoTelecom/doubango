@@ -37,7 +37,7 @@
 	tsip_invite_event_signal(type, TSIP_DIALOG(self)->ss, code, phrase, message)
 #define TSIP_DIALOG_INVITE_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(invite, TX)
 
-#define TSIP_DIALOG_INVITE_ICE_CONNCHECK_TIMEOUT	6000
+#define TSIP_DIALOG_INVITE_ICE_CONNCHECK_TIMEOUT	16000
 
 /* ======================== actions ======================== */
 typedef enum _fsm_action_e
