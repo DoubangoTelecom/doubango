@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2014 Mamadou DIOP
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,10 +20,6 @@
 
 /**@file tmedia_producer.c
  * @brief Base producer object.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinymedia/tmedia_producer.h"
 #include "tinymedia/tmedia_defaults.h"
@@ -290,29 +284,21 @@ int tmedia_producer_plugin_unregister(const tmedia_producer_plugin_def_t* plugin
 */
 int tmedia_producer_plugin_unregister_by_type(tmedia_type_t type)
 {
-	tsk_size_t i;
-	tsk_bool_t found = tsk_false;
-
+	int i, j;
+	
 	/* find the plugin to unregister */
-	for(i = 0; i<TMED_PRODUCER_MAX_PLUGINS && __tmedia_producer_plugins[i]; i++){
-		if((__tmedia_producer_plugins[i]->type & type) == __tmedia_producer_plugins[i]->type){
+	for (i = 0; i < TMED_PRODUCER_MAX_PLUGINS && __tmedia_producer_plugins[i]; ) {
+		if ((__tmedia_producer_plugins[i]->type & type) == __tmedia_producer_plugins[i]->type) {
 			__tmedia_producer_plugins[i] = tsk_null;
-			found = tsk_true;
-			break;
+			/* compact */
+			for (j = i; j < (TMED_PRODUCER_MAX_PLUGINS - 1) && __tmedia_producer_plugins[j + 1]; ++j) {
+				__tmedia_producer_plugins[j] = __tmedia_producer_plugins[j + 1];
+			}
+			__tmedia_producer_plugins[j] = tsk_null;
+		}
+		else {
+			++i;
 		}
 	}
-
-	/* compact */
-	if(found){
-		for(; i<(TMED_PRODUCER_MAX_PLUGINS - 1); i++){
-			if(__tmedia_producer_plugins[i+1]){
-				__tmedia_producer_plugins[i] = __tmedia_producer_plugins[i+1];
-			}
-			else{
-				break;
-			}
-		}
-		__tmedia_producer_plugins[i] = tsk_null;
-	}
-	return (found ? 0 : -2);
+	return 0;
 }
