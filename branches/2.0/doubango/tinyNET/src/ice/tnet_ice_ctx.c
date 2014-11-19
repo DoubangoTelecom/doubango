@@ -2209,7 +2209,7 @@ static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, 
 		if (is_rtcpmuxed && cand_local->comp_id == TNET_ICE_CANDIDATE_COMPID_RTCP) {
 			continue;
 		}
-#if 1 // TURN:FORCE FIXME
+#if 0 // TURN:FORCE
 			if (cand_local->type_e != tnet_ice_cand_type_relay) {
 				continue;
 			}
