@@ -1639,7 +1639,8 @@ static int _tnet_turn_session_process_incoming_pkt(struct tnet_turn_session_s* p
 		case tnet_stun_pkt_type_connectionbind_success_response:
 		case tnet_stun_pkt_type_connectionbind_error_response:
 			{
-				uint16_t u_code;
+				const tnet_stun_attr_error_code_t* pc_attr_err;
+				uint16_t u_code = 0;
 				tnet_turn_pkt_t *pc_pkt_req = tsk_null;
 				tnet_turn_peer_t* pc_peer = tsk_null;
 				
@@ -1741,30 +1742,35 @@ static int _tnet_turn_session_process_incoming_pkt(struct tnet_turn_session_s* p
 					}
 					// --- CREATE-PERMISSION --- //
 					else if (pc_pkt_req->e_type == tnet_stun_pkt_type_createpermission_request) {
+						TSK_DEBUG_INFO("TURN 'CREATE-PERMISSION' OK for peer-id = %ld", pc_peer->id);
 						pc_peer->e_createperm_state = tnet_stun_state_ok;
 						TNET_TURN_SESSION_TIMER_SCHEDULE_MILLIS(p_self, pc_peer->timer.fresh.createperm.id, pc_peer->timer.fresh.createperm.u_timeout);
 						_tnet_turn_session_raise_event_createperm_ok(p_self, pc_peer->id);
 					}
 					// --- CHANNEL-BIND --- //
 					else if (pc_pkt_req->e_type == tnet_stun_pkt_type_channelbind_request) {
+						TSK_DEBUG_INFO("TURN 'CHANNEL-BIND' OK for peer-id = %ld", pc_peer->id);
 						pc_peer->e_chanbind_state = tnet_stun_state_ok;
 						TNET_TURN_SESSION_TIMER_SCHEDULE_MILLIS(p_self, pc_peer->timer.fresh.chanbind.id, pc_peer->timer.fresh.chanbind.u_timeout);
 						_tnet_turn_session_raise_event_chanbind_ok(p_self, pc_peer->id);
 					}
 					// --- CONNECT --- //
 					else if (pc_pkt_req->e_type == tnet_stun_pkt_type_connect_request) {
+						TSK_DEBUG_INFO("TURN 'CONNECT' OK for peer-id = %ld", pc_peer->id);
 						if ((ret = _tnet_turn_session_process_success_connect_pkt(p_self, pc_peer, pc_pkt))) {
 							goto bail;
 						}
 					}
 					// --- CONNECTION-BIND --- //
 					else if (pc_pkt_req->e_type == tnet_stun_pkt_type_connectionbind_request) {
+						TSK_DEBUG_INFO("TURN 'CONNECTION-BIND' OK for peer-id = %ld", pc_peer->id);
 						pc_peer->e_connbind_state = tnet_stun_state_ok;
 						_tnet_turn_session_raise_event_connectionbind_ok(p_self, pc_peer->id);
 					}
 					// --- REFRESH --- //
 					else if (pc_pkt_req == p_self->p_pkt_refresh) {
 						const tnet_stun_attr_vdata_t *pc_attr_lifetime;
+						TSK_DEBUG_INFO("TURN 'REFRESH' OK for peer-id = %ld", pc_peer->id);
 						p_self->e_refresh_state = tnet_stun_state_ok;
 						if ((ret = tnet_stun_pkt_attr_find_first(pc_pkt, tnet_stun_attr_type_lifetime, (const tnet_stun_attr_t**)&pc_attr_lifetime)) == 0 && pc_attr_lifetime && pc_attr_lifetime->u_data_size == 4) {
 							p_self->u_lifetime_alloc_in_sec = TSK_TO_UINT32(pc_attr_lifetime->p_data_ptr);
@@ -1778,6 +1784,9 @@ static int _tnet_turn_session_process_incoming_pkt(struct tnet_turn_session_s* p
 					tsk_bool_t b_nok = tsk_true;
 					if ((ret = tnet_stun_pkt_get_errorcode(pc_pkt, &u_code))) {
 						goto bail;
+					}
+					if (u_code > 299) {
+						tnet_stun_pkt_attr_find_first(pc_pkt, tnet_stun_attr_type_error_code, (const tnet_stun_attr_t**)&pc_attr_err);
 					}
 					if (u_code == kStunErrCodeUnauthorized || u_code == kStunErrCodeStaleNonce) {
 						if (u_code == kStunErrCodeUnauthorized) {
@@ -1807,7 +1816,8 @@ static int _tnet_turn_session_process_incoming_pkt(struct tnet_turn_session_s* p
 
 check_nok:
 					if (b_nok) {
-						TSK_DEBUG_INFO("--- TURN response code = %hu ---", u_code);
+						TSK_DEBUG_INFO("--- TURN response code = %hu, phrase = %s, peer-id=%ld, ---", 
+							u_code, pc_attr_err ? pc_attr_err->p_reason_phrase : "null", pc_peer ? pc_peer->id : -1);
 						if (pc_pkt_req == p_self->p_pkt_alloc) { 
 							p_self->e_alloc_state = tnet_stun_state_nok;
 							_tnet_turn_session_raise_event_alloc_nok(p_self);
@@ -2033,7 +2043,7 @@ handle_data:
 				}
 			}
 			goto bail;
-		}
+		} // if (TNET_STUN_BUFF_IS_CHANNEL_DATA...
 
 		// Must never happen: Data must be received via CHANNEL-DATA or DATA-INDICATION
 		TSK_DEBUG_INFO("Calling unexpected code :(");
@@ -2048,7 +2058,7 @@ handle_data:
 			tsk_buffer_cleanup(p_stream_buff);
 		}
 		goto bail;
-	}
+	} // if (!TNET_STUN_BUFF_IS_STUN2...
 
 	/*** At this step it means we have a STUN packet in the buffer ***/
 

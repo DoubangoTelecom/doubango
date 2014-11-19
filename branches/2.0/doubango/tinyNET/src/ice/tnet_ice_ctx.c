@@ -1,4 +1,5 @@
 /*
+* Copyright (C) 2012-2014 Mamadou DIOP
 * Copyright (C) 2012-2014 Doubango Telecom <http://www.doubango.org>.
 *
 * This file is part of Open Source Doubango Framework.
@@ -59,19 +60,22 @@
 /**@ingroup tnet_nat_group
 * Estimate of the round-trip time (RTT) in millisecond.
 */
-#define TNET_ICE_DEFAULT_RTO			500
+#define kIceDefaultRTO			500
 /**@ingroup tnet_nat_group
 * Number of retransmission for UDP retransmission in millisecond.
 *	7.2.1.  Sending over UDP
 	Rc SHOULD be configurable and SHOULD have a default of 7.
 */
-#define TNET_ICE_DEFAULT_RC				4 //7
+#define kIceDefaultRC				4 //7
 
-#define TNET_ICE_TURN_ENABLED			0 // Relay candidates
-#define TNET_ICE_STUN_ENABLED			1 // Reflexive candidates
+#define kIceDefaultTurnEnabled			0 // Relay candidates
+#define kIceDefaultStunEnabled			1 // Reflexive candidates
 
-#define TNET_ICE_CANDIDATES_COUNT_MAX	40
-#define TNET_ICE_SERVERS_COUNT_MAX		10
+#define kIceCandidatesCountMax	40
+#define kIceServersCountMax		10
+
+#define kIceConnCheckMinTriesMin	0
+#define kIceConnCheckMinTriesMax	3
 
 typedef tsk_list_t tnet_ice_servers_L_t;
 
@@ -378,17 +382,17 @@ static tsk_object_t* tnet_ice_ctx_ctor(tsk_object_t * self, va_list * app)
 		/*	7.2.1.  Sending over UDP
 			In fixed-line access links, a value of 500 ms is RECOMMENDED.
 		*/
-		ctx->RTO = TNET_ICE_DEFAULT_RTO;
+		ctx->RTO = kIceDefaultRTO;
 
 		/*	7.2.1.  Sending over UDP
 			Rc SHOULD be configurable and SHOULD have a default of 7.
 		*/
-		ctx->Rc = TNET_ICE_DEFAULT_RC;
+		ctx->Rc = kIceDefaultRC;
 
 		ctx->tie_breaker = ((tsk_time_now() << 32) ^ tsk_time_now());
 		ctx->is_ice_jingle = tsk_false;
-		ctx->is_stun_enabled = TNET_ICE_STUN_ENABLED;
-		ctx->is_turn_enabled = TNET_ICE_TURN_ENABLED;
+		ctx->is_stun_enabled = kIceDefaultStunEnabled;
+		ctx->is_turn_enabled = kIceDefaultTurnEnabled;
 
 		ctx->concheck_timeout = LONG_MAX;
 	}
@@ -722,8 +726,10 @@ int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candida
 	int ret = 0;
 	char *v, *copy, *saveptr;
 	tsk_size_t size, idx = 0;
+	tsk_bool_t exists;
 	tnet_ice_candidate_t* candidate;
-	if(!self){
+	tsk_strings_L_t *added_candidates = tsk_null;
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -731,7 +737,7 @@ int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candida
 	self->is_controlling = is_controlling;
 	self->is_ice_jingle = is_ice_jingle;
 
-	if(tsk_strnullORempty(candidates)){
+	if (tsk_strnullORempty(candidates)) {
 		// remote party is ICE-lite or doesn't support ICE
 		return tnet_ice_ctx_cancel(self);
 	}
@@ -739,7 +745,7 @@ int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candida
 	TSK_DEBUG_INFO("tnet_ice_ctx_set_remote_candidates");
 
 	tsk_list_lock(self->candidates_pairs);
-	if(!TSK_LIST_IS_EMPTY(self->candidates_pairs)){
+	if (!TSK_LIST_IS_EMPTY(self->candidates_pairs)) { 
 		TSK_DEBUG_WARN("Adding Remote ICE candidates after pairs building");
 	}
 	tsk_list_unlock(self->candidates_pairs);
@@ -755,23 +761,43 @@ int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candida
 
 	copy = tsk_strdup(candidates);
 	size = (tsk_size_t)tsk_strlen(copy);
-	do{
+	do {
 		v = tsk_strtok_r(&copy[idx], "\r\n", &saveptr);
 		idx += tsk_strlen(v) + 2;
-		if(v && (candidate = tnet_ice_candidate_parse(v))){
-			if(ufrag && pwd){
+		if (v && (candidate = tnet_ice_candidate_parse(v))) {
+			exists = tsk_false;
+			if (!added_candidates) {
+				added_candidates = tsk_list_create();
+			}
+			if (ufrag && pwd) {
 				tnet_ice_candidate_set_credential(candidate, ufrag, pwd);
 			}
-			tsk_list_push_back_data(self->candidates_remote, (void**)&candidate);
+			if (added_candidates) {
+				tsk_string_t* str_cand = tsk_string_create(tnet_ice_candidate_tostring(candidate));
+				if (str_cand) {
+					if ((exists = !!tsk_list_find_object_by_data(added_candidates, str_cand))) {
+						TSK_DEBUG_INFO("Remote candidate [[%s]] is duplicated ...skipping", str_cand->value);
+					}
+					else {
+						tsk_list_push_back_data(added_candidates, (void**)&str_cand);
+					}
+					TSK_OBJECT_SAFE_FREE(str_cand);
+				}
+			}
+			if (!exists) {
+				tsk_list_push_descending_data(self->candidates_remote, (void**)&candidate);
+			}
+			TSK_OBJECT_SAFE_FREE(candidate);
 		}
 	}
-	while(v && (idx < size));
-
+	while (v && (idx < size));
+	
 	tsk_list_unlock(self->candidates_remote);
-
+	
 	TSK_FREE(copy);
-
-	if(!tnet_ice_ctx_is_connected(self) && tnet_ice_ctx_got_local_candidates(self) && !TSK_LIST_IS_EMPTY(self->candidates_remote)){
+	TSK_OBJECT_SAFE_FREE(added_candidates);
+	
+	if (!tnet_ice_ctx_is_connected(self) && tnet_ice_ctx_got_local_candidates(self) && !TSK_LIST_IS_EMPTY(self->candidates_remote)) {
 		ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_ConnCheck);
 	}
 	return ret;
@@ -1161,8 +1187,8 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 	tnet_stun_pkt_resp_t *response = tsk_null;
 	const tsk_list_item_t *item, *item_server;
 	tnet_ice_candidate_t* candidate;
-	tnet_fd_t fds[TNET_ICE_CANDIDATES_COUNT_MAX] = { TNET_INVALID_FD }; // -1, then zeros
-	tnet_fd_t fds_skipped[TNET_ICE_CANDIDATES_COUNT_MAX] = { TNET_INVALID_FD }; // -1, then zeros
+	tnet_fd_t fds[kIceCandidatesCountMax] = { TNET_INVALID_FD }; // -1, then zeros
+	tnet_fd_t fds_skipped[kIceCandidatesCountMax] = { TNET_INVALID_FD }; // -1, then zeros
 	uint16_t fds_count = 0;
 	tnet_fd_t fd_max = -1;
 	fd_set set;
@@ -1339,7 +1365,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 												++srflx_addr_count_added;
 												tsk_list_lock(self->candidates_local);
 												tnet_ice_candidate_set_rflx_addr(new_cand, candidate_curr->stun.srflx_addr, candidate_curr->stun.srflx_port);
-												tsk_list_push_back_data(self->candidates_local, (void**)&new_cand);
+												tsk_list_push_descending_data(self->candidates_local, (void**)&new_cand);
 												tsk_list_unlock(self->candidates_local);
 											}
 										}
@@ -1578,7 +1604,7 @@ next_server:
 				new_cand->turn.relay_addr = relay_addr, relay_addr = tsk_null;
 				new_cand->turn.relay_port = relay_port;
 				tnet_ice_candidate_set_rflx_addr(new_cand, new_cand->turn.relay_addr, new_cand->turn.relay_port);
-				tsk_list_push_back_data(self->candidates_local, (void**)&new_cand);
+				tsk_list_push_descending_data(self->candidates_local, (void**)&new_cand);
 				tsk_list_unlock(self->candidates_local);
 				++relay_addr_count_added;
 			}
@@ -1711,12 +1737,18 @@ static int _tnet_ice_ctx_fsm_GatheringCompleted_2_ConnChecking_X_ConnCheck(va_li
 	static const long rto = 160; // milliseconds
 	struct sockaddr_storage remote_addr;
 	uint64_t time_start, time_curr, time_end, concheck_timeout;
-	tsk_bool_t role_conflict, restart_conneck, check_rtcp, isset;
+	tsk_bool_t role_conflict, restart_conneck, check_rtcp, isset, got_hosts;
 	void* recvfrom_buff_ptr = tsk_null;
-	tsk_size_t recvfrom_buff_size = 0;
+	tsk_size_t recvfrom_buff_size = 0, tries_count = 0, tries_count_min = kIceConnCheckMinTriesMin;
 	enum tnet_stun_state_e e_state;
 	
 	self = va_arg(*app, tnet_ice_ctx_t *);
+	
+	// "tries_count" and "tries_count_min"
+	// The connection checks to to the "relay", "prflx", "srflx" and "host" candidates are sent at the same time.
+	// Because the requests are sent at the same time it's possible to have success check for "relay" (or "srflx") candidates before the "host" candidates.
+	// "tries_count_min" is the minimum (if success check is not for "host" candidates) tries before giving up.
+	// The pairs are already sorted ("host"->"srflx"->"prflx", "relay") to make sure to choose the best candidates when there are more than one success conncheck.
 
 start_conneck:
 	role_conflict = tsk_false;
@@ -1774,6 +1806,7 @@ start_conneck:
 	concheck_timeout = self->concheck_timeout;
 	time_start = time_curr = tsk_time_now();
 	time_end = (time_start + concheck_timeout);
+	tries_count_min = fds_turn_count > 0 ? kIceConnCheckMinTriesMax : kIceConnCheckMinTriesMin;
 
 	while (self->is_started && self->is_active && (time_curr < time_end) && !self->have_nominated_symetric) {
 		tv.tv_sec = 0;
@@ -1794,13 +1827,13 @@ start_conneck:
 		}
 		
 		// Send ConnCheck requests
-		// the pairs are already order by priority (from high to low)
+		// the pairs are already sorted by priority (from high to low)
 		if (!self->have_nominated_symetric) {
 			tsk_list_foreach(item, self->candidates_pairs) {
-				if(!(pair = item->data) || !pair->candidate_offer || !pair->candidate_offer->socket){
+				if (!(pair = item->data) || !pair->candidate_offer || !pair->candidate_offer->socket) {
 					continue;
 				}
-				switch(pair->state_offer){
+				switch (pair->state_offer) {
 					case tnet_ice_pair_state_failed:
 					case tnet_ice_pair_state_succeed:
 						continue;
@@ -1889,14 +1922,15 @@ check_nomination:
 		}
 
 		check_rtcp = (self->use_rtcp && !self->use_rtcpmux);
-		if(!self->have_nominated_offer){
+		if (!self->have_nominated_offer) {
 			self->have_nominated_offer = tnet_ice_pairs_have_nominated_offer(self->candidates_pairs, check_rtcp);
 		}
-		if(!self->have_nominated_answer){
+		if (!self->have_nominated_answer) {
 			self->have_nominated_answer = tnet_ice_pairs_have_nominated_answer(self->candidates_pairs, check_rtcp);
 		}
-		if(self->have_nominated_offer && self->have_nominated_answer){
-			self->have_nominated_symetric = tnet_ice_pairs_have_nominated_symetric(self->candidates_pairs, check_rtcp);
+		if (self->have_nominated_offer && self->have_nominated_answer) {
+			self->have_nominated_symetric = tnet_ice_pairs_have_nominated_symetric_2(self->candidates_pairs, check_rtcp, &got_hosts);
+			self->have_nominated_symetric &= (got_hosts || ((tries_count++) >= tries_count_min));
 		}
 	} // while (self->is_started...
 
@@ -2058,7 +2092,7 @@ static int _tnet_ice_ctx_recv_stun_message_for_pair(tnet_ice_ctx_t* self, const 
 				tnet_ice_pair_t* pair_peer = tnet_ice_pair_prflx_create(self->candidates_pairs, local_fd, remote_addr);
 				if(pair_peer){
 					pair = pair_peer; // copy
-					tsk_list_push_back_data(self->candidates_pairs, (void**)&pair_peer);
+					tsk_list_push_descending_data(self->candidates_pairs, (void**)&pair_peer);
 					TSK_OBJECT_SAFE_FREE(pair_peer);
 				}
 			}
@@ -2175,7 +2209,7 @@ static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, 
 		if (is_rtcpmuxed && cand_local->comp_id == TNET_ICE_CANDIDATE_COMPID_RTCP) {
 			continue;
 		}
-#if 0 // TURN:FORCE
+#if 1 // TURN:FORCE FIXME
 			if (cand_local->type_e != tnet_ice_cand_type_relay) {
 				continue;
 			}
@@ -2221,11 +2255,29 @@ static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, 
 				cand_remote->connection_addr,
 				cand_remote->port);
 			
-			if((pair = tnet_ice_pair_create(cand_local, cand_remote, is_controlling, tie_breaker, is_ice_jingle))){
+			if ((pair = tnet_ice_pair_create(cand_local, cand_remote, is_controlling, tie_breaker, is_ice_jingle))) {
 				tsk_list_push_descending_data(result_pairs, (void**)&pair);
 			}
 		}
 	}
+#if 0
+	tsk_list_foreach(item_local, result_pairs) {
+		if (!(pair = item_local->data)) {
+			continue;
+		}
+
+		TSK_DEBUG_INFO("*****ICE Pair: [%s %u %s %d] -> [%s %u %s %d]",
+				pair->candidate_offer->foundation,
+				pair->candidate_offer->comp_id,
+				pair->candidate_offer->connection_addr,
+				pair->candidate_offer->port,
+
+				pair->candidate_answer->foundation,
+				pair->candidate_answer->comp_id,
+				pair->candidate_answer->connection_addr,
+				pair->candidate_answer->port);
+	}
+#endif
 
 	tsk_list_unlock(local_candidates);
 	tsk_list_unlock(remote_candidates);
@@ -2458,7 +2510,9 @@ exit:
 	if (ctx) {
 		tsk_list_clear_items(ctx->candidates_local);
 		tsk_list_clear_items(ctx->candidates_remote);
+		tsk_list_lock(ctx->candidates_pairs); // must
 		tsk_list_clear_items(ctx->candidates_pairs);
+		tsk_list_unlock(ctx->candidates_pairs);
 	}
 
 	TSK_DEBUG_INFO("ICE CTX::run -- STOP");

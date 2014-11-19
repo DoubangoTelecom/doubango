@@ -1,8 +1,7 @@
 /*
-* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>.
+* Copyright (C) 2012-2014 Mamadou DIOP
+* Copyright (C) 2012-2014 Doubango Telecom <http://www.doubango.org>.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
@@ -91,10 +90,10 @@ static int tnet_ice_candidate_cmp(const tsk_object_t *_s1, const tsk_object_t *_
 	const tnet_ice_candidate_t *c1 = _s1;
 	const tnet_ice_candidate_t *c2 = _s2;
 
-	if(c1 && c2){
-		return (c2 - c1);
+	if (c1 && c2){
+		return (int)(c1->priority - c2->priority);
 	}
-	else if(!c1 && !c2) return 0;
+	else if (!c1 && !c2) return 0;
 	else return -1;
 }
 
