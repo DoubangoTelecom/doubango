@@ -37,6 +37,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h> /* INT_MIN, INT_MAX */
 
 #if !defined(TNET_ICE_PAIR_FULL_DEBUG)
 #	define TNET_ICE_PAIR_FULL_DEBUG 0
