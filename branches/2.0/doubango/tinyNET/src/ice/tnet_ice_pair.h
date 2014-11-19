@@ -1,8 +1,7 @@
 /*
-* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>.
+* Copyright (C) 2012-2014 Mamadou DIOP
+* Copyright (C) 2012-2014 Doubango Telecom <http://www.doubango.org>.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
@@ -73,6 +72,7 @@ const tnet_ice_pair_t* tnet_ice_pairs_find_by_fd_and_addr(tnet_ice_pairs_L_t* pa
 tsk_bool_t tnet_ice_pairs_have_nominated_offer(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp);
 tsk_bool_t tnet_ice_pairs_have_nominated_answer(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp);
 tsk_bool_t tnet_ice_pairs_have_nominated_symetric(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp);
+tsk_bool_t tnet_ice_pairs_have_nominated_symetric_2(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp, tsk_bool_t *got_hosts);
 int tnet_ice_pairs_get_nominated_symetric_candidates(const tnet_ice_pairs_L_t* pairs, uint32_t comp_id,
 										  const struct tnet_ice_candidate_s** candidate_offer, 
 										  const struct tnet_ice_candidate_s** candidate_answer_src,

@@ -318,30 +318,26 @@ void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, tsk_bool_t bac
 */
 void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, tsk_bool_t ascending)
 {
-	if(list)
-	{
+	if (list) {
 		tsk_list_item_t *prev = tsk_null;
 		tsk_list_item_t *curr = prev = list->head;
+		int diff;
 		
-		while(curr)
-		{
-			int diff = tsk_object_cmp((*item), curr);
-			if((diff </*=*/ 0 && ascending) || (diff >/*=*/0 && !ascending)){
-				if(curr == list->head){
+		while (curr) {
+			diff = tsk_object_cmp((*item), curr);
+			if (diff == 0 || (diff </*=*/ 0 && ascending) || (diff >/*=*/0 && !ascending)) {
+				if (curr == list->head) {
 					tsk_list_push_front_item(list, item);
 				}
-				else{
+				else {
 					(*item)->next = curr;
 					prev->next = (*item);
 				}
-
 				return;
 			}
-			
 			prev = curr;
 			curr = curr->next;
 		}
-
 		tsk_list_push_back_item(list, item);
 	}
 }

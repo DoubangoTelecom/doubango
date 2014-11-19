@@ -1,3 +1,23 @@
+/*
+* Copyright (C) 2012-2014 Mamadou DIOP
+* Copyright (C) 2012-2014 Doubango Telecom <http://www.doubango.org>.
+*
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+*/
 #include "tnet_ice_pair.h"
 #include "tnet_ice_utils.h"
 #include "tnet_ice_candidate.h"
@@ -50,7 +70,7 @@ static tsk_object_t* tnet_ice_pair_ctor(tsk_object_t * self, va_list * app)
 static tsk_object_t* tnet_ice_pair_dtor(tsk_object_t * self)
 { 
 	tnet_ice_pair_t *pair = self;
-	if(pair){
+	if (pair) {
 		TSK_OBJECT_SAFE_FREE(pair->candidate_offer);
 		TSK_OBJECT_SAFE_FREE(pair->candidate_answer);
 		TSK_OBJECT_SAFE_FREE(pair->last_request);
@@ -62,10 +82,12 @@ static int tnet_ice_pair_cmp(const tsk_object_t *_p1, const tsk_object_t *_p2)
 	const tnet_ice_pair_t *p1 = _p1;
 	const tnet_ice_pair_t *p2 = _p2;
 
-	if(p1 && p2){
-		return (int)(p1->priority - p2->priority);
+	if (p1 && p2) {
+		static const int64_t __int_min = INT_MIN;
+		static const int64_t __int_max = INT_MAX;
+		return (int)(TSK_CLAMP(__int_min, (int64_t)(p1->priority - p2->priority), __int_max));
 	}
-	else if(!p1 && !p2) return 0;
+	else if (!p1 && !p2) return 0;
 	else return -1;
 }
 static const tsk_object_def_t tnet_ice_pair_def_s = 
@@ -178,7 +200,7 @@ int tnet_ice_pair_send_conncheck(tnet_ice_pair_t *self)
 			goto bail;
 		}
 		if (e_state != tnet_stun_state_ok) {
-			TSK_DEBUG_INFO("TURN CreatePerm not ready yet... to send STUN ConnCheck");
+			TSK_DEBUG_INFO("TURN CreatePerm not ready yet... to send STUN ConnCheck (peer-id=%ld)", self->turn_peer_id);
 			goto bail;
 		}
 		
@@ -415,7 +437,7 @@ int tnet_ice_pair_send_response(tnet_ice_pair_t *self, const tnet_stun_pkt_req_t
 				goto bail;
 			}
 			if (e_state != tnet_stun_state_ok) {
-				TSK_DEBUG_INFO("TURN CreatePerm not ready yet... to send STUN response");
+				TSK_DEBUG_INFO("TURN CreatePerm not ready yet... to send STUN response (peer-id=%ld)", self->turn_peer_id);
 				goto bail;
 			}
 			if ((ret = tnet_stun_pkt_write_with_padding_2(message, &req_buffer))) {
@@ -737,32 +759,31 @@ static tsk_bool_t _tnet_ice_pairs_none_succeed(const tnet_ice_pairs_L_t* pairs, 
 #define _tnet_ice_pairs_get_nominated_at(pairs, dir_1, dir_2, index, _comp_id, check_fullness, ret) \
 { \
 	ret = tsk_null; \
-	if(pairs){ \
+	if (pairs) { \
 		const tsk_list_item_t *item; \
 		const tnet_ice_pair_t *pair; \
-		tsk_size_t pos; \
+		tsk_size_t pos = 0; \
 		tsk_bool_t nominated; \
-		tsk_list_foreach(item, pairs){ \
-			if(!(pair = item->data)){ \
+		tsk_list_foreach(item, pairs) { \
+			if (!(pair = item->data)) { \
 				continue; \
 			} \
 			TNET_ICE_PAIR_DEBUG_INFO("ICE pair(%d,dir_1) state=%d, compid=%d, found=%s, addr=%s", _comp_id, pair->state_##dir_1, pair->candidate_##dir_1->comp_id, pair->candidate_##dir_1->foundation, pair->candidate_##dir_1->connection_addr); \
 			TNET_ICE_PAIR_DEBUG_INFO("ICE pair(%d,dir_2) state=%d, compid=%d, found=%s, addr=%s", _comp_id, pair->state_##dir_2, pair->candidate_##dir_2->comp_id, pair->candidate_##dir_2->foundation, pair->candidate_##dir_2->connection_addr); \
-			if(pair->state_##dir_1 == tnet_ice_pair_state_succeed && pair->candidate_##dir_1->comp_id == _comp_id){ \
-				pos = 0; \
+			if (pair->state_##dir_1 == tnet_ice_pair_state_succeed && pair->candidate_##dir_1->comp_id == _comp_id) { \
 				nominated = tsk_true; \
-				if(check_fullness){ \
+				if (check_fullness) { \
 					/* find another pair with same foundation but different comp-id (e.g. RTCP) */ \
 					const tsk_list_item_t *item2; \
 					const tnet_ice_pair_t *pair2; \
-					tsk_list_foreach(item2, pairs){ \
-						if(!(pair2 = item2->data)){ \
+					tsk_list_foreach(item2, pairs) { \
+						if (!(pair2 = item2->data)) { \
 							continue; \
 						} \
 						TNET_ICE_PAIR_DEBUG_INFO("ICE pair2(dir_1) state=%d, compid=%d, found=%s, addr=%s", pair2->state_##dir_1, pair2->candidate_##dir_1->comp_id, pair2->candidate_##dir_1->foundation, pair2->candidate_##dir_1->connection_addr); \
 						TNET_ICE_PAIR_DEBUG_INFO("ICE pair2(dir_2) state=%d, compid=%d, found=%s, addr=%s", pair2->state_##dir_2, pair2->candidate_##dir_2->comp_id, pair2->candidate_##dir_2->foundation, pair2->candidate_##dir_2->connection_addr); \
-						if((tsk_striequals(pair2->candidate_##dir_2->foundation, pair->candidate_##dir_2->foundation)) \
-							&& (pair2->candidate_##dir_2->comp_id != pair->candidate_##dir_2->comp_id)){ \
+						if ((tsk_striequals(pair2->candidate_##dir_2->foundation, pair->candidate_##dir_2->foundation)) \
+							&& (pair2->candidate_##dir_2->comp_id != pair->candidate_##dir_2->comp_id)) { \
 								/* nominated = (pair2->state_##dir_2 == tnet_ice_pair_state_succeed); */  \
 								nominated = !_tnet_ice_pairs_none_succeed_##dir_2(pairs, pair2->candidate_##dir_2->comp_id, pair2->candidate_##dir_2->foundation); \
 								break; \
@@ -770,7 +791,7 @@ static tsk_bool_t _tnet_ice_pairs_none_succeed(const tnet_ice_pairs_L_t* pairs, 
 					} \
 				} \
  \
-				if(nominated && (pos++ >= index)){ \
+				if (nominated && (pos++ >= index)) { \
 					ret = pair; \
 					break; \
 				}\
@@ -810,18 +831,37 @@ tsk_bool_t tnet_ice_pairs_have_nominated_answer(const tnet_ice_pairs_L_t* pairs,
 }
 
 // true only if both RTP and RTCP are nominated in symetric way
-tsk_bool_t tnet_ice_pairs_have_nominated_symetric(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp)
+tsk_bool_t tnet_ice_pairs_have_nominated_symetric_2(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp, tsk_bool_t *got_hosts)
 {
 	const tnet_ice_candidate_t *candidate_offer, *candidate_answer_src, *candidate_answer_dest;
 	tsk_bool_t is_nominated_rtp, is_nominated_rtcp = tsk_true;
-
-	int ret = tnet_ice_pairs_get_nominated_symetric_candidates(pairs, TNET_ICE_CANDIDATE_COMPID_RTP, &candidate_offer, &candidate_answer_src, &candidate_answer_dest);
-	is_nominated_rtp = (ret == 0 && candidate_offer && candidate_answer_src && candidate_answer_dest);
+	int ret;
+	
+	if (got_hosts) {
+		*got_hosts = tsk_false;
+	}
+	ret = tnet_ice_pairs_get_nominated_symetric_candidates(pairs, TNET_ICE_CANDIDATE_COMPID_RTP, &candidate_offer, &candidate_answer_src, &candidate_answer_dest);
+	if ((is_nominated_rtp = (ret == 0 && candidate_offer && candidate_answer_src && candidate_answer_dest)) && got_hosts) {
+		*got_hosts = (candidate_offer->type_e == tnet_ice_cand_type_host 
+			&& candidate_answer_src->type_e == tnet_ice_cand_type_host
+			&& candidate_answer_dest->type_e == tnet_ice_cand_type_host);
+	}
 	if(is_nominated_rtp && check_rtcp){
 		ret = tnet_ice_pairs_get_nominated_symetric_candidates(pairs, TNET_ICE_CANDIDATE_COMPID_RTCP, &candidate_offer, &candidate_answer_src, &candidate_answer_dest);
-		is_nominated_rtcp = (ret == 0 && candidate_offer && candidate_answer_src && candidate_answer_dest);
+		if ((is_nominated_rtcp = (ret == 0 && candidate_offer && candidate_answer_src && candidate_answer_dest)) && got_hosts) {
+			*got_hosts &= (candidate_offer->type_e == tnet_ice_cand_type_host 
+				&& candidate_answer_src->type_e == tnet_ice_cand_type_host
+				&& candidate_answer_dest->type_e == tnet_ice_cand_type_host);
+		}
 	}
 	return (is_nominated_rtp && is_nominated_rtcp);
+}
+
+// true only if both RTP and RTCP are nominated in symetric way
+tsk_bool_t tnet_ice_pairs_have_nominated_symetric(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp)
+{
+#define got_hosts tsk_null
+	return tnet_ice_pairs_have_nominated_symetric_2(pairs, check_rtcp, got_hosts);
 }
 
 // gets symetric nominated candidates with the highest priority
