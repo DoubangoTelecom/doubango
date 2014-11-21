@@ -1,18 +1,19 @@
 lib_LTLIBRARIES         = libtinyWRAP.la
 libtinyWRAP_la_LIBADD = \
-	../tinySAK/libtinySAK.la \
-	../tinyHTTP/libtinyHTTP.la \
-	../tinyXCAP/libtinyXCAP.la \
-	../tinyIPSec/libtinyIPSec.la \
-	../tinySIGCOMP/libtinySIGCOMP.la \
-	../tinySMS/libtinySMS.la \
-	../tinyNET/libtinyNET.la \
-	../tinySDP/libtinySDP.la \
+	../tinySIP/libtinySIP.la \
+	../tinyDAV/libtinyDAV.la \
 	../tinyRTP/libtinyRTP.la \
 	../tinyMEDIA/libtinyMEDIA.la \
 	../tinyMSRP/libtinyMSRP.la \
-	../tinyDAV/libtinyDAV.la \
-	../tinySIP/libtinySIP.la
+	../tinySDP/libtinySDP.la \
+	../tinySIGCOMP/libtinySIGCOMP.la \
+	../tinySMS/libtinySMS.la \
+	../tinyIPSec/libtinyIPSec.la \
+	../tinyXCAP/libtinyXCAP.la \
+	../tinyHTTP/libtinyHTTP.la \
+	../tinyBFCP/libtinyBFCP.la \
+	../tinyNET/libtinyNET.la \
+	../tinySAK/libtinySAK.la
 libtinyWRAP_la_CPPFLAGS = \
 	-I_common \
 	-I. \
@@ -36,6 +37,9 @@ else
 libtinyWRAP_la_LDFLAGS += 
 endif
 
+if USE_SRTP
+libtinyWRAP_la_LIBADD += ${LIBSRTP_LIBADD}
+endif
 
 if USE_SSL
 libtinyWRAP_la_LIBADD += ${LIBSSL_LIBADD}
