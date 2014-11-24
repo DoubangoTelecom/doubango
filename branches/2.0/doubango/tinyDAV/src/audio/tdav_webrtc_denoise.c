@@ -348,7 +348,7 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 		// WebRTC NoiseSupp only accept 10ms frames
 		// Our encoder will always output 20ms frames ==> execute 2x noise_supp
 		if (p_self->NS_inst) {
-			for (_samples = 0; _samples < _audio_frame_size_samples; _samples+= denoiser->neg.nb_samples_per_process) {
+			for (_samples = 0; _samples < _audio_frame_size_samples; _samples+= p_self->neg.nb_samples_per_process) {
 				if ((ret = TDAV_WebRtcNs_Process(p_self->NS_inst, &_audio_frame[_samples], tsk_null, _audio_frame, tsk_null))) {
 					TSK_DEBUG_ERROR("WebRtcNs_Process with error code = %d", ret);
 					goto bail;

@@ -547,7 +547,19 @@ tsk_size_t tsk_list_count(const tsk_list_t* list, tsk_list_func_predicate predic
 	return count;
 }
 
-
+/**@ingroup tsk_list_group
+*/
+tsk_list_t* tsk_list_clone(const tsk_list_t* list)
+{
+	if (list) {
+		tsk_list_t*clone = tsk_list_create();
+		if (clone) {
+			tsk_list_pushback_list(clone, list);
+		}
+		return clone;
+	}
+	return tsk_null;
+}
 
 
 
