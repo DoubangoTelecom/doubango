@@ -1967,13 +1967,20 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_l
 	const tnet_ice_pair_t *pair_offer, *pair_answer_src, *pair_answer_dest;
 	const tsk_list_item_t *item;
 	const tnet_ice_pair_t *pair;
+	tsk_list_t* cloned_pairs; // clone to have lock-free TURN session destroy
 	int ret;
+
+	// When destroying TURN sessions the transport is locked by shutdown()
+	// This function locks "self->candidates_pairs"
+	// TURN callback locks "self->candidates_pairs"
+	// TURN callback locks the transport
+	// => We must not lock the candidates when destroying the TURN session
 
 	TSK_OBJECT_SAFE_FREE(self->turn.ss_nominated_rtp);
 	TSK_OBJECT_SAFE_FREE(self->turn.ss_nominated_rtcp);
 
 	tsk_list_lock(self->candidates_pairs);
-
+	
 	// take a reference to the negotiated TURN sessions
 	ret = tnet_ice_pairs_get_nominated_symetric_pairs(self->candidates_pairs, TNET_ICE_CANDIDATE_COMPID_RTP, &pair_offer, &pair_answer_src, &pair_answer_dest);
 	if (ret == 0 && pair_offer && pair_offer->candidate_offer && pair_offer->candidate_offer->type_e == tnet_ice_cand_type_relay && pair_offer->candidate_offer->turn.ss) {
@@ -1990,8 +1997,13 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_l
 	}
 	if (ret == 0 && pair_offer) ((tnet_ice_pair_t *)pair_offer)->is_nominated = tsk_true;
 
-	// destroy all useless TURN sessions
-	tsk_list_foreach(item, self->candidates_pairs) {
+	// clone the candidates before unlocking
+	cloned_pairs = tsk_list_clone(self->candidates_pairs);
+
+	tsk_list_unlock(self->candidates_pairs);
+
+	// destroy all useless TURN sessions (lock-free)
+	tsk_list_foreach(item, cloned_pairs) {
 		if (!(pair = item->data) || !pair->candidate_offer || !pair->candidate_offer->turn.ss) {
 			continue;
 		}
@@ -2000,7 +2012,7 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_l
 		}
 	}
 
-	tsk_list_unlock(self->candidates_pairs);
+	TSK_OBJECT_SAFE_FREE(cloned_pairs);
 
 	return _tnet_ice_ctx_signal_async(self, tnet_ice_event_type_conncheck_succeed, "ConnCheck succeed");
 }
@@ -2351,6 +2363,7 @@ static int _tnet_ice_ctx_signal_async(tnet_ice_ctx_t* self, tnet_ice_event_type_
 static int _tnet_ice_ctx_turn_callback(const struct tnet_turn_session_event_xs *e)
 {
 	tnet_ice_ctx_t *ctx = tsk_object_ref(TSK_OBJECT(e->pc_usr_data));
+	struct tnet_turn_session_s* session = tsk_object_ref(TSK_OBJECT(e->pc_session));
 	int ret = 0;
 
 	if (!ctx) {
@@ -2387,20 +2400,20 @@ static int _tnet_ice_ctx_turn_callback(const struct tnet_turn_session_event_xs *
 		case tnet_turn_session_event_type_perm_ok:
 			{
 				enum tnet_turn_transport_e e_req_transport;
-				if ((ret = tnet_turn_session_get_req_transport(e->pc_session, &e_req_transport))) {
+				if ((ret = tnet_turn_session_get_req_transport(session, &e_req_transport))) {
 					goto bail;
 				}
 				
 				if (e_req_transport == tnet_turn_transport_tcp) {
 					// TCP-Connect: rfc6062 - 4.3.  Initiating a Connection
-					if ((ret = tnet_turn_session_connect((struct tnet_turn_session_s*)e->pc_session, e->u_peer_id))) {
+					if ((ret = tnet_turn_session_connect(session, e->u_peer_id))) {
 						goto bail;
 					}
 				}
 				else {
 					// Bind a channel (not required). If succeed, will be used to save bandwidth usage.
 					// TODO: should be done only if first "get_state(chanbind)==none". Not an issue, if it already exists then, will be refreshed.
-					if ((ret = tnet_turn_session_chanbind((struct tnet_turn_session_s*)e->pc_session, e->u_peer_id))) {
+					if ((ret = tnet_turn_session_chanbind(session, e->u_peer_id))) {
 						goto bail;
 					}
 				}
@@ -2461,6 +2474,7 @@ static int _tnet_ice_ctx_turn_callback(const struct tnet_turn_session_event_xs *
 
 bail:
 	tsk_object_unref(ctx);
+	tsk_object_unref(session);
 	return ret;
 }
 
