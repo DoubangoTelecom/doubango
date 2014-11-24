@@ -239,6 +239,8 @@ TINYSAK_API const tsk_object_t* tsk_list_find_object_by_pred(const tsk_list_t* l
 TINYSAK_API const tsk_object_t* tsk_list_find_object_by_pred_at_index(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data, tsk_size_t index);
 TINYSAK_API int tsk_list_find_index_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data);
 
+TINYSAK_API tsk_list_t* tsk_list_clone(const tsk_list_t* list);
+
 TINYSAK_API tsk_size_t tsk_list_count(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data);
 
 TINYSAK_GEXTERN const tsk_object_def_t *tsk_list_def_t;

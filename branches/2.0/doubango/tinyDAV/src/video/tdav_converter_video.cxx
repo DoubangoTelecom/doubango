@@ -105,7 +105,7 @@ static inline tsk_size_t _tdav_converter_video_libyuv_get_size(tmedia_chroma_t c
 static inline enum FourCC _tdav_converter_video_libyuv_get_pixfmt(tmedia_chroma_t chroma)
 {
 	switch(chroma){
-		//case tmedia_chroma_rgb24:
+		case tmedia_chroma_rgb24:
 		case tmedia_chroma_bgr24:
 			return FOURCC_24BG;
 		case tmedia_chroma_rgb565le:

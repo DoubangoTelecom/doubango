@@ -116,8 +116,8 @@ static int tdav_consumer_video_gdi_prepare(tmedia_consumer_t* self, const tmedia
 	p_gdi->bitmapInfo.bmiHeader.biBitCount = 24; // RGB24
 	p_gdi->bitmapInfo.bmiHeader.biCompression = BI_RGB;
 	p_gdi->bitmapInfo.bmiHeader.biWidth = TMEDIA_CONSUMER(p_gdi)->video.in.width;
-	p_gdi->bitmapInfo.bmiHeader.biHeight = TMEDIA_CONSUMER(p_gdi)->video.in.height; // do not MULT(-1), already flipped
-	p_gdi->bitmapInfo.bmiHeader.biSizeImage = TMEDIA_CONSUMER(p_gdi)->video.in.width * TMEDIA_CONSUMER(p_gdi)->video.in.height *
+	p_gdi->bitmapInfo.bmiHeader.biHeight = TMEDIA_CONSUMER(p_gdi)->video.in.height * -1;
+	p_gdi->bitmapInfo.bmiHeader.biSizeImage = TMEDIA_CONSUMER(p_gdi)->video.in.width * abs(TMEDIA_CONSUMER(p_gdi)->video.in.height) *
 		(p_gdi->bitmapInfo.bmiHeader.biBitCount >> 3);
 
 	return 0;
@@ -170,7 +170,7 @@ static int tdav_consumer_video_gdi_consume(tmedia_consumer_t* self, const void* 
 			goto bail;
 		}
 		p_gdi->bitmapInfo.bmiHeader.biWidth = TMEDIA_CONSUMER(p_gdi)->video.in.width;
-		p_gdi->bitmapInfo.bmiHeader.biHeight = TMEDIA_CONSUMER(p_gdi)->video.in.height; // do not MULT(-1), already flipped
+		p_gdi->bitmapInfo.bmiHeader.biHeight = TMEDIA_CONSUMER(p_gdi)->video.in.height * -1;
 		p_gdi->bitmapInfo.bmiHeader.biSizeImage = xNewSize;
 		p_gdi->pBuffer = tsk_realloc(p_gdi->pBuffer, p_gdi->bitmapInfo.bmiHeader.biSizeImage);
 	}
@@ -510,7 +510,7 @@ static const tmedia_consumer_plugin_def_t tdav_consumer_video_gdi_plugin_def_s =
 	&tdav_consumer_video_gdi_def_s,
 	
 	tmedia_video,
-	"Microsoft DirectShow consumer (using custom source)",
+	"Microsoft GDI consumer (using custom source)",
 	
 	tdav_consumer_video_gdi_set,
 	tdav_consumer_video_gdi_prepare,

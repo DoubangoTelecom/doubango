@@ -520,11 +520,7 @@ static const tsk_object_def_t tdav_producer_screencast_gdi_def_s =
 static const tmedia_producer_plugin_def_t tdav_producer_screencast_gdi_plugin_def_s = 
 {
 	&tdav_producer_screencast_gdi_def_s,
-#if SIN_CITY
-	tmedia_video,
-#else
 	tmedia_bfcp_video,
-#endif
 	"Microsoft GDI screencast producer",
 	
 	_tdav_producer_screencast_gdi_set,

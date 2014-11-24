@@ -1967,7 +1967,7 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_l
 	const tnet_ice_pair_t *pair_offer, *pair_answer_src, *pair_answer_dest;
 	const tsk_list_item_t *item;
 	const tnet_ice_pair_t *pair;
-	tsk_list_t* cloned_pairs; // clone to have lock-free TURN session destroy
+	tsk_list_t* sessions = tsk_list_create(); // for lock-free TURN sessions destroying
 	int ret;
 
 	// When destroying TURN sessions the transport is locked by shutdown()
@@ -1975,6 +1975,7 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_l
 	// TURN callback locks "self->candidates_pairs"
 	// TURN callback locks the transport
 	// => We must not lock the candidates when destroying the TURN session
+	// Test with WES8 if you want to reproduce the issue
 
 	TSK_OBJECT_SAFE_FREE(self->turn.ss_nominated_rtp);
 	TSK_OBJECT_SAFE_FREE(self->turn.ss_nominated_rtcp);
@@ -1997,22 +1998,21 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_l
 	}
 	if (ret == 0 && pair_offer) ((tnet_ice_pair_t *)pair_offer)->is_nominated = tsk_true;
 
-	// clone the candidates before unlocking
-	cloned_pairs = tsk_list_clone(self->candidates_pairs);
-
-	tsk_list_unlock(self->candidates_pairs);
-
-	// destroy all useless TURN sessions (lock-free)
-	tsk_list_foreach(item, cloned_pairs) {
+	// collect all useless TURN sessions (lock-free)
+	tsk_list_foreach(item, self->candidates_pairs) {
 		if (!(pair = item->data) || !pair->candidate_offer || !pair->candidate_offer->turn.ss) {
 			continue;
 		}
 		if (pair->candidate_offer->turn.ss != self->turn.ss_nominated_rtp && pair->candidate_offer->turn.ss != self->turn.ss_nominated_rtcp) {
+			tsk_list_push_back_data(sessions, (void**)&pair->candidate_offer->turn.ss);
 			TSK_OBJECT_SAFE_FREE(pair->candidate_offer->turn.ss);
 		}
 	}
 
-	TSK_OBJECT_SAFE_FREE(cloned_pairs);
+	tsk_list_unlock(self->candidates_pairs);
+
+	// lock-free destruction
+	TSK_OBJECT_SAFE_FREE(sessions);
 
 	return _tnet_ice_ctx_signal_async(self, tnet_ice_event_type_conncheck_succeed, "ConnCheck succeed");
 }
