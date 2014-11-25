@@ -364,7 +364,7 @@ typedef struct twrap_producer_proxy_video_s
 #if 0
 	// https://code.google.com/p/doubango/issues/detail?id=416
 	// The lock on the producer is useless because all tinyDAV proxied functions (push(), stop(), prepare()...) are already thread safe.
-	// Locking the the push method while tinDAV locks the stop() function produce a deadlock on Android devices with slow video producer implementaions (e.g. Hovis Box v1)
+	// Locking the push method while tinDAV locks the stop() function produce a deadlock on Android devices with slow video producer implementations (e.g. Hovis Box v1)
 	TSK_DECLARE_SAFEOBJ;
 #endif
 }
