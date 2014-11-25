@@ -22,6 +22,7 @@ libsrtp is optional.
 {{{
 git clone https://github.com/cisco/libsrtp/
 cd libsrtp
+git checkout v1.5.0
 CFLAGS="-fPIC" ./configure --enable-pic && make && make install
 }}}
 
