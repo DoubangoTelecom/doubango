@@ -1167,7 +1167,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	tsk_bool_t is_media_type_changed = tsk_false;
 	tsk_bool_t is_ro_media_lines_changed = tsk_false;
 	tsk_bool_t is_ice_active = tsk_false;
-	tsk_bool_t had_ro_sdp, had_ro_provisional, is_ro_provisional_final_matching = tsk_false;
+	tsk_bool_t had_ro_sdp, had_lo_sdp, had_ro_provisional, is_ro_provisional_final_matching = tsk_false;
 	tsk_bool_t is_new_mediatype_striped = tsk_false;
 	tmedia_qos_stype_t qos_type = tmedia_qos_stype_none;
 	tmedia_type_t new_mediatype = tmedia_none;
@@ -1187,6 +1187,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 
 	new_mediatype = tmedia_type_from_sdp(sdp);
 	had_ro_sdp = (self->sdp.ro != tsk_null);
+	had_lo_sdp = (self->sdp.lo != tsk_null);
 	had_ro_provisional = (had_ro_sdp && self->ro_provisional);
 	is_ice_active = (self->ice.ctx_audio && (self->type & tmedia_audio) && tnet_ice_ctx_is_active(self->ice.ctx_audio))
 					|| (self->ice.ctx_video && (self->type & tmedia_video) && tnet_ice_ctx_is_active(self->ice.ctx_video))
@@ -1419,7 +1420,14 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		// rfc3264 - 8 Modifying the Session
 		// if the previous SDP had N "m=" lines, the new SDP MUST have at least N "m=" lines
 		// Deleted media streams from a previous SDP MUST NOT be removed in a new SDP
-		ms = _tmedia_session_mgr_find_session_at_index(list_tmp_sessions, (index - 1 - active_sessions_count));
+		if (had_lo_sdp) {
+			ms = _tmedia_session_mgr_find_session_at_index(list_tmp_sessions, (index - 1 - active_sessions_count));
+		}
+		else {
+			// Initial Offer
+			tmedia_type_t M_media_type = tmedia_type_from_sdp_headerM(M);
+			ms = tsk_list_find_object_by_pred(list_tmp_sessions, __pred_find_session_by_type, &M_media_type);
+		}
 #else
 		if (ro_type & tmedia_ro_type_answer) {
 			// Answer -> match by index

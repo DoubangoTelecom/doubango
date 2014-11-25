@@ -6,7 +6,7 @@
 #
 
 AC_PREREQ([2.0])
-AC_INIT(libdoubango, 2.0.1191, doubango(at)googlegroups(dot)com)
+AC_INIT(libdoubango, 2.0.1192, doubango(at)googlegroups(dot)com)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_MACRO_DIR([m4])
