@@ -253,7 +253,7 @@ static int _trtp_transport_dtls_handshaking_timer_cb(const void* arg, tsk_timer_
 			// means TURN is active and handshaking data must be sent using the channel
 			const void* data[] = { tsk_null, tsk_null };
 			tsk_size_t size[] = { 0, 0 };
-			if ((ret = tnet_transport_dtls_get_handshakingdata(manager->transport, sockets, 2, data, size))) {
+			if ((ret = tnet_transport_dtls_get_handshakingdata(manager->transport, (const struct tnet_socket_s**)sockets, 2, data, size))) {
 				return ret;
 			}
 			if (data[0] && size[0]) {
@@ -384,7 +384,7 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 				// means TURN is active and handshaking data must be sent using the channel
 				const void* data =  tsk_null;
 				tsk_size_t size = 0;
-				if (tnet_transport_dtls_get_handshakingdata(self->transport, &socket, 1, &data, &size) == 0) {
+				if (tnet_transport_dtls_get_handshakingdata(self->transport, (const struct tnet_socket_s**)&socket, 1, &data, &size) == 0) {
 					if (self->rtcp.local_socket == socket) {
 						/*ret = */tnet_ice_ctx_send_turn_rtcp(self->ice_ctx, data, size);
 					}
@@ -615,7 +615,7 @@ static int _trtp_manager_srtp_activate(trtp_manager_t* self, tmedia_srtp_type_t 
 				// means TURN is active and handshaking data must be sent using the channel
 				const void* data[] = { tsk_null, tsk_null };
 				tsk_size_t size[] = { 0, 0 };
-				if ((ret = tnet_transport_dtls_get_handshakingdata(self->transport, sockets, 2, data, size))) {
+				if ((ret = tnet_transport_dtls_get_handshakingdata(self->transport, (const struct tnet_socket_s**)sockets, 2, data, size))) {
 					return ret;
 				}
 				if (data[0] && size[0]) {
