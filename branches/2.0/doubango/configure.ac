@@ -508,20 +508,20 @@ AC_ARG_WITH(yuv,
 )
 # only if --without-yuv not used
 if test $want_yuv != no; then
-if test "x$path_yuv" = xundef; then
-	if test "$target_os" != "android"; then
-		LIBYUV_INCLUDE="-I/usr/local/include -I/usr/local/include/libyuv"
-		LIBYUV_LIB="-L/usr/local/lib"
-	fi
-else
-	LIBYUV_INCLUDE="-I${path_yuv}/include ${path_yuv}/include/libyuv"
-	LIBYUV_LIB="-L${path_yuv}/lib"
-fi	
+	if test "x$path_yuv" = xundef; then
+		if test "$target_os" != "android"; then
+			LIBYUV_INCLUDE="-I/usr/local/include -I/usr/local/include/libyuv"
+			LIBYUV_LIB="-L/usr/local/lib"
+		fi
+	else
+		LIBYUV_INCLUDE="-I${path_yuv}/include -I${path_yuv}/include/libyuv"
+		LIBYUV_LIB="-L${path_yuv}/lib"
+	fi	
 	AC_LANG_PUSH([C++])
 	CFLAGS_SAVED=$CFLAGS
 	CPPFLAGS_SAVED=$CPPFLAGS
-	CFLAGS="${CFLAGS} -I${LIBYUV_INCLUDE}"
-	CPPFLAGS="${CPPFLAGS} -I${LIBYUV_INCLUDE}"
+	CFLAGS="${CFLAGS} ${LIBYUV_INCLUDE}"
+	CPPFLAGS="${CPPFLAGS} ${LIBYUV_INCLUDE}"
 	# check for lib and headers
 	AC_CHECK_HEADERS(libyuv/libyuv.h,
        	AC_CHECK_LIB(yuv, I420Scale, AC_DEFINE_UNQUOTED(HAVE_LIBYUV, 1, HAVE_LIBYUV) [have_yuv=yes] AC_SUBST(LIBYUV_LIBADD, "-lyuv"), 
