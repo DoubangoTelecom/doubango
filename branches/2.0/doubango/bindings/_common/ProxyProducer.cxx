@@ -361,7 +361,12 @@ typedef struct twrap_producer_proxy_video_s
 	int rotation;
 	uint64_t id;
 	tsk_bool_t started;
+#if 0
+	// https://code.google.com/p/doubango/issues/detail?id=416
+	// The lock on the producer is useless because all tinyDAV proxied functions (push(), stop(), prepare()...) are already thread safe.
+	// Locking the the push method while tinDAV locks the stop() function produce a deadlock on Android devices with slow video producer implementaions (e.g. Hovis Box v1)
 	TSK_DECLARE_SAFEOBJ;
+#endif
 }
 twrap_producer_proxy_video_t;
 #define TWRAP_PRODUCER_PROXY_VIDEO(self) ((twrap_producer_proxy_video_t*)(self))
@@ -394,10 +399,8 @@ int twrap_producer_proxy_video_start(tmedia_producer_t* self)
 	if((manager = ProxyPluginMgr::getInstance())){
 		const ProxyVideoProducer* videoProducer;
 		if((videoProducer = manager->findVideoProducer(TWRAP_PRODUCER_PROXY_VIDEO(self)->id)) && videoProducer->getCallback()){
-			tsk_safeobj_lock(TWRAP_PRODUCER_PROXY_VIDEO(self));
 			ret = videoProducer->getCallback()->start();
 			TWRAP_PRODUCER_PROXY_VIDEO(self)->started = (ret == 0);
-			tsk_safeobj_unlock(TWRAP_PRODUCER_PROXY_VIDEO(self));
 		}
 	}
 		
@@ -411,9 +414,7 @@ int twrap_producer_proxy_video_pause(tmedia_producer_t* self)
 	if((manager = ProxyPluginMgr::getInstance())){
 		const ProxyVideoProducer* videoProducer;
 		if((videoProducer = manager->findVideoProducer(TWRAP_PRODUCER_PROXY_VIDEO(self)->id)) && videoProducer->getCallback()){
-			tsk_safeobj_lock(TWRAP_PRODUCER_PROXY_VIDEO(self));
 			ret = videoProducer->getCallback()->pause();
-			tsk_safeobj_unlock(TWRAP_PRODUCER_PROXY_VIDEO(self));
 		}
 	}
 	
@@ -427,10 +428,8 @@ int twrap_producer_proxy_video_stop(tmedia_producer_t* self)
 	if((manager = ProxyPluginMgr::getInstance())){
 		const ProxyVideoProducer* videoProducer;
 		if((videoProducer = manager->findVideoProducer(TWRAP_PRODUCER_PROXY_VIDEO(self)->id)) && videoProducer->getCallback()){
-			tsk_safeobj_lock(TWRAP_PRODUCER_PROXY_VIDEO(self));
 			ret = videoProducer->getCallback()->stop();
 			TWRAP_PRODUCER_PROXY_VIDEO(self)->started = ((ret == 0) ? tsk_false : tsk_true);
-			tsk_safeobj_unlock(TWRAP_PRODUCER_PROXY_VIDEO(self));
 		}
 	}
 	
@@ -449,7 +448,6 @@ static tsk_object_t* twrap_producer_proxy_video_ctor(tsk_object_t * self, va_lis
 		/* init base */
 		tmedia_producer_init(TMEDIA_PRODUCER(producer));
 		/* init self */
-		tsk_safeobj_init(producer);
 
 		/* Add the plugin to the manager */
 		ProxyPluginMgr* manager = ProxyPluginMgr::getInstance();
@@ -483,7 +481,6 @@ static tsk_object_t* twrap_producer_proxy_video_dtor(tsk_object_t * self)
 			manager->getCallback()->OnPluginDestroyed(producer->id, twrap_proxy_plugin_video_producer);
 			manager->removePlugin(producer->id);
 		}
-		tsk_safeobj_deinit(producer);
 	}
 
 	return self;
@@ -561,13 +558,11 @@ bool ProxyVideoProducer::setActualCameraOutputSize(unsigned nWidth, unsigned nHe
 // encode() then send()
 int ProxyVideoProducer::push(const void* pBuffer, unsigned nSize)
 {
-	if(m_pWrappedPlugin && TMEDIA_PRODUCER(m_pWrappedPlugin)->enc_cb.callback){
+	if (m_pWrappedPlugin && TMEDIA_PRODUCER(m_pWrappedPlugin)->enc_cb.callback) {
 		int ret = -1;
-		tsk_safeobj_lock(m_pWrappedPlugin);
-		if(m_pWrappedPlugin->started){
+		if (m_pWrappedPlugin->started) {
 			ret = TMEDIA_PRODUCER(m_pWrappedPlugin)->enc_cb.callback(TMEDIA_PRODUCER(m_pWrappedPlugin)->enc_cb.callback_data, pBuffer, nSize);
 		}
-		tsk_safeobj_unlock(m_pWrappedPlugin);
 		return ret;
 	}
 	return 0;
