@@ -58,7 +58,7 @@ libtinyWRAP_la_LIBADD += ${LIBVPX_LIBADD}
 endif
 
 if USE_YUV
-libtinyWRAP_la_LIBADD += ${LIBYUV_LIB}
+libtinyWRAP_la_LIBADD += ${LIBYUV_LIB} ${LIBYUV_LIBADD}
 endif
 
 if USE_OPUS
