@@ -326,12 +326,19 @@ void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, tsk_b
 		while (curr) {
 			diff = tsk_object_cmp((*item), curr);
 			if (diff == 0 || (diff </*=*/ 0 && ascending) || (diff >/*=*/0 && !ascending)) {
-				if (curr == list->head) {
+				int after = (diff == 0); // push_after(match) -> backward compatibility
+				int back = (after && (curr == list->tail));
+				int front = !back && (curr == list->head);
+
+				if (back) {
+					tsk_list_push_back_item(list, item);
+				}
+				else if (front) {
 					tsk_list_push_front_item(list, item);
 				}
 				else {
-					if (diff == 0) {
-						// push_after(match) -> backward compatibility
+					if (after) {
+						// push_after(match)
 						(*item)->next = curr->next;
 						curr->next = (*item);
 					}
@@ -340,7 +347,7 @@ void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, tsk_b
 						(*item)->next = curr;
 						prev->next = (*item);
 					}
-				}
+				}				
 				(*item) = tsk_null;
 				return;
 			}
