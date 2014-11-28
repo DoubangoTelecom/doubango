@@ -478,6 +478,8 @@ tnet_ice_ctx_t* tnet_ice_ctx_create(tsk_bool_t is_ice_jingle, tsk_bool_t use_ipv
 
 			// (GatheringReflexiveCandidatesDone) -> (GatherRelayCandidates) -> (GatheringRelayCandidates)
 			TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringReflexiveCandidatesDone, _fsm_action_GatherRelayCandidates, _fsm_state_GatheringRelayCandidates, _tnet_ice_ctx_fsm_GatheringReflexiveCandidatesDone_2_GatheringRelayCandidates_X_GatherRelayCandidates, "ICE_GatheringReflexiveCandidatesDone_2_GatheringRelayCandidates_X_GatherRelayCandidates"),
+			// (GatheringHostCandidatesDone) -> (GatherRelayCandidates) -> (GatheringRelayCandidates)
+			TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringHostCandidatesDone, _fsm_action_GatherRelayCandidates, _fsm_state_GatheringRelayCandidates, _tnet_ice_ctx_fsm_GatheringReflexiveCandidatesDone_2_GatheringRelayCandidates_X_GatherRelayCandidates, "ICE_GatheringHostCandidatesDone_2_GatheringRelayCandidates_X_GatherRelayCandidates"),
 			// (GatheringRelayCandidates) -> (Success) -> GatheringRelayCandidatesDone
 			TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringRelayCandidates, _fsm_action_Success, _fsm_state_GatheringRelayCandidatesDone, _tnet_ice_ctx_fsm_GatheringRelayCandidates_2_GatheringRelayCandidatesDone_X_Success, "ICE_fsm_GatheringRelayCandidates_2_GatheringRelayCandidatesDone_X_Success"),
 			// (GatheringRelayCandidates) -> (Failure) -> Terminated
@@ -1154,8 +1156,14 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidates_2_GatheringHostCandidatesDo
 			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatherReflexiveCandidates);
 		}
 		else {
-			TSK_DEBUG_INFO("Do not gather reflexive candidates because ICE-STUN is disabled or no server defined");
-			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatheringComplet);
+			if (self->is_turn_enabled && _tnet_ice_ctx_servers_count_by_proto(self, tnet_ice_server_proto_turn) > 0) {
+				TSK_DEBUG_INFO("ICE-TURN enabled and we have STUN servers");
+				ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatherRelayCandidates);
+			}
+			else {
+				TSK_DEBUG_INFO("Do not gather reflexive/relayed candidates because ICE-STUN/TURN is disabled or no server defined");
+				ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatheringComplet);
+			}
 		}
 	}
 	
