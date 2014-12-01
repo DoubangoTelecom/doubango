@@ -26,17 +26,21 @@
 #include "tsdp.h"
 #include "tinysdp/parsers/tsdp_parser_message.h"
 
-#include "test_parser.h"
-#include "test_soa.h"
-#include "test_rfc5939.h"
+
 
 
 #define RUN_TEST_LOOP		1
 
 #define RUN_TEST_ALL		0
-#define RUN_TEST_PARSER		0
+#define RUN_TEST_PARSER		1
 #define RUN_TEST_SOA		0
-#define RUN_TEST_RFC5939	1
+#define RUN_TEST_RFC5939	0
+
+#include "test_parser.h"
+#include "test_soa.h"
+#if RUN_TEST_RFC5939 || RUN_TEST_PARSER
+//#include "test_rfc5939.h"
+#endif
 
 
 #ifdef _WIN32_WCE

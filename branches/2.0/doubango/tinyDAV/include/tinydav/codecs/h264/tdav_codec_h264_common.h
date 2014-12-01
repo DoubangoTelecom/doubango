@@ -102,7 +102,7 @@ typedef struct tdav_codec_h264_common_s
 	TMEDIA_DECLARE_CODEC_VIDEO;
 
 	profile_idc_t profile;
-	uint8_t profile_op;
+	uint8_t profile_iop;
 	level_idc_t level;
 	unsigned maxFS;
 
@@ -212,7 +212,7 @@ static int tdav_codec_h264_common_init(tdav_codec_h264_common_t * h264)
 			h264->maxFS = TSK_MIN((int32_t)h264->maxFS, MaxFS[H264_LEVEL_TO_ZERO_BASED_INDEX[level]]);
 			h264->level = level;
 		}
-		h264->profile_op = 0x80;
+		h264->profile_iop = 0x80;
 	}
 	return 0;
 }
@@ -283,7 +283,7 @@ static tsk_bool_t tdav_codec_h264_common_sdp_att_match(tdav_codec_h264_common_t*
 
 	TSK_DEBUG_INFO("[H.264] Trying to match [%s:%s]", att_name, att_value);
 
-	if(tsk_striequals(att_name, "fmtp")){
+	if (tsk_striequals(att_name, "fmtp")) {
 		int val_int;
 		profile_idc_t profile;
 		level_idc_t level;
@@ -317,7 +317,7 @@ static tsk_bool_t tdav_codec_h264_common_sdp_att_match(tdav_codec_h264_common_t*
 		}
 
 		/* e.g. profile-level-id=42e00a; packetization-mode=1; max-br=452; max-mbps=11880 */
-		if((params = tsk_params_fromstring(att_value, ";", tsk_true))){
+		if ((params = tsk_params_fromstring(att_value, ";", tsk_true))) {
 			
 			/* === max-br ===*/
 			if ((val_int = tsk_params_get_param_value_as_int(params, "max-br")) != -1) {
@@ -387,18 +387,18 @@ static char* tdav_codec_h264_common_sdp_att_get(const tdav_codec_h264_common_t* 
 		return tsk_null;
 	}
 
-	if(tsk_striequals(att_name, "fmtp")){
+	if (tsk_striequals(att_name, "fmtp")) {
 		char* fmtp = tsk_null;
 #if 1
 		// Required by "TANDBERG/4120 (X7.2.2)" and CISCO TelePresence		
 		tsk_sprintf(&fmtp, "profile-level-id=%x;max-mbps=%d;max-fs=%d;packetization-mode=%d", 
-				((h264->profile << 16) | (h264->profile_op << 8) | (h264->level & 0xff)), 
+				((h264->profile << 16) | (h264->profile_iop << 8) | (h264->level & 0xff)), 
 				MaxMBPS[H264_LEVEL_TO_ZERO_BASED_INDEX[h264->level]],
 				h264->maxFS,
 				h264->pack_mode
 			);
 #else
-		tsk_sprintf(&fmtp, "profile-level-id=%x; packetization-mode=%d", ((h264->profile << 16) | (h264->profile_op << 8) | (h264->level & 0xff)), h264->pack_mode);
+		tsk_sprintf(&fmtp, "profile-level-id=%x; packetization-mode=%d", ((h264->profile << 16) | (h264->profile_iop << 8) | (h264->level & 0xff)), h264->pack_mode);
 #endif
 		return fmtp;
 	}

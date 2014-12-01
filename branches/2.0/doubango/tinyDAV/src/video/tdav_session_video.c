@@ -104,13 +104,16 @@ static const tmedia_codec_action_t __action_encode_bw_down = tmedia_codec_action
 
 #define _tdav_session_video_remote_requested_idr(__self, __ssrc_media) { \
 	uint64_t __now = tsk_time_now(); \
+	tsk_bool_t too_close = tsk_false; \
 	if((__now - (__self)->avpf.last_fir_time) > TDAV_SESSION_VIDEO_AVPF_FIR_HONOR_INTERVAL_MIN){ /* guard to avoid sending too many FIR */ \
 		_tdav_session_video_codec_set((__self), "action", __action_encode_idr); \
-	}else { TSK_DEBUG_INFO("***IDR request tooo close...ignoring****"); } \
+	}else { too_close = tsk_true; TSK_DEBUG_INFO("***IDR request tooo close...ignoring****"); } \
 	if((__self)->cb_rtcpevent.func){ \
 		(__self)->cb_rtcpevent.func((__self)->cb_rtcpevent.context, tmedia_rtcp_event_type_fir, (__ssrc_media)); \
 	} \
-	(__self)->avpf.last_fir_time = __now; \
+	if (!too_close) { /* if too close don't update "last_fir_time" to "now" to be sure interval will increase */ \
+		(__self)->avpf.last_fir_time = __now; \
+	} \
 }
 #define _tdav_session_video_local_request_idr(_session, _reason, _ssrc) \
 { \
@@ -897,7 +900,7 @@ static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp
 		if(base->congestion_ctrl_enabled && base->rtp_manager && (self->fps_changed || self->decoder.codec_decoded_frames_count == 0 || ((self->decoder.codec_decoded_frames_count % (TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.fps * 300)) == 0))){
 			int32_t bandwidth_max_upload_kbps = base->bandwidth_max_upload_kbps;
 			int32_t bandwidth_max_download_kbps = base->bandwidth_max_download_kbps;
-			// bandwidth already computed in start() be the decoded video size was not correct and based on the SDP negotiation
+			// bandwidth already computed in start() but the decoded video size was not correct and based on the SDP negotiation
 			bandwidth_max_download_kbps = TSK_MIN(
 							tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.width, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.height, TMEDIA_CODEC_VIDEO(self->decoder.codec)->in.fps),
 							bandwidth_max_download_kbps);
