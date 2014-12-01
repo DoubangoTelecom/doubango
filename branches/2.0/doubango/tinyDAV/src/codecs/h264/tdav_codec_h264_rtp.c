@@ -291,25 +291,25 @@ void tdav_codec_h264_rtp_encap(struct tdav_codec_h264_common_s* self, const uint
 	tsk_size_t last_scp, prev_scp;
 	tsk_size_t _size;
 
-	if(!pdata || size < size_of_scp){
+	if (!pdata || size < size_of_scp) {
 		return;
 	}
 
-	if(pdata[0] == 0 && pdata[1] == 0){
-		if(pdata[2] == 1){
+	if (pdata[0] == 0 && pdata[1] == 0) {
+		if (pdata[2] == 1) {
 			pdata += 3, size -= 3;
 		}
-		else if(pdata[2] == 0 && pdata[3] == 1){
+		else if (pdata[2] == 0 && pdata[3] == 1) {
 			pdata += 4, size -= 4;
 		}
 	}
 
 	_size = (size - size_of_scp);
 	last_scp = 0, prev_scp = 0;
-	for(i = size_of_scp; i<_size; i++){
-		if(pdata[i] == 0 && pdata[i+1] == 0 && (pdata[i+2] == 1 || (pdata[i+2] == 0 && pdata[i+3] == 1))){  /* Find Start Code Prefix */
+	for (i = size_of_scp; i<_size; i++) {
+		if (pdata[i] == 0 && pdata[i+1] == 0 && (pdata[i+2] == 1 || (pdata[i+2] == 0 && pdata[i+3] == 1))) {  /* Find Start Code Prefix */
 			prev_scp = last_scp;
-			if((i - last_scp) >= H264_RTP_PAYLOAD_SIZE || 1){
+			if ((i - last_scp) >= H264_RTP_PAYLOAD_SIZE || 1) {
 				tdav_codec_h264_rtp_callback(self, pdata + prev_scp,
 					(i - prev_scp), (prev_scp == size));
 			}
@@ -318,7 +318,7 @@ void tdav_codec_h264_rtp_encap(struct tdav_codec_h264_common_s* self, const uint
 		}
 	}
 
-	if(last_scp < (int32_t)size){
+	if (last_scp < (int32_t)size) {
 			tdav_codec_h264_rtp_callback(self, pdata + last_scp,
 				(size - last_scp), tsk_true);
 	}
@@ -330,24 +330,24 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_common_s *self, const v
 
 	//TSK_DEBUG_INFO("%x %x %x %x -- %u", pdata[0], pdata[1], pdata[2], pdata[3], size);
 
-	if(size>4 && pdata[0] == H264_START_CODE_PREFIX[0] && pdata[1] == H264_START_CODE_PREFIX[1]){
+	if (size>4 && pdata[0] == H264_START_CODE_PREFIX[0] && pdata[1] == H264_START_CODE_PREFIX[1]) {
 		if(pdata[2] == H264_START_CODE_PREFIX[3]){
 			pdata += 3, size -= 3;
 		}
-		else if(pdata[2] == H264_START_CODE_PREFIX[2] && pdata[3] == H264_START_CODE_PREFIX[3]){
+		else if (pdata[2] == H264_START_CODE_PREFIX[2] && pdata[3] == H264_START_CODE_PREFIX[3]) {
 			pdata += 4, size -= 4;
 		}
 	}
 	
 	//TSK_DEBUG_INFO("==> SCP %2x %2x %2x %2x", pdata[0], pdata[1], pdata[2], pdata[3]);
 
-	if(self->pack_mode == Single_NAL_Unit_Mode || size < H264_RTP_PAYLOAD_SIZE){
+	if (self->pack_mode == Single_NAL_Unit_Mode || size < H264_RTP_PAYLOAD_SIZE) {
 		if (self->pack_mode == Single_NAL_Unit_Mode && size > H264_RTP_PAYLOAD_SIZE) {
 			TSK_DEBUG_WARN("pack_mode=Single_NAL_Unit_Mode but size(%d) > H264_RTP_PAYLOAD_SIZE(%d). Did you forget to set \"avctx->rtp_payload_size\"?", size, H264_RTP_PAYLOAD_SIZE);
 		}
-		/* Can be packet in a Single Nal Unit */
+		// Can be packet in a Single Nal Unit
 		// Send data over the network
-		if(TMEDIA_CODEC_VIDEO(self)->out.callback){
+		if (TMEDIA_CODEC_VIDEO(self)->out.callback) {
 			TMEDIA_CODEC_VIDEO(self)->out.result.buffer.ptr = pdata;
 			TMEDIA_CODEC_VIDEO(self)->out.result.buffer.size = size;
 			TMEDIA_CODEC_VIDEO(self)->out.result.duration =  (uint32_t)((1./(double)TMEDIA_CODEC_VIDEO(self)->out.fps) * TMEDIA_CODEC(self)->plugin->rate);
@@ -355,7 +355,7 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_common_s *self, const v
 			TMEDIA_CODEC_VIDEO(self)->out.callback(&TMEDIA_CODEC_VIDEO(self)->out.result);
 		}
 	}
-	else if(size > H264_NAL_UNIT_TYPE_HEADER_SIZE){
+	else if (size > H264_NAL_UNIT_TYPE_HEADER_SIZE) {
 		/* Should be Fragmented as FUA */
 		uint8_t fua_hdr[H264_FUA_HEADER_SIZE]; /* "FU indicator" and "FU header" - 2bytes */
 		fua_hdr[0] = pdata[0] & 0x60/* NRI */, fua_hdr[0] |= fu_a;
@@ -364,10 +364,10 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_common_s *self, const v
 		pdata += H264_NAL_UNIT_TYPE_HEADER_SIZE;
 		size -= H264_NAL_UNIT_TYPE_HEADER_SIZE;
 
-		while(size){
+		while(size) {
 			tsk_size_t packet_size = TSK_MIN(H264_RTP_PAYLOAD_SIZE, size);
 
-			if(self->rtp.size < (packet_size + H264_FUA_HEADER_SIZE)){
+			if (self->rtp.size < (packet_size + H264_FUA_HEADER_SIZE)){
 				if(!(self->rtp.ptr = (uint8_t*)tsk_realloc(self->rtp.ptr, (packet_size + H264_FUA_HEADER_SIZE)))){
 					TSK_DEBUG_ERROR("Failed to allocate new buffer");
 					return;

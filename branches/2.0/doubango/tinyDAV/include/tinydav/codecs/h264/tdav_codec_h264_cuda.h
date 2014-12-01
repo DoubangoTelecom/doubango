@@ -1,7 +1,7 @@
 /*
-* Copyright (C) 2011 Doubango Telecom <http://www.doubango.org>.
+* Copyright (C) 2011-2014 Mamadou DIOP.
+* Copyright (C) 2011-2014 Doubango Telecom <http://www.doubango.org>.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango(DOT)org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -26,8 +26,6 @@
  * http://developer.download.nvidia.com/compute/DevZone/docs/html/C/doc/CUDA_VideoDecoder_Library.pdf
  * http://developer.download.nvidia.com/compute/DevZone/docs/html/C/doc/CUDA_VideoEncoder_Library.pdf
  * RTP payloader/depayloader follows RFC 3984.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango(DOT)org>
  *
  */
 #ifndef TINYDAV_CODEC_H264_CUDA_H

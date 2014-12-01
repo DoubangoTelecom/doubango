@@ -85,8 +85,10 @@
 	"a=fmtp:34 CIF=2\r\n" \
 	"a=sendrecv\r\n"
 
+#define SDP_FF \
+	"v=0\r\no=Mozilla-SIPUA-33.1.1 21626 0 IN IP4 0.0.0.0\r\ns=SIP Call\r\nt=0 0\r\na=ice-ufrag:d0a7e7c7\r\na=ice-pwd:f079952b194bac309ea77ff813540eb0\r\na=fingerprint:sha-256 10:B9:12:6F:F3:21:6B:F4:53:E2:70:BA:13:A3:3A:3C:DF:3F:28:FD:6D:E4:09:A4:6F:EC:57:95:7D:83:3E:46\r\nm=video 59587 UDP/TLS/RTP/SAVPF 120 126 97\r\nc=IN IP4 188.165.231.30\r\na=rtpmap:120 VP8/90000\r\na=rtpmap:126 H264/90000\r\na=fmtp:126 profile-level-id=42e01f;packetization-mode=1\r\na=rtpmap:97 H264/90000\r\na=fmtp:97 profile-level-id=42e01f\r\na=sendrecv\r\na=rtcp-fb:120 nack\r\na=rtcp-fb:120 nack pli\r\na=rtcp-fb:120 ccm fir\r\na=rtcp-fb:126 nack\r\na=rtcp-fb:126 nack pli\r\na=rtcp-fb:126 ccm fir\r\na=rtcp-fb:97 nack\r\na=rtcp-fb:97 nack pli\r\na=rtcp-fb:97 ccm fir\r\na=setup:actpass\r\na=candidate:0 1 UDP 2130379007 192.168.0.28 60862 typ host\r\na=candidate:1 1 UDP 1694236671 88.179.39.5 60862 typ srflx raddr 192.168.0.28 rport 60862\r\na=candidate:2 1 UDP 16515071 188.165.231.30 59587 typ relay raddr 188.165.231.30 rport 59587\r\na=candidate:0 2 UDP 2130379006 192.168.0.28 61634 typ host\r\na=candidate:1 2 UDP 1694236670 88.179.39.5 61634 typ srflx raddr 192.168.0.28 rport 61634\r\na=candidate:2 2 UDP 16515070 188.165.231.30 62984 typ relay raddr 188.165.231.30 rport 62984\r\na=rtcp-mux\r\n"
 
-#define SDP_MSG_TO_TEST SDP_MSG3
+#define SDP_MSG_TO_TEST SDP_FF
 
 void test_caps();
 void test_holdresume();
@@ -97,9 +99,9 @@ void test_parser()
 	tsdp_message_t *message = tsk_null;
 	char* str;
 	
-	test_caps();
-	test_holdresume();
-	test_M();
+	//test_caps();
+	//test_holdresume();
+	//test_M();
 
 	//
 	// deserialize/serialize the message

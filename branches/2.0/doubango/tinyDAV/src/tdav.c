@@ -84,6 +84,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #include "tinydav/codecs/h263/tdav_codec_h263.h"
 #include "tinydav/codecs/h264/tdav_codec_h264.h"
 #include "tinydav/codecs/h264/tdav_codec_h264_cuda.h"
+#include "tinydav/codecs/h264/tdav_codec_h264_cisco.h"
 #include "tinydav/codecs/theora/tdav_codec_theora.h"
 #include "tinydav/codecs/mp4ves/tdav_codec_mp4ves.h"
 #include "tinydav/codecs/vpx/tdav_codec_vp8.h"
@@ -327,7 +328,9 @@ int tdav_init()
 	tmedia_codec_plugin_register(tdav_codec_h264_base_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h264_main_plugin_def_t);
 #endif
-
+#if HAVE_OPENH264
+	tmedia_codec_plugin_register(tdav_codec_h264_cisco_base_plugin_def_t);
+#endif
 	
 	/* === Register converters === */
 	// register several convertors and try them all (e.g. LIBYUV only support to/from I420)

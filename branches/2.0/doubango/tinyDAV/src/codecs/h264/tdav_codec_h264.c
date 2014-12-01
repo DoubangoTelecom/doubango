@@ -261,9 +261,9 @@ static tsk_size_t tdav_codec_h264_encode(tmedia_codec_t* self, const void* in_da
 	else { // !h264->encoder.passthrough
 #if HAVE_FFMPEG		// wrap yuv420 buffer
 		size = avpicture_fill((AVPicture *)h264->encoder.picture, (uint8_t*)in_data, PIX_FMT_YUV420P, h264->encoder.context->width, h264->encoder.context->height);
-		if(size != in_size){
+		if (size != in_size){
 			/* guard */
-			TSK_DEBUG_ERROR("Invalid size");
+			TSK_DEBUG_ERROR("Invalid size: %u<>%u", size, in_size);
 			return 0;
 		}
 

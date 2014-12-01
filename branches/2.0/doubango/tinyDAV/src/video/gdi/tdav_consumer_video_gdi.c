@@ -246,7 +246,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		case WM_SIZE:
 		case WM_MOVE:
 			{
-				struct tdav_consumer_video_gdi_s* p_gdi = ((struct tdav_consumer_video_gdi_s*)GetPropA(hWnd, "Self"));
+				struct tdav_consumer_video_gdi_s* p_gdi = ((struct tdav_consumer_video_gdi_s*)GetProp(hWnd, TEXT("Self")));
 				if (p_gdi) {					
 					
 				}
@@ -255,7 +255,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 		case WM_PAINT:
 			{
-				struct tdav_consumer_video_gdi_s* p_gdi = ((struct tdav_consumer_video_gdi_s*)GetPropA(hWnd, "Self"));
+				struct tdav_consumer_video_gdi_s* p_gdi = ((struct tdav_consumer_video_gdi_s*)GetProp(hWnd, TEXT("Self")));
 				if (p_gdi) {					
 					tsk_safeobj_lock(p_gdi);
 
@@ -288,16 +288,20 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 						// Set the map mode so that the ratio will be maintained for us.
 						all_dc[0] = ps.hdc, all_dc[1] = dc_mem;
 						for (i = 0; i < sizeof(all_dc)/sizeof(all_dc[0]); ++i) {
+#if !TDAV_UNDER_WINDOWS_CE
 							SetMapMode(all_dc[i], MM_ISOTROPIC);
 							SetWindowExtEx(all_dc[i], width, height, NULL);
 							SetViewportExtEx(all_dc[i], rc.right, rc.bottom, NULL);
+#endif
 						}
 
 						bmp_mem = CreateCompatibleBitmap(ps.hdc, rc.right, rc.bottom);
 						bmp_old = SelectObject(dc_mem, bmp_mem);
 
 						logical_area.x = rc.right, logical_area.y = rc.bottom;
+#if !TDAV_UNDER_WINDOWS_CE
 						DPtoLP(ps.hdc, &logical_area, 1);
+#endif
 
 						brush = CreateSolidBrush(RGB(0, 0, 0));
 						logical_rect.left = 0, logical_rect.top = 0, logical_rect.right = logical_area.x, logical_rect.bottom = logical_area.y;
@@ -334,9 +338,8 @@ paint_done:
 		case WM_CHAR:
 		case WM_KEYUP:
 			{
-				struct tdav_consumer_video_gdi_s* p_gdi = ((struct tdav_consumer_video_gdi_s*)GetPropA(hWnd, "Self"));
-				if (p_gdi)
-				{	
+				struct tdav_consumer_video_gdi_s* p_gdi = ((struct tdav_consumer_video_gdi_s*)GetProp(hWnd, TEXT("Self")));
+				if (p_gdi) {	
 					SetFullscreen(p_gdi, FALSE);
 				}
 				
@@ -359,13 +362,17 @@ static HRESULT HookWindow(struct tdav_consumer_video_gdi_s *p_gdi, HWND hWnd, BO
 	CHECK_HR(hr = UnhookWindow(p_gdi, bFullScreenWindow));
 
 	if ((*p_Window = hWnd)) {
+#if TDAV_UNDER_WINDOWS_CE
+		*p_wndProc = (WNDPROC)SetWindowLong(hWnd, GWL_WNDPROC, (LONG)WndProc);
+#else
 		*p_wndProc = (WNDPROC)SetWindowLongPtr(hWnd, GWL_WNDPROC, (LONG)WndProc);
+#endif
 		if (!*p_wndProc) {
 			TSK_DEBUG_ERROR("HookWindowLongPtr() failed with errcode=%d", GetLastError());
 			CHECK_HR(hr = E_FAIL);
 		}
 		*p_bWindowHooked = TRUE;
-		SetPropA(*p_Window, "Self", p_gdi);
+		SetProp(*p_Window, TEXT("Self"), p_gdi);
 	}
 bail:
 	tsk_safeobj_unlock(p_gdi);
@@ -380,7 +387,11 @@ static HRESULT UnhookWindow(struct tdav_consumer_video_gdi_s *p_gdi, BOOL bFullS
 
 	tsk_safeobj_lock(p_gdi);
 	if (*p_Window && *p_wndProc) {
+#if TDAV_UNDER_WINDOWS_CE
+		SetWindowLong(*p_Window, GWL_WNDPROC, (LONG)*p_wndProc);
+#else
 		SetWindowLongPtr(*p_Window, GWL_WNDPROC, (LONG)*p_wndProc);
+#endif
 		*p_wndProc = NULL;
 	}
 	if (*p_Window) {
@@ -406,7 +417,11 @@ static HRESULT SetFullscreen(struct tdav_consumer_video_gdi_s *p_gdi, BOOL bFull
 		if (bFullScreen) {
 			HWND hWnd = CreateFullScreenWindow(p_gdi);
 			if (hWnd) {
+#if TDAV_UNDER_WINDOWS_CE
+				ShowWindow(hWnd, SW_SHOWNORMAL);
+#else
 				ShowWindow(hWnd, SW_SHOWDEFAULT);
+#endif
 				UpdateWindow(hWnd);
 				HookWindow(p_gdi, hWnd, TRUE);
 			}
@@ -453,7 +468,7 @@ static HWND CreateFullScreenWindow(struct tdav_consumer_video_gdi_s *p_gdi)
 				GetModuleHandle(NULL),
 				NULL);
 
-		SetPropA(p_gdi->hWindowFullScreen, "Self", p_gdi);
+		SetProp(p_gdi->hWindowFullScreen, TEXT("Self"), p_gdi);
 	}
 	return p_gdi->hWindowFullScreen;
 }
