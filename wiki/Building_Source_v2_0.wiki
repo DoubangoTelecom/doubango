@@ -186,6 +186,16 @@ git checkout n1.2
 make && make install
 }}}
 
+===Building `OpenH264`===
+*OpenH264* is optional. Adds support for *H.264* constrained baseline video codec.
+{{{
+git clone https://github.com/cisco/openh264.git
+cd openh264
+git checkout v1.1
+make ENABLE64BIT=Yes # Use ENABLE64BIT=No for 32bit platforms
+make install
+}}}
+
 ===Building Doubango===
  * Minimal build
 {{{
