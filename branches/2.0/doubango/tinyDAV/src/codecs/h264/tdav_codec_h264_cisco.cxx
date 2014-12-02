@@ -26,10 +26,6 @@
 
 #if HAVE_OPENH264
 
-#if defined(_MSC_VER) // FIXME
-#	pragma comment(lib, "dsound.lib")
-#endif
-
 #include "tinydav/codecs/h264/tdav_codec_h264_common.h"
 
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
