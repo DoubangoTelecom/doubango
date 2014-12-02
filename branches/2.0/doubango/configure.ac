@@ -442,9 +442,46 @@ if test $want_ffmpeg != no; then
 fi
 AM_CONDITIONAL([USE_FFMPEG], [test $have_ffmpeg = yes])
 
-AM_CONDITIONAL(USE_H264, [test $target_os:$enable_gpl = android:yes]) # H.264 is always there for Android and statically linked
-AC_SUBST(LIBH264_LIBADD, "-lx264")
-AC_ARG_WITH(h264, [  --with-h264 IMPORTANT: deprecated to be removed ],[], [])
+AM_CONDITIONAL(USE_X264, [test $target_os:$enable_gpl = android:yes]) # X264 is always there for Android and statically linked
+AC_SUBST(LIBX264_LIBADD, "-lx264")
+AC_ARG_WITH(x264, [  --with-x264 IMPORTANT: deprecated to be removed ],[], [])
+
+########################################################
+# OpenH264
+# --with-openh264 / --without-openh264 as argument to configure
+########################################################
+have_openh264=no
+want_openh264=check
+path_openh264=undef
+AC_SUBST(LIBOPENH264_LIBADD, "")
+AC_ARG_WITH(openh264,
+[  --with-openh264=PATH             Build with OpenH264 video codecs. PATH is optional.],
+    if test "x$withval" = "xyes"; then
+      want_openh264=yes
+      path_openh264=undef
+    elif test "x$withval" = "xno"; then
+      want_openh264=no
+      path_openh264=undef
+    elif test "$withval"; then
+      want_openh264=yes
+      path_openh264=$withval
+    fi,
+)
+# only if --without-openh264 not used
+if test $want_openh264 != no; then
+	# check for lib and headers
+	AC_LANG_PUSH([C++])
+       	AC_CHECK_HEADERS(wels/codec_api.h wels/codec_app_def.h,
+	AC_CHECK_LIB(openh264, WelsCreateSVCEncoder,
+       	AC_CHECK_LIB(openh264, WelsCreateDecoder, AC_DEFINE_UNQUOTED(HAVE_OPENH264, 1, HAVE_OPENH264) [have_openh264=yes] LIBOPENH264_LIBADD="-lopenh264", 
+		AC_DEFINE_UNQUOTED(HAVE_OPENH264, 0, HAVE_OPENH264) [have_openh264=no]
+	)))
+	AC_LANG_POP([C++])
+	# if opus not found and requested then, die.
+  	test $have_openh264:$want_openh264 = no:yes &&  
+		AC_MSG_ERROR([You requested OpenH264 video codec but not found...die])
+fi
+AM_CONDITIONAL([USE_OPENH264], [test $have_openh264 = yes])
 
 
 ########################################################
@@ -965,46 +1002,47 @@ AC_MSG_NOTICE([
 **************************************************************************
 * 				CONGRATULATIONS
 **************************************************************************
-Cross Compilation:   ${cross_compiling}
-Target OS:           ${target_os}
-Host setup:          ${host}
-Install prefix:      ${prefix}
-Compiler:            ${CC}
+Cross Compilation:    ${cross_compiling}
+Target OS:            ${target_os}
+Host setup:           ${host}
+Install prefix:       ${prefix}
+Compiler:             ${CC}
 
-Enable GPL:          $enable_gpl
-Enable Non Free:     $enable_nonfree
+Enable GPL:           $enable_gpl
+Enable Non Free:      $enable_nonfree
 
-FFmpeg:              $have_ffmpeg
-VP8 video codec:     $have_vpx
-OPUS audio codec:    $have_opus
-ILBC audio codec:    $have_ilbc
-G.729 audio codec:   $have_g729 -> $enable_nonfree
-GSM audio codec:     $have_gsm
-AMR audio codec:     $have_amr -> $enable_nonfree
-SPEEX audio codec:   $have_speex
-G.722 audio codec:   yes
-G.711 audio codec:   yes
+FFmpeg:               $have_ffmpeg
+VP8 video codec:      $have_vpx
+OpenH264 video codec: $have_openh264
+OPUS audio codec:     $have_opus
+ILBC audio codec:     $have_ilbc
+G.729 audio codec:    $have_g729 -> $enable_nonfree
+GSM audio codec:      $have_gsm
+AMR audio codec:      $have_amr -> $enable_nonfree
+SPEEX audio codec:    $have_speex
+G.722 audio codec:    yes
+G.711 audio codec:    yes
 
-YUV:                 $have_yuv
-JPEG:                $have_jpeg
-SPEEX DSP:           $have_speexdsp
+YUV:                  $have_yuv
+JPEG:                 $have_jpeg
+SPEEX DSP:            $have_speexdsp
 
-SSL:                 $have_ssl
-DTLS-SRTP:           $have_dtls_srtp
-DTLS:                $have_dtls
+SSL:                  $have_ssl
+DTLS-SRTP:            $have_dtls_srtp
+DTLS:                 $have_dtls
 
-SRTP:                $have_srtp
+SRTP:                 $have_srtp
 
-WebRTC:              Enabled($have_webrtc): AEC($have_webrtc_aec), NS($have_webrtc_ns)
+WebRTC:               Enabled($have_webrtc): AEC($have_webrtc_aec), NS($have_webrtc_ns)
 
-Monotonic timers:    $have_rt
-RESOLV:              $have_resolv
+Monotonic timers:     $have_rt
+RESOLV:               $have_resolv
 
-ALSA (audio):        $have_alsa
-OSS (audio):         $have_oss
-V4L2 (video):        $have_v4l2
+ALSA (audio):         $have_alsa
+OSS (audio):          $have_oss
+V4L2 (video):         $have_v4l2
 
-DEBUG:               $enable_debug
+DEBUG:                $enable_debug
 
 Report any issue at https://groups.google.com/group/doubango
 

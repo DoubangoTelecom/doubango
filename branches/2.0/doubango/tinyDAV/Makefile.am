@@ -23,8 +23,12 @@ if USE_FFMPEG
 libtinyDAV_la_LIBADD += ${LIBFFMPEG_LIBADD}
 endif
 
-if USE_H264
-libtinyDAV_la_LIBADD += ${LIBH264_LIBADD}
+if USE_X264
+libtinyDAV_la_LIBADD += ${LIBX264_LIBADD}
+endif
+
+if USE_OPENH264
+libtinyDAV_la_LIBADD += ${LIBOPENH264_LIBADD}
 endif
 
 if USE_VPX
@@ -150,6 +154,8 @@ libtinyDAV_la_SOURCES += src/codecs/h261/tdav_codec_h261.c
 libtinyDAV_la_SOURCES += src/codecs/h263/tdav_codec_h263.c
 
 libtinyDAV_la_SOURCES += src/codecs/h264/tdav_codec_h264.c \
+		src/codecs/h264/tdav_codec_h264_cisco.cxx \
+		src/codecs/h264/tdav_codec_h264_cuda.cxx \
 		src/codecs/h264/tdav_codec_h264_rtp.c
 		
 libtinyDAV_la_SOURCES += src/codecs/theora/tdav_codec_theora.c
