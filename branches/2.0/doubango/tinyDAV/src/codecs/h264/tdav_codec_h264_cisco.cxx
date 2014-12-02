@@ -39,8 +39,8 @@
 #include "tsk_debug.h"
 
 extern "C" {
-#include <openh264/codec_api.h>
-#include <openh264/codec_app_def.h>
+#include <wels/codec_api.h>
+#include <wels/codec_app_def.h>
 }
 
 typedef struct tdav_codec_h264_cisco_s
