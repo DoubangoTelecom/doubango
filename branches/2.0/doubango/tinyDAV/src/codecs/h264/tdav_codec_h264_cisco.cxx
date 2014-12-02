@@ -581,6 +581,7 @@ static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self)
 {
 	int ret = -1;
 	long err;
+	SSpatialLayerConfig* layer;
 	
 	int32_t max_bw_kpbs;
 	tdav_codec_h264_common_t* common = (tdav_codec_h264_common_t*)self;
@@ -635,7 +636,7 @@ static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self)
 	self->encoder.sEncParam.bEnableSpsPpsIdAddition = true;
 	self->encoder.sEncParam.bEnableFrameCroppingFlag = true;
 	
-	SSpatialLayerConfig* layer = &self->encoder.sEncParam.sSpatialLayers[0];
+	layer = &self->encoder.sEncParam.sSpatialLayers[0];
 	layer->uiProfileIdc	= PRO_BASELINE;
 	layer->uiLevelIdc = LEVEL_UNKNOWN; // auto-detect
 	layer->fFrameRate = self->encoder.sEncParam.fMaxFrameRate;

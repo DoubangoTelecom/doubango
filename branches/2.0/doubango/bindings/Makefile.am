@@ -49,8 +49,12 @@ if USE_FFMPEG
 libtinyWRAP_la_LIBADD += ${LIBFFMPEG_LIBADD}
 endif
 
-if USE_H264
-libtinyWRAP_la_LIBADD += ${LIBH264_LIBADD}
+if USE_X264
+libtinyWRAP_la_LIBADD += ${LIBX264_LIBADD}
+endif
+
+if USE_OPENH264
+libtinyWRAP_la_LIBADD += ${LIBOPENH264_LIBADD}
 endif
 
 if USE_VPX
