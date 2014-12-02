@@ -613,7 +613,6 @@ static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self)
 		tmedia_get_video_bandwidth_kbps_2(self->encoder.neg_width, self->encoder.neg_height, self->encoder.neg_fps), 
 		self->encoder.max_bw_kpbs
 	);
-	self->encoder.max_bitrate_bps = 700000;//FIXME(max_bw_kpbs * 1024);
 
 	TSK_DEBUG_INFO("[H.264 OpenH264 Encoder] neg_width=%d, neg_height=%d, neg_fps=%d, max_bitrate_bps=%d",
 		self->encoder.neg_width,
