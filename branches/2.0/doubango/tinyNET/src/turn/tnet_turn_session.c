@@ -1770,7 +1770,7 @@ static int _tnet_turn_session_process_incoming_pkt(struct tnet_turn_session_s* p
 					// --- REFRESH --- //
 					else if (pc_pkt_req == p_self->p_pkt_refresh) {
 						const tnet_stun_attr_vdata_t *pc_attr_lifetime;
-						TSK_DEBUG_INFO("TURN 'REFRESH' OK for peer-id = %ld", pc_peer->id);
+						TSK_DEBUG_INFO("TURN 'REFRESH' OK for peer-id = %ld", pc_peer ? pc_peer->id : -1);
 						p_self->e_refresh_state = tnet_stun_state_ok;
 						if ((ret = tnet_stun_pkt_attr_find_first(pc_pkt, tnet_stun_attr_type_lifetime, (const tnet_stun_attr_t**)&pc_attr_lifetime)) == 0 && pc_attr_lifetime && pc_attr_lifetime->u_data_size == 4) {
 							p_self->u_lifetime_alloc_in_sec = TSK_TO_UINT32(pc_attr_lifetime->p_data_ptr);
