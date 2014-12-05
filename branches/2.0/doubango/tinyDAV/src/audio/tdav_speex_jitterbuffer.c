@@ -38,6 +38,31 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#include <speex/speex_jitter.h>
+
+/** Speex JitterBuffer*/
+typedef struct tdav_speex_jitterBuffer_s
+{
+	TMEDIA_DECLARE_JITTER_BUFFER;
+
+	JitterBuffer* state;
+	uint32_t rate;
+	uint32_t frame_duration;
+	uint32_t channels;
+	uint32_t x_data_size; // expected data size
+	uint16_t fake_seqnum; // if ptime mismatch then, reassembled pkt will have invalid seqnum
+	struct {
+		uint8_t* ptr;
+		tsk_size_t size;
+		tsk_size_t index;
+	} buff;
+
+	uint64_t num_pkt_in; // Number of incoming pkts since the last reset
+	uint64_t num_pkt_miss; // Number of times we got consecutive "JITTER_BUFFER_MISSING" results
+	uint64_t num_pkt_miss_max; // Max value for "num_pkt_miss" before reset()ing the jitter buffer
+}
+tdav_speex_jitterbuffer_t;
+
 static int tdav_speex_jitterbuffer_set(tmedia_jitterbuffer_t *self, const tmedia_param_t* param)
 {
 	TSK_DEBUG_ERROR("Not implemented");
@@ -51,7 +76,7 @@ static int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t fr
 
 	TSK_DEBUG_INFO("Open speex jb (ptime=%u, rate=%u)", frame_duration, rate);
 
-	if(!(jitterbuffer->state = jitter_buffer_init((int)frame_duration))){
+	if (!(jitterbuffer->state = jitter_buffer_init((int)frame_duration))) {
 		TSK_DEBUG_ERROR("jitter_buffer_init() failed");
 		return -2;
 	}
@@ -60,16 +85,20 @@ static int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t fr
 	jitterbuffer->channels = channels;
 	jitterbuffer->x_data_size = ((frame_duration * jitterbuffer->rate) / 500) << (channels == 2 ? 1 : 0);
 
+	jitterbuffer->num_pkt_in = 0;
+	jitterbuffer->num_pkt_miss = 0;
+	jitterbuffer->num_pkt_miss_max = (1000 / frame_duration) * 2; // 2 seconds missing --> "Houston, we have a problem"
+
 	jitter_buffer_ctl(jitterbuffer->state, JITTER_BUFFER_GET_MARGIN, &tmp);
 	TSK_DEBUG_INFO("Default Jitter buffer margin=%d", tmp);
 	jitter_buffer_ctl(jitterbuffer->state, JITTER_BUFFER_GET_MAX_LATE_RATE, &tmp);
 	TSK_DEBUG_INFO("Default Jitter max late rate=%d", tmp);
 	
-	if((tmp = tmedia_defaults_get_jb_margin()) >= 0){
+	if ((tmp = tmedia_defaults_get_jb_margin()) >= 0) {
 		jitter_buffer_ctl(jitterbuffer->state, JITTER_BUFFER_SET_MARGIN, &tmp);
 		TSK_DEBUG_INFO("New Jitter buffer margin=%d", tmp);
 	}
-	if((tmp = tmedia_defaults_get_jb_max_late_rate()) >= 0){
+	if ((tmp = tmedia_defaults_get_jb_max_late_rate()) >= 0) {
 		jitter_buffer_ctl(jitterbuffer->state, JITTER_BUFFER_SET_MAX_LATE_RATE, &tmp);
 		TSK_DEBUG_INFO("New Jitter buffer max late rate=%d", tmp);
 	}
@@ -80,7 +109,7 @@ static int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t fr
 static int tdav_speex_jitterbuffer_tick(tmedia_jitterbuffer_t* self)
 {
 	tdav_speex_jitterbuffer_t *jitterbuffer = (tdav_speex_jitterbuffer_t *)self;
-	if(!jitterbuffer->state){
+	if (!jitterbuffer->state) {
 		TSK_DEBUG_ERROR("Invalid state");
 		return -1;
 	}
@@ -95,12 +124,12 @@ static int tdav_speex_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, 
     JitterBufferPacket jb_packet;
 	static uint16_t seq_num = 0;
 
-    if(!data || !data_size || !proto_hdr){
+    if (!data || !data_size || !proto_hdr) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
     
-    if(!jb->state){
+    if (!jb->state) {
         TSK_DEBUG_ERROR("Invalid state");
         return -2;
     }
@@ -111,17 +140,17 @@ static int tdav_speex_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, 
 	jb_packet.span = jb->frame_duration;
 	jb_packet.len = jb->x_data_size;
     
-	if(jb->x_data_size == data_size){ /* ptime match */
+	if (jb->x_data_size == data_size) { /* ptime match */
 		jb_packet.data = data;
 		jb_packet.sequence = rtp_hdr->seq_num;
 		jb_packet.timestamp = (rtp_hdr->seq_num * jb_packet.span);
 		jitter_buffer_put(jb->state, &jb_packet);
 	}
-	else{ /* ptime mismatch */
+	else { /* ptime mismatch */
 		tsk_size_t i;
 		jb_packet.sequence = 0; // Ignore
-		if((jb->buff.index + data_size) > jb->buff.size){
-			if(!(jb->buff.ptr = tsk_realloc(jb->buff.ptr, (jb->buff.index + data_size)))){
+		if ((jb->buff.index + data_size) > jb->buff.size) {
+			if (!(jb->buff.ptr = tsk_realloc(jb->buff.ptr, (jb->buff.index + data_size)))) {
 				jb->buff.size = 0;
 				jb->buff.index = 0;
 				return 0;
@@ -132,24 +161,25 @@ static int tdav_speex_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, 
 		memcpy(&jb->buff.ptr[jb->buff.index], data, data_size);
 		jb->buff.index += data_size;
 
-		if(jb->buff.index >= jb->x_data_size){
+		if (jb->buff.index >= jb->x_data_size) {
 			tsk_size_t copied = 0;
-			for(i = 0; (i + jb->x_data_size) <= jb->buff.index; i += jb->x_data_size){
+			for (i = 0; (i + jb->x_data_size) <= jb->buff.index; i += jb->x_data_size) {
 				jb_packet.data = (char*)&jb->buff.ptr[i];
 				jb_packet.timestamp = (++jb->fake_seqnum * jb_packet.span);// reassembled pkt will have fake seqnum
 				jitter_buffer_put(jb->state, &jb_packet);
 				copied += jb->x_data_size;
 			}
-			if(copied == jb->buff.index){
+			if (copied == jb->buff.index) {
 				// all copied
 				jb->buff.index = 0;
 			}
-			else{
+			else {
 				memmove(&jb->buff.ptr[0], &jb->buff.ptr[copied], (jb->buff.index - copied));
 				jb->buff.index -= copied;
 			}
 		}
 	}
+	++jb->num_pkt_in;
     
     return 0;
 }
@@ -158,17 +188,18 @@ static tsk_size_t tdav_speex_jitterbuffer_get(tmedia_jitterbuffer_t* self, void*
 {
 	tdav_speex_jitterbuffer_t *jb = (tdav_speex_jitterbuffer_t *)self;
     JitterBufferPacket jb_packet;
-    int ret;
+    int ret, miss = 0;
+	tsk_size_t ret_size = 0;
 
-    if(!out_data || !out_size){
+    if (!out_data || !out_size) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return 0;
     }
-    if(!jb->state){
+    if (!jb->state) {
         TSK_DEBUG_ERROR("Invalid state");
         return 0;
     }
-	if(jb->x_data_size != out_size){ // consumer must request PTIME data
+	if (jb->x_data_size != out_size) { // consumer must request PTIME data
 		TSK_DEBUG_WARN("%d not expected as frame size. %u<>%u", out_size, jb->frame_duration, (out_size * 500)/jb->rate);
 		return 0;
 	}
@@ -177,32 +208,50 @@ static tsk_size_t tdav_speex_jitterbuffer_get(tmedia_jitterbuffer_t* self, void*
     jb_packet.len = out_size;
 
 	if ((ret = jitter_buffer_get(jb->state, &jb_packet, jb->frame_duration/*(out_size * 500)/jb->rate*/, tsk_null)) != JITTER_BUFFER_OK) {
-        switch(ret){
-            case JITTER_BUFFER_MISSING: /*TSK_DEBUG_INFO("JITTER_BUFFER_MISSING - %d", ret);*/ break;
-            case JITTER_BUFFER_INSERTION: /*TSK_DEBUG_INFO("JITTER_BUFFER_INSERTION - %d", ret);*/ break;
-            default: TSK_DEBUG_INFO("jitter_buffer_get() failed - %d", ret); break;
+		++jb->num_pkt_miss;
+        switch(ret) {
+			case JITTER_BUFFER_MISSING: 
+				/*TSK_DEBUG_INFO("JITTER_BUFFER_MISSING - %d", ret);*/
+				if (jb->num_pkt_miss > jb->num_pkt_miss_max /*too much missing pkts*/ && jb->num_pkt_in > jb->num_pkt_miss_max/*we're really receiving pkts*/) {
+					jb->num_pkt_miss = 0;
+					self->plugin->reset(self);
+					TSK_DEBUG_WARN("Too much missing audio pkts");
+				}
+				break;
+            case JITTER_BUFFER_INSERTION: 
+				/*TSK_DEBUG_INFO("JITTER_BUFFER_INSERTION - %d", ret);*/ 
+				break;
+            default:
+				TSK_DEBUG_INFO("jitter_buffer_get() failed - %d", ret);
+				break;
         }
-        jitter_buffer_update_delay(jb->state, &jb_packet, NULL);
-        return 0;
+        // jitter_buffer_update_delay(jb->state, &jb_packet, NULL);
+        //return 0;
     }
-    // jitter_buffer_update_delay(jitterbuffer->state, &jb_packet, NULL);
-
-    return out_size;
+	else {
+		jb->num_pkt_miss = 0; // reset
+		ret_size = jb_packet.len;
+	}
+    //jitter_buffer_update_delay(jb->state, &jb_packet, NULL);
+	
+    return ret_size;
 }
 
 static int tdav_speex_jitterbuffer_reset(tmedia_jitterbuffer_t* self)
 {
-	tdav_speex_jitterbuffer_t *jitterbuffer = (tdav_speex_jitterbuffer_t *)self;
-	if(jitterbuffer->state){
-		jitter_buffer_reset(jitterbuffer->state);
+	tdav_speex_jitterbuffer_t *jb = (tdav_speex_jitterbuffer_t *)self;
+	if (jb->state) {
+		jitter_buffer_reset(jb->state);
 	}
+	jb->num_pkt_in = 0;
+	jb->num_pkt_miss = 0;
 	return 0;
 }
 
 static int tdav_speex_jitterbuffer_close(tmedia_jitterbuffer_t* self)
 {
 	tdav_speex_jitterbuffer_t *jitterbuffer = (tdav_speex_jitterbuffer_t *)self;
-	if(jitterbuffer->state){
+	if (jitterbuffer->state) {
 		jitter_buffer_destroy(jitterbuffer->state);
 		jitterbuffer->state = tsk_null;
 	}
