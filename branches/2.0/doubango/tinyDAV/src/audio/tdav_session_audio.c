@@ -624,13 +624,18 @@ static int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M
 	tsk_bool_t updated = tsk_false;
 	tdav_session_av_t* base = TDAV_SESSION_AV(self);
 
-	if((ret = tdav_session_av_set_ro(base, m, &updated))){
+	if ((ret = tdav_session_av_set_ro(base, m, &updated))){
 		TSK_DEBUG_ERROR("tdav_session_av_set_ro(audio) failed");
 		return ret;
 	}
 
-	if(updated){
+	if (updated) {
 		tsk_safeobj_lock(base);
+		// reset audio jitter buffer (new Offer probably comes with new seq_nums or timestamps)
+		if (base->consumer) {
+			ret = tdav_consumer_audio_reset(TDAV_CONSUMER_AUDIO(base->consumer));
+		}
+		// destroy encoder to force requesting new one
 		TSK_OBJECT_SAFE_FREE(TDAV_SESSION_AUDIO(self)->encoder.codec);
 		tsk_safeobj_unlock(base);
 	}	

@@ -233,7 +233,7 @@ void tdav_consumer_audio_set_jitterbuffer(tdav_consumer_audio_t* self, struct tm
 /** Reset jitterbuffer */
 int tdav_consumer_audio_reset(tdav_consumer_audio_t* self){
 	int ret;
-	if(!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
