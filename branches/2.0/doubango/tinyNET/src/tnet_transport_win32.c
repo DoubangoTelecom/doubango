@@ -333,10 +333,10 @@ static transport_socket_xt* getSocket(transport_context_t *context, tnet_fd_t fd
 	tsk_size_t i;
 	transport_socket_xt* ret = 0;
 
-	if(context){
+	if (context) {
 		tsk_safeobj_lock(context);
-		for(i=0; i<context->count; i++){
-			if(context->sockets[i]->fd == fd){
+		for (i=0; i<context->count; i++) {
+			if (context->sockets[i]->fd == fd) {
 				ret = context->sockets[i];
 				break;
 			}
@@ -352,21 +352,21 @@ static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *tr
 {
 	transport_context_t *context;
 
-	if(TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)){
+	if (TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)) {
 #if !HAVE_OPENSSL
 		TSK_DEBUG_ERROR("Cannot create TLS socket: OpenSSL missing");
 		return -2;
 #endif
 	}
 
-	if((context = transport ? transport->context : tsk_null)){
+	if ((context = transport ? transport->context : tsk_null)) {
 		transport_socket_xt *sock = tsk_calloc(1, sizeof(transport_socket_xt));
 		sock->fd = fd;
 		sock->type = type;
 		sock->owner = take_ownership ? 1 : 0;
 
-		if((TNET_SOCKET_TYPE_IS_TLS(sock->type) || TNET_SOCKET_TYPE_IS_WSS(sock->type)) && transport->tls.enabled){
-			if(tlsHandle){
+		if ((TNET_SOCKET_TYPE_IS_TLS(sock->type) || TNET_SOCKET_TYPE_IS_WSS(sock->type)) && transport->tls.enabled) {
+			if (tlsHandle) {
 				sock->tlshandle = tsk_object_ref(tlsHandle);
 			}
 			else{
@@ -388,7 +388,7 @@ static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *tr
 
 		return 0;
 	}
-	else{
+	else {
 		TSK_DEBUG_ERROR("Context is Null.");
 		return -1;
 	}
@@ -401,15 +401,15 @@ static int removeSocket(int index, transport_context_t *context)
 
 	tsk_safeobj_lock(context);
 
-	if(index < (int)context->count){
+	if (index < (int)context->count) {
 
 		/* Close the socket if we are the owner. */
-		if(context->sockets[index]->owner){
+		if (context->sockets[index]->owner) {
 			tnet_sockfd_close(&(context->sockets[index]->fd));
 		}
 
 		/* Free tls context */
-		if(context->sockets[index]->tlshandle){
+		if (context->sockets[index]->tlshandle) {
 			TSK_OBJECT_SAFE_FREE(context->sockets[index]->tlshandle);
 		}
 		// Free socket
@@ -418,7 +418,7 @@ static int removeSocket(int index, transport_context_t *context)
 		// Close event
 		WSACloseEvent(context->events[index]);
 
-		for(i=index ; i<context->count-1; i++){			
+		for (i=index ; i<context->count-1; i++) {			
 			context->sockets[i] = context->sockets[i+1];
 			context->events[i] = context->events[i+1];
 		}
@@ -558,15 +558,14 @@ void* TSK_STDCALL tnet_transport_mainthread(void *param)
 
 	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d} with type {%d}...", transport->description, transport->master->ip, transport->master->port, transport->master->type);
 	
-	while(TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started)
-	{
+	while (TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started) {
 		/* Wait for multiple events */
-		if((evt = WSAWaitForMultipleEvents(context->count, context->events, FALSE, WSA_INFINITE, FALSE)) == WSA_WAIT_FAILED){
+		if ((evt = WSAWaitForMultipleEvents(context->count, context->events, FALSE, WSA_INFINITE, FALSE)) == WSA_WAIT_FAILED) {
 			TNET_PRINT_LAST_ERROR("WSAWaitForMultipleEvents have failed.");
 			goto bail;
 		}
 
-		if(!TSK_RUNNABLE(transport)->running && !TSK_RUNNABLE(transport)->started){
+		if (!TSK_RUNNABLE(transport)->running && !TSK_RUNNABLE(transport)->started) {
 			goto bail;
 		}
 	
@@ -576,12 +575,12 @@ void* TSK_STDCALL tnet_transport_mainthread(void *param)
 		/* Get active event and socket */
 		index = (evt - WSA_WAIT_EVENT_0);
 		active_event = context->events[index];
-		if(!(active_socket = context->sockets[index])){
+		if (!(active_socket = context->sockets[index])) {
 			goto done;
 		}
 
 		/* Get the network events flags */
-		if (WSAEnumNetworkEvents(active_socket->fd, active_event, &networkEvents) == SOCKET_ERROR){
+		if (WSAEnumNetworkEvents(active_socket->fd, active_event, &networkEvents) == SOCKET_ERROR) {
 			TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
 			TNET_PRINT_LAST_ERROR("WSAEnumNetworkEvents have failed.");
 
@@ -590,13 +589,12 @@ void* TSK_STDCALL tnet_transport_mainthread(void *param)
 		}
 
 		/*================== FD_ACCEPT ==================*/
-		if(networkEvents.lNetworkEvents & FD_ACCEPT)
-		{
+		if (networkEvents.lNetworkEvents & FD_ACCEPT) {
 			tnet_fd_t fd;
 			
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_ACCEPT", transport->description);
 
-			if(networkEvents.iErrorCode[FD_ACCEPT_BIT]){
+			if (networkEvents.iErrorCode[FD_ACCEPT_BIT]) {
 				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
 				TNET_PRINT_LAST_ERROR("ACCEPT FAILED.");
 				goto done;
@@ -616,14 +614,14 @@ void* TSK_STDCALL tnet_transport_mainthread(void *param)
 						}
 					}
 				}
-				if(WSAEventSelect(fd, context->events[context->count - 1], FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR){
+				if (WSAEventSelect(fd, context->events[context->count - 1], FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR) {
 					tnet_transport_remove_socket(transport, &fd);
 					TNET_PRINT_LAST_ERROR("WSAEventSelect() have failed.");
 					goto done;
 				}
 				TSK_RUNNABLE_ENQUEUE(transport, event_accepted, transport->callback_data, fd);
 			}
-			else{
+			else {
 				TNET_PRINT_LAST_ERROR("ACCEPT FAILED.");
 				goto done;
 			}
@@ -634,8 +632,7 @@ void* TSK_STDCALL tnet_transport_mainthread(void *param)
 		}
 
 		/*================== FD_CONNECT ==================*/
-		if(networkEvents.lNetworkEvents & FD_CONNECT)
-		{
+		if (networkEvents.lNetworkEvents & FD_CONNECT) {
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_CONNECT", transport->description);
 
 			if (networkEvents.iErrorCode[FD_CONNECT_BIT]) {
@@ -653,8 +650,7 @@ void* TSK_STDCALL tnet_transport_mainthread(void *param)
 
 
 		/*================== FD_READ ==================*/
-		if(networkEvents.lNetworkEvents & FD_READ)
-		{
+		if (networkEvents.lNetworkEvents & FD_READ) {
 			DWORD readCount = 0;
 			WSABUF wsaBuffer;
 
@@ -754,11 +750,10 @@ FD_READ_DONE:;
 		
 		
 		/*================== FD_WRITE ==================*/
-		if(networkEvents.lNetworkEvents & FD_WRITE)
-		{
+		if (networkEvents.lNetworkEvents & FD_WRITE) {
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_WRITE", transport->description);
 
-			if(networkEvents.iErrorCode[FD_WRITE_BIT]){
+			if (networkEvents.iErrorCode[FD_WRITE_BIT]) {
 				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
 				TNET_PRINT_LAST_ERROR("WRITE FAILED.");
 				goto done;
@@ -768,7 +763,7 @@ FD_READ_DONE:;
 
 
 		/*================== FD_CLOSE ==================*/
-		if(networkEvents.lNetworkEvents & FD_CLOSE){
+		if (networkEvents.lNetworkEvents & FD_CLOSE) {
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_CLOSE", transport->description);
 
 			TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, active_socket->fd);
@@ -786,7 +781,6 @@ FD_READ_DONE:;
 done:
 		/* unlock context */
 		tsk_safeobj_unlock(context);
-
 	} /* while(transport->running) */
 	
 
@@ -820,8 +814,8 @@ static tsk_object_t* transport_context_ctor(tsk_object_t * self, va_list * app)
 static tsk_object_t* transport_context_dtor(tsk_object_t * self)
 { 
 	transport_context_t *context = self;
-	if(context){
-		while(context->count){
+	if (context) {
+		while(context->count) {
 			removeSocket(0, context);
 		}
 		tsk_safeobj_deinit(context);

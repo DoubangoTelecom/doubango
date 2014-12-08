@@ -164,14 +164,16 @@ int tsk_semaphore_increment(tsk_semaphore_handle_t* handle)
 int tsk_semaphore_decrement(tsk_semaphore_handle_t* handle)
 {
 	int ret = EINVAL;
-	if(handle){
+	if (handle) {
 #if TSK_UNDER_WINDOWS
 #	   if TSK_UNDER_WINDOWS_RT
 	   ret = (WaitForSingleObjectEx((SEMAPHORE_T)handle, INFINITE, TRUE) == WAIT_OBJECT_0) ? 0 : -1;
 #	   else
 	   ret = (WaitForSingleObject((SEMAPHORE_T)handle, INFINITE) == WAIT_OBJECT_0) ? 0 : -1;
 #endif
-		if(ret)	TSK_DEBUG_ERROR("sem_wait function failed: %d", ret);
+	   if (ret)	{
+		   TSK_DEBUG_ERROR("sem_wait function failed: %d", ret);
+	   }
 #else
 		do { 
 			ret = sem_wait((SEMAPHORE_T)GET_SEM(handle)); 

@@ -35,6 +35,8 @@
 #	include <windows.h>
 #endif
 
+static void* TSK_STDCALL __async_join(void* self);
+
 /**@defgroup tsk_runnable_group Base class for runnable object.
 */
 
@@ -196,27 +198,27 @@ int tsk_runnable_set_priority(tsk_runnable_t *self, int32_t priority)
 int tsk_runnable_stop(tsk_runnable_t *self)
 {
 	int ret = -1;
-	if(self){
+	if (self) {
 		tsk_thread_id_t id_curr_thread;
-		if(!self->initialized) {
-			if(!self->running){
+		if (!self->initialized) {
+			if (!self->running) {
 				/* already deinitialized */
 				return 0;
 			}
-			else{
+			else {
 				/* should never happen */
 				TSK_DEBUG_ERROR("Not initialized.");
 				return -2;
 			}
 		}
-		else if(!self->running) {
+		else if (!self->running) {
 
-			if(self->started){
+			if (self->started) {
 				tsk_size_t count = 0;
 				/* Thread is started but not running ==> Give it time.*/
-				while(++count <= 5){
+				while (++count <= 5) {
 					tsk_thread_sleep(count * 200);
-					if(self->running){
+					if (self->running) {
 						goto stop;
 					}
 				}
@@ -233,10 +235,21 @@ stop:
 		// To avoid deadlock we don't join() the thread if this funcion is called from the "run()" function
 		// setting "self::running" to false is enough to exit the thread after the call to "TSK_RUNNABLE_RUN_BEGIN(self)"
 		id_curr_thread = tsk_thread_get_id();
-		if(tsk_thread_id_equals(&self->id_thread, &id_curr_thread)){
-			ret = tsk_thread_destroy(&(self->h_thread[0]));
+		if (tsk_thread_id_equals(&self->id_thread, &id_curr_thread)) {
+			tsk_runnable_t* copy = tsk_object_ref(TSK_OBJECT(self)); // "copy" will be null if this function is called in the "dtor()" because "refCount" is already equal to "zero".
+			TSK_DEBUG_INFO("tsk_thread_join(%s) called inside the thread(%lu) itself...delaying", copy ? "NOT null" : "null", id_curr_thread);			
+			if (!copy || self->h_thread[1]) {
+				if (self->h_thread[1]) { // must never happen
+					TSK_DEBUG_ERROR("Join already delayed");
+				}
+				ret = tsk_thread_destroy(&(self->h_thread[0]));
+				tsk_object_unref(TSK_OBJECT(copy));
+			}
+			else {
+				ret = tsk_thread_create(&(self->h_thread[1]), __async_join, copy);
+			}
 		}
-		else if((ret = tsk_thread_join(&(self->h_thread[0])))){
+		else if ((ret = tsk_thread_join(&(self->h_thread[0])))) {
 			self->running = tsk_true;
 			TSK_DEBUG_ERROR("Failed to join the thread.");
 			return ret;
@@ -248,13 +261,23 @@ stop:
 	return ret;
 }
 
+static void* TSK_STDCALL __async_join(void* arg)
+{
+	tsk_runnable_t *self = (tsk_runnable_t *)arg;
+	if (self) {
+		tsk_thread_join(&self->h_thread[0]);
+		return tsk_object_unref(TSK_OBJECT(self));
+	}
+	return self;
+}
+
 //=================================================================================================
 //	Runnable object definition
 //
 static tsk_object_t* tsk_runnable_ctor(tsk_object_t * self, va_list * app)
 {
 	tsk_runnable_t* runnable = (tsk_runnable_t*)self;
-	if(runnable){
+	if (runnable) {
 		
 	}
 	return self;
@@ -263,9 +286,13 @@ static tsk_object_t* tsk_runnable_ctor(tsk_object_t * self, va_list * app)
 static tsk_object_t* tsk_runnable_dtor(tsk_object_t * self)
 { 
 	tsk_runnable_t* runnable = (tsk_runnable_t*)self;
-	if(runnable){
+	if (runnable) {
 		/* stops runnable object (if running or started) */
-		tsk_runnable_stop(runnable);
+		tsk_runnable_stop(runnable); // join(runnable->h_thread[0])
+		if (runnable->h_thread[1]) {
+			tsk_thread_destroy(&(runnable->h_thread[1])); // must not be join()
+		}
+		TSK_DEBUG_INFO("*** tsk_runnable_t destroyed ***");
 	}
 	return self;
 }
