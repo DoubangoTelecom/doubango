@@ -625,7 +625,7 @@ static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self)
 	self->encoder.sEncParam.iInputCsp = videoFormatI420;
 	self->encoder.sEncParam.iSpatialLayerNum = 1;
 	self->encoder.sEncParam.iTemporalLayerNum = 1;
-	self->encoder.sEncParam.uiIntraPeriod = CISCO_H264_GOP_SIZE_IN_SECONDS;
+	self->encoder.sEncParam.uiIntraPeriod = (self->encoder.neg_fps * CISCO_H264_GOP_SIZE_IN_SECONDS);
 	self->encoder.sEncParam.iUsageType = CAMERA_VIDEO_REAL_TIME; // TODO: use "SCREEN_CONTENT_REAL_TIME" screencast 
 	self->encoder.sEncParam.iPicWidth = self->encoder.neg_width;
 	self->encoder.sEncParam.iPicHeight = self->encoder.neg_height;
