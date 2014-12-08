@@ -269,7 +269,7 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 	const uint8_t* pay_ptr = tsk_null;
 	tsk_size_t pay_size = 0;
 	int ret;
-	tsk_bool_t append_scp;
+	tsk_bool_t append_scp, end_of_unit;
 	tsk_bool_t sps_or_pps;
 	tsk_size_t retsize = 0, size_to_copy = 0;
 	static const tsk_size_t xmax_size = (3840 * 2160 * 3) >> 3; // >>3 instead of >>1 (not an error)
@@ -304,7 +304,7 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
       |F|NRI|  Type   |
       +---------------+
 	*/
-	if(*((uint8_t*)in_data) & 0x80){
+	if (*((uint8_t*)in_data) & 0x80) {
 		TSK_DEBUG_WARN("F=1");
 		/* reset accumulator */
 		h264->decoder.accumulator = 0;
@@ -312,7 +312,7 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 	}
 
 	/* get payload */
-	if((ret = tdav_codec_h264_get_pay(in_data, in_size, (const void**)&pay_ptr, &pay_size, &append_scp)) || !pay_ptr || !pay_size){
+	if ((ret = tdav_codec_h264_get_pay(in_data, in_size, (const void**)&pay_ptr, &pay_size, &append_scp, &end_of_unit)) || !pay_ptr || !pay_size){
 		TSK_DEBUG_ERROR("Depayloader failed to get H.264 content");
 		return 0;
 	}
@@ -322,23 +322,23 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 	sps_or_pps = append_scp && pay_ptr && ((pay_ptr[0] & 0x1F) == 7 || (pay_ptr[0] & 0x1F) == 8);
 	
 	// start-accumulator
-	if(!h264->decoder.accumulator){
-		if(size_to_copy > xmax_size){
+	if (!h264->decoder.accumulator) {
+		if (size_to_copy > xmax_size) {
 			TSK_DEBUG_ERROR("%u too big to contain valid encoded data. xmax_size=%u", size_to_copy, xmax_size);
 			return 0;
 		}
-		if(!(h264->decoder.accumulator = tsk_calloc(size_to_copy, sizeof(uint8_t)))){
+		if (!(h264->decoder.accumulator = tsk_calloc(size_to_copy, sizeof(uint8_t)))) {
 			TSK_DEBUG_ERROR("Failed to allocated new buffer");
 			return 0;
 		}
 		h264->decoder.accumulator_size = size_to_copy;
 	}
-	if((h264->decoder.accumulator_pos + size_to_copy) >= xmax_size){
+	if ((h264->decoder.accumulator_pos + size_to_copy) >= xmax_size) {
 		TSK_DEBUG_ERROR("BufferOverflow");
 		h264->decoder.accumulator_pos = 0;
 		return 0;
 	}
-	if((h264->decoder.accumulator_pos + size_to_copy) > h264->decoder.accumulator_size){
+	if ((h264->decoder.accumulator_pos + size_to_copy) > h264->decoder.accumulator_size) {
 		if(!(h264->decoder.accumulator = tsk_realloc(h264->decoder.accumulator, (h264->decoder.accumulator_pos + size_to_copy)))){
 			TSK_DEBUG_ERROR("Failed to reallocated new buffer");
 			h264->decoder.accumulator_pos = 0;
@@ -348,7 +348,7 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 		h264->decoder.accumulator_size = (h264->decoder.accumulator_pos + size_to_copy);
 	}
 
-	if(append_scp){
+	if (append_scp) {
 		memcpy(&((uint8_t*)h264->decoder.accumulator)[h264->decoder.accumulator_pos], H264_START_CODE_PREFIX, start_code_prefix_size);
 		h264->decoder.accumulator_pos += start_code_prefix_size;
 	}
@@ -361,13 +361,13 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 		// SPS and PPS should be bundled with IDR
 		TSK_DEBUG_INFO("Receiving SPS or PPS ...to be tied to an IDR");
 	}
-	else */if(rtp_hdr->marker){
-		if(h264->decoder.passthrough){
-			if(*out_max_size < h264->decoder.accumulator_pos){
-				if((*out_data = tsk_realloc(*out_data, h264->decoder.accumulator_pos))){
+	else */if (rtp_hdr->marker) {
+		if (h264->decoder.passthrough) {
+			if (*out_max_size < h264->decoder.accumulator_pos) {
+				if ((*out_data = tsk_realloc(*out_data, h264->decoder.accumulator_pos))) {
 					*out_max_size = h264->decoder.accumulator_pos;
 				}
-				else{
+				else {
 					*out_max_size = 0;
 					return 0;
 				}
@@ -378,13 +378,13 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 		else { // !h264->decoder.passthrough
 			/* decode the picture */
 			CHECK_HR(hr = h264->decoder.pInst->Process(h264->decoder.accumulator, h264->decoder.accumulator_pos, &pSampleOut));
-			if(pSampleOut) {
+			if (pSampleOut) {
 				CHECK_HR(hr = pSampleOut->GetBufferByIndex(0, &pBufferOut));
 
 				BYTE* pBufferPtr = NULL;
 				DWORD dwDataLength = 0;
 				CHECK_HR(hr = pBufferOut->GetCurrentLength(&dwDataLength));
-				if(dwDataLength > 0){
+				if (dwDataLength > 0) {
 					CHECK_HR(hr = pBufferOut->Lock(&pBufferPtr, NULL, NULL));
 					{					
 						/* IDR ? */
@@ -416,10 +416,10 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 	} // else if(rtp_hdr->marker)
 
 bail:
-	if(rtp_hdr->marker) {
+	if (rtp_hdr->marker) {
 		h264->decoder.accumulator_pos = 0;
 	}
-	if(FAILED(hr) /*|| (!pSampleOut && rtp_hdr->marker)*/){
+	if (FAILED(hr) /*|| (!pSampleOut && rtp_hdr->marker)*/){
 		TSK_DEBUG_INFO("Failed to decode the buffer with error code =%d, size=%u, append=%s", ret, h264->decoder.accumulator_pos, append_scp ? "yes" : "no");
 		if(TMEDIA_CODEC_VIDEO(self)->in.callback){
 			TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;

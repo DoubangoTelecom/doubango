@@ -317,8 +317,7 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 	const uint8_t* pay_ptr = tsk_null;
 	tsk_size_t pay_size = 0;
 	int ret;
-	tsk_bool_t append_scp;
-	tsk_bool_t sps_or_pps;
+	tsk_bool_t sps_or_pps, append_scp, end_of_unit;
 	tsk_size_t retsize = 0, size_to_copy = 0;
 	static const tsk_size_t xmax_size = (3840 * 2160 * 3) >> 3; // >>3 instead of >>1 (not an error)
 	static tsk_size_t start_code_prefix_size = sizeof(H264_START_CODE_PREFIX);
@@ -360,7 +359,7 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 	}
 
 	/* get payload */
-	if((ret = tdav_codec_h264_get_pay(in_data, in_size, (const void**)&pay_ptr, &pay_size, &append_scp)) || !pay_ptr || !pay_size){
+	if((ret = tdav_codec_h264_get_pay(in_data, in_size, (const void**)&pay_ptr, &pay_size, &append_scp, &end_of_unit)) || !pay_ptr || !pay_size){
 		TSK_DEBUG_ERROR("Depayloader failed to get H.264 content");
 		return 0;
 	}

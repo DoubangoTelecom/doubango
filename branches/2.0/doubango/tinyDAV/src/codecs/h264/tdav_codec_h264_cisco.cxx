@@ -330,7 +330,7 @@ static tsk_size_t tdav_codec_h264_cisco_decode(tmedia_codec_t* self, const void*
 	tsk_size_t pay_size = 0;
 	int ret;
 	long err = cmResultSuccess;
-	tsk_bool_t append_scp;
+	tsk_bool_t append_scp, end_of_unit, got_picture_ptr = tsk_false;
 	tsk_bool_t sps_or_pps;
 	tsk_size_t retsize = 0, size_to_copy = 0;
 	static const tsk_size_t xmax_size = (3840 * 2160 * 3) >> 3; // >>3 instead of >>1 (not an error)
@@ -368,7 +368,7 @@ static tsk_size_t tdav_codec_h264_cisco_decode(tmedia_codec_t* self, const void*
 	}
 
 	/* get payload */
-	if ((ret = tdav_codec_h264_get_pay(in_data, in_size, (const void**)&pay_ptr, &pay_size, &append_scp)) || !pay_ptr || !pay_size) {
+	if ((ret = tdav_codec_h264_get_pay(in_data, in_size, (const void**)&pay_ptr, &pay_size, &append_scp, &end_of_unit)) || !pay_ptr || !pay_size) {
 		TSK_DEBUG_ERROR("Depayloader failed to get H.264 content");
 		return 0;
 	}
@@ -412,20 +412,13 @@ static tsk_size_t tdav_codec_h264_cisco_decode(tmedia_codec_t* self, const void*
 	h264->decoder.accumulator_pos += pay_size;
 	// end-accumulator
 
-	if (rtp_hdr->marker) {
+	if (/*rtp_hdr->marker*/end_of_unit) {
 		/* decode the picture */
 		unsigned char* out_ptr[3] = { NULL };
 		int out_stride[2] = {0}, out_width = 0, out_height = 0;
 		tsk_size_t out_xsize;
-
-		/* end of frame */
-		int32_t endOfStream = 1;
-		err = h264->decoder.pInst->SetOption(DECODER_OPTION_END_OF_STREAM, (void*)&endOfStream);
-		if (err != cmResultSuccess) {
-			TSK_DEBUG_WARN("OpenH264 setting DECODER_OPTION_END_OF_STREAM failed: %ld", err);
-			goto bail;
-		}
 		
+		// Decode a Unit
 		err = h264->decoder.pInst->DecodeFrame(
 			(const unsigned char*)h264->decoder.accumulator, h264->decoder.accumulator_pos,
 			out_ptr, out_stride, out_width, out_height);
@@ -434,8 +427,8 @@ static tsk_size_t tdav_codec_h264_cisco_decode(tmedia_codec_t* self, const void*
 			TSK_DEBUG_WARN("OpenH264 DecodeFrame failed: %ld", err);
 			goto bail;
 		}
-		if (!(out_ptr[0] || out_ptr[1] || out_ptr[2]) || !(out_stride[0] || out_stride[1]) || !out_width || !out_height) {
-			TSK_DEBUG_INFO("OpenH264 skip result: %s,%d,%d,%d", (out_ptr[0] || out_ptr[1] || out_ptr[2])?"?":"null",(out_stride[0] || out_stride[1]), out_width,out_height);
+		// Do we have a complete frame?
+		if (!(got_picture_ptr = ((out_ptr[0] && out_ptr[1] && out_ptr[2]) && (out_stride[0] && out_stride[1]) && out_width && out_height))) {
 			goto bail;
 		}
 		out_xsize = (out_width * out_height * 3) >> 1; // I420
@@ -481,7 +474,16 @@ static tsk_size_t tdav_codec_h264_cisco_decode(tmedia_codec_t* self, const void*
 	} // else if(rtp_hdr->marker)
 
 bail:
-	if (rtp_hdr->marker) {
+	/* end of frame */
+	if (got_picture_ptr) {
+		int32_t endOfStream = 1;
+		err = h264->decoder.pInst->SetOption(DECODER_OPTION_END_OF_STREAM, (void*)&endOfStream);
+		if (err != cmResultSuccess) {
+			TSK_DEBUG_WARN("OpenH264 setting DECODER_OPTION_END_OF_STREAM failed: %ld", err);
+			goto bail;
+		}
+	}
+	if (/*rtp_hdr->marker*/end_of_unit) {
 		/* reset accumulator */
 		h264->decoder.accumulator_pos = 0;
 	}
