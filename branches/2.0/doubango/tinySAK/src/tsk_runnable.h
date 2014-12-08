@@ -56,7 +56,7 @@ typedef struct tsk_runnable_s
 	
 	const tsk_object_def_t *objdef;
 	
-	tsk_thread_handle_t* h_thread[1];
+	tsk_thread_handle_t* h_thread[2/*0=default,1=delayed*/];
 	tsk_runnable_func_run run;
 	tsk_thread_id_t id_thread; // no way to get this value from "h_thread" on WINXP
 	tsk_semaphore_handle_t *semaphore;

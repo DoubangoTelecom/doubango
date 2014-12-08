@@ -906,7 +906,7 @@ static void* TSK_STDCALL run(void* self)
 	tsk_list_item_t *curr;
 	tnet_transport_t *transport = self;
 	
-	TSK_DEBUG_INFO("Transport::run() - enter");
+	TSK_DEBUG_INFO("Transport::run(%s) - enter", transport->description);
 
 	/* create main thread */
 	if((ret = tsk_thread_create(transport->mainThreadId, tnet_transport_mainthread, transport))){ /* More important than "tsk_runnable_start" ==> start it first. */
@@ -962,7 +962,6 @@ static tsk_object_t* tnet_transport_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(transport->master);
 		TSK_OBJECT_SAFE_FREE(transport->context);
 		TSK_OBJECT_SAFE_FREE(transport->natt_ctx);
-		TSK_FREE(transport->description);
 		TSK_FREE(transport->local_ip);
 		TSK_FREE(transport->local_host);
 
@@ -971,6 +970,9 @@ static tsk_object_t* tnet_transport_dtor(tsk_object_t * self)
 		TSK_FREE(transport->tls.pbk);
 		TSK_FREE(transport->tls.pvk);
 		_tnet_transport_ssl_deinit(transport); // openssl contexts
+
+		TSK_DEBUG_INFO("*** Transport (%s) destroyed ***", transport->description);
+		TSK_FREE(transport->description);
 	}
 
 	return self;

@@ -69,73 +69,82 @@ extern const tsk_object_def_t *tdav_session_audio_dtmfe_def_t;
 static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trtp_rtp_packet_s* packet)
 {
 	tdav_session_audio_t* audio = (tdav_session_audio_t*)callback_data;
+	tmedia_codec_t* codec = tsk_null;
 	tdav_session_av_t* base = (tdav_session_av_t*)callback_data;
+	int ret = -1;
 
-	if(!audio || !packet || !packet->header){
+	if (!audio || !packet || !packet->header) {
 		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
+		goto bail;
 	}
 
-	if(audio->is_started && base->consumer && base->consumer->is_started){
+	if (audio->is_started && base->consumer && base->consumer->is_started) {
 		tsk_size_t out_size = 0;
 
 		// Find the codec to use to decode the RTP payload
-		if(!audio->decoder.codec || audio->decoder.payload_type != packet->header->payload_type){
+		if (!audio->decoder.codec || audio->decoder.payload_type != packet->header->payload_type) {
 			tsk_istr_t format;
 			TSK_OBJECT_SAFE_FREE(audio->decoder.codec);
 			tsk_itoa(packet->header->payload_type, &format);
-			if(!(audio->decoder.codec = tmedia_codec_find_by_format(TMEDIA_SESSION(audio)->neg_codecs, format)) || !audio->decoder.codec->plugin || !audio->decoder.codec->plugin->decode){
+			if (!(audio->decoder.codec = tmedia_codec_find_by_format(TMEDIA_SESSION(audio)->neg_codecs, format)) || !audio->decoder.codec->plugin || !audio->decoder.codec->plugin->decode){
 				TSK_DEBUG_ERROR("%s is not a valid payload for this session", format);
-				return -2;
+				ret = -2;
+				goto bail;
 			}
 			audio->decoder.payload_type = packet->header->payload_type;
 		}
+		// ref() the codec to be able to use it short time after stop(SAFE_FREE(codec))
+		if (!(codec = tsk_object_ref(TSK_OBJECT(audio->decoder.codec)))) {
+			TSK_DEBUG_ERROR("Failed to get decoder codec");
+			goto bail;
+		}
 		
 		// Open codec if not already done
-		if(!TMEDIA_CODEC(audio->decoder.codec)->opened){
-			int ret;
+		if (!TMEDIA_CODEC(codec)->opened) {
 			tsk_safeobj_lock(base);
-			if((ret = tmedia_codec_open(audio->decoder.codec))){
+			if ((ret = tmedia_codec_open(codec))) {
 				tsk_safeobj_unlock(base);
-				TSK_DEBUG_ERROR("Failed to open [%s] codec", audio->decoder.codec->plugin->desc);
+				TSK_DEBUG_ERROR("Failed to open [%s] codec", codec->plugin->desc);
 				TSK_OBJECT_SAFE_FREE(audio->decoder.codec);
-				return ret;
+				goto bail;
 			}
 			tsk_safeobj_unlock(base);
 		}
 		// Decode data
-		out_size = audio->decoder.codec->plugin->decode(audio->decoder.codec, packet->payload.data, packet->payload.size, &audio->decoder.buffer, &audio->decoder.buffer_size, packet->header);
-		if(out_size){
+		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &audio->decoder.buffer, &audio->decoder.buffer_size, packet->header);
+		if (out_size && audio->is_started) { // check "is_started" again ...to be sure stop() not called by another thread 
 			void* buffer = audio->decoder.buffer;
 			tsk_size_t size = out_size;
 
 			// resample if needed
-			if((base->consumer->audio.out.rate && base->consumer->audio.out.rate != audio->decoder.codec->in.rate) || (base->consumer->audio.out.channels && base->consumer->audio.out.channels != TMEDIA_CODEC_AUDIO(audio->decoder.codec)->in.channels)){
+			if ((base->consumer->audio.out.rate && base->consumer->audio.out.rate != codec->in.rate) || (base->consumer->audio.out.channels && base->consumer->audio.out.channels != TMEDIA_CODEC_AUDIO(codec)->in.channels)) {
 				tsk_size_t resampler_result_size = 0;
 				int bytesPerSample = (base->consumer->audio.bits_per_sample >> 3);
 
-				if(!audio->decoder.resampler.instance){
+				if (!audio->decoder.resampler.instance) {
 					TSK_DEBUG_INFO("Create audio resampler(%s) for consumer: rate=%d->%d, channels=%d->%d, bytesPerSample=%d", 
-						audio->decoder.codec->plugin->desc, 
-						audio->decoder.codec->in.rate, base->consumer->audio.out.rate,
-						TMEDIA_CODEC_AUDIO(audio->decoder.codec)->in.channels, base->consumer->audio.out.channels,
+						codec->plugin->desc, 
+						codec->in.rate, base->consumer->audio.out.rate,
+						TMEDIA_CODEC_AUDIO(codec)->in.channels, base->consumer->audio.out.channels,
 						bytesPerSample);
 					audio->decoder.resampler.instance = _tdav_session_audio_resampler_create(
 							bytesPerSample, 
-							audio->decoder.codec->in.rate, base->consumer->audio.out.rate, 
+							codec->in.rate, base->consumer->audio.out.rate, 
 							base->consumer->audio.ptime, 
-							TMEDIA_CODEC_AUDIO(audio->decoder.codec)->in.channels, base->consumer->audio.out.channels, 
+							TMEDIA_CODEC_AUDIO(codec)->in.channels, base->consumer->audio.out.channels, 
 							TDAV_AUDIO_RESAMPLER_DEFAULT_QUALITY, 
 							&audio->decoder.resampler.buffer, &audio->decoder.resampler.buffer_size
 						);
 				}
-				if(!audio->decoder.resampler.instance){
+				if (!audio->decoder.resampler.instance) {
 					TSK_DEBUG_ERROR("No resampler to handle data");
-					return -5;
+					ret = -5;
+					goto bail;
 				}
 				if(!(resampler_result_size = tmedia_resampler_process(audio->decoder.resampler.instance, buffer, size/bytesPerSample, audio->decoder.resampler.buffer, audio->decoder.resampler.buffer_size/bytesPerSample))){
 					TSK_DEBUG_ERROR("Failed to process audio resampler input buffer");
-					return -6;
+					ret = -6;
+					goto bail;
 				}
 				
 				buffer = audio->decoder.resampler.buffer;
@@ -143,17 +152,23 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 			}
 
 			// adjust the gain
-			if(base->consumer->audio.gain){
+			if (base->consumer->audio.gain) {
 				_tdav_session_audio_apply_gain(buffer, size, base->consumer->audio.bits_per_sample, base->consumer->audio.gain);
 			}
 			// consume the frame
 			tmedia_consumer_consume(base->consumer, buffer, size, packet->header);
 		}
 	}
-	else{
+	else {
 		TSK_DEBUG_INFO("Session audio not ready");
 	}
-	return 0;
+
+	// everything is ok
+	ret = 0;
+
+bail:
+	tsk_object_unref(TSK_OBJECT(codec));
+	return ret;
 }
 
 // Producer callback (From the producer to the network). Will encode() data before sending
@@ -164,23 +179,23 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 	tdav_session_audio_t* audio = (tdav_session_audio_t*)callback_data;
 	tdav_session_av_t* base = (tdav_session_av_t*)callback_data;
 
-	if(!audio){
+	if (!audio) {
 		TSK_DEBUG_ERROR("Null session");
 		return 0;
 	}
 
 	// do nothing if session is held
 	// when the session is held the end user will get feedback he also has possibilities to put the consumer and producer on pause
-	if(TMEDIA_SESSION(audio)->lo_held){
+	if (TMEDIA_SESSION(audio)->lo_held) {
 		return 0;
 	}
 	
 	// get best negotiated codec if not already done
 	// the encoder codec could be null when session is renegotiated without re-starting (e.g. hold/resume)
-	if(!audio->encoder.codec){
+	if (!audio->encoder.codec) {
 		const tmedia_codec_t* codec;
 		tsk_safeobj_lock(base);
-		if(!(codec = tdav_session_av_get_best_neg_codec(base))){
+		if (!(codec = tdav_session_av_get_best_neg_codec(base))) {
 			TSK_DEBUG_ERROR("No codec matched");
 			tsk_safeobj_unlock(base);
 			return -2;
@@ -189,14 +204,14 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 		tsk_safeobj_unlock(base);
 	}
 
-	if(audio->is_started && base->rtp_manager && base->rtp_manager->is_started){
+	if (audio->is_started && base->rtp_manager && base->rtp_manager->is_started) {
 		/* encode */
 		tsk_size_t out_size = 0;
 
 		// Open codec if not already done
-		if(!audio->encoder.codec->opened){
+		if (!audio->encoder.codec->opened) {
 			tsk_safeobj_lock(base);
-			if((ret = tmedia_codec_open(audio->encoder.codec))){
+			if ((ret = tmedia_codec_open(audio->encoder.codec))) {
 				tsk_safeobj_unlock(base);
 				TSK_DEBUG_ERROR("Failed to open [%s] codec", audio->encoder.codec->plugin->desc);
 				return -4;
@@ -204,8 +219,8 @@ static int tdav_session_audio_producer_enc_cb(const void* callback_data, const v
 			tsk_safeobj_unlock(base);
 		}
 		// check if we're sending DTMF or not
-		if(audio->is_sending_dtmf_events){
-			if(base->rtp_manager){
+		if (audio->is_sending_dtmf_events) {
+			if (base->rtp_manager) {
 				// increment the timestamp
 				base->rtp_manager->rtp.timestamp += TMEDIA_CODEC_PCM_FRAME_SIZE_AUDIO_ENCODING(audio->encoder.codec)/*duration*/;
 			}
