@@ -7,6 +7,7 @@ export DEBUG=no
 export FFMPEG=yes
 export LIBYUV=yes
 export VPX=yes
+export OPENH264=yes
 export OPUS=yes
 export OPENCORE_AMR=yes
 export SPEEX_CODEC=yes
@@ -34,6 +35,8 @@ then
 	export HOME=$HOME/android-projects/output/commercial
 	export ENABLE_NONFREE=no
 	export ENABLE_GPL=no
+	export FFMPEG=no # Do not use FFmpeg-LGPL because we're using static linking on Android
+	export ILBC=no #LGPL
 elif [ x$1 = "xlgpl" ]
 then
 	echo "************************"
@@ -60,6 +63,9 @@ if [ x$LIBYUV = "xno" ]; then
 fi
 if [ x$VPX = "xno" ]; then
 	export OPTIONS="${OPTIONS} --without-vpx"
+fi
+if [ x$OPENH264 = "xno" ]; then
+	export OPTIONS="${OPTIONS} --without-openh264"
 fi
 if [ x$OPUS = "xno" ]; then
 	export OPTIONS="${OPTIONS} --without-opus"

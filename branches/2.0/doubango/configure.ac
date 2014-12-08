@@ -442,6 +442,10 @@ if test $want_ffmpeg != no; then
 fi
 AM_CONDITIONAL([USE_FFMPEG], [test $have_ffmpeg = yes])
 
+
+########################################################
+# X264
+########################################################
 AM_CONDITIONAL(USE_X264, [test $target_os:$enable_gpl = android:yes]) # X264 is always there for Android and statically linked
 AC_SUBST(LIBX264_LIBADD, "-lx264")
 AC_ARG_WITH(x264, [  --with-x264 IMPORTANT: deprecated to be removed ],[], [])
