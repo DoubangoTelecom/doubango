@@ -51,8 +51,8 @@ uint8_t H264_START_CODE_PREFIX[4] = { 0x00, 0x00, 0x00, 0x01 };
 #define H264_FUB_HEADER_SIZE				4
 #define H264_NAL_AGG_MAX_SIZE			65535
 
-int tdav_codec_h264_get_fua_pay(const uint8_t* in_data, tsk_size_t in_size, const void** out_data, tsk_size_t *out_size, tsk_bool_t* append_scp);
-int tdav_codec_h264_get_nalunit_pay(const uint8_t* in_data, tsk_size_t in_size, const void** out_data, tsk_size_t *out_size);
+static int tdav_codec_h264_get_fua_pay(const uint8_t* in_data, tsk_size_t in_size, const void** out_data, tsk_size_t *out_size, tsk_bool_t* append_scp, tsk_bool_t* end_of_unit);
+static int tdav_codec_h264_get_nalunit_pay(const uint8_t* in_data, tsk_size_t in_size, const void** out_data, tsk_size_t *out_size);
 
 // profile_level_id MUST be a "null-terminated" string
 int tdav_codec_h264_parse_profile(const char* profile_level_id, profile_idc_t *p_idc, profile_iop_t *p_iop, level_idc_t *l_idc)
@@ -158,11 +158,11 @@ int tdav_codec_h264_parse_profile(const char* profile_level_id, profile_idc_t *p
 	return 0;
 }
 
-int tdav_codec_h264_get_pay(const void* in_data, tsk_size_t in_size, const void** out_data, tsk_size_t *out_size, tsk_bool_t* append_scp)
+int tdav_codec_h264_get_pay(const void* in_data, tsk_size_t in_size, const void** out_data, tsk_size_t *out_size, tsk_bool_t* append_scp, tsk_bool_t* end_of_unit)
 {
 	const uint8_t* pdata = (const uint8_t*)in_data;
 	uint8_t nal_type;
-	if(!in_data || !in_size || !out_data || !out_size){
+	if (!in_data || !in_size || !out_data || !out_size || !append_scp || !end_of_unit) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -177,7 +177,7 @@ int tdav_codec_h264_get_pay(const void* in_data, tsk_size_t in_size, const void*
       |F|NRI|  Type   |
       +---------------+
 	*/
-	switch((nal_type = (pdata[0] & 0x1F))){
+	switch ((nal_type = (pdata[0] & 0x1F))) {
 		case undefined_0:
 		case undefined_30:
 		case undefined_31:
@@ -188,9 +188,10 @@ int tdav_codec_h264_get_pay(const void* in_data, tsk_size_t in_size, const void*
 		case fu_b:
 			break;
 		case fu_a:
-			return tdav_codec_h264_get_fua_pay(pdata, in_size, out_data, out_size, append_scp);
+			return tdav_codec_h264_get_fua_pay(pdata, in_size, out_data, out_size, append_scp, end_of_unit);
 		default: /* NAL unit (1-23) */
-			*append_scp = tsk_true;//(nal_type != 7 && nal_type != 8); // SPS or PPS
+			*append_scp = tsk_true; //(nal_type != 7 && nal_type != 8); // SPS or PPS
+			*end_of_unit = tsk_true;
 			return tdav_codec_h264_get_nalunit_pay(pdata, in_size, out_data, out_size);
 	}
 
@@ -199,9 +200,9 @@ int tdav_codec_h264_get_pay(const void* in_data, tsk_size_t in_size, const void*
 }
 
 
-int tdav_codec_h264_get_fua_pay(const uint8_t* in_data, tsk_size_t in_size, const void** out_data, tsk_size_t *out_size, tsk_bool_t* append_scp)
+static int tdav_codec_h264_get_fua_pay(const uint8_t* in_data, tsk_size_t in_size, const void** out_data, tsk_size_t *out_size, tsk_bool_t* append_scp, tsk_bool_t* end_of_unit)
 {
-	if(in_size <=H264_FUA_HEADER_SIZE){
+	if (in_size <=H264_FUA_HEADER_SIZE) {
 		TSK_DEBUG_ERROR("Too short");
 		return -1;
 	}
@@ -236,7 +237,7 @@ int tdav_codec_h264_get_fua_pay(const uint8_t* in_data, tsk_size_t in_size, cons
       +---------------+
 	*/
 
-    if(((in_data[1] & 0x80) /*S*/)){
+    if (((in_data[1] & 0x80) /*S*/)) {
         /* discard "FU indicator" */
         *out_data = (in_data + H264_NAL_UNIT_TYPE_HEADER_SIZE);
         *out_size = (in_size - H264_NAL_UNIT_TYPE_HEADER_SIZE);
@@ -251,16 +252,25 @@ int tdav_codec_h264_get_fua_pay(const uint8_t* in_data, tsk_size_t in_size, cons
         // F, NRI and Type
         *((uint8_t*)*out_data) = (in_data[0] & 0xe0) /* F,NRI from "FU indicator"*/ | (in_data[1] & 0x1f) /* type from "FU header" */;
     }
-    else{
+    else {
         *append_scp = tsk_false;
         *out_data = (in_data + H264_FUA_HEADER_SIZE);
         *out_size = (in_size - H264_FUA_HEADER_SIZE);
     }
+	/*
+	 E:     1 bit
+          When set to one, the End bit indicates the end of a fragmented
+          NAL unit, i.e., the last byte of the payload is also the last
+          byte of the fragmented NAL unit.  When the following FU
+          payload is not the last fragment of a fragmented NAL unit, the
+          End bit is set to zero.
+	  */
+	*end_of_unit = (((in_data[1] & 0x40) /*E*/)) ? tsk_true : tsk_false;
 
 	return 0;
 }
 
-int tdav_codec_h264_get_nalunit_pay(const uint8_t* in_data, tsk_size_t in_size, const void** out_data, tsk_size_t *out_size)
+static int tdav_codec_h264_get_nalunit_pay(const uint8_t* in_data, tsk_size_t in_size, const void** out_data, tsk_size_t *out_size)
 {
 
 /*	5.6. Single NAL Unit Packet
