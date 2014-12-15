@@ -23,6 +23,8 @@
 
 #if HAVE_COREAUDIO_AUDIO_UNIT
 
+#include "tinydav/tdav_apple.h"
+
 #include "tsk_string.h"
 #include "tsk_list.h"
 #include "tsk_safeobj.h"
@@ -203,9 +205,15 @@ int tdav_audiounit_handle_start(tdav_audiounit_handle_t* self)
 	}
 	
 	tsk_safeobj_lock(inst);
-	if((!inst->started || inst->interrupted) && (status = AudioOutputUnitStart(inst->audioUnit))){
-		TSK_DEBUG_ERROR("AudioOutputUnitStart failed with status=%ld", (signed long)status);
-	}
+    status = (OSStatus)tdav_apple_enable_audio();
+    if (status == noErr) {
+        if ((!inst->started || inst->interrupted) && (status = AudioOutputUnitStart(inst->audioUnit))) {
+            TSK_DEBUG_ERROR("AudioOutputUnitStart failed with status=%ld", (signed long)status);
+        }
+    }
+    else {
+        TSK_DEBUG_ERROR("tdav_apple_enable_audio() failed with status=%ld", (signed long)status);
+    }
     inst->started = (status == noErr) ? tsk_true : tsk_false;
     if (inst->started) inst->interrupted = 0;
 	tsk_safeobj_unlock(inst);
@@ -318,7 +326,7 @@ int tdav_audiounit_handle_interrupt(tdav_audiounit_handle_t* self, tsk_bool_t in
         }
         else {
 #if TARGET_OS_IPHONE
-            status = AudioSessionSetActive(true);
+            status = (OSStatus)tdav_apple_enable_audio();
             if (status != noErr) {
                 TSK_DEBUG_ERROR("AudioSessionSetActive failed with status=%ld", (signed long)status);
                 goto bail;

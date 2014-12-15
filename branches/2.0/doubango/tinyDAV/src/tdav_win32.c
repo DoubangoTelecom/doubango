@@ -1,7 +1,6 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,9 +21,6 @@
 /**@file tdav_win32.c
  * @brief tinyDAV WIN32 helper functions.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinydav/tdav_win32.h"
 
