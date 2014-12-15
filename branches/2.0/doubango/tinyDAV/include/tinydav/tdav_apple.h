@@ -23,79 +23,17 @@
 #ifndef TDAV_APPLE_H
 #define TDAV_APPLE_H
 
+#include "tinydav_config.h"
+
 #if TDAV_UNDER_APPLE
 
-#include <AudioToolbox/AudioToolbox.h>
+TDAV_BEGIN_DECLS
 
-#include "tsk_debug.h"
+int tdav_apple_init();
+int tdav_apple_enable_audio();
+int tdav_apple_deinit();
 
-#if TARGET_OS_IPHONE
-// deprecated in iOS7+
-static void _AudioSessionInterruptionListener(void * inClientData, UInt32 inInterruptionState)
-{
-    switch(inInterruptionState) {
-        case kAudioSessionBeginInterruption:
-            {
-                TSK_DEBUG_INFO("_AudioSessionInterruptionListener:kAudioSessionBeginInterruption");
-                break;
-            }
-        case kAudioSessionEndInterruption:
-            {
-                TSK_DEBUG_INFO("_AudioSessionInterruptionListener:kAudioSessionEndInterruption");
-                break;
-            }
-        default:
-            {
-                TSK_DEBUG_INFO("_AudioSessionInterruptionListener:%u", (unsigned int)inInterruptionState);
-                break;
-            }
-    }
-}
-#endif
-
-static int tdav_apple_init()
-{
-	// initialize audio session
-#if TARGET_OS_IPHONE
-	OSStatus status;
-	status = AudioSessionInitialize(NULL, NULL, _AudioSessionInterruptionListener, NULL);
-	if(status){
-		TSK_DEBUG_ERROR("AudioSessionInitialize() failed with status code=%d", (int32_t)status);
-		return -1;
-	}
-	
-	// enable record/playback
-	UInt32 audioCategory = kAudioSessionCategory_PlayAndRecord;
-	status = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(audioCategory), &audioCategory);
-	if(status){
-		TSK_DEBUG_ERROR("AudioSessionSetProperty(kAudioSessionProperty_AudioCategory) failed with status code=%d", (int32_t)status);
-		return -2;
-	}
-	
-	// allow mixing
-	UInt32 allowMixing = true;
-	status = AudioSessionSetProperty(kAudioSessionProperty_OverrideCategoryMixWithOthers, sizeof(allowMixing), &allowMixing);
-	if(status){
-		TSK_DEBUG_ERROR("AudioSessionSetProperty(kAudioSessionProperty_OverrideCategoryMixWithOthers) failed with status code=%d", (int32_t)status);
-		return -3;
-	}
-	
-	// enable audio session
-	status = AudioSessionSetActive(true);
-	if(status){
-		TSK_DEBUG_ERROR("AudioSessionSetActive(true) failed with status code=%d", (int32_t)status);
-		return -4;
-	}
-#endif
-	return 0;
-}
-
-static int tdav_apple_deinit()
-{
-	// maybe other code use the session
-	// OSStatus status = AudioSessionSetActive(false);
-	return 0;
-}
+TDAV_END_DECLS
 
 #endif /* TDAV_UNDER_APPLE */
 

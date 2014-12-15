@@ -432,8 +432,7 @@ bool SipStack::stop()
 
 bool SipStack::initialize()
 {
-	if(!g_bInitialized)
-	{
+	if (!g_bInitialized) {
 		int ret;
 		
 		if((ret = tnet_startup())){
@@ -451,7 +450,7 @@ bool SipStack::initialize()
 
 bool SipStack::deInitialize()
 {
-	if(SipStack::g_bInitialized){
+	if (SipStack::g_bInitialized) {
 		tdav_deinit();
 		tnet_cleanup();
 		SipStack::g_bInitialized = false;
