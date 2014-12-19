@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2012-2015 Doubango Telecom <http://www.doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,12 +20,10 @@
 
 /**@file tmedia_imageattr.c
  * @brief 'image-attr' parser as per RFC 6236
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
  */
 #include "tinymedia/tmedia_imageattr.h"
 
+#include "tsk_ragel_state.h"
 #include "tsk_debug.h"
 
 #include <stdlib.h>
@@ -167,6 +163,7 @@ int tmedia_imageattr_parse(tmedia_imageattr_xt* self, const void* in_data, tsk_s
 	tmedia_imageattr_xyrange_xt* xyrange = tsk_null;
 	tmedia_imageattr_srange_xt* srange = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(eof);
 	(void)(tmedia_machine_imageattr_first_final);
@@ -175,6 +172,7 @@ int tmedia_imageattr_parse(tmedia_imageattr_xt* self, const void* in_data, tsk_s
 	%%write init;
 	tmedia_imageattr_reset(self);
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Parsing failed to parse image-attr=%s", (char*)in_data);

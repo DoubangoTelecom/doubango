@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/tsdp_parser_header_M.rl" */
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,9 +23,6 @@
 
 /**@file tsdp_header_M.c
  * @brief SDP "m=" header (Media Descriptions).
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
  * 
  */
 #include "tinysdp/headers/tsdp_header_M.h"
@@ -42,7 +37,7 @@
 *	Ragel state machine.
 */
 
-/* #line 83 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 78 "./ragel/tsdp_parser_header_M.rl" */
 
 
 
@@ -183,8 +178,9 @@ tsdp_header_M_t *tsdp_header_M_parse(const char *data, tsk_size_t size)
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 188 "./src/headers/tsdp_header_M.c" */
+/* #line 184 "./src/headers/tsdp_header_M.c" */
 static const char _tsdp_machine_parser_header_M_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4
@@ -268,19 +264,19 @@ static const int tsdp_machine_parser_header_M_error = 0;
 static const int tsdp_machine_parser_header_M_en_main = 1;
 
 
-/* #line 224 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 220 "./ragel/tsdp_parser_header_M.rl" */
 	(void)(tsdp_machine_parser_header_M_first_final);
 	(void)(tsdp_machine_parser_header_M_error);
 	(void)(tsdp_machine_parser_header_M_en_main);
 	
-/* #line 277 "./src/headers/tsdp_header_M.c" */
+/* #line 273 "./src/headers/tsdp_header_M.c" */
 	{
 	cs = tsdp_machine_parser_header_M_start;
 	}
 
-/* #line 228 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 224 "./ragel/tsdp_parser_header_M.rl" */
 	
-/* #line 284 "./src/headers/tsdp_header_M.c" */
+/* #line 280 "./src/headers/tsdp_header_M.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -355,36 +351,36 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 48 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 43 "./ragel/tsdp_parser_header_M.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 52 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 47 "./ragel/tsdp_parser_header_M.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_M->media);
 	}
 	break;
 	case 2:
-/* #line 56 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 51 "./ragel/tsdp_parser_header_M.rl" */
 	{
 		TSK_PARSER_SET_UINT(hdr_M->port);
 	}
 	break;
 	case 3:
-/* #line 64 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 59 "./ragel/tsdp_parser_header_M.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_M->proto);
 	}
 	break;
 	case 4:
-/* #line 68 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 63 "./ragel/tsdp_parser_header_M.rl" */
 	{
 		TSK_PARSER_ADD_STRING(hdr_M->FMTs);
 	}
 	break;
-/* #line 388 "./src/headers/tsdp_header_M.c" */
+/* #line 384 "./src/headers/tsdp_header_M.c" */
 		}
 	}
 
@@ -401,18 +397,18 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 3:
-/* #line 64 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 59 "./ragel/tsdp_parser_header_M.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_M->proto);
 	}
 	break;
 	case 4:
-/* #line 68 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 63 "./ragel/tsdp_parser_header_M.rl" */
 	{
 		TSK_PARSER_ADD_STRING(hdr_M->FMTs);
 	}
 	break;
-/* #line 416 "./src/headers/tsdp_header_M.c" */
+/* #line 412 "./src/headers/tsdp_header_M.c" */
 		}
 	}
 	}
@@ -420,12 +416,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 229 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 225 "./ragel/tsdp_parser_header_M.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 427 "./src/headers/tsdp_header_M.c" */
+/* #line 424 "./src/headers/tsdp_header_M.c" */
 12
-/* #line 230 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 227 "./ragel/tsdp_parser_header_M.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"m=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_M);
@@ -433,6 +430,7 @@ _again:
 	
 	return hdr_M;
 }
+
 
 // for A headers, use "tsdp_header_A_removeAll_by_field()"
 int tsdp_header_M_remove(tsdp_header_M_t* self, tsdp_header_type_t type)
@@ -813,7 +811,6 @@ int tsdp_header_M_resume(tsdp_header_M_t* self, tsk_bool_t local)
 	}
 	return 0;
 }
-
 
 //
 //int tsdp_header_M_set(tsdp_header_M_t* self, ...)

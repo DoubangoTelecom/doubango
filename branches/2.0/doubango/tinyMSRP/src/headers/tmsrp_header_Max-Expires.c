@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
 /*
-* Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2009-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,10 +22,6 @@
 
 /**@file tmsrp_header_Max_Expires.c
  * @brief MSRP 'Max-Expires' header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinymsrp/headers/tmsrp_header_Max-Expires.h"
 
@@ -41,7 +35,7 @@
 *	Ragel state machine.
 */
 
-/* #line 61 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
+/* #line 55 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
 
 
 
@@ -78,8 +72,9 @@ tmsrp_header_Max_Expires_t *tmsrp_header_Max_Expires_parse(const char *data, tsk
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 83 "./src/headers/tmsrp_header_Max-Expires.c" */
+/* #line 78 "./src/headers/tmsrp_header_Max-Expires.c" */
 static const char _tmsrp_machine_parser_header_Max_Expires_actions[] = {
 	0, 1, 0, 1, 1
 };
@@ -149,20 +144,20 @@ static const int tmsrp_machine_parser_header_Max_Expires_error = 0;
 static const int tmsrp_machine_parser_header_Max_Expires_en_main = 1;
 
 
-/* #line 98 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
+/* #line 93 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
 	(void)(eof);
 	(void)(tmsrp_machine_parser_header_Max_Expires_first_final);
 	(void)(tmsrp_machine_parser_header_Max_Expires_error);
 	(void)(tmsrp_machine_parser_header_Max_Expires_en_main);
 	
-/* #line 159 "./src/headers/tmsrp_header_Max-Expires.c" */
+/* #line 154 "./src/headers/tmsrp_header_Max-Expires.c" */
 	{
 	cs = tmsrp_machine_parser_header_Max_Expires_start;
 	}
 
-/* #line 103 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
+/* #line 98 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
 	
-/* #line 166 "./src/headers/tmsrp_header_Max-Expires.c" */
+/* #line 161 "./src/headers/tmsrp_header_Max-Expires.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -237,18 +232,18 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
+/* #line 41 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 51 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
+/* #line 45 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
 	{
 		TSK_PARSER_SET_INTEGER_EX(hdr_Max_Expires->value, int64_t, atoi64)
 	}
 	break;
-/* #line 252 "./src/headers/tmsrp_header_Max-Expires.c" */
+/* #line 247 "./src/headers/tmsrp_header_Max-Expires.c" */
 		}
 	}
 
@@ -265,12 +260,12 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 1:
-/* #line 51 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
+/* #line 45 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
 	{
 		TSK_PARSER_SET_INTEGER_EX(hdr_Max_Expires->value, int64_t, atoi64)
 	}
 	break;
-/* #line 274 "./src/headers/tmsrp_header_Max-Expires.c" */
+/* #line 269 "./src/headers/tmsrp_header_Max-Expires.c" */
 		}
 	}
 	}
@@ -278,12 +273,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 104 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
+/* #line 99 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 285 "./src/headers/tmsrp_header_Max-Expires.c" */
+/* #line 281 "./src/headers/tmsrp_header_Max-Expires.c" */
 16
-/* #line 105 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
+/* #line 101 "./ragel/tmsrp_parser_header_Max-Expires.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Max-Expires' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Max_Expires);

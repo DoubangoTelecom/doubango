@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/tmedia_content_cpim.rl" */
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,9 +22,6 @@
 
 /**@file tmedia_content_cpim.c
  * @brief Common Presence and Instant Messaging (CPIM): Message Format (RFC 3862)
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
  */
 #include "tinymedia/content/tmedia_content_cpim.h"
 
@@ -66,7 +61,7 @@ A complete message looks something like this:
 *	Ragel state machine.
 */
 
-/* #line 129 "./ragel/tmedia_content_cpim.rl" */
+/* #line 124 "./ragel/tmedia_content_cpim.rl" */
 
 
 
@@ -83,8 +78,9 @@ static int tmedia_content_cpim_parse(tmedia_content_t* self, const void* in_data
 	char* hvalue = tsk_null;
 	tsk_bool_t parsing_mime_headers = tsk_true;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 88 "./src/content/tmedia_content_cpim.c" */
+/* #line 84 "./src/content/tmedia_content_cpim.c" */
 static const char _tmedia_machine_content_cpim_actions[] = {
 	0, 1, 0, 1, 3, 1, 4, 1, 
 	5, 2, 0, 4, 2, 0, 5, 2, 
@@ -174,20 +170,20 @@ static const int tmedia_machine_content_cpim_error = 0;
 static const int tmedia_machine_content_cpim_en_main = 1;
 
 
-/* #line 146 "./ragel/tmedia_content_cpim.rl" */
+/* #line 142 "./ragel/tmedia_content_cpim.rl" */
 	(void)(eof);
 	(void)(tmedia_machine_content_cpim_first_final);
 	(void)(tmedia_machine_content_cpim_error);
 	(void)(tmedia_machine_content_cpim_en_main);
 	
-/* #line 184 "./src/content/tmedia_content_cpim.c" */
+/* #line 180 "./src/content/tmedia_content_cpim.c" */
 	{
 	cs = tmedia_machine_content_cpim_start;
 	}
 
-/* #line 151 "./ragel/tmedia_content_cpim.rl" */
+/* #line 147 "./ragel/tmedia_content_cpim.rl" */
 	
-/* #line 191 "./src/content/tmedia_content_cpim.c" */
+/* #line 187 "./src/content/tmedia_content_cpim.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -262,31 +258,31 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 72 "./ragel/tmedia_content_cpim.rl" */
+/* #line 67 "./ragel/tmedia_content_cpim.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 76 "./ragel/tmedia_content_cpim.rl" */
+/* #line 71 "./ragel/tmedia_content_cpim.rl" */
 	{
 		parsing_mime_headers = tsk_true;
 	}
 	break;
 	case 2:
-/* #line 80 "./ragel/tmedia_content_cpim.rl" */
+/* #line 75 "./ragel/tmedia_content_cpim.rl" */
 	{
 		parsing_mime_headers = tsk_false;
 	}
 	break;
 	case 3:
-/* #line 84 "./ragel/tmedia_content_cpim.rl" */
+/* #line 79 "./ragel/tmedia_content_cpim.rl" */
 	{
 		TSK_PARSER_SET_STRING(hname);
 	}
 	break;
 	case 4:
-/* #line 88 "./ragel/tmedia_content_cpim.rl" */
+/* #line 83 "./ragel/tmedia_content_cpim.rl" */
 	{
 		tmedia_content_header_t* header;
 		TSK_PARSER_SET_STRING(hvalue);
@@ -307,7 +303,7 @@ _match:
 		}
 	}
 	break;
-/* #line 311 "./src/content/tmedia_content_cpim.c" */
+/* #line 307 "./src/content/tmedia_content_cpim.c" */
 		}
 	}
 
@@ -324,13 +320,13 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 72 "./ragel/tmedia_content_cpim.rl" */
+/* #line 67 "./ragel/tmedia_content_cpim.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 5:
-/* #line 108 "./ragel/tmedia_content_cpim.rl" */
+/* #line 103 "./ragel/tmedia_content_cpim.rl" */
 	{
 		int len = (int)(p  - tag_start);
 		if(len && tag_start){
@@ -341,7 +337,7 @@ _again:
 		}
 	}
 	break;
-/* #line 345 "./src/content/tmedia_content_cpim.c" */
+/* #line 341 "./src/content/tmedia_content_cpim.c" */
 		}
 	}
 	}
@@ -349,15 +345,16 @@ _again:
 	_out: {}
 	}
 
-/* #line 152 "./ragel/tmedia_content_cpim.rl" */
+/* #line 148 "./ragel/tmedia_content_cpim.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	TSK_FREE(hname);
 	TSK_FREE(hvalue);
 
 	if( cs < 
-/* #line 359 "./src/content/tmedia_content_cpim.c" */
+/* #line 356 "./src/content/tmedia_content_cpim.c" */
 17
-/* #line 156 "./ragel/tmedia_content_cpim.rl" */
+/* #line 153 "./ragel/tmedia_content_cpim.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse CPIM content");
 		return -1;

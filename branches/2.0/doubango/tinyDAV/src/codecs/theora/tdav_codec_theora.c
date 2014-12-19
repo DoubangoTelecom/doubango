@@ -341,7 +341,7 @@ tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, t
 						AVPacket packet;
 						/* Perform decoding */
 						av_init_packet(&packet);
-						packet.size = theora->decoder.accumulator_pos;
+						packet.size = (int)theora->decoder.accumulator_pos;
 						packet.data = theora->decoder.accumulator;
 						ret = avcodec_decode_video2(theora->decoder.context, theora->decoder.picture, &got_picture_ptr, &packet);
 						
@@ -370,8 +370,8 @@ tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, t
 								}
 							}
 							/* copy picture into a linear buffer */
-							avpicture_layout((AVPicture *)theora->decoder.picture, theora->decoder.context->pix_fmt, theora->decoder.context->width, theora->decoder.context->height,
-								*out_data, retsize);
+							avpicture_layout((AVPicture *)theora->decoder.picture, theora->decoder.context->pix_fmt, (int)theora->decoder.context->width, (int)theora->decoder.context->height,
+								*out_data, (int)retsize);
 						}
 						/* in all cases: reset accumulator */
 						theora->decoder.accumulator_pos = 0;
@@ -411,7 +411,7 @@ tsk_size_t tdav_codec_theora_decode(tmedia_codec_t* self, const void* in_data, t
 						if((pdata[3]>>6) == Not_Fragmented || (pdata[3]>>6) == End_Fragment || rtp_hdr->marker){
 							if(theora->decoder.conf_pkt->size > THEORA_IDENT_HEADER_SIZE){
 								const uint8_t* conf_ptr = theora->decoder.conf_pkt->data;
-								int setup_size = theora->decoder.conf_pkt->size - THEORA_IDENT_HEADER_SIZE;
+								int setup_size = (int)theora->decoder.conf_pkt->size - THEORA_IDENT_HEADER_SIZE;
 								int extradata_size = (2 + THEORA_IDENT_HEADER_SIZE) + (2 + setup_size) + (2 + sizeof(__theora_comment_hdr));
 								if(conf_ptr[0] == 0x80 && conf_ptr[THEORA_IDENT_HEADER_SIZE] == 0x82){ /* Do not check for 't'h'e'o'r'a' */
 									/* save configration identification */
@@ -805,7 +805,7 @@ int tdav_codec_theora_send(tdav_codec_theora_t* self, const uint8_t* data, tsk_s
 
 	while(size){
 		pay_size = TSK_MIN(THEORA_RTP_PAYLOAD_SIZE, size);
-		pay_hdr[4] = pay_size>>8, pay_hdr[5] = pay_size & 0xFF;
+		pay_hdr[4] = (uint8_t)(pay_size >> 8), pay_hdr[5] = (uint8_t)(pay_size & 0xFF);
 
 		if(frag){
 			if(first){

@@ -77,7 +77,9 @@ int tdav_producer_audio_init(tdav_producer_audio_t* self)
 */
 int tdav_producer_audio_cmp(const tsk_object_t* producer1, const tsk_object_t* producer2)
 {
-	return (TDAV_PRODUCER_AUDIO(producer1) - TDAV_PRODUCER_AUDIO(producer2));
+	int ret;
+	tsk_subsat_int32_ptr(producer1, producer2, &ret);
+	return ret;
 }
 
 int tdav_producer_audio_set(tdav_producer_audio_t* self, const tmedia_param_t* param)

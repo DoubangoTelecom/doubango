@@ -316,7 +316,7 @@ tsk_size_t tdav_codec_h261_decode(tmedia_codec_t* self, const void* in_data, tsk
 
 		/* decode the picture */
 		av_init_packet(&packet);
-		packet.size = h261->decoder.accumulator_pos;
+		packet.size = (int)h261->decoder.accumulator_pos;
 		packet.data = h261->decoder.accumulator;
 		ret = avcodec_decode_video2(h261->decoder.context, h261->decoder.picture, &got_picture_ptr, &packet);
 
@@ -328,8 +328,8 @@ tsk_size_t tdav_codec_h261_decode(tmedia_codec_t* self, const void* in_data, tsk
 			TMEDIA_CODEC_VIDEO(h261)->in.width = h261->decoder.context->width;
 			TMEDIA_CODEC_VIDEO(h261)->in.height = h261->decoder.context->height;
 			/* copy picture into a linear buffer */
-			avpicture_layout((AVPicture *)h261->decoder.picture, h261->decoder.context->pix_fmt, h261->decoder.context->width, h261->decoder.context->height,
-				*out_data, retsize);
+			avpicture_layout((AVPicture *)h261->decoder.picture, h261->decoder.context->pix_fmt, (int)h261->decoder.context->width, (int)h261->decoder.context->height,
+				*out_data, (int)retsize);
 		}
 		/* in all cases: reset accumulator */
 		h261->decoder.accumulator_pos = 0;		

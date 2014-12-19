@@ -138,7 +138,7 @@ tnet_dhcp6_reply_t* tnet_dhcp6_send_request(const tnet_dhcp6_ctx_t* ctx, tnet_dh
 			else if(ret == 0){	/* timeout ==> do nothing */
 			}
 			else{	/* there is data to read. */
-				tsk_size_t len = 0;
+				unsigned int len = 0;
 				void* data = 0;
 
 				/* Check how how many bytes are pending */

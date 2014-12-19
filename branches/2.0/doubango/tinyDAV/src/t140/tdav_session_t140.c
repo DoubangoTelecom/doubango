@@ -648,7 +648,7 @@ static int _tdav_session_t140_recv_red(tdav_session_t140_t* self, const struct t
              |0|   Block PT  |
              +-+-+-+-+-+-+-+-+
 			 */
-			block_length = in_size;
+			block_length = (uint16_t)in_size;
 			seq_num = packet->header->seq_num;
 			timestamp_offset = 0;
 			block_add = tsk_true;
@@ -659,7 +659,7 @@ static int _tdav_session_t140_recv_red(tdav_session_t140_t* self, const struct t
 				|1| block PT=7  |  timestamp offset         |   block length    |
 				+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 			*/
-			seq_num = packet->header->seq_num - (red_hdrs_count - 1 - i); // inferred by counting backwards
+			seq_num = (int32_t)(packet->header->seq_num - (red_hdrs_count - 1 - i)); // inferred by counting backwards
 			block_add = (pkt_loss_start != -1 && (seq_num <= pkt_loss_start && pkt_loss_start >= seq_num));	
 			timestamp_offset = ((red_hdr[1] << 8) | red_hdr[2]) >> 2;
 			block_length = ((red_hdr[2] & 0x03) << 8) | red_hdr[3];

@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2009-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +21,6 @@
 /**@file tmsrp_header_Message_Id.c
  * @brief MSRP 'Message-Id' header.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinymsrp/headers/tmsrp_header_Message-ID.h"
 
@@ -78,7 +73,7 @@ int tmsrp_header_Message_ID_tostring(const tmsrp_header_t* header, tsk_buffer_t*
 	{
 		const tmsrp_header_Message_ID_t *Message_Id = (const tmsrp_header_Message_ID_t *)header;
 		if(Message_Id->value){
-			return tsk_buffer_append(output, Message_Id->value, strlen(Message_Id->value));
+			return tsk_buffer_append(output, Message_Id->value, tsk_strlen(Message_Id->value));
 		}
 		return 0;
 	}
@@ -96,6 +91,7 @@ tmsrp_header_Message_ID_t *tmsrp_header_Message_ID_parse(const char *data, tsk_s
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(eof);
 	(void)(tmsrp_machine_parser_header_Message_Id_first_final);
@@ -103,7 +99,8 @@ tmsrp_header_Message_ID_t *tmsrp_header_Message_ID_parse(const char *data, tsk_s
 	(void)(tmsrp_machine_parser_header_Message_Id_en_main);
 	%%write init;
 	%%write exec;
-	
+	TSK_RAGEL_DISABLE_WARNINGS_END()
+
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse 'Message-Id' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Message_Id);

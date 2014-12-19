@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/tmsrp_parser_message.rl" */
 /*
-* Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2009-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,10 +21,6 @@
 */
 /**@file tmsrp_machine_message.rl
  * @brief Ragel file.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinymsrp/parsers/tmsrp_parser_message.h"
 
@@ -50,12 +44,13 @@ static void set_payload(tmsrp_message_t* msrp_msg, const void* ptr, tsk_size_t l
 		header = tsk_object_unref(header); \
 	}
 
-/* #line 268 "./ragel/tmsrp_parser_message.rl" */
+/* #line 262 "./ragel/tmsrp_parser_message.rl" */
 
 
+TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 /* Ragel data */
 
-/* #line 59 "./src/parsers/tmsrp_parser_message.c" */
+/* #line 54 "./src/parsers/tmsrp_parser_message.c" */
 static const char _tmsrp_machine_message_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -3398,7 +3393,8 @@ static const int tmsrp_machine_message_error = 0;
 static const int tmsrp_machine_message_en_main = 1;
 
 
-/* #line 272 "./ragel/tmsrp_parser_message.rl" */
+/* #line 267 "./ragel/tmsrp_parser_message.rl" */
+TSK_RAGEL_DISABLE_WARNINGS_END()
 
 tmsrp_message_t* tmsrp_message_parse(const void *input, tsk_size_t size)
 {
@@ -3436,18 +3432,19 @@ tmsrp_message_t* tmsrp_message_parse_2(const void *input, tsk_size_t size, tsk_s
 		goto bail;
 	}
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	/* Ragel init */
 	
-/* #line 3442 "./src/parsers/tmsrp_parser_message.c" */
+/* #line 3439 "./src/parsers/tmsrp_parser_message.c" */
 	{
 	cs = tmsrp_machine_message_start;
 	}
 
-/* #line 311 "./ragel/tmsrp_parser_message.rl" */
+/* #line 308 "./ragel/tmsrp_parser_message.rl" */
 
 	/* Ragel execute */
 	
-/* #line 3451 "./src/parsers/tmsrp_parser_message.c" */
+/* #line 3448 "./src/parsers/tmsrp_parser_message.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -3482,7 +3479,7 @@ _resume:
 	case 0: {
 		_widec = (short)(128 + ((*p) - -128));
 		if ( 
-/* #line 198 "./ragel/tmsrp_parser_message.rl" */
+/* #line 192 "./ragel/tmsrp_parser_message.rl" */
 
 		( into_endline || (((pe-p) >7/*seven hyphens*/) && (msrp_msg->tid) && tsk_strniequals(msrp_msg->tid, (p+7), tsk_strlen(msrp_msg->tid))) )
 	 ) _widec += 256;
@@ -3556,117 +3553,117 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 58 "./ragel/tmsrp_parser_message.rl" */
+/* #line 52 "./ragel/tmsrp_parser_message.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 65 "./ragel/tmsrp_parser_message.rl" */
+/* #line 59 "./ragel/tmsrp_parser_message.rl" */
 	{
 		//FIXME: TMSRP_MSG_PARSER_ADD_HEADER(Authentication_Info);
 		TSK_DEBUG_WARN("Authentication_Info Not implemented");
 	}
 	break;
 	case 2:
-/* #line 70 "./ragel/tmsrp_parser_message.rl" */
+/* #line 64 "./ragel/tmsrp_parser_message.rl" */
 	{
 		//FIXME: TMSRP_MSG_PARSER_ADD_HEADER(Authorization);
 		TSK_DEBUG_WARN("Authorization Not implemented");
 	}
 	break;
 	case 3:
-/* #line 75 "./ragel/tmsrp_parser_message.rl" */
+/* #line 69 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TMSRP_MSG_PARSER_ADD_HEADER(Byte_Range);
 	}
 	break;
 	case 4:
-/* #line 79 "./ragel/tmsrp_parser_message.rl" */
+/* #line 73 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TMSRP_MSG_PARSER_ADD_HEADER(Content_Type);
 	}
 	break;
 	case 5:
-/* #line 83 "./ragel/tmsrp_parser_message.rl" */
+/* #line 77 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TMSRP_MSG_PARSER_ADD_HEADER(Expires);
 	}
 	break;
 	case 6:
-/* #line 87 "./ragel/tmsrp_parser_message.rl" */
+/* #line 81 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TMSRP_MSG_PARSER_ADD_HEADER(Failure_Report);
 	}
 	break;
 	case 7:
-/* #line 91 "./ragel/tmsrp_parser_message.rl" */
+/* #line 85 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TMSRP_MSG_PARSER_ADD_HEADER(From_Path);
 	}
 	break;
 	case 8:
-/* #line 95 "./ragel/tmsrp_parser_message.rl" */
+/* #line 89 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TMSRP_MSG_PARSER_ADD_HEADER(Max_Expires);
 	}
 	break;
 	case 9:
-/* #line 99 "./ragel/tmsrp_parser_message.rl" */
+/* #line 93 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TMSRP_MSG_PARSER_ADD_HEADER(Message_ID);
 	}
 	break;
 	case 10:
-/* #line 103 "./ragel/tmsrp_parser_message.rl" */
+/* #line 97 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TMSRP_MSG_PARSER_ADD_HEADER(Min_Expires);
 	}
 	break;
 	case 11:
-/* #line 107 "./ragel/tmsrp_parser_message.rl" */
+/* #line 101 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TMSRP_MSG_PARSER_ADD_HEADER(Status);
 	}
 	break;
 	case 12:
-/* #line 111 "./ragel/tmsrp_parser_message.rl" */
+/* #line 105 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TMSRP_MSG_PARSER_ADD_HEADER(Success_Report);
 	}
 	break;
 	case 13:
-/* #line 115 "./ragel/tmsrp_parser_message.rl" */
+/* #line 109 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TMSRP_MSG_PARSER_ADD_HEADER(To_Path);
 	}
 	break;
 	case 14:
-/* #line 119 "./ragel/tmsrp_parser_message.rl" */
+/* #line 113 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TMSRP_MSG_PARSER_ADD_HEADER(Use_Path);
 	}
 	break;
 	case 15:
-/* #line 123 "./ragel/tmsrp_parser_message.rl" */
+/* #line 117 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TMSRP_MSG_PARSER_ADD_HEADER(WWW_Authenticate);
 	}
 	break;
 	case 16:
-/* #line 127 "./ragel/tmsrp_parser_message.rl" */
+/* #line 121 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TMSRP_MSG_PARSER_ADD_HEADER(Dummy);
 	}
 	break;
 	case 17:
-/* #line 131 "./ragel/tmsrp_parser_message.rl" */
+/* #line 125 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TSK_PARSER_SET_STRING(msrp_msg->tid);
 	}
 	break;
 	case 18:
-/* #line 135 "./ragel/tmsrp_parser_message.rl" */
+/* #line 129 "./ragel/tmsrp_parser_message.rl" */
 	{
 		if(msrp_msg->type == tmsrp_unknown){
 			msrp_msg->type = tmsrp_request;
@@ -3681,7 +3678,7 @@ _match:
 	}
 	break;
 	case 19:
-/* #line 149 "./ragel/tmsrp_parser_message.rl" */
+/* #line 143 "./ragel/tmsrp_parser_message.rl" */
 	{
 		if(msrp_msg->type == tmsrp_unknown){
 			msrp_msg->type = tmsrp_response;
@@ -3695,19 +3692,19 @@ _match:
 	}
 	break;
 	case 20:
-/* #line 160 "./ragel/tmsrp_parser_message.rl" */
+/* #line 154 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TSK_PARSER_SET_STRING(msrp_msg->line.response.comment);
 	}
 	break;
 	case 21:
-/* #line 165 "./ragel/tmsrp_parser_message.rl" */
+/* #line 159 "./ragel/tmsrp_parser_message.rl" */
 	{
 		parse_payload(msrp_msg, tag_start, &p, pe, &payload_parsed); // will update "p"
 	}
 	break;
 	case 22:
-/* #line 169 "./ragel/tmsrp_parser_message.rl" */
+/* #line 163 "./ragel/tmsrp_parser_message.rl" */
 	{
 		// if the msrp message contain a valid content-type, then gob it otherwise continue until we reach the endline
 		int len;
@@ -3720,13 +3717,13 @@ _match:
 	}
 	break;
 	case 23:
-/* #line 180 "./ragel/tmsrp_parser_message.rl" */
+/* #line 174 "./ragel/tmsrp_parser_message.rl" */
 	{
 		TSK_PARSER_SET_STRING(msrp_msg->end_line.tid);
 	}
 	break;
 	case 24:
-/* #line 184 "./ragel/tmsrp_parser_message.rl" */
+/* #line 178 "./ragel/tmsrp_parser_message.rl" */
 	{
 		if(tag_start){
 			msrp_msg->end_line.cflag = *tag_start;
@@ -3735,18 +3732,18 @@ _match:
 	}
 	break;
 	case 25:
-/* #line 191 "./ragel/tmsrp_parser_message.rl" */
+/* #line 185 "./ragel/tmsrp_parser_message.rl" */
 	{
 		*msg_size = (p - (const char*)input) + 1;
 	}
 	break;
 	case 26:
-/* #line 195 "./ragel/tmsrp_parser_message.rl" */
+/* #line 189 "./ragel/tmsrp_parser_message.rl" */
 	{
 		into_endline = tsk_true;
 	}
 	break;
-/* #line 3750 "./src/parsers/tmsrp_parser_message.c" */
+/* #line 3747 "./src/parsers/tmsrp_parser_message.c" */
 		}
 	}
 
@@ -3759,13 +3756,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 314 "./ragel/tmsrp_parser_message.rl" */
+/* #line 311 "./ragel/tmsrp_parser_message.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 
 	/* Check result */
 	if( cs < 
-/* #line 3767 "./src/parsers/tmsrp_parser_message.c" */
+/* #line 3765 "./src/parsers/tmsrp_parser_message.c" */
 701
-/* #line 316 "./ragel/tmsrp_parser_message.rl" */
+/* #line 314 "./ragel/tmsrp_parser_message.rl" */
  ){
 		//TSK_DEBUG_ERROR("Failed to parse MSRP message."); --> very common case(stream): do not bother us...
 		TSK_OBJECT_SAFE_FREE(msrp_msg);

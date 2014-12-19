@@ -1,20 +1,18 @@
 /*
-* Copyright (C) 2011 Mamadou Diop.
+* Copyright (C) 2011-2015 Mamadou DIOP.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -22,9 +20,6 @@
 
 /**@file tdav_speex_jitterbuffer.c
  * @brief Speex Audio jitterbuffer Plugin
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
-
  */
 #include "tinydav/audio/tdav_speex_jitterbuffer.h"
 #include "tinyrtp/rtp/trtp_rtp_header.h"
@@ -93,7 +88,7 @@ static int tdav_speex_jitterbuffer_open(tmedia_jitterbuffer_t* self, uint32_t fr
 	TSK_DEBUG_INFO("Default Jitter buffer margin=%d", tmp);
 	jitter_buffer_ctl(jitterbuffer->state, JITTER_BUFFER_GET_MAX_LATE_RATE, &tmp);
 	TSK_DEBUG_INFO("Default Jitter max late rate=%d", tmp);
-	
+
 	if ((tmp = tmedia_defaults_get_jb_margin()) >= 0) {
 		jitter_buffer_ctl(jitterbuffer->state, JITTER_BUFFER_SET_MARGIN, &tmp);
 		TSK_DEBUG_INFO("New Jitter buffer margin=%d", tmp);
@@ -120,26 +115,26 @@ static int tdav_speex_jitterbuffer_tick(tmedia_jitterbuffer_t* self)
 static int tdav_speex_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, tsk_size_t data_size, const tsk_object_t* proto_hdr)
 {
 	tdav_speex_jitterbuffer_t *jb = (tdav_speex_jitterbuffer_t *)self;
-    const trtp_rtp_header_t* rtp_hdr;
-    JitterBufferPacket jb_packet;
+	const trtp_rtp_header_t* rtp_hdr;
+	JitterBufferPacket jb_packet;
 	static uint16_t seq_num = 0;
 
-    if (!data || !data_size || !proto_hdr) {
-        TSK_DEBUG_ERROR("Invalid parameter");
-        return -1;
-    }
-    
-    if (!jb->state) {
-        TSK_DEBUG_ERROR("Invalid state");
-        return -2;
-    }
-    
-    rtp_hdr = TRTP_RTP_HEADER(proto_hdr);
+	if (!data || !data_size || !proto_hdr) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if (!jb->state) {
+		TSK_DEBUG_ERROR("Invalid state");
+		return -2;
+	}
+
+	rtp_hdr = TRTP_RTP_HEADER(proto_hdr);
 
 	jb_packet.user_data = 0;
 	jb_packet.span = jb->frame_duration;
 	jb_packet.len = jb->x_data_size;
-    
+
 	if (jb->x_data_size == data_size) { /* ptime match */
 		jb_packet.data = data;
 		jb_packet.sequence = rtp_hdr->seq_num;
@@ -180,61 +175,61 @@ static int tdav_speex_jitterbuffer_put(tmedia_jitterbuffer_t* self, void* data, 
 		}
 	}
 	++jb->num_pkt_in;
-    
-    return 0;
+
+	return 0;
 }
 
 static tsk_size_t tdav_speex_jitterbuffer_get(tmedia_jitterbuffer_t* self, void* out_data, tsk_size_t out_size)
 {
 	tdav_speex_jitterbuffer_t *jb = (tdav_speex_jitterbuffer_t *)self;
-    JitterBufferPacket jb_packet;
-    int ret, miss = 0;
+	JitterBufferPacket jb_packet;
+	int ret, miss = 0;
 	tsk_size_t ret_size = 0;
 
-    if (!out_data || !out_size) {
-        TSK_DEBUG_ERROR("Invalid parameter");
-        return 0;
-    }
-    if (!jb->state) {
-        TSK_DEBUG_ERROR("Invalid state");
-        return 0;
-    }
+	if (!out_data || !out_size) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+	if (!jb->state) {
+		TSK_DEBUG_ERROR("Invalid state");
+		return 0;
+	}
 	if (jb->x_data_size != out_size) { // consumer must request PTIME data
-		TSK_DEBUG_WARN("%d not expected as frame size. %u<>%u", out_size, jb->frame_duration, (out_size * 500)/jb->rate);
+		TSK_DEBUG_WARN("%d not expected as frame size. %u<>%u", out_size, jb->frame_duration, (out_size * 500) / jb->rate);
 		return 0;
 	}
 
-    jb_packet.data = out_data;
-    jb_packet.len = out_size;
+	jb_packet.data = out_data;
+	jb_packet.len = (spx_uint32_t)out_size;
 
 	if ((ret = jitter_buffer_get(jb->state, &jb_packet, jb->frame_duration/*(out_size * 500)/jb->rate*/, tsk_null)) != JITTER_BUFFER_OK) {
 		++jb->num_pkt_miss;
-        switch(ret) {
-			case JITTER_BUFFER_MISSING: 
-				/*TSK_DEBUG_INFO("JITTER_BUFFER_MISSING - %d", ret);*/
-				if (jb->num_pkt_miss > jb->num_pkt_miss_max /*too much missing pkts*/ && jb->num_pkt_in > jb->num_pkt_miss_max/*we're really receiving pkts*/) {
-					jb->num_pkt_miss = 0;
-					self->plugin->reset(self);
-					TSK_DEBUG_WARN("Too much missing audio pkts");
-				}
-				break;
-            case JITTER_BUFFER_INSERTION: 
-				/*TSK_DEBUG_INFO("JITTER_BUFFER_INSERTION - %d", ret);*/ 
-				break;
-            default:
-				TSK_DEBUG_INFO("jitter_buffer_get() failed - %d", ret);
-				break;
-        }
-        // jitter_buffer_update_delay(jb->state, &jb_packet, NULL);
-        //return 0;
-    }
+		switch (ret) {
+		case JITTER_BUFFER_MISSING:
+			/*TSK_DEBUG_INFO("JITTER_BUFFER_MISSING - %d", ret);*/
+			if (jb->num_pkt_miss > jb->num_pkt_miss_max /*too much missing pkts*/ && jb->num_pkt_in > jb->num_pkt_miss_max/*we're really receiving pkts*/) {
+				jb->num_pkt_miss = 0;
+				self->plugin->reset(self);
+				TSK_DEBUG_WARN("Too much missing audio pkts");
+			}
+			break;
+		case JITTER_BUFFER_INSERTION:
+			/*TSK_DEBUG_INFO("JITTER_BUFFER_INSERTION - %d", ret);*/
+			break;
+		default:
+			TSK_DEBUG_INFO("jitter_buffer_get() failed - %d", ret);
+			break;
+		}
+		// jitter_buffer_update_delay(jb->state, &jb_packet, NULL);
+		//return 0;
+	}
 	else {
 		jb->num_pkt_miss = 0; // reset
 		ret_size = jb_packet.len;
 	}
-    //jitter_buffer_update_delay(jb->state, &jb_packet, NULL);
-	
-    return ret_size;
+	//jitter_buffer_update_delay(jb->state, &jb_packet, NULL);
+
+	return ret_size;
 }
 
 static int tdav_speex_jitterbuffer_reset(tmedia_jitterbuffer_t* self)
@@ -269,7 +264,7 @@ static tsk_object_t* tdav_speex_jitterbuffer_ctor(tsk_object_t * self, va_list *
 {
 	tdav_speex_jitterbuffer_t *jitterbuffer = self;
 	TSK_DEBUG_INFO("Create SpeexDSP jitter buffer");
-	if(jitterbuffer){
+	if (jitterbuffer){
 		/* init base */
 		tmedia_jitterbuffer_init(TMEDIA_JITTER_BUFFER(jitterbuffer));
 		/* init self */
@@ -278,13 +273,13 @@ static tsk_object_t* tdav_speex_jitterbuffer_ctor(tsk_object_t * self, va_list *
 }
 /* destructor */
 static tsk_object_t* tdav_speex_jitterbuffer_dtor(tsk_object_t * self)
-{ 
+{
 	tdav_speex_jitterbuffer_t *jb = self;
-	if(jb){
+	if (jb){
 		/* deinit base */
 		tmedia_jitterbuffer_deinit(TMEDIA_JITTER_BUFFER(jb));
 		/* deinit self */
-		if(jb->state){
+		if (jb->state){
 			jitter_buffer_destroy(jb->state);
 			jb->state = tsk_null;
 		}
@@ -296,20 +291,20 @@ static tsk_object_t* tdav_speex_jitterbuffer_dtor(tsk_object_t * self)
 	return self;
 }
 /* object definition */
-static const tsk_object_def_t tdav_speex_jitterbuffer_def_s = 
+static const tsk_object_def_t tdav_speex_jitterbuffer_def_s =
 {
 	sizeof(tdav_speex_jitterbuffer_t),
-	tdav_speex_jitterbuffer_ctor, 
+	tdav_speex_jitterbuffer_ctor,
 	tdav_speex_jitterbuffer_dtor,
-	tsk_null, 
+	tsk_null,
 };
 /* plugin definition*/
-static const tmedia_jitterbuffer_plugin_def_t tdav_speex_jitterbuffer_plugin_def_s = 
+static const tmedia_jitterbuffer_plugin_def_t tdav_speex_jitterbuffer_plugin_def_s =
 {
 	&tdav_speex_jitterbuffer_def_s,
 	tmedia_audio,
 	"Audio JitterBuffer based on Speex",
-	
+
 	tdav_speex_jitterbuffer_set,
 	tdav_speex_jitterbuffer_open,
 	tdav_speex_jitterbuffer_tick,

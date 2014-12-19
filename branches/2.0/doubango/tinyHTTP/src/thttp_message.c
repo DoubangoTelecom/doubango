@@ -237,7 +237,7 @@ int thttp_message_append_content(thttp_message_t *self, const void* content, tsk
 			THTTP_MESSAGE_ADD_HEADER(self, THTTP_HEADER_CONTENT_LENGTH_VA_ARGS(size));
 		}
 		else{
-			self->Content_Length->length += size;
+			self->Content_Length->length += (uint32_t)size;
 		}
 		return 0;
 	}

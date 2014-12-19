@@ -94,7 +94,7 @@ static void* TSK_STDCALL _tdav_consumer_dsound_playback_thread(void *param)
 		hr = IDirectSoundBuffer_Lock(
 			dsound->secondaryBuffer, 
 			dwWriteCursor/* Ignored because of DSBLOCK_FROMWRITECURSOR */, 
-			dsound->bytes_per_notif_size, 
+			(DWORD)dsound->bytes_per_notif_size, 
 			&lpvAudio1, &dwBytesAudio1, 
 			&lpvAudio2, &dwBytesAudio2, 
 			DSBLOCK_FROMWRITECURSOR);
@@ -255,7 +255,7 @@ static int tdav_consumer_dsound_prepare(tmedia_consumer_t* self, const tmedia_co
 
 	/* Creates the secondary buffer and apply format */
 	dsbd.dwFlags = (DSBCAPS_CTRLPOSITIONNOTIFY | DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLVOLUME);
-	dsbd.dwBufferBytes = (TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT * dsound->bytes_per_notif_size);
+	dsbd.dwBufferBytes = (DWORD)(TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT * dsound->bytes_per_notif_size);
 	dsbd.lpwfxFormat = &wfx;
 
 	if((hr = IDirectSound_CreateSoundBuffer(dsound->device, &dsbd, &dsound->secondaryBuffer, NULL)) != DS_OK){
@@ -314,7 +314,7 @@ static int tdav_consumer_dsound_start(tmedia_consumer_t* self)
 	for(i = 0; i<TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT; i++){
 		dsound->notifEvents[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
 		// set notification point offset at the start of the buffer for Windows Vista and later and at the half of the buffer of XP and before
-		pPosNotify[i].dwOffset = (dsound->bytes_per_notif_size * i) + (dwMajorVersion > 5 ? (dsound->bytes_per_notif_size >> 1) : 1);
+		pPosNotify[i].dwOffset = (DWORD)((dsound->bytes_per_notif_size * i) + (dwMajorVersion > 5 ? (dsound->bytes_per_notif_size >> 1) : 1));
 		pPosNotify[i].hEventNotify = dsound->notifEvents[i];
 	}
 	if((hr = IDirectSoundNotify_SetNotificationPositions(lpDSBNotify, TDAV_DSOUND_CONSUMER_NOTIF_POS_COUNT, pPosNotify)) != DS_OK){

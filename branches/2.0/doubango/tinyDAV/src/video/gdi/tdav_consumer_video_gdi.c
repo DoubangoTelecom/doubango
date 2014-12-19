@@ -115,10 +115,10 @@ static int tdav_consumer_video_gdi_prepare(tmedia_consumer_t* self, const tmedia
 	p_gdi->bitmapInfo.bmiHeader.biPlanes = 1;
 	p_gdi->bitmapInfo.bmiHeader.biBitCount = 24; // RGB24
 	p_gdi->bitmapInfo.bmiHeader.biCompression = BI_RGB;
-	p_gdi->bitmapInfo.bmiHeader.biWidth = TMEDIA_CONSUMER(p_gdi)->video.in.width;
-	p_gdi->bitmapInfo.bmiHeader.biHeight = TMEDIA_CONSUMER(p_gdi)->video.in.height * -1;
-	p_gdi->bitmapInfo.bmiHeader.biSizeImage = TMEDIA_CONSUMER(p_gdi)->video.in.width * abs(TMEDIA_CONSUMER(p_gdi)->video.in.height) *
-		(p_gdi->bitmapInfo.bmiHeader.biBitCount >> 3);
+	p_gdi->bitmapInfo.bmiHeader.biWidth = (LONG)TMEDIA_CONSUMER(p_gdi)->video.in.width;
+	p_gdi->bitmapInfo.bmiHeader.biHeight = (LONG)(TMEDIA_CONSUMER(p_gdi)->video.in.height * -1);
+	p_gdi->bitmapInfo.bmiHeader.biSizeImage = (DWORD)(TMEDIA_CONSUMER(p_gdi)->video.in.width * abs((int)TMEDIA_CONSUMER(p_gdi)->video.in.height) *
+		(p_gdi->bitmapInfo.bmiHeader.biBitCount >> 3));
 
 	return 0;
 }
@@ -169,9 +169,9 @@ static int tdav_consumer_video_gdi_consume(tmedia_consumer_t* self, const void* 
 			ret = -1;
 			goto bail;
 		}
-		p_gdi->bitmapInfo.bmiHeader.biWidth = TMEDIA_CONSUMER(p_gdi)->video.in.width;
-		p_gdi->bitmapInfo.bmiHeader.biHeight = TMEDIA_CONSUMER(p_gdi)->video.in.height * -1;
-		p_gdi->bitmapInfo.bmiHeader.biSizeImage = xNewSize;
+		p_gdi->bitmapInfo.bmiHeader.biWidth = (LONG)TMEDIA_CONSUMER(p_gdi)->video.in.width;
+		p_gdi->bitmapInfo.bmiHeader.biHeight = (LONG)TMEDIA_CONSUMER(p_gdi)->video.in.height * -1;
+		p_gdi->bitmapInfo.bmiHeader.biSizeImage = (DWORD)xNewSize;
 		p_gdi->pBuffer = tsk_realloc(p_gdi->pBuffer, p_gdi->bitmapInfo.bmiHeader.biSizeImage);
 	}
 
@@ -365,7 +365,7 @@ static HRESULT HookWindow(struct tdav_consumer_video_gdi_s *p_gdi, HWND hWnd, BO
 #if TDAV_UNDER_WINDOWS_CE
 		*p_wndProc = (WNDPROC)SetWindowLong(hWnd, GWL_WNDPROC, (LONG)WndProc);
 #else
-		*p_wndProc = (WNDPROC)SetWindowLongPtr(hWnd, GWL_WNDPROC, (LONG)WndProc);
+		*p_wndProc = (WNDPROC)SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)WndProc);
 #endif
 		if (!*p_wndProc) {
 			TSK_DEBUG_ERROR("HookWindowLongPtr() failed with errcode=%d", GetLastError());
@@ -390,7 +390,7 @@ static HRESULT UnhookWindow(struct tdav_consumer_video_gdi_s *p_gdi, BOOL bFullS
 #if TDAV_UNDER_WINDOWS_CE
 		SetWindowLong(*p_Window, GWL_WNDPROC, (LONG)*p_wndProc);
 #else
-		SetWindowLongPtr(*p_Window, GWL_WNDPROC, (LONG)*p_wndProc);
+		SetWindowLongPtr(*p_Window, GWLP_WNDPROC, (LONG_PTR)*p_wndProc);
 #endif
 		*p_wndProc = NULL;
 	}

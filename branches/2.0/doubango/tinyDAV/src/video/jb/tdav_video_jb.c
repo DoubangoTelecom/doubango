@@ -1,7 +1,6 @@
 /*
-* Copyright (C) 2011 Doubango Telecom <http://www.doubango.org>
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango(DOT)org>
+* Copyright (C) 2011-2015 Mamadou DIOP
+* Copyright (C) 2011-2015 Doubango Telecom <http://www.doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,8 +21,6 @@
 
 /**@file tdav_video_jb.c
  * @brief Video Jitter Buffer
- *
- * @author Mamadou Diop <diopmamadou(at)doubango(DOT)org>
  */
 #include "tinydav/video/jb/tdav_video_jb.h"
 #include "tinydav/video/jb/tdav_video_frame.h"
@@ -427,7 +424,7 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
 
 		// TSK_DEBUG_INFO("Frames count = %d", jb->frames_count);
 
-		if(jb->frames_count >= jb->latency_min){
+		if(jb->frames_count >= (int64_t)jb->latency_min){
 			item = tsk_null;
 			postpone = tsk_false;
             
@@ -435,7 +432,7 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
 			tsk_list_lock(jb->frames); // against put()
 			
 			// is it still acceptable to wait for missing packets?
-			if(jb->frames_count < jb->latency_max){
+			if (jb->frames_count < (int64_t)jb->latency_max){
 				frame = (const tdav_video_frame_t*)jb->frames->head->data;
 				if(!tdav_video_frame_is_complete(frame, jb->decode_last_seq_num_with_mark, &missing_seq_num_start, &missing_seq_num_count)){
 					TSK_DEBUG_INFO("Time to decode frame...but some RTP packets are missing (missing_seq_num_start=%hu, missing_seq_num_count=%u, last_seq_num_with_mark=%d). Postpone :(", missing_seq_num_start, missing_seq_num_count, jb->decode_last_seq_num_with_mark);
@@ -490,7 +487,7 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
 		
 #if 1
 		now = tsk_time_now();
-		if(jb->frames_count > jb->latency_max){
+		if (jb->frames_count > (int64_t)jb->latency_max){
 			x_decode_time = now;
 			next_decode_duration = 0;
 		}

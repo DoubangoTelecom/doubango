@@ -1,20 +1,18 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -23,9 +21,6 @@
 /**@file tdav_producer_dsound.c
  * @brief Microsoft DirectSound producer.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinydav/audio/directsound/tdav_producer_dsound.h"
 
@@ -75,7 +70,7 @@ tdav_producer_dsound_t;
 
 static void* TSK_STDCALL _tdav_producer_dsound_record_thread(void *param)
 {
-	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)param; 
+	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)param;
 
 	HRESULT hr;
 	LPVOID lpvAudio1, lpvAudio2;
@@ -90,14 +85,14 @@ static void* TSK_STDCALL _tdav_producer_dsound_record_thread(void *param)
 		if (!dsound->started) {
 			break;
 		}
-		if (dwEvent < WAIT_OBJECT_0 || dwEvent > (WAIT_OBJECT_0 + TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT)) {
+		if (dwEvent < WAIT_OBJECT_0 || dwEvent >(WAIT_OBJECT_0 + TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT)) {
 			TSK_DEBUG_ERROR("Invalid dwEvent(%d)", dwEvent);
 			break;
 		}
 		dwIndex = (dwEvent - WAIT_OBJECT_0);
-		
+
 		// lock
-		if ((hr = IDirectSoundCaptureBuffer_Lock(dsound->captureBuffer, (dwIndex * dsound->bytes_per_notif_size), dsound->bytes_per_notif_size, &lpvAudio1, &dwBytesAudio1, &lpvAudio2, &dwBytesAudio2, 0)) != DS_OK) {
+		if ((hr = IDirectSoundCaptureBuffer_Lock(dsound->captureBuffer, (DWORD)(dwIndex * dsound->bytes_per_notif_size), (DWORD)dsound->bytes_per_notif_size, &lpvAudio1, &dwBytesAudio1, &lpvAudio2, &dwBytesAudio2, 0)) != DS_OK) {
 			tdav_win32_print_error("IDirectSoundCaptureBuffer_Lock", hr);
 			continue;
 		}
@@ -116,16 +111,16 @@ static void* TSK_STDCALL _tdav_producer_dsound_record_thread(void *param)
 				TMEDIA_PRODUCER(dsound)->enc_cb.callback(TMEDIA_PRODUCER(dsound)->enc_cb.callback_data, lpvAudio2, dwBytesAudio2);
 			}
 		}
-		
+
 		// unlock
 		if ((hr = IDirectSoundCaptureBuffer_Unlock(dsound->captureBuffer, lpvAudio1, dwBytesAudio1, lpvAudio2, dwBytesAudio2)) != DS_OK) {
 			tdav_win32_print_error("IDirectSoundCaptureBuffer_Unlock", hr);
 			continue;
-		}		
+		}
 	}
 
 	TSK_DEBUG_INFO("_tdav_producer_dsound_record_thread -- STOP");
-	
+
 
 	return tsk_null;
 }
@@ -142,8 +137,8 @@ static int _tdav_producer_dsound_unprepare(tdav_producer_dsound_t* dsound)
 			IDirectSoundCapture_Release(dsound->device);
 			dsound->device = NULL;
 		}
-		for (i = 0; i<(sizeof(dsound->notifEvents)/sizeof(dsound->notifEvents[0])); i++){
-			if(dsound->notifEvents[i]) {
+		for (i = 0; i < (sizeof(dsound->notifEvents) / sizeof(dsound->notifEvents[0])); i++){
+			if (dsound->notifEvents[i]) {
 				CloseHandle(dsound->notifEvents[i]);
 				dsound->notifEvents[i] = NULL;
 			}
@@ -157,7 +152,7 @@ static int _tdav_producer_dsound_unprepare(tdav_producer_dsound_t* dsound)
 
 /* ============ Media Producer Interface ================= */
 static int tdav_producer_dsound_set(tmedia_producer_t* self, const tmedia_param_t* param)
-{	
+{
 	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)self;
 	if (param->plugin_type == tmedia_ppt_producer) {
 		if (param->value_type == tmedia_pvt_int32) {
@@ -186,8 +181,8 @@ static int tdav_producer_dsound_prepare(tmedia_producer_t* self, const tmedia_co
 {
 	HRESULT hr;
 
-	WAVEFORMATEX wfx = {0};
-	DSCBUFFERDESC dsbd = {0};
+	WAVEFORMATEX wfx = { 0 };
+	DSCBUFFERDESC dsbd = { 0 };
 
 	tdav_producer_dsound_t* dsound = (tdav_producer_dsound_t*)self;
 
@@ -221,20 +216,20 @@ static int tdav_producer_dsound_prepare(tmedia_producer_t* self, const tmedia_co
 	wfx.nChannels = TMEDIA_PRODUCER(dsound)->audio.channels;
 	wfx.nSamplesPerSec = TMEDIA_PRODUCER(dsound)->audio.rate;
 	wfx.wBitsPerSample = TMEDIA_PRODUCER(dsound)->audio.bits_per_sample;
-	wfx.nBlockAlign = (wfx.nChannels * wfx.wBitsPerSample/8);
+	wfx.nBlockAlign = (wfx.nChannels * wfx.wBitsPerSample / 8);
 	wfx.nAvgBytesPerSec = (wfx.nSamplesPerSec * wfx.nBlockAlign);
 
 	/* Average bytes (count) for each notification */
-	dsound->bytes_per_notif_size = ((wfx.nAvgBytesPerSec * TMEDIA_PRODUCER(dsound)->audio.ptime)/1000);
+	dsound->bytes_per_notif_size = ((wfx.nAvgBytesPerSec * TMEDIA_PRODUCER(dsound)->audio.ptime) / 1000);
 
 	dsbd.dwSize = sizeof(DSCBUFFERDESC);
-	dsbd.dwBufferBytes = (TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT * dsound->bytes_per_notif_size);
+	dsbd.dwBufferBytes = (DWORD)(TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT * dsound->bytes_per_notif_size);
 	dsbd.lpwfxFormat = &wfx;
 
 	if ((hr = IDirectSoundCapture_CreateCaptureBuffer(dsound->device, &dsbd, &dsound->captureBuffer, NULL)) != DS_OK) {
 		tdav_win32_print_error("IDirectSoundCapture_CreateCaptureBuffer", hr);
 		return -4;
-	}	
+	}
 
 	return 0;
 }
@@ -247,51 +242,51 @@ static int tdav_producer_dsound_start(tmedia_producer_t* self)
 	DWORD dwOffset;
 	HRESULT hr;
 	LPDIRECTSOUNDNOTIFY lpDSBNotify;
-	DSBPOSITIONNOTIFY pPosNotify[TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT] = {0};
-	
+	DSBPOSITIONNOTIFY pPosNotify[TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT] = { 0 };
+
 	if (!dsound) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	
+
 	if (!dsound->device || !dsound->captureBuffer) {
 		TSK_DEBUG_ERROR("Producer not prepared");
 		return -2;
 	}
-	
+
 	if (dsound->started) {
 		return 0;
 	}
-	
+
 	if ((hr = IDirectSoundCaptureBuffer_QueryInterface(dsound->captureBuffer, &IID_IDirectSoundNotify, (LPVOID*)&lpDSBNotify)) != DS_OK) {
 		tdav_win32_print_error("IDirectSoundCaptureBuffer_QueryInterface", hr);
 		return -3;
 	}
-	
+
 	/* Events associated to notification points */
-	dwOffset = dsound->bytes_per_notif_size - 1;
-	for (i = 0; i<(sizeof(dsound->notifEvents)/sizeof(dsound->notifEvents[0])); i++){
+	dwOffset = (DWORD)(dsound->bytes_per_notif_size - 1);
+	for (i = 0; i < (sizeof(dsound->notifEvents) / sizeof(dsound->notifEvents[0])); i++){
 		dsound->notifEvents[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
 		pPosNotify[i].dwOffset = dwOffset;
 		pPosNotify[i].hEventNotify = dsound->notifEvents[i];
-		dwOffset += dsound->bytes_per_notif_size;
+		dwOffset += (DWORD)dsound->bytes_per_notif_size;
 	}
 	if ((hr = IDirectSoundNotify_SetNotificationPositions(lpDSBNotify, TDAV_DSOUND_PRODUCER_NOTIF_POS_COUNT, pPosNotify)) != DS_OK) {
 		IDirectSoundNotify_Release(lpDSBNotify);
 		tdav_win32_print_error("IDirectSoundBuffer_QueryInterface", hr);
 		return -4;
 	}
-	
+
 	if ((hr = IDirectSoundNotify_Release(lpDSBNotify))) {
 		tdav_win32_print_error("IDirectSoundNotify_Release", hr);
 	}
-	
+
 	/* Start the buffer */
 	if ((hr = IDirectSoundCaptureBuffer_Start(dsound->captureBuffer, DSBPLAY_LOOPING)) != DS_OK) {
 		tdav_win32_print_error("IDirectSoundCaptureBuffer_Start", hr);
 		return -5;
 	}
-	
+
 	/* start the reader thread */
 	dsound->started = tsk_true;
 	tsk_thread_create(&dsound->tid[0], _tdav_producer_dsound_record_thread, dsound);
@@ -326,7 +321,7 @@ static int tdav_producer_dsound_stop(tmedia_producer_t* self)
 	if (dsound->mute && dsound->notifEvents[0]) {
 		// thread is paused -> raise event now that "started" is equal to false
 		SetEvent(dsound->notifEvents[0]);
-	}		
+	}
 #endif
 
 	// stop thread
@@ -357,13 +352,13 @@ static tsk_object_t* tdav_producer_dsound_ctor(tsk_object_t * self, va_list * ap
 		/* init base */
 		tdav_producer_audio_init(TDAV_PRODUCER_AUDIO(producer));
 		/* init self */
-		
+
 	}
 	return self;
 }
 /* destructor */
 static tsk_object_t* tdav_producer_dsound_dtor(tsk_object_t * self)
-{ 
+{
 	tdav_producer_dsound_t *dsound = self;
 	if (dsound) {
 		/* stop */
@@ -380,21 +375,21 @@ static tsk_object_t* tdav_producer_dsound_dtor(tsk_object_t * self)
 	return self;
 }
 /* object definition */
-static const tsk_object_def_t tdav_producer_dsound_def_s = 
+static const tsk_object_def_t tdav_producer_dsound_def_s =
 {
 	sizeof(tdav_producer_dsound_t),
-	tdav_producer_dsound_ctor, 
+	tdav_producer_dsound_ctor,
 	tdav_producer_dsound_dtor,
-	tdav_producer_audio_cmp, 
+	tdav_producer_audio_cmp,
 };
 /* plugin definition*/
-static const tmedia_producer_plugin_def_t tdav_producer_dsound_plugin_def_s = 
+static const tmedia_producer_plugin_def_t tdav_producer_dsound_plugin_def_s =
 {
 	&tdav_producer_dsound_def_s,
-	
+
 	tmedia_audio,
 	"Microsoft DirectSound producer",
-	
+
 	tdav_producer_dsound_set,
 	tdav_producer_dsound_prepare,
 	tdav_producer_dsound_start,

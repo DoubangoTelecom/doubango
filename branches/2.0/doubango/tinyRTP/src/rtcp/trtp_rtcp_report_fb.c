@@ -185,7 +185,7 @@ trtp_rtcp_report_rtpfb_t* trtp_rtcp_report_rtpfb_create_nack(uint32_t ssrc_sende
 			rtpfb->nack.blp[0] |= (1 << (j - 1));
 		}
 
-		TRTP_RTCP_PACKET(rtpfb)->header->length_in_bytes += (rtpfb->nack.count << 2);
+		TRTP_RTCP_PACKET(rtpfb)->header->length_in_bytes += (uint32_t)(rtpfb->nack.count << 2);
 		TRTP_RTCP_PACKET(rtpfb)->header->length_in_words_minus1 = ((TRTP_RTCP_PACKET(rtpfb)->header->length_in_bytes >> 2) - 1);
 	}
 	return rtpfb;
@@ -411,7 +411,7 @@ trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_create_fir(uint8_t seq_num, uint3
 		psfb->fir.count = 1;
 		psfb->fir.seq_num[0] = seq_num;
 		psfb->fir.ssrc[0] = ssrc_media_src;
-		TRTP_RTCP_PACKET(psfb)->header->length_in_bytes += (psfb->fir.count << 3);
+		TRTP_RTCP_PACKET(psfb)->header->length_in_bytes += (uint32_t)(psfb->fir.count << 3);
 		TRTP_RTCP_PACKET(psfb)->header->length_in_words_minus1 = ((TRTP_RTCP_PACKET(psfb)->header->length_in_bytes >> 2) - 1);
 	}
 	return psfb;

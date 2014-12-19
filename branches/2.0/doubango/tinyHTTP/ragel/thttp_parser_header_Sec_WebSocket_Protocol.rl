@@ -1,14 +1,12 @@
 /*
-* Copyright (C) 2012 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango(dot)org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either protocol 3 of the License, or
-* (at your option) any later protocol.
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
 *	
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,8 +20,6 @@
 
 /**@file thttp_header_Sec_WebSocket_Protocol.c
  * @brief WebSocket "Sec-WebSocket-Protocol" header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango(dor)org>
  *
  */
 #include "tinyhttp/headers/thttp_header_Sec_WebSocket_Protocol.h"
@@ -92,6 +88,7 @@ thttp_header_Sec_WebSocket_Protocol_t *thttp_header_Sec_WebSocket_Protocol_parse
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(eof);
 	(void)(thttp_machine_parser_header_Sec_WebSocket_Protocol_first_final);
@@ -99,6 +96,7 @@ thttp_header_Sec_WebSocket_Protocol_t *thttp_header_Sec_WebSocket_Protocol_parse
 	(void)(thttp_machine_parser_header_Sec_WebSocket_Protocol_en_main);
 	%%write init;
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse Sec-WebSocket-Protocol header.");

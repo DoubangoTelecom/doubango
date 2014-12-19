@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/tmsrp_parser_uri.rl" */
 /*
-* Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2009-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,10 +22,6 @@
 
 /**@file tmsrp_header_Dummy.c
  * @brief MSRP Dummy header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinymsrp/parsers/tmsrp_parser_uri.h"
 
@@ -41,7 +35,7 @@
 *	Ragel state machine.
 */
 
-/* #line 112 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 106 "./ragel/tmsrp_parser_uri.rl" */
 
 
 tmsrp_uri_t *tmsrp_uri_parse(const char *data, tsk_size_t size)
@@ -54,8 +48,9 @@ tmsrp_uri_t *tmsrp_uri_parse(const char *data, tsk_size_t size)
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 59 "./src/parsers/tmsrp_parser_uri.c" */
+/* #line 54 "./src/parsers/tmsrp_parser_uri.c" */
 static const char _tmsrp_machine_parser_uri_actions[] = {
 	0, 1, 0, 1, 4, 1, 5, 1, 
 	6, 1, 7, 1, 8, 1, 9, 1, 
@@ -434,20 +429,20 @@ static const int tmsrp_machine_parser_uri_error = 0;
 static const int tmsrp_machine_parser_uri_en_main = 1;
 
 
-/* #line 125 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 120 "./ragel/tmsrp_parser_uri.rl" */
 	(void)(eof);
 	(void)(tmsrp_machine_parser_uri_first_final);
 	(void)(tmsrp_machine_parser_uri_error);
 	(void)(tmsrp_machine_parser_uri_en_main);
 	
-/* #line 444 "./src/parsers/tmsrp_parser_uri.c" */
+/* #line 439 "./src/parsers/tmsrp_parser_uri.c" */
 	{
 	cs = tmsrp_machine_parser_uri_start;
 	}
 
-/* #line 130 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 125 "./ragel/tmsrp_parser_uri.rl" */
 	
-/* #line 451 "./src/parsers/tmsrp_parser_uri.c" */
+/* #line 446 "./src/parsers/tmsrp_parser_uri.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -522,37 +517,37 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 41 "./ragel/tmsrp_parser_uri.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 52 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 46 "./ragel/tmsrp_parser_uri.rl" */
 	{ uri->authority.host_type = tmsrp_host_ipv4; }
 	break;
 	case 2:
-/* #line 53 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 47 "./ragel/tmsrp_parser_uri.rl" */
 	{ uri->authority.host_type = tmsrp_host_ipv6; }
 	break;
 	case 3:
-/* #line 54 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 48 "./ragel/tmsrp_parser_uri.rl" */
 	{ uri->authority.host_type = tmsrp_host_hostname; }
 	break;
 	case 4:
-/* #line 56 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 50 "./ragel/tmsrp_parser_uri.rl" */
 	{
 		TSK_PARSER_SET_STRING(uri->scheme);
 	}
 	break;
 	case 5:
-/* #line 60 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 54 "./ragel/tmsrp_parser_uri.rl" */
 	{
 		TSK_PARSER_SET_STRING(uri->authority.userinfo);
 	}
 	break;
 	case 6:
-/* #line 64 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 58 "./ragel/tmsrp_parser_uri.rl" */
 	{
 		TSK_PARSER_SET_STRING(uri->authority.host);
 		if(uri->authority.host_type == tmsrp_host_ipv6){
@@ -561,30 +556,30 @@ _match:
 	}
 	break;
 	case 7:
-/* #line 71 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 65 "./ragel/tmsrp_parser_uri.rl" */
 	{
 		TSK_PARSER_SET_INT(uri->authority.port);
 	}
 	break;
 	case 8:
-/* #line 75 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 69 "./ragel/tmsrp_parser_uri.rl" */
 	{
 		TSK_PARSER_SET_STRING(uri->session_id);
 	}
 	break;
 	case 9:
-/* #line 79 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 73 "./ragel/tmsrp_parser_uri.rl" */
 	{
 		TSK_PARSER_SET_STRING(uri->transport);
 	}
 	break;
 	case 10:
-/* #line 83 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 77 "./ragel/tmsrp_parser_uri.rl" */
 	{
 		TSK_PARSER_ADD_PARAM(uri->params);
 	}
 	break;
-/* #line 588 "./src/parsers/tmsrp_parser_uri.c" */
+/* #line 583 "./src/parsers/tmsrp_parser_uri.c" */
 		}
 	}
 
@@ -601,24 +596,24 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 47 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 41 "./ragel/tmsrp_parser_uri.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 9:
-/* #line 79 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 73 "./ragel/tmsrp_parser_uri.rl" */
 	{
 		TSK_PARSER_SET_STRING(uri->transport);
 	}
 	break;
 	case 10:
-/* #line 83 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 77 "./ragel/tmsrp_parser_uri.rl" */
 	{
 		TSK_PARSER_ADD_PARAM(uri->params);
 	}
 	break;
-/* #line 622 "./src/parsers/tmsrp_parser_uri.c" */
+/* #line 617 "./src/parsers/tmsrp_parser_uri.c" */
 		}
 	}
 	}
@@ -626,12 +621,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 131 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 126 "./ragel/tmsrp_parser_uri.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 633 "./src/parsers/tmsrp_parser_uri.c" */
+/* #line 629 "./src/parsers/tmsrp_parser_uri.c" */
 101
-/* #line 132 "./ragel/tmsrp_parser_uri.rl" */
+/* #line 128 "./ragel/tmsrp_parser_uri.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse MSRP/MSRPS header.");
 		TSK_OBJECT_SAFE_FREE(uri);

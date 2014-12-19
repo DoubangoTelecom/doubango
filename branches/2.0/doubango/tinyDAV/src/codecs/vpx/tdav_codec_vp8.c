@@ -465,7 +465,7 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 		}
 #endif
 		
-		vpx_ret = vpx_codec_decode(&vp8->decoder.context, pay_ptr, pay_size, tsk_null, 0);
+		vpx_ret = vpx_codec_decode(&vp8->decoder.context, pay_ptr, (int)pay_size, tsk_null, 0);
 		
 		if(vpx_ret != VPX_CODEC_OK){
 			TSK_DEBUG_INFO("vpx_codec_decode failed with error =%s", vpx_codec_err_to_string(vpx_ret));
@@ -821,7 +821,7 @@ static void tdav_codec_vp8_encap(tdav_codec_vp8_t* self, const vpx_codec_cx_pkt_
 
 	index = 0;
 	frame_ptr = pkt->data.frame.buf ;
-	pkt_size = pkt->data.frame.sz;
+	pkt_size = (uint32_t)pkt->data.frame.sz;
 	non_ref = (pkt->data.frame.flags & VPX_FRAME_IS_DROPPABLE);
 	is_keyframe = (pkt->data.frame.flags & VPX_FRAME_IS_KEY);
 

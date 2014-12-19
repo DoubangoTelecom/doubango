@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
 /*
-* Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2009-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,10 +22,6 @@
 
 /**@file tmsrp_header_Failure_Report.c
  * @brief MSRP 'Failure-Report' header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinymsrp/headers/tmsrp_header_Failure-Report.h"
 
@@ -41,7 +35,7 @@
 *	Ragel state machine.
 */
 
-/* #line 65 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
+/* #line 59 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
 
 
 
@@ -74,8 +68,9 @@ tmsrp_header_Failure_Report_t *tmsrp_header_Failure_Report_parse(const char *dat
 	const char *eof = pe;
 	tmsrp_header_Failure_Report_t *hdr_Failure_Report = tmsrp_header_Failure_Report_create_null();
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 79 "./src/headers/tmsrp_header_Failure-Report.c" */
+/* #line 74 "./src/headers/tmsrp_header_Failure-Report.c" */
 static const char _tmsrp_machine_parser_header_Failure_Report_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -164,20 +159,20 @@ static const int tmsrp_machine_parser_header_Failure_Report_error = 0;
 static const int tmsrp_machine_parser_header_Failure_Report_en_main = 1;
 
 
-/* #line 98 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
+/* #line 93 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
 	(void)(eof);
 	(void)(tmsrp_machine_parser_header_Failure_Report_first_final);
 	(void)(tmsrp_machine_parser_header_Failure_Report_error);
 	(void)(tmsrp_machine_parser_header_Failure_Report_en_main);
 	
-/* #line 174 "./src/headers/tmsrp_header_Failure-Report.c" */
+/* #line 169 "./src/headers/tmsrp_header_Failure-Report.c" */
 	{
 	cs = tmsrp_machine_parser_header_Failure_Report_start;
 	}
 
-/* #line 103 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
+/* #line 98 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
 	
-/* #line 181 "./src/headers/tmsrp_header_Failure-Report.c" */
+/* #line 176 "./src/headers/tmsrp_header_Failure-Report.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -252,24 +247,24 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
+/* #line 41 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
 	{
 		hdr_Failure_Report->type = freport_yes;
 	}
 	break;
 	case 1:
-/* #line 51 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
+/* #line 45 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
 	{
 		hdr_Failure_Report->type = freport_no;
 	}
 	break;
 	case 2:
-/* #line 55 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
+/* #line 49 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
 	{
 		hdr_Failure_Report->type = freport_partial;
 	}
 	break;
-/* #line 273 "./src/headers/tmsrp_header_Failure-Report.c" */
+/* #line 268 "./src/headers/tmsrp_header_Failure-Report.c" */
 		}
 	}
 
@@ -286,24 +281,24 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 47 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
+/* #line 41 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
 	{
 		hdr_Failure_Report->type = freport_yes;
 	}
 	break;
 	case 1:
-/* #line 51 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
+/* #line 45 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
 	{
 		hdr_Failure_Report->type = freport_no;
 	}
 	break;
 	case 2:
-/* #line 55 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
+/* #line 49 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
 	{
 		hdr_Failure_Report->type = freport_partial;
 	}
 	break;
-/* #line 307 "./src/headers/tmsrp_header_Failure-Report.c" */
+/* #line 302 "./src/headers/tmsrp_header_Failure-Report.c" */
 		}
 	}
 	}
@@ -311,12 +306,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 104 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
+/* #line 99 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 318 "./src/headers/tmsrp_header_Failure-Report.c" */
+/* #line 314 "./src/headers/tmsrp_header_Failure-Report.c" */
 28
-/* #line 105 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
+/* #line 101 "./ragel/tmsrp_parser_header_Failure-Report.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Failure-Report' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Failure_Report);

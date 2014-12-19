@@ -1,6 +1,6 @@
 /*
-* Copyright (C) 2012-2014 Mamadou DIOP
-* Copyright (C) 2012-2014 Doubango Telecom <http://www.doubango.org>.
+* Copyright (C) 2012-2015 Mamadou DIOP
+* Copyright (C) 2012-2015 Doubango Telecom <http://www.doubango.org>.
 *
 * This file is part of Open Source Doubango Framework.
 *
@@ -52,8 +52,9 @@
 static int __pred_find_by_pair(const tsk_list_item_t *item, const void *pair)
 {
 	if(item && item->data){
-		const tnet_ice_pair_t *_pair = item->data;
-		return (_pair - ((const tnet_ice_pair_t *)pair));
+		int ret;
+		tsk_subsat_int32_ptr(item->data, pair, &ret);
+		return ret;
 	}
 	return -1;
 }
@@ -444,7 +445,7 @@ int tnet_ice_pair_send_response(tnet_ice_pair_t *self, const tnet_stun_pkt_req_t
 			if ((ret = tnet_stun_pkt_write_with_padding_2(message, &req_buffer))) {
 				goto bail;
 			}
-			if ((ret = tnet_turn_session_send_data(self->candidate_offer->turn.ss, self->turn_peer_id, req_buffer->data, req_buffer->size))) {
+			if ((ret = tnet_turn_session_send_data(self->candidate_offer->turn.ss, self->turn_peer_id, req_buffer->data, (uint16_t)req_buffer->size))) {
 				goto bail;
 			}
 		}

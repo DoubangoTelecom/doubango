@@ -456,7 +456,7 @@ static tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_da
 		}		
 
 		av_init_packet(&packet);
-		packet.size = h263->decoder.accumulator_pos;
+		packet.size = (int)h263->decoder.accumulator_pos;
 		packet.data = h263->decoder.accumulator;
 		ret = avcodec_decode_video2(h263->decoder.context, h263->decoder.picture, &got_picture_ptr, &packet);
 
@@ -480,8 +480,8 @@ static tsk_size_t tdav_codec_h263_decode(tmedia_codec_t* self, const void* in_da
 			TMEDIA_CODEC_VIDEO(h263)->in.width = h263->decoder.context->width;
 			TMEDIA_CODEC_VIDEO(h263)->in.height = h263->decoder.context->height;
 			/* copy picture into a linear buffer */
-			avpicture_layout((AVPicture *)h263->decoder.picture, h263->decoder.context->pix_fmt, h263->decoder.context->width, h263->decoder.context->height,
-				*out_data, retsize);
+			avpicture_layout((AVPicture *)h263->decoder.picture, h263->decoder.context->pix_fmt, (int)h263->decoder.context->width, (int)h263->decoder.context->height,
+				*out_data, (int)retsize);
 		}
 		/* in all cases: reset accumulator */
 		h263->decoder.accumulator_pos = 0;		
@@ -741,7 +741,7 @@ static tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_d
 
 		/* decode the picture */
 		av_init_packet(&packet);
-		packet.size = h263->decoder.accumulator_pos;
+		packet.size = (int)h263->decoder.accumulator_pos;
 		packet.data = h263->decoder.accumulator;
 		ret = avcodec_decode_video2(h263->decoder.context, h263->decoder.picture, &got_picture_ptr, &packet);		
 
@@ -753,8 +753,8 @@ static tsk_size_t tdav_codec_h263p_decode(tmedia_codec_t* self, const void* in_d
 			TMEDIA_CODEC_VIDEO(h263)->in.width = h263->decoder.context->width;
 			TMEDIA_CODEC_VIDEO(h263)->in.height = h263->decoder.context->height;
 			/* copy picture into a linear buffer */
-			avpicture_layout((AVPicture *)h263->decoder.picture, h263->decoder.context->pix_fmt, h263->decoder.context->width, h263->decoder.context->height,
-				*out_data, retsize);
+			avpicture_layout((AVPicture *)h263->decoder.picture, h263->decoder.context->pix_fmt, (int)h263->decoder.context->width, (int)h263->decoder.context->height,
+				*out_data, (int)retsize);
 		}
 		/* in all cases: reset accumulator */
 		h263->decoder.accumulator_pos = 0;		

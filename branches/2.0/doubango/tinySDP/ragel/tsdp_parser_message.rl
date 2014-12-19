@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -21,10 +19,6 @@
 */
 /**@file tsdp_machine_message.rl
  * @brief Ragel file.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinysdp/parsers/tsdp_parser_message.h"
 
@@ -243,8 +237,10 @@
 	main := SDP_message;
 }%%
 
+TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 /* Ragel data */
 %% write data;
+TSK_RAGEL_DISABLE_WARNINGS_END()
 
 tsdp_message_t* tsdp_message_parse(const void *input, tsk_size_t size)
 {
@@ -271,11 +267,13 @@ tsdp_message_t* tsdp_message_parse(const void *input, tsk_size_t size)
 		goto bail;
 	}
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	/* Ragel init */
 	%% write init;
 
 	/* Ragel execute */
 	%% write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 
 	/* Check result */
 	if( cs < %%{ write first_final; }%% )

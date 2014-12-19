@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,10 +20,6 @@
 
 /**@file tdav_producer_waveapi.c
  * @brief Audio Producer for Win32 and WinCE platforms.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinydav/audio/waveapi/tdav_producer_waveapi.h"
 
@@ -73,7 +67,7 @@ static int create_wavehdr(tdav_producer_waveapi_t* producer, tsk_size_t index)
 
 	producer->hWaveHeaders[index] = tsk_calloc(1, sizeof(WAVEHDR));
 	producer->hWaveHeaders[index]->lpData = tsk_calloc(1, producer->bytes_per_notif);
-	producer->hWaveHeaders[index]->dwBufferLength = producer->bytes_per_notif;
+	producer->hWaveHeaders[index]->dwBufferLength = (DWORD)producer->bytes_per_notif;
 	producer->hWaveHeaders[index]->dwFlags = WHDR_BEGINLOOP | WHDR_ENDLOOP;
 	producer->hWaveHeaders[index]->dwLoops = 0x01;
 	producer->hWaveHeaders[index]->dwUser = index;

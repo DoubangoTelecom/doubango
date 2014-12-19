@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 /*
-* Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2009-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,10 +22,6 @@
 
 /**@file tmsrp_header_Content_Type.c
  * @brief MSRP Content-Type header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinymsrp/headers/tmsrp_header_Content-Type.h"
 
@@ -44,7 +38,7 @@
 *	Ragel state machine.
 */
 
-/* #line 74 "./ragel/tmsrp_parser_header_Content-Type.rl" */
+/* #line 68 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 
 
 
@@ -87,8 +81,9 @@ tmsrp_header_Content_Type_t *tmsrp_header_Content_Type_parse(const char *data, t
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 92 "./src/headers/tmsrp_header_Content-Type.c" */
+/* #line 87 "./src/headers/tmsrp_header_Content-Type.c" */
 static const char _tmsrp_machine_parser_header_Content_Type_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -250,20 +245,20 @@ static const int tmsrp_machine_parser_header_Content_Type_error = 0;
 static const int tmsrp_machine_parser_header_Content_Type_en_main = 1;
 
 
-/* #line 117 "./ragel/tmsrp_parser_header_Content-Type.rl" */
+/* #line 112 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	(void)(eof);
 	(void)(tmsrp_machine_parser_header_Content_Type_first_final);
 	(void)(tmsrp_machine_parser_header_Content_Type_error);
 	(void)(tmsrp_machine_parser_header_Content_Type_en_main);
 	
-/* #line 260 "./src/headers/tmsrp_header_Content-Type.c" */
+/* #line 255 "./src/headers/tmsrp_header_Content-Type.c" */
 	{
 	cs = tmsrp_machine_parser_header_Content_Type_start;
 	}
 
-/* #line 122 "./ragel/tmsrp_parser_header_Content-Type.rl" */
+/* #line 117 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	
-/* #line 267 "./src/headers/tmsrp_header_Content-Type.c" */
+/* #line 262 "./src/headers/tmsrp_header_Content-Type.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -338,24 +333,24 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 50 "./ragel/tmsrp_parser_header_Content-Type.rl" */
+/* #line 44 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 54 "./ragel/tmsrp_parser_header_Content-Type.rl" */
+/* #line 48 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_ctype->value);
 	}
 	break;
 	case 2:
-/* #line 58 "./ragel/tmsrp_parser_header_Content-Type.rl" */
+/* #line 52 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	{		
 		TSK_PARSER_ADD_PARAM(hdr_ctype->params);
 	}
 	break;
-/* #line 359 "./src/headers/tmsrp_header_Content-Type.c" */
+/* #line 354 "./src/headers/tmsrp_header_Content-Type.c" */
 		}
 	}
 
@@ -372,18 +367,18 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 1:
-/* #line 54 "./ragel/tmsrp_parser_header_Content-Type.rl" */
+/* #line 48 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_ctype->value);
 	}
 	break;
 	case 2:
-/* #line 58 "./ragel/tmsrp_parser_header_Content-Type.rl" */
+/* #line 52 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	{		
 		TSK_PARSER_ADD_PARAM(hdr_ctype->params);
 	}
 	break;
-/* #line 387 "./src/headers/tmsrp_header_Content-Type.c" */
+/* #line 382 "./src/headers/tmsrp_header_Content-Type.c" */
 		}
 	}
 	}
@@ -391,12 +386,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 123 "./ragel/tmsrp_parser_header_Content-Type.rl" */
+/* #line 118 "./ragel/tmsrp_parser_header_Content-Type.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 398 "./src/headers/tmsrp_header_Content-Type.c" */
+/* #line 394 "./src/headers/tmsrp_header_Content-Type.c" */
 48
-/* #line 124 "./ragel/tmsrp_parser_header_Content-Type.rl" */
+/* #line 120 "./ragel/tmsrp_parser_header_Content-Type.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Content-Type' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ctype);

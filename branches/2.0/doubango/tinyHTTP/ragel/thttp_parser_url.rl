@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -19,13 +17,8 @@
 * along with DOUBANGO.
 *
 */
-
 /**@file thttp_parser_url.c
  * @brief HTTP/HTTPS URL parser.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinyhttp/parsers/thttp_parser_url.h"
 
@@ -116,6 +109,7 @@ thttp_url_t *thttp_url_parse(const char *urlstring, tsk_size_t length)
 	
 	const char *tag_start = 0;
 	
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(ts);
 	(void)(te);
@@ -126,6 +120,7 @@ thttp_url_t *thttp_url_parse(const char *urlstring, tsk_size_t length)
 	(void)(thttp_machine_parser_url_en_main);
 	%%write init;
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse HTTP/HTTPS URL: '%.*s'", length, urlstring);

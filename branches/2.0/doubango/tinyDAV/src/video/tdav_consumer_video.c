@@ -80,7 +80,9 @@ int tdav_consumer_video_init(tdav_consumer_video_t* self)
 */
 int tdav_consumer_video_cmp(const tsk_object_t* consumer1, const tsk_object_t* consumer2)
 {	
-	return (TDAV_CONSUMER_VIDEO(consumer1) - TDAV_CONSUMER_VIDEO(consumer2));
+	int ret;
+	tsk_subsat_int32_ptr(consumer1, consumer2, &ret);
+	return ret;
 }
 
 int tdav_consumer_video_set(tdav_consumer_video_t* self, const tmedia_param_t* param)

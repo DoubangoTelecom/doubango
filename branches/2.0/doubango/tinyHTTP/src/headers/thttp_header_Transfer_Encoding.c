@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,10 +22,6 @@
 
 /**@file thttp_header_Transfer_Encoding.c
  * @brief HTTP Transfer-Encoding header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinyhttp/headers/thttp_header_Transfer_Encoding.h"
 
@@ -40,7 +34,7 @@
 *	Ragel state machine.
 */
 
-/* #line 66 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
+/* #line 60 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
 
 
 thttp_header_Transfer_Encoding_t* thttp_header_transfer_encoding_create(const char* encoding)
@@ -79,8 +73,9 @@ thttp_header_Transfer_Encoding_t *thttp_header_Transfer_Encoding_parse(const cha
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 84 "./src/headers/thttp_header_Transfer_Encoding.c" */
+/* #line 79 "./src/headers/thttp_header_Transfer_Encoding.c" */
 static const char _thttp_machine_parser_header_Transfer_Encoding_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3
@@ -190,20 +185,20 @@ static const int thttp_machine_parser_header_Transfer_Encoding_error = 0;
 static const int thttp_machine_parser_header_Transfer_Encoding_en_main = 1;
 
 
-/* #line 105 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
+/* #line 100 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
 	(void)(eof);
 	(void)(thttp_machine_parser_header_Transfer_Encoding_first_final);
 	(void)(thttp_machine_parser_header_Transfer_Encoding_error);
 	(void)(thttp_machine_parser_header_Transfer_Encoding_en_main);
 	
-/* #line 200 "./src/headers/thttp_header_Transfer_Encoding.c" */
+/* #line 195 "./src/headers/thttp_header_Transfer_Encoding.c" */
 	{
 	cs = thttp_machine_parser_header_Transfer_Encoding_start;
 	}
 
-/* #line 110 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
+/* #line 105 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
 	
-/* #line 207 "./src/headers/thttp_header_Transfer_Encoding.c" */
+/* #line 202 "./src/headers/thttp_header_Transfer_Encoding.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -278,29 +273,29 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 46 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
+/* #line 40 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 50 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
+/* #line 44 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_tencoding->encoding);
 	}
 	break;
 	case 2:
-/* #line 54 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
+/* #line 48 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
 	{		
 		TSK_PARSER_ADD_PARAM(THTTP_HEADER_PARAMS(hdr_tencoding));
 	}
 	break;
 	case 3:
-/* #line 58 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
+/* #line 52 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
 	{
 	}
 	break;
-/* #line 304 "./src/headers/thttp_header_Transfer_Encoding.c" */
+/* #line 299 "./src/headers/thttp_header_Transfer_Encoding.c" */
 		}
 	}
 
@@ -313,12 +308,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 111 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
+/* #line 106 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 320 "./src/headers/thttp_header_Transfer_Encoding.c" */
+/* #line 316 "./src/headers/thttp_header_Transfer_Encoding.c" */
 33
-/* #line 112 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
+/* #line 108 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse Tansfer-Encoding header.");
 		TSK_OBJECT_SAFE_FREE(hdr_tencoding);

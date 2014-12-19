@@ -238,7 +238,7 @@ static tsk_size_t mf_codec_h264_encode(tmedia_codec_t* self, const void* in_data
 	}
 
 	// Encode data
-	CHECK_HR(hr = h264->encoder.pInst->Process(in_data, in_size, &pSampleOut));
+	CHECK_HR(hr = h264->encoder.pInst->Process(in_data, (UINT32)in_size, &pSampleOut));
 	if(pSampleOut) {
 		CHECK_HR(hr = pSampleOut->GetBufferByIndex(0, &pBufferOut));
 
@@ -377,7 +377,7 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 		}
 		else { // !h264->decoder.passthrough
 			/* decode the picture */
-			CHECK_HR(hr = h264->decoder.pInst->Process(h264->decoder.accumulator, h264->decoder.accumulator_pos, &pSampleOut));
+			CHECK_HR(hr = h264->decoder.pInst->Process(h264->decoder.accumulator, (UINT32)h264->decoder.accumulator_pos, &pSampleOut));
 			if (pSampleOut) {
 				CHECK_HR(hr = pSampleOut->GetBufferByIndex(0, &pBufferOut));
 

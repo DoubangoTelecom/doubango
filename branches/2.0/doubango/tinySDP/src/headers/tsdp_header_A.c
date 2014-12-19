@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/tsdp_parser_header_A.rl" */
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,12 +20,8 @@
 *
 */
 
-
 /**@file tsdp_header_A.c
  * @brief SDP "a=" header (Attributes).
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
  * 
  */
 #include "tinysdp/headers/tsdp_header_A.h"
@@ -42,7 +36,7 @@
 *	Ragel state machine.
 */
 
-/* #line 68 "./ragel/tsdp_parser_header_A.rl" */
+/* #line 62 "./ragel/tsdp_parser_header_A.rl" */
 
 
 
@@ -93,8 +87,9 @@ tsdp_header_A_t *tsdp_header_A_parse(const char *data, tsk_size_t size)
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 98 "./src/headers/tsdp_header_A.c" */
+/* #line 93 "./src/headers/tsdp_header_A.c" */
 static const char _tsdp_machine_parser_header_A_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 2, 
 	0, 2
@@ -158,19 +153,19 @@ static const int tsdp_machine_parser_header_A_error = 0;
 static const int tsdp_machine_parser_header_A_en_main = 1;
 
 
-/* #line 119 "./ragel/tsdp_parser_header_A.rl" */
+/* #line 114 "./ragel/tsdp_parser_header_A.rl" */
 	
-/* #line 164 "./src/headers/tsdp_header_A.c" */
+/* #line 159 "./src/headers/tsdp_header_A.c" */
 	{
 	cs = tsdp_machine_parser_header_A_start;
 	}
 
-/* #line 120 "./ragel/tsdp_parser_header_A.rl" */
+/* #line 115 "./ragel/tsdp_parser_header_A.rl" */
 	(void)(tsdp_machine_parser_header_A_first_final);
 	(void)(tsdp_machine_parser_header_A_error);
 	(void)(tsdp_machine_parser_header_A_en_main);
 	
-/* #line 174 "./src/headers/tsdp_header_A.c" */
+/* #line 169 "./src/headers/tsdp_header_A.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -245,24 +240,24 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 48 "./ragel/tsdp_parser_header_A.rl" */
+/* #line 42 "./ragel/tsdp_parser_header_A.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 52 "./ragel/tsdp_parser_header_A.rl" */
+/* #line 46 "./ragel/tsdp_parser_header_A.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_A->field);
 	}
 	break;
 	case 2:
-/* #line 56 "./ragel/tsdp_parser_header_A.rl" */
+/* #line 50 "./ragel/tsdp_parser_header_A.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_A->value);
 	}
 	break;
-/* #line 266 "./src/headers/tsdp_header_A.c" */
+/* #line 261 "./src/headers/tsdp_header_A.c" */
 		}
 	}
 
@@ -279,24 +274,24 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 48 "./ragel/tsdp_parser_header_A.rl" */
+/* #line 42 "./ragel/tsdp_parser_header_A.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 52 "./ragel/tsdp_parser_header_A.rl" */
+/* #line 46 "./ragel/tsdp_parser_header_A.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_A->field);
 	}
 	break;
 	case 2:
-/* #line 56 "./ragel/tsdp_parser_header_A.rl" */
+/* #line 50 "./ragel/tsdp_parser_header_A.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_A->value);
 	}
 	break;
-/* #line 300 "./src/headers/tsdp_header_A.c" */
+/* #line 295 "./src/headers/tsdp_header_A.c" */
 		}
 	}
 	}
@@ -304,12 +299,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 124 "./ragel/tsdp_parser_header_A.rl" */
+/* #line 119 "./ragel/tsdp_parser_header_A.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 311 "./src/headers/tsdp_header_A.c" */
+/* #line 307 "./src/headers/tsdp_header_A.c" */
 5
-/* #line 125 "./ragel/tsdp_parser_header_A.rl" */
+/* #line 121 "./ragel/tsdp_parser_header_A.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"a=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_A);

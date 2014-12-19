@@ -155,7 +155,7 @@ tsk_buffer_t* tmsrp_data_out_get(tmsrp_data_out_t* self)
 		ret = tsk_buffer_create_null();
 		ret->data = tsk_calloc(toread, sizeof(uint8_t));
 		ret->size = toread;
-		if((read = fread(ret->data, sizeof(uint8_t), toread, self->file)) == toread){
+		if((read = (tsk_size_t)fread(ret->data, sizeof(uint8_t), toread, self->file)) == toread){
 			self->size -= toread;
 		}
 		else{

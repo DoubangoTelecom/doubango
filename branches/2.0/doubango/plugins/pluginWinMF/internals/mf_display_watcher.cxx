@@ -58,7 +58,12 @@ HRESULT DisplayWatcher::Start()
 		
 		BOOL ret = SetPropA(m_hWnd, "This", this);
 		assert(ret);
+		
+#if _M_X64
+		m_pWndProc = (WNDPROC)SetWindowLongPtr(m_hWnd, GWLP_WNDPROC, (LONG_PTR)DisplayWatcher::WndProc);
+#else
 		m_pWndProc = (WNDPROC)SetWindowLongPtr(m_hWnd, GWL_WNDPROC, (LONG)DisplayWatcher::WndProc);
+#endif
 
 		UpdatePosition(); // black screen if attached later
 	}
@@ -96,7 +101,12 @@ HRESULT DisplayWatcher::Stop()
 	if(m_hWnd && m_pWndProc)
 	{
 		// Restore
+		
+#if _M_X64
+		SetWindowLongPtr(m_hWnd, GWLP_WNDPROC, (LONG_PTR)m_pWndProc);
+#else
 		SetWindowLongPtr(m_hWnd, GWL_WNDPROC, (LONG)m_pWndProc);
+#endif
 	}
 	m_hWnd = NULL;
 	m_pWndProc = NULL;

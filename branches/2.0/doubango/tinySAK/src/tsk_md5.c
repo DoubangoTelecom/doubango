@@ -84,7 +84,7 @@ void tsk_md5update(tsk_md5context_t *ctx, uint8_t const *buf, tsk_size_t len)
     /* Update byte count */
 
     t = ctx->bytes[0];
-    if ((ctx->bytes[0] = t + len) < t)
+	if ((ctx->bytes[0] = t + (uint32_t)len) < t)
         ctx->bytes[1]++; 	/* Carry from low to high */
 
     t = 64 - (t & 0x3f); 	/* Space available in ctx->in (at least 1) */

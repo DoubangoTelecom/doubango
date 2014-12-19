@@ -154,7 +154,7 @@ int tnet_stun_utils_send_unreliably(tnet_fd_t localFD, uint16_t RTO, uint16_t Rc
         else if (FD_ISSET(localFD, &set)) {
             /* there is data to read */
 
-            tsk_size_t len = 0;
+            unsigned int len = 0;
             void* data = 0;
 
             TSK_DEBUG_INFO("STUN request got response");

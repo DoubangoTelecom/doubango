@@ -1,5 +1,5 @@
-/* Copyright (C) 2013 Mamadou DIOP
-* Copyright (C) 2013 Doubango Telecom <http://www.doubango.org>
+/* Copyright (C) 2013-2015 Mamadou DIOP
+* Copyright (C) 2013-2015 Doubango Telecom <http://www.doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -124,8 +124,8 @@ static int plugin_win_mf_converter_video_ms_init(tmedia_converter_video_t* self,
 	pSelf->widthDst = dstWidth;
 	pSelf->heightDst = dstHeight;
 	pSelf->rotation = 0;
-	pSelf->xOutputSize = _plugin_win_mf_converter_video_ms_get_size(dstChroma, dstWidth, dstHeight);
-	pSelf->xInputSize = _plugin_win_mf_converter_video_ms_get_size(srcChroma, srcWidth, srcHeight);
+	pSelf->xOutputSize = (UINT32)_plugin_win_mf_converter_video_ms_get_size(dstChroma, dstWidth, dstHeight);
+	pSelf->xInputSize = (UINT32)_plugin_win_mf_converter_video_ms_get_size(srcChroma, srcWidth, srcHeight);
 
 	SafeRelease(&pSelf->pSampleOut);
 	SafeRelease(&pSelf->pSampleIn);
@@ -166,8 +166,8 @@ static int plugin_win_mf_converter_video_ms_init(tmedia_converter_video_t* self,
 	}
 #endif
 
-	CHECK_HR(hr = MFUtils::CreateVideoType(&pSelf->fmtSrc, &pTypeSrc, pSelf->widthSrc, pSelf->heightSrc));
-	CHECK_HR(hr = MFUtils::CreateVideoType(&pSelf->fmtDst, &pTypeDst, pSelf->widthDst, pSelf->heightDst));
+	CHECK_HR(hr = MFUtils::CreateVideoType(&pSelf->fmtSrc, &pTypeSrc, (UINT32)pSelf->widthSrc, (UINT32)pSelf->heightSrc));
+	CHECK_HR(hr = MFUtils::CreateVideoType(&pSelf->fmtDst, &pTypeDst, (UINT32)pSelf->widthDst, (UINT32)pSelf->heightDst));
 
 	CHECK_HR(hr = pSelf->pMFT->SetInputType(0, pTypeSrc, 0));
 	CHECK_HR(hr = pSelf->pMFT->SetOutputType(0, pTypeDst, 0));
@@ -269,19 +269,19 @@ static tsk_size_t plugin_win_mf_converter_video_ms_process(tmedia_converter_vide
 							hr = _plugin_win_mf_converter_video_ms_copy_rgb32_down_top(
 								(BYTE*)*output, 
 								(const BYTE*)pBufferPtr, 
-								 pSelf->widthDst, 
-								pSelf->heightDst
+								(INT)pSelf->widthDst, 
+								(INT)pSelf->heightDst
 							 );
 						}
 						else
 						{
 							hr = MFCopyImage(
 								 (BYTE*)*output, 
-								 (pSelf->widthDst << 2), 
+								 (LONG)(pSelf->widthDst << 2), 
 								 (BYTE*)pBufferPtr, 
-								 (pSelf->widthDst << 2), 
-								 (pSelf->widthDst << 2), 
-								 pSelf->heightDst
+								 (LONG)(pSelf->widthDst << 2), 
+								 (DWORD)(pSelf->widthDst << 2), 
+								 (DWORD)pSelf->heightDst
 							 );
 						}
 

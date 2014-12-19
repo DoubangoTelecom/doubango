@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2012 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango(dot)org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -18,6 +16,7 @@
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
+*/
 */
 
 %%{

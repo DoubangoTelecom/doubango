@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,10 +20,6 @@
 
 /**@file thttp_header_Content_Type.c
  * @brief HTTP Content-Type header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinyhttp/headers/thttp_header_Content_Type.h"
 
@@ -110,6 +104,7 @@ thttp_header_Content_Type_t *thttp_header_Content_Type_parse(const char *data, t
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(eof);
 	(void)(thttp_machine_parser_header_Content_Type_first_final);
@@ -117,6 +112,7 @@ thttp_header_Content_Type_t *thttp_header_Content_Type_parse(const char *data, t
 	(void)(thttp_machine_parser_header_Content_Type_en_main);
 	%%write init;
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse Content-Type header.");

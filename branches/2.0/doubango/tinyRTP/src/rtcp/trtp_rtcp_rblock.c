@@ -96,7 +96,7 @@ trtp_rtcp_rblock_t* trtp_rtcp_rblock_deserialize(const void* data, tsk_size_t si
 // Up to the
 int trtp_rtcp_rblock_deserialize_list(const void* data, tsk_size_t _size, trtp_rtcp_rblocks_L_t* dest_list)
 {
-	int32_t size = _size;
+	int32_t size = (int32_t)_size;
 	const uint8_t* pdata = (const uint8_t*)data;
 	trtp_rtcp_rblock_t* rblock;
 

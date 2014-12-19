@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +21,6 @@
 /**@file thttp_header_Dummy.c
  * @brief HTTP 'Dummy' header.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinyhttp/headers/thttp_header_Dummy.h"
 
@@ -103,6 +98,7 @@ thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, tsk_size_t size
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(eof);
 	(void)(thttp_machine_parser_header_Dummy_first_final);
@@ -110,6 +106,7 @@ thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, tsk_size_t size
 	(void)(thttp_machine_parser_header_Dummy_en_main);
 	%%write init;
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < %%{ write first_final; }%% ){
 		TSK_OBJECT_SAFE_FREE(hdr_Dummy);

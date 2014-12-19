@@ -1,10 +1,8 @@
 
 /* #line 1 "./ragel/tnet_dns_resolvconf.rl" */
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
@@ -23,10 +21,6 @@
 */
 /**@file tnet_dns_resolvconf.c
  * @brief Parser for "/etc/resolv.conf" file to retrive DNS servers.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tnet_dns_resolvconf.h"
 
@@ -44,7 +38,7 @@
 
 /* ===	Ragel state machine === */
 
-/* #line 81 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 75 "./ragel/tnet_dns_resolvconf.rl" */
 
 
 /** Gets list of DNS servers from a conf file.
@@ -69,8 +63,9 @@ tnet_addresses_L_t * tnet_dns_resolvconf_parse(const char* path)
 	const char *pe;
 	const char *eof;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 74 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 69 "./src/dns/tnet_dns_resolvconf.c" */
 static const char _tdns_machine_resolvconf_actions[] = {
 	0, 1, 0, 1, 1
 };
@@ -143,7 +138,8 @@ static const int tdns_machine_resolvconf_error = -1;
 static const int tdns_machine_resolvconf_en_main = 0;
 
 
-/* #line 106 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 101 "./ragel/tnet_dns_resolvconf.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	(void)(eof);
 	(void)(tdns_machine_resolvconf_first_final);
 	(void)(tdns_machine_resolvconf_error);
@@ -159,7 +155,7 @@ static const int tdns_machine_resolvconf_en_main = 0;
 		fseek(fd, 0L, SEEK_END);
 		len = ftell(fd);
 		fseek(fd, 0L, SEEK_SET);
-		if(!(buf = (char*)tsk_calloc(len + 1, 1))){
+		if (!(buf = (char*)tsk_calloc(len + 1, 1))) {
 			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %ld", (len + 1));
 			goto bail;
 		}
@@ -173,7 +169,7 @@ static const int tdns_machine_resolvconf_en_main = 0;
 
 		servers = tsk_list_create();
 	}
-	else{
+	else {
 #if ANDROID || defined(__APPLE__) /* TARGET_OS_IPHONE not defined for bsd libraries */
 		TSK_DEBUG_INFO("Failed to open [%s]. But don't panic, we have detected that you are using Google Android/iOS Systems.\n"
 			"You should look at the Progammer's Guide for more information.\n If you are not using DNS functions, don't worry about this warning.", 
@@ -184,15 +180,16 @@ static const int tdns_machine_resolvconf_en_main = 0;
 		goto bail;
 	}
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 189 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 186 "./src/dns/tnet_dns_resolvconf.c" */
 	{
 	cs = tdns_machine_resolvconf_start;
 	}
 
-/* #line 147 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 144 "./ragel/tnet_dns_resolvconf.rl" */
 	
-/* #line 196 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 193 "./src/dns/tnet_dns_resolvconf.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -265,13 +262,13 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 41 "./ragel/tnet_dns_resolvconf.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 51 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 45 "./ragel/tnet_dns_resolvconf.rl" */
 	{
 		int len = (int)(p  - tag_start);
 		if(len && len<=sizeof(ip)){
@@ -287,7 +284,7 @@ _match:
 		}
 	}
 	break;
-/* #line 291 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 288 "./src/dns/tnet_dns_resolvconf.c" */
 		}
 	}
 
@@ -297,13 +294,14 @@ _again:
 	_test_eof: {}
 	}
 
-/* #line 148 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 145 "./ragel/tnet_dns_resolvconf.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
-	if( cs < 
-/* #line 304 "./src/dns/tnet_dns_resolvconf.c" */
+	if (cs < 
+/* #line 302 "./src/dns/tnet_dns_resolvconf.c" */
 0
-/* #line 149 "./ragel/tnet_dns_resolvconf.rl" */
- ){
+/* #line 147 "./ragel/tnet_dns_resolvconf.rl" */
+ ) {
 		TSK_DEBUG_ERROR("Failed to parse %s.", fullpath);
 		TSK_OBJECT_SAFE_FREE(servers);
 	}

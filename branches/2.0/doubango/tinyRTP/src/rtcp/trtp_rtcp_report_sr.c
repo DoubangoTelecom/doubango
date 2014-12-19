@@ -85,7 +85,7 @@ trtp_rtcp_report_sr_t* trtp_rtcp_report_sr_deserialize(const void* data, tsk_siz
 	trtp_rtcp_report_sr_t* sr = tsk_null;
 	trtp_rtcp_header_t* header = tsk_null;
 	const uint8_t* pdata = (const uint8_t*)data;
-	int32_t size = _size;
+	int32_t size = (int32_t)_size;
 
 	if(!data || size < TRTP_RTCP_PACKET_SR_MIN_SIZE){
 		TSK_DEBUG_ERROR("Invalid parameter");

@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
 /*
-* Copyright (C) 2012 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango(dot)org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,9 +22,6 @@
 
 /**@file thttp_header_Sec_WebSocket_Version.c
  * @brief WebSocket "Sec-WebSocket-Key" header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango(dor)org>
- *
  */
 #include "tinyhttp/headers/thttp_header_Sec_WebSocket_Version.h"
 
@@ -35,7 +30,7 @@
 #include <string.h>
 
 
-/* #line 53 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
+/* #line 48 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
 
 
 thttp_header_Sec_WebSocket_Version_t* thttp_header_Sec_WebSocket_Version_create(const char* version)
@@ -78,8 +73,9 @@ thttp_header_Sec_WebSocket_Version_t *thttp_header_Sec_WebSocket_Version_parse(c
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 83 "./src/headers/thttp_header_Sec_WebSocket_Version.c" */
+/* #line 79 "./src/headers/thttp_header_Sec_WebSocket_Version.c" */
 static const char _thttp_machine_parser_header_Sec_WebSocket_Version_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -172,20 +168,20 @@ static const int thttp_machine_parser_header_Sec_WebSocket_Version_error = 0;
 static const int thttp_machine_parser_header_Sec_WebSocket_Version_en_main = 1;
 
 
-/* #line 96 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
+/* #line 92 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
 	(void)(eof);
 	(void)(thttp_machine_parser_header_Sec_WebSocket_Version_first_final);
 	(void)(thttp_machine_parser_header_Sec_WebSocket_Version_error);
 	(void)(thttp_machine_parser_header_Sec_WebSocket_Version_en_main);
 	
-/* #line 182 "./src/headers/thttp_header_Sec_WebSocket_Version.c" */
+/* #line 178 "./src/headers/thttp_header_Sec_WebSocket_Version.c" */
 	{
 	cs = thttp_machine_parser_header_Sec_WebSocket_Version_start;
 	}
 
-/* #line 101 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
+/* #line 97 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
 	
-/* #line 189 "./src/headers/thttp_header_Sec_WebSocket_Version.c" */
+/* #line 185 "./src/headers/thttp_header_Sec_WebSocket_Version.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -260,20 +256,20 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 42 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
+/* #line 37 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
 	{ tag_start = p; }
 	break;
 	case 1:
-/* #line 43 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
+/* #line 38 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
 	{ }
 	break;
 	case 2:
-/* #line 45 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
+/* #line 40 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
 	{
 		TSK_PARSER_ADD_STRING(hdr_Sec_WebSocket_Version->values);
 	}
 	break;
-/* #line 277 "./src/headers/thttp_header_Sec_WebSocket_Version.c" */
+/* #line 273 "./src/headers/thttp_header_Sec_WebSocket_Version.c" */
 		}
 	}
 
@@ -286,12 +282,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 102 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
+/* #line 98 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 293 "./src/headers/thttp_header_Sec_WebSocket_Version.c" */
+/* #line 290 "./src/headers/thttp_header_Sec_WebSocket_Version.c" */
 35
-/* #line 103 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
+/* #line 100 "./ragel/thttp_parser_header_Sec_WebSocket_Version.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse Sec-WebSocket-Version header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Sec_WebSocket_Version);

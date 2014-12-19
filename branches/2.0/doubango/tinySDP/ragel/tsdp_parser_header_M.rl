@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +21,6 @@
 
 /**@file tsdp_header_M.c
  * @brief SDP "m=" header (Media Descriptions).
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
  * 
  */
 #include "tinysdp/headers/tsdp_header_M.h"
@@ -220,12 +215,14 @@ tsdp_header_M_t *tsdp_header_M_parse(const char *data, tsk_size_t size)
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(tsdp_machine_parser_header_M_first_final);
 	(void)(tsdp_machine_parser_header_M_error);
 	(void)(tsdp_machine_parser_header_M_en_main);
 	%%write init;
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse \"m=\" header.");
@@ -234,6 +231,7 @@ tsdp_header_M_t *tsdp_header_M_parse(const char *data, tsk_size_t size)
 	
 	return hdr_M;
 }
+
 
 // for A headers, use "tsdp_header_A_removeAll_by_field()"
 int tsdp_header_M_remove(tsdp_header_M_t* self, tsdp_header_type_t type)
@@ -404,8 +402,15 @@ removeAttributes:
 						continue;
 					}
 					if(tsk_strindexOf(A->value, fmt_plus_space_len, fmt_plus_space) == 0){
-						tsk_list_remove_item(self->Attributes, (tsk_list_item_t*)itemA);
-						goto removeAttributes;
+						// Guard to be sure we know what to remove. For example:
+						// tsdp_header_M_remove_fmt(self, 0) would remove both
+						// a=rtpmap:0 PCMU/8000/1
+						// a=crypto:0 AES_CM_128_HMAC_SHA1_32 inline:Gi8s25tDKDnd/xORJ/ZtRWWC1drVbax5Ve4ftCWd
+						// and cause issue 115: https://code.google.com/p/webrtc2sip/issues/detail?id=115
+						if(!tsk_striequals(A->field, "crypto")){
+							tsk_list_remove_item(self->Attributes, (tsk_list_item_t*)itemA);
+							goto removeAttributes;
+						}
 					}
 				}
 				tsk_list_remove_item(self->FMTs, (tsk_list_item_t*)itemM);
@@ -607,7 +612,6 @@ int tsdp_header_M_resume(tsdp_header_M_t* self, tsk_bool_t local)
 	}
 	return 0;
 }
-
 
 //
 //int tsdp_header_M_set(tsdp_header_M_t* self, ...)

@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 /*
-* Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2009-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,10 +22,6 @@
 
 /**@file tmsrp_header_Byte_Range.c
  * @brief MSRP 'Byte-Range' header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinymsrp/headers/tmsrp_header_Byte-Range.h"
 
@@ -41,7 +35,7 @@
 *	Ragel state machine.
 */
 
-/* #line 82 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+/* #line 76 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 
 
 tmsrp_header_Byte_Range_t* tmsrp_header_Byte_Range_create(int64_t start, int64_t end, int64_t total)
@@ -90,8 +84,9 @@ tmsrp_header_Byte_Range_t *tmsrp_header_Byte_Range_parse(const char *data, tsk_s
 
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 95 "./src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 90 "./src/headers/tmsrp_header_Byte-Range.c" */
 static const char _tmsrp_machine_parser_header_Byte_Range_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3
@@ -168,20 +163,20 @@ static const int tmsrp_machine_parser_header_Byte_Range_error = 0;
 static const int tmsrp_machine_parser_header_Byte_Range_en_main = 1;
 
 
-/* #line 131 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+/* #line 126 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	(void)(eof);
 	(void)(tmsrp_machine_parser_header_Byte_Range_first_final);
 	(void)(tmsrp_machine_parser_header_Byte_Range_error);
 	(void)(tmsrp_machine_parser_header_Byte_Range_en_main);
 	
-/* #line 178 "./src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 173 "./src/headers/tmsrp_header_Byte-Range.c" */
 	{
 	cs = tmsrp_machine_parser_header_Byte_Range_start;
 	}
 
-/* #line 136 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+/* #line 131 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	
-/* #line 185 "./src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 180 "./src/headers/tmsrp_header_Byte-Range.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -256,19 +251,19 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+/* #line 41 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 51 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+/* #line 45 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	{
 		TSK_PARSER_SET_INTEGER_EX(hdr_Byte_Range->start, int64_t, atoi64);
 	}
 	break;
 	case 2:
-/* #line 55 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+/* #line 49 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	{
 		if(tag_start && *tag_start == '*'){
 			hdr_Byte_Range->end = -1;
@@ -279,7 +274,7 @@ _match:
 	}
 	break;
 	case 3:
-/* #line 64 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+/* #line 58 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	{
 		if(tag_start && *tag_start == '*'){
 			hdr_Byte_Range->total = -1;
@@ -289,7 +284,7 @@ _match:
 		}
 	}
 	break;
-/* #line 293 "./src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 288 "./src/headers/tmsrp_header_Byte-Range.c" */
 		}
 	}
 
@@ -306,7 +301,7 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 3:
-/* #line 64 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+/* #line 58 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	{
 		if(tag_start && *tag_start == '*'){
 			hdr_Byte_Range->total = -1;
@@ -316,7 +311,7 @@ _again:
 		}
 	}
 	break;
-/* #line 320 "./src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 315 "./src/headers/tmsrp_header_Byte-Range.c" */
 		}
 	}
 	}
@@ -324,12 +319,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 137 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+/* #line 132 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 331 "./src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 327 "./src/headers/tmsrp_header_Byte-Range.c" */
 20
-/* #line 138 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
+/* #line 134 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Byte-Range' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Byte_Range);

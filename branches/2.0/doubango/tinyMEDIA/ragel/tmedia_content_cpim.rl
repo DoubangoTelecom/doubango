@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,9 +20,6 @@
 
 /**@file tmedia_content_cpim.c
  * @brief Common Presence and Instant Messaging (CPIM): Message Format (RFC 3862)
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
  */
 #include "tinymedia/content/tmedia_content_cpim.h"
 
@@ -142,6 +137,7 @@ static int tmedia_content_cpim_parse(tmedia_content_t* self, const void* in_data
 	char* hvalue = tsk_null;
 	tsk_bool_t parsing_mime_headers = tsk_true;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(eof);
 	(void)(tmedia_machine_content_cpim_first_final);
@@ -149,6 +145,7 @@ static int tmedia_content_cpim_parse(tmedia_content_t* self, const void* in_data
 	(void)(tmedia_machine_content_cpim_en_main);
 	%%write init;
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	TSK_FREE(hname);
 	TSK_FREE(hvalue);

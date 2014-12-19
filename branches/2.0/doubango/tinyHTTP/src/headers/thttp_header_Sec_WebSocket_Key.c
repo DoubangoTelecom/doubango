@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
 /*
-* Copyright (C) 2012 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango(dot)org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,9 +22,6 @@
 
 /**@file thttp_header_Sec_WebSocket_Key.c
  * @brief WebSocket "Sec-WebSocket-Key" header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango(dor)org>
- *
  */
 #include "tinyhttp/headers/thttp_header_Sec_WebSocket_Key.h"
 
@@ -35,7 +30,7 @@
 #include <string.h>
 
 
-/* #line 51 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
+/* #line 46 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
 
 
 thttp_header_Sec_WebSocket_Key_t* thttp_header_Sec_WebSocket_Key_create(const char* value)
@@ -72,8 +67,9 @@ thttp_header_Sec_WebSocket_Key_t *thttp_header_Sec_WebSocket_Key_parse(const cha
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 77 "./src/headers/thttp_header_Sec_WebSocket_Key.c" */
+/* #line 73 "./src/headers/thttp_header_Sec_WebSocket_Key.c" */
 static const char _thttp_machine_parser_header_Sec_WebSocket_Key_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -158,20 +154,20 @@ static const int thttp_machine_parser_header_Sec_WebSocket_Key_error = 0;
 static const int thttp_machine_parser_header_Sec_WebSocket_Key_en_main = 1;
 
 
-/* #line 88 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
+/* #line 84 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
 	(void)(eof);
 	(void)(thttp_machine_parser_header_Sec_WebSocket_Key_first_final);
 	(void)(thttp_machine_parser_header_Sec_WebSocket_Key_error);
 	(void)(thttp_machine_parser_header_Sec_WebSocket_Key_en_main);
 	
-/* #line 168 "./src/headers/thttp_header_Sec_WebSocket_Key.c" */
+/* #line 164 "./src/headers/thttp_header_Sec_WebSocket_Key.c" */
 	{
 	cs = thttp_machine_parser_header_Sec_WebSocket_Key_start;
 	}
 
-/* #line 93 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
+/* #line 89 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
 	
-/* #line 175 "./src/headers/thttp_header_Sec_WebSocket_Key.c" */
+/* #line 171 "./src/headers/thttp_header_Sec_WebSocket_Key.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -246,20 +242,20 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 42 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
+/* #line 37 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
 	{ tag_start = p; }
 	break;
 	case 1:
-/* #line 43 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
+/* #line 38 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
 	{ }
 	break;
 	case 2:
-/* #line 45 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
+/* #line 40 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Sec_WebSocket_Key->value);
 	}
 	break;
-/* #line 263 "./src/headers/thttp_header_Sec_WebSocket_Key.c" */
+/* #line 259 "./src/headers/thttp_header_Sec_WebSocket_Key.c" */
 		}
 	}
 
@@ -272,12 +268,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 94 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
+/* #line 90 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 279 "./src/headers/thttp_header_Sec_WebSocket_Key.c" */
+/* #line 276 "./src/headers/thttp_header_Sec_WebSocket_Key.c" */
 30
-/* #line 95 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
+/* #line 92 "./ragel/thttp_parser_header_Sec_WebSocket_Key.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse Sec-WebSocket-Key header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Sec_WebSocket_Key);
