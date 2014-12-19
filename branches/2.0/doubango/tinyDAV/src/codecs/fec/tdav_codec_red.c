@@ -151,7 +151,7 @@ static tsk_size_t tdav_codec_red_decode(tmedia_codec_t* self, const void* in_dat
              |0|   Block PT  |
              +-+-+-+-+-+-+-+-+
 			 */
-			block_length = in_size;
+			block_length = (uint16_t)in_size;
 		}
 		else{
 			/*

@@ -354,7 +354,7 @@ tsk_size_t tdav_codec_mp4ves_decode(tmedia_codec_t* _self, const void* in_data, 
 		}		
 
 		av_init_packet(&packet);
-		packet.size = self->decoder.accumulator_pos;
+		packet.size = (int)self->decoder.accumulator_pos;
 		packet.data = self->decoder.accumulator;
 		ret = avcodec_decode_video2(self->decoder.context, self->decoder.picture, &got_picture_ptr, &packet);
 
@@ -372,8 +372,8 @@ tsk_size_t tdav_codec_mp4ves_decode(tmedia_codec_t* _self, const void* in_data, 
 			TMEDIA_CODEC_VIDEO(self)->in.height = self->decoder.context->height;
 
 			/* copy picture into a linear buffer */
-			avpicture_layout((AVPicture *)self->decoder.picture, self->decoder.context->pix_fmt, self->decoder.context->width, self->decoder.context->height,
-				*out_data, retsize);
+			avpicture_layout((AVPicture *)self->decoder.picture, self->decoder.context->pix_fmt, (int)self->decoder.context->width, (int)self->decoder.context->height,
+				*out_data, (int)retsize);
 		}
 		/* in all cases: reset accumulator */
 		self->decoder.accumulator_pos = 0;		

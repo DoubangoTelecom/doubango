@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -19,13 +17,9 @@
 * along with DOUBANGO.
 *
 */
-
 /**@file thttp_header_Content_Length.c
  * @brief HTTP Content-Length header.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinyhttp/headers/thttp_header_Content_Length.h"
 
@@ -86,6 +80,7 @@ thttp_header_Content_Length_t *thttp_header_Content_Length_parse(const char *dat
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(eof);
 	(void)(thttp_machine_parser_header_Content_Length_first_final);
@@ -93,6 +88,7 @@ thttp_header_Content_Length_t *thttp_header_Content_Length_parse(const char *dat
 	(void)(thttp_machine_parser_header_Content_Length_en_main);
 	%%write init;
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < %%{ write first_final; }%% ){
 		TSK_OBJECT_SAFE_FREE(hdr_clength);

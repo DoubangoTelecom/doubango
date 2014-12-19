@@ -52,7 +52,7 @@ static int tdav_consumer_t140_consume(tmedia_consumer_t* self, const void* buffe
 		return TDAV_CONSUMER_T140(self)->cb_ondata.func(TDAV_CONSUMER_T140(self)->cb_ondata.context, 
 			(enum tmedia_t140_data_type_e)*((int32_t*)buffer), 
 			&((uint8_t*)buffer)[4], 
-			(size - 4));
+			(unsigned int)(size - 4));
 	}
 
 	return 0;

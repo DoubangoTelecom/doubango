@@ -1256,8 +1256,8 @@ int trtp_manager_set_rtcweb_type_remote(trtp_manager_t* self, tmedia_rtcweb_type
 int trtp_manager_start(trtp_manager_t* self)
 {
 	int ret = 0;
-	int rcv_buf = tmedia_defaults_get_rtpbuff_size();
-	int snd_buf = tmedia_defaults_get_rtpbuff_size();
+	int rcv_buf = (int)tmedia_defaults_get_rtpbuff_size();
+	int snd_buf = (int)tmedia_defaults_get_rtpbuff_size();
     int32_t dscp_rtp;
 
 	if(!self){
@@ -1514,7 +1514,7 @@ tsk_size_t trtp_manager_send_rtp_packet(trtp_manager_t* self, const struct trtp_
 	}
 
 	/* serialize and send over the network */
-	if((ret = trtp_rtp_packet_serialize_to(packet, self->rtp.serial_buffer.ptr, xsize))){
+	if((ret = (int)trtp_rtp_packet_serialize_to(packet, self->rtp.serial_buffer.ptr, xsize))){
 		void* data_ptr = self->rtp.serial_buffer.ptr;
 		int data_size = ret;
 #if HAVE_SRTP
@@ -1526,7 +1526,7 @@ tsk_size_t trtp_manager_send_rtp_packet(trtp_manager_t* self, const struct trtp_
 			}
 		}
 #endif
-		if (/* number of bytes sent */(ret = trtp_manager_send_rtp_raw(self, data_ptr, data_size)) > 0) {
+		if (/* number of bytes sent */(ret = (int)trtp_manager_send_rtp_raw(self, data_ptr, data_size)) > 0) {
 			// forward packet to the RTCP session
 			if (self->rtcp.session) {
 				trtp_rtcp_session_process_rtp_out(self->rtcp.session, packet, data_size);

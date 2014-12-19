@@ -1,30 +1,24 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
 */
 /**@file tnet_dhcp_message.c
  * @brief DHCP Message as per RFC 2131 subclause 2.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tnet_dhcp_message.h"
 #include "tnet_dhcp.h"
@@ -60,9 +54,9 @@ tsk_buffer_t* tnet_dhcp_message_serialize(const tnet_dhcp_ctx_t *ctx, const tnet
 	uint8_t _1byte;
 	uint16_t _2bytes;
 	uint32_t _4bytes;
-	
+
 	/* Check message validity */
-	if(!message){
+	if (!message){
 		goto bail;
 	}
 
@@ -70,11 +64,11 @@ tsk_buffer_t* tnet_dhcp_message_serialize(const tnet_dhcp_ctx_t *ctx, const tnet
 
 	/*== OP HTYPE HLEN HOPS */
 	_4bytes = (((uint32_t)(message->op)) << 24) |
-				(((uint32_t)(message->htype)) << 16) |
-				(((uint16_t)(message->hlen)) << 8) | message->hops;
+		(((uint32_t)(message->htype)) << 16) |
+		(((uint16_t)(message->hlen)) << 8) | message->hops;
 	_4bytes = tnet_ntohl(_4bytes);
 	tsk_buffer_append(output, &(_4bytes), 4);
-	
+
 	/*== XID */
 	_4bytes = tnet_ntohl(message->xid);
 	tsk_buffer_append(output, &(_4bytes), 4);
@@ -110,37 +104,37 @@ tsk_buffer_t* tnet_dhcp_message_serialize(const tnet_dhcp_ctx_t *ctx, const tnet
 	*/
 	tnet_dhcp_option_serializeex(dhcp_code_DHCP_Msg_Type, 1, &message->type, output);
 
-	/*== Client Identifier (option 61) ==> RFC 2132 - 9.14. Client-identifier 
+	/*== Client Identifier (option 61) ==> RFC 2132 - 9.14. Client-identifier
 		Code   Len   Type  Client-Identifier
-	   +-----+-----+-----+-----+-----+---
-	   |  61 |  n  |  t1 |  i1 |  i2 | ...
-	   +-----+-----+-----+-----+-----+---
-	*/	
-	if(message->hlen){
+		+-----+-----+-----+-----+-----+---
+		|  61 |  n  |  t1 |  i1 |  i2 | ...
+		+-----+-----+-----+-----+-----+---
+		*/
+	if (message->hlen){
 		uint8_t client_id[17]; // 16 /*sizeof(chaddr)*/+ 1/*htype*/
 		/*if(client_id)*/{
 			client_id[0] = message->htype;
 			memcpy(&client_id[1], message->chaddr, message->hlen);
-			tnet_dhcp_option_serializeex(dhcp_code_Client_Id, (message->hlen+1), client_id, output);
+			tnet_dhcp_option_serializeex(dhcp_code_Client_Id, (message->hlen + 1), client_id, output);
 		}
 	}
 	/*== Host name(10) ==> RFC 2132 - 3.14. Host Name Option
-	    Code   Len                 Host Name
-	   +-----+-----+-----+-----+-----+-----+-----+-----+--
-	   |  12 |  n  |  h1 |  h2 |  h3 |  h4 |  h5 |  h6 |  ...
-	   +-----+-----+-----+-----+-----+-----+-----+-----+--
-	*/
-	if(TNET_DHCP_MESSAGE_IS_REQUEST(message) && ctx->hostname){
-		tnet_dhcp_option_serializeex(dhcp_code_Hostname, tsk_strlen(ctx->hostname), ctx->hostname, output);
+		Code   Len                 Host Name
+		+-----+-----+-----+-----+-----+-----+-----+-----+--
+		|  12 |  n  |  h1 |  h2 |  h3 |  h4 |  h5 |  h6 |  ...
+		+-----+-----+-----+-----+-----+-----+-----+-----+--
+		*/
+	if (TNET_DHCP_MESSAGE_IS_REQUEST(message) && ctx->hostname){
+		tnet_dhcp_option_serializeex(dhcp_code_Hostname, (uint8_t)tsk_strlen(ctx->hostname), ctx->hostname, output);
 	}
 	/*== Vendor classId(60) ==> RFC 2132 - 9.13. Vendor class identifier
 		Code   Len   Vendor class Identifier
 		+-----+-----+-----+-----+---
 		|  60 |  n  |  i1 |  i2 | ...
 		+-----+-----+-----+-----+---
-	*/
-	if(TNET_DHCP_MESSAGE_IS_REQUEST(message) && ctx->vendor_id){
-		tnet_dhcp_option_serializeex(dhcp_code_Class_Id, tsk_strlen(ctx->vendor_id), ctx->vendor_id, output);
+		*/
+	if (TNET_DHCP_MESSAGE_IS_REQUEST(message) && ctx->vendor_id){
+		tnet_dhcp_option_serializeex(dhcp_code_Class_Id, (uint8_t)tsk_strlen(ctx->vendor_id), ctx->vendor_id, output);
 	}
 
 	/*== RFC 2132 - 9.10. Maximum DHCP Message Size (57)
@@ -148,13 +142,13 @@ tsk_buffer_t* tnet_dhcp_message_serialize(const tnet_dhcp_ctx_t *ctx, const tnet
 		+-----+-----+-----+-----+
 		|  57 |  2  |  l1 |  l2 |
 		+-----+-----+-----+-----+
-	*/
-	if(TNET_DHCP_MESSAGE_IS_REQUEST(message) && ctx->max_msg_size){
+		*/
+	if (TNET_DHCP_MESSAGE_IS_REQUEST(message) && ctx->max_msg_size){
 		_2bytes = tnet_ntohs(ctx->max_msg_size);
 		tnet_dhcp_option_serializeex(dhcp_code_DHCP_Max_Msg_Size, 2, &_2bytes, output);
 	}
 
-	/*== DHCP Options 
+	/*== DHCP Options
 	*/
 	{
 		tsk_list_item_t *item;
@@ -162,15 +156,15 @@ tsk_buffer_t* tnet_dhcp_message_serialize(const tnet_dhcp_ctx_t *ctx, const tnet
 		tsk_list_foreach(item, message->options)
 		{
 			option = (tnet_dhcp_option_t*)item->data;
-			if(tnet_dhcp_option_serialize(option, output)){
+			if (tnet_dhcp_option_serialize(option, output)){
 				TSK_DEBUG_WARN("Failed to serialize DHCP OPTION (%u)", option->code);
 			}
 		}
 	}
-	
+
 	/*	RFC 2131 - 4.1 Constructing and sending DHCP messages
 		The last option must always be the 'end' option.
-	*/
+		*/
 	_1byte = dhcp_code_End;
 	tsk_buffer_append(output, &(_1byte), 1);
 
@@ -183,17 +177,17 @@ tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s 
 	tnet_dhcp_message_t *message = 0;
 	uint8_t *dataPtr, *dataEnd, *dataStart;
 
-	if(!data || !size)
+	if (!data || !size)
 	{
 		goto bail;
 	}
 
-	if(size < TNET_DHCP_MESSAGE_MIN_SIZE){
+	if (size < TNET_DHCP_MESSAGE_MIN_SIZE){
 		TSK_DEBUG_ERROR("DHCP message too short.");
 		goto bail;
 	}
 
-	if(!(message = tnet_dhcp_reply_create())){ /* If REQUEST OP will be overridedden */
+	if (!(message = tnet_dhcp_reply_create())){ /* If REQUEST OP will be overridedden */
 		TSK_DEBUG_ERROR("Failed to create new DHCP message.");
 		goto bail;
 	}
@@ -211,7 +205,7 @@ tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s 
 	/*== htype (1) */
 	message->hops = *(dataPtr++);
 	/*== xid (4) */
-	message->xid= tnet_htonl_2(dataPtr);
+	message->xid = tnet_htonl_2(dataPtr);
 	dataPtr += 4;
 	/*== secs (2) */
 	message->secs = tnet_ntohs_2(dataPtr);
@@ -220,19 +214,19 @@ tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s 
 	message->flags = tnet_ntohs_2(dataPtr);
 	dataPtr += 2;
 	/*== ciaddr  (4) */
-	message->ciaddr= tnet_htonl_2(dataPtr);
+	message->ciaddr = tnet_htonl_2(dataPtr);
 	dataPtr += 4;
 	/*== yiaddr  (4) */
-	message->yiaddr= tnet_htonl_2(dataPtr);
+	message->yiaddr = tnet_htonl_2(dataPtr);
 	dataPtr += 4;
 	/*== siaddr  (4) */
-	message->siaddr= tnet_htonl_2(dataPtr);
+	message->siaddr = tnet_htonl_2(dataPtr);
 	dataPtr += 4;
 	/*== giaddr  (4) */
-	message->giaddr= tnet_htonl_2(dataPtr);
+	message->giaddr = tnet_htonl_2(dataPtr);
 	dataPtr += 4;
 	/*== chaddr  (16[max]) */
-	memcpy(message->chaddr, dataPtr, message->hlen>16 ? 16 : message->hlen);
+	memcpy(message->chaddr, dataPtr, message->hlen > 16 ? 16 : message->hlen);
 	dataPtr += 16;
 	/*== sname   (64) */
 	memcpy(message->sname, dataPtr, 64);
@@ -241,19 +235,19 @@ tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s 
 	memcpy(message->file, dataPtr, 128);
 	dataPtr += 128;
 	/*== Magic Cookie (4) */
-	if(tnet_htonl_2(dataPtr) != TNET_DHCP_MAGIC_COOKIE){
+	if (tnet_htonl_2(dataPtr) != TNET_DHCP_MAGIC_COOKIE){
 		TSK_DEBUG_ERROR("Invalid DHCP magic cookie.");
 		// Do not exit ==> continue parsing.
 	}
 	dataPtr += 4;
 
 	/*== options (variable) */
-	while(dataPtr<dataEnd && *dataPtr!=dhcp_code_End)
+	while (dataPtr < dataEnd && *dataPtr != dhcp_code_End)
 	{
-		tnet_dhcp_option_t* option = tnet_dhcp_option_deserialize(dataPtr, (dataEnd-dataPtr));
-		if(option && option->value){
-			
-			if(option->code == dhcp_code_DHCP_Msg_Type){
+		tnet_dhcp_option_t* option = tnet_dhcp_option_deserialize(dataPtr, (tsk_size_t)(dataEnd - dataPtr));
+		if (option && option->value){
+
+			if (option->code == dhcp_code_DHCP_Msg_Type){
 				message->type = (tnet_dhcp_message_type_t)*TSK_BUFFER_TO_U8(option->value);
 			}
 
@@ -272,13 +266,13 @@ const tnet_dhcp_option_t* tnet_dhcp_message_find_option(const tnet_dhcp_message_
 {
 	tsk_list_item_t *item;
 
-	if(!message){
+	if (!message){
 		goto bail;
 	}
 
 	tsk_list_foreach(item, message->options)
 	{
-		if(((tnet_dhcp_option_t*)item->data)->code == code){
+		if (((tnet_dhcp_option_t*)item->data)->code == code){
 			return ((tnet_dhcp_option_t*)item->data);
 		}
 	}
@@ -291,21 +285,21 @@ int tnet_dhcp_message_add_codes(tnet_dhcp_message_t *self, tnet_dhcp_option_code
 {
 	int ret = -1;
 
-	if(!self){
+	if (!self){
 		goto bail;
 	}
-	if(codes_count){
+	if (codes_count){
 		unsigned i;
-		
+
 		tnet_dhcp_option_paramslist_t* option = (tnet_dhcp_option_paramslist_t*)tnet_dhcp_message_find_option(self, dhcp_code_Parameter_List);
-		if(!option){
+		if (!option){
 			tnet_dhcp_option_paramslist_t *option_paramslist = tnet_dhcp_option_paramslist_create();
 			option = option_paramslist;
 			tsk_list_push_back_data(self->options, (void**)&option_paramslist);
 		}
 
-		for(i=0; i<codes_count; i++){
-			if((ret = tnet_dhcp_option_paramslist_add_code(option, codes[i]))){
+		for (i = 0; i < codes_count; i++){
+			if ((ret = tnet_dhcp_option_paramslist_add_code(option, codes[i]))){
 				break;
 			}
 		}
@@ -322,7 +316,7 @@ bail:
 static tsk_object_t* tnet_dhcp_message_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp_message_t *message = self;
-	if(message){
+	if (message){
 		static uint32_t __dhcpmessage_unique_xid = 0;//(uint32_t)tsk_time_epoch();
 
 		message->op = va_arg(*app, tnet_dhcp_message_op_t);
@@ -335,10 +329,10 @@ static tsk_object_t* tnet_dhcp_message_ctor(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tnet_dhcp_message_dtor(tsk_object_t * self) 
-{ 
+static tsk_object_t* tnet_dhcp_message_dtor(tsk_object_t * self)
+{
 	tnet_dhcp_message_t *message = self;
-	if(message){
+	if (message){
 		TSK_OBJECT_SAFE_FREE(message->options);
 	}
 	return self;

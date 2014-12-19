@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +21,6 @@
 /**@file tsk_url.c
  * @brief Utility functions to encode/decode urls.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tsk_url.h"
 #include "tsk_memory.h"
@@ -79,9 +74,11 @@ char* tsk_url_decode(const char* url) {
 				*pbuf++ = tsk_b16tob10(purl[1]) << 4 | tsk_b16tob10(purl[2]);
 				purl += 2;
 			}
-		} else if (*purl == '+') { 
+		}
+		else if (*purl == '+') {
 			*pbuf++ = ' ';
-		} else {
+		}
+		else {
 			*pbuf++ = *purl;
 		}
 		purl++;

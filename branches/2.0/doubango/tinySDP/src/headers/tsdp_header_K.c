@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/tsdp_parser_header_K.rl" */
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,10 +23,6 @@
 
 /**@file tsdp_header_K.c
  * @brief SDP "k=" header (Encryption Key).
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
- * 
  */
 #include "tinysdp/headers/tsdp_header_K.h"
 
@@ -42,7 +36,7 @@
 *	Ragel state machine.
 */
 
-/* #line 61 "./ragel/tsdp_parser_header_K.rl" */
+/* #line 55 "./ragel/tsdp_parser_header_K.rl" */
 
 
 
@@ -89,8 +83,9 @@ tsdp_header_K_t *tsdp_header_K_parse(const char *data, tsk_size_t size)
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 94 "./src/headers/tsdp_header_K.c" */
+/* #line 89 "./src/headers/tsdp_header_K.c" */
 static const char _tsdp_machine_parser_header_K_actions[] = {
 	0, 1, 0, 1, 1, 2, 0, 1
 	
@@ -137,19 +132,19 @@ static const int tsdp_machine_parser_header_K_error = 0;
 static const int tsdp_machine_parser_header_K_en_main = 1;
 
 
-/* #line 108 "./ragel/tsdp_parser_header_K.rl" */
+/* #line 103 "./ragel/tsdp_parser_header_K.rl" */
 	(void)(tsdp_machine_parser_header_K_first_final);
 	(void)(tsdp_machine_parser_header_K_error);
 	(void)(tsdp_machine_parser_header_K_en_main);
 	
-/* #line 146 "./src/headers/tsdp_header_K.c" */
+/* #line 141 "./src/headers/tsdp_header_K.c" */
 	{
 	cs = tsdp_machine_parser_header_K_start;
 	}
 
-/* #line 112 "./ragel/tsdp_parser_header_K.rl" */
+/* #line 107 "./ragel/tsdp_parser_header_K.rl" */
 	
-/* #line 153 "./src/headers/tsdp_header_K.c" */
+/* #line 148 "./src/headers/tsdp_header_K.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -223,18 +218,18 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 48 "./ragel/tsdp_parser_header_K.rl" */
+/* #line 42 "./ragel/tsdp_parser_header_K.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 52 "./ragel/tsdp_parser_header_K.rl" */
+/* #line 46 "./ragel/tsdp_parser_header_K.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_K->value);
 	}
 	break;
-/* #line 238 "./src/headers/tsdp_header_K.c" */
+/* #line 233 "./src/headers/tsdp_header_K.c" */
 		}
 	}
 
@@ -251,18 +246,18 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 48 "./ragel/tsdp_parser_header_K.rl" */
+/* #line 42 "./ragel/tsdp_parser_header_K.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 52 "./ragel/tsdp_parser_header_K.rl" */
+/* #line 46 "./ragel/tsdp_parser_header_K.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_K->value);
 	}
 	break;
-/* #line 266 "./src/headers/tsdp_header_K.c" */
+/* #line 261 "./src/headers/tsdp_header_K.c" */
 		}
 	}
 	}
@@ -270,12 +265,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 113 "./ragel/tsdp_parser_header_K.rl" */
+/* #line 108 "./ragel/tsdp_parser_header_K.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 277 "./src/headers/tsdp_header_K.c" */
+/* #line 273 "./src/headers/tsdp_header_K.c" */
 4
-/* #line 114 "./ragel/tsdp_parser_header_K.rl" */
+/* #line 110 "./ragel/tsdp_parser_header_K.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"k=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_K);

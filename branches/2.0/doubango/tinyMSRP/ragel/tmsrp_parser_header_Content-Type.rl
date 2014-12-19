@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2009-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,10 +20,6 @@
 
 /**@file tmsrp_header_Content_Type.c
  * @brief MSRP Content-Type header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinymsrp/headers/tmsrp_header_Content-Type.h"
 
@@ -91,7 +85,7 @@ int tmsrp_header_Content_Type_tostring(const tmsrp_header_t* header, tsk_buffer_
 		const tsk_list_item_t *item;
 
 		if(Content_Type->value){
-			tsk_buffer_append(output, Content_Type->value, strlen(Content_Type->value));
+			tsk_buffer_append(output, Content_Type->value, tsk_strlen(Content_Type->value));
 		}
 		// Params
 		tsk_list_foreach(item, Content_Type->params){
@@ -113,6 +107,7 @@ tmsrp_header_Content_Type_t *tmsrp_header_Content_Type_parse(const char *data, t
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(eof);
 	(void)(tmsrp_machine_parser_header_Content_Type_first_final);
@@ -120,6 +115,7 @@ tmsrp_header_Content_Type_t *tmsrp_header_Content_Type_parse(const char *data, t
 	(void)(tmsrp_machine_parser_header_Content_Type_en_main);
 	%%write init;
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse 'Content-Type' header.");

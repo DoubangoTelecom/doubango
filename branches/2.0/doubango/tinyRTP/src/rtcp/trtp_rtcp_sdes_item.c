@@ -124,7 +124,7 @@ int trtp_rtcp_sdes_item_serialize_to(const trtp_rtcp_sdes_item_t* self, void* da
 	else{
 		((uint8_t*)data)[0] = self->type;
 		if(self->data){
-			((uint8_t*)data)[1] = self->data->size;
+			((uint8_t*)data)[1] = (uint8_t)self->data->size;
 			memcpy(&((uint8_t*)data)[2], self->data->data, self->data->size);
 		}
 		else{

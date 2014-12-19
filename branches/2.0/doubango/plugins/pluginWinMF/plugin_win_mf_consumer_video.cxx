@@ -201,8 +201,8 @@ static int plugin_win_mf_consumer_video_prepare(tmedia_consumer_t* self, const t
 	}
 	
 	pSelf->nNegFps = TMEDIA_CONSUMER(pSelf)->video.fps;
-	pSelf->nNegWidth = TMEDIA_CONSUMER(pSelf)->video.display.width;
-	pSelf->nNegHeight = TMEDIA_CONSUMER(pSelf)->video.display.height;
+	pSelf->nNegWidth = (UINT32)TMEDIA_CONSUMER(pSelf)->video.display.width;
+	pSelf->nNegHeight = (UINT32)TMEDIA_CONSUMER(pSelf)->video.display.height;
 
 	TSK_DEBUG_INFO("D3D9 video consumer: fps=%d, width=%d, height=%d", 
 		pSelf->nNegFps, 
@@ -313,8 +313,8 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 		if(hWnd)
 		{
 			// means HWND was not set but defined now
-			pSelf->nNegWidth = TMEDIA_CONSUMER(pSelf)->video.in.width;
-			pSelf->nNegHeight = TMEDIA_CONSUMER(pSelf)->video.in.height;
+			pSelf->nNegWidth = (UINT32)TMEDIA_CONSUMER(pSelf)->video.in.width;
+			pSelf->nNegHeight = (UINT32)TMEDIA_CONSUMER(pSelf)->video.in.height;
 
 			CHECK_HR(hr = CreateDeviceD3D9(hWnd, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
 			CHECK_HR(hr = CreateSwapChain(hWnd, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
@@ -328,10 +328,10 @@ static int plugin_win_mf_consumer_video_consume(tmedia_consumer_t* self, const v
 		// Update media type
 		
 		SafeRelease(&pSelf->pSwapChain);
-		CHECK_HR(hr = CreateSwapChain(hWnd, TMEDIA_CONSUMER(pSelf)->video.in.width, TMEDIA_CONSUMER(pSelf)->video.in.height, pSelf->pDevice, &pSelf->pSwapChain));
+		CHECK_HR(hr = CreateSwapChain(hWnd, (UINT32)TMEDIA_CONSUMER(pSelf)->video.in.width, (UINT32)TMEDIA_CONSUMER(pSelf)->video.in.height, pSelf->pDevice, &pSelf->pSwapChain));
 
-		pSelf->nNegWidth = TMEDIA_CONSUMER(pSelf)->video.in.width;
-		pSelf->nNegHeight = TMEDIA_CONSUMER(pSelf)->video.in.height;
+		pSelf->nNegWidth = (UINT32)TMEDIA_CONSUMER(pSelf)->video.in.width;
+		pSelf->nNegHeight = (UINT32)TMEDIA_CONSUMER(pSelf)->video.in.height;
 
 		// Update Destination will do noting if the window size haven't changed. 
 		// Force updating the destination rect if negotiated size change
@@ -987,7 +987,7 @@ static HRESULT HookWindow(plugin_win_mf_consumer_video_s *pSelf, HWND hWnd)
 	CHECK_HR(hr = UnhookWindow(pSelf));
 
 	if ((pSelf->hWindow = hWnd)) {
-		pSelf->wndProc = (WNDPROC)SetWindowLongPtr(pSelf->hWindow, GWL_WNDPROC, (LONG)WndProc);
+		pSelf->wndProc = (WNDPROC)SetWindowLongPtr(pSelf->hWindow, GWLP_WNDPROC, (LONG_PTR)WndProc);
 		if (!pSelf->wndProc) {
 			TSK_DEBUG_ERROR("HookWindowLongPtr() failed with errcode=%d", GetLastError());
 			CHECK_HR(hr = E_FAIL);
@@ -1003,7 +1003,7 @@ static HRESULT UnhookWindow(struct plugin_win_mf_consumer_video_s *pSelf)
 {
 	tsk_safeobj_lock(pSelf);
 	if (pSelf->hWindow && pSelf->wndProc) {
-		SetWindowLongPtr(pSelf->hWindow, GWL_WNDPROC, (LONG)pSelf->wndProc);
+		SetWindowLongPtr(pSelf->hWindow, GWLP_WNDPROC, (LONG_PTR)pSelf->wndProc);
 		pSelf->wndProc = NULL;
 	}
 	if(pSelf->hWindow)

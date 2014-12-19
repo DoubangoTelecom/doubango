@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/tsdp_parser_header_O.rl" */
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,10 +22,6 @@
 
 /**@file tsdp_header_O.c
  * @brief SDP "o=" header (Origin).
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
- * @date Created: Uat Nov 8 16:54:58 2009 mdiop
  */
 #include "tinysdp/headers/tsdp_header_O.h"
 
@@ -41,7 +35,7 @@
 *	Ragel state machine.
 */
 
-/* #line 86 "./ragel/tsdp_parser_header_O.rl" */
+/* #line 80 "./ragel/tsdp_parser_header_O.rl" */
 
 
 
@@ -103,8 +97,9 @@ tsdp_header_O_t *tsdp_header_O_parse(const char *data, tsk_size_t size)
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 108 "./src/headers/tsdp_header_O.c" */
+/* #line 103 "./src/headers/tsdp_header_O.c" */
 static const char _tsdp_machine_parser_header_O_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 2, 
@@ -171,19 +166,19 @@ static const int tsdp_machine_parser_header_O_error = 0;
 static const int tsdp_machine_parser_header_O_en_main = 1;
 
 
-/* #line 148 "./ragel/tsdp_parser_header_O.rl" */
+/* #line 143 "./ragel/tsdp_parser_header_O.rl" */
 	(void)(tsdp_machine_parser_header_O_first_final);
 	(void)(tsdp_machine_parser_header_O_error);
 	(void)(tsdp_machine_parser_header_O_en_main);
 	
-/* #line 180 "./src/headers/tsdp_header_O.c" */
+/* #line 175 "./src/headers/tsdp_header_O.c" */
 	{
 	cs = tsdp_machine_parser_header_O_start;
 	}
 
-/* #line 152 "./ragel/tsdp_parser_header_O.rl" */
+/* #line 147 "./ragel/tsdp_parser_header_O.rl" */
 	
-/* #line 187 "./src/headers/tsdp_header_O.c" */
+/* #line 182 "./src/headers/tsdp_header_O.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -257,48 +252,48 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "./ragel/tsdp_parser_header_O.rl" */
+/* #line 41 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 51 "./ragel/tsdp_parser_header_O.rl" */
+/* #line 45 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_O->username);
 	}
 	break;
 	case 2:
-/* #line 55 "./ragel/tsdp_parser_header_O.rl" */
+/* #line 49 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		TSK_PARSER_SET_UINT(hdr_O->sess_id);
 	}
 	break;
 	case 3:
-/* #line 59 "./ragel/tsdp_parser_header_O.rl" */
+/* #line 53 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		TSK_PARSER_SET_UINT(hdr_O->sess_version);
 	}
 	break;
 	case 4:
-/* #line 63 "./ragel/tsdp_parser_header_O.rl" */
+/* #line 57 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_O->nettype);
 	}
 	break;
 	case 5:
-/* #line 67 "./ragel/tsdp_parser_header_O.rl" */
+/* #line 61 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_O->addrtype);
 	}
 	break;
 	case 6:
-/* #line 71 "./ragel/tsdp_parser_header_O.rl" */
+/* #line 65 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_O->addr);
 	}
 	break;
-/* #line 302 "./src/headers/tsdp_header_O.c" */
+/* #line 297 "./src/headers/tsdp_header_O.c" */
 		}
 	}
 
@@ -315,18 +310,18 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 47 "./ragel/tsdp_parser_header_O.rl" */
+/* #line 41 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 6:
-/* #line 71 "./ragel/tsdp_parser_header_O.rl" */
+/* #line 65 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_O->addr);
 	}
 	break;
-/* #line 330 "./src/headers/tsdp_header_O.c" */
+/* #line 325 "./src/headers/tsdp_header_O.c" */
 		}
 	}
 	}
@@ -334,12 +329,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 153 "./ragel/tsdp_parser_header_O.rl" */
+/* #line 148 "./ragel/tsdp_parser_header_O.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 341 "./src/headers/tsdp_header_O.c" */
+/* #line 337 "./src/headers/tsdp_header_O.c" */
 14
-/* #line 154 "./ragel/tsdp_parser_header_O.rl" */
+/* #line 150 "./ragel/tsdp_parser_header_O.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"o=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_O);

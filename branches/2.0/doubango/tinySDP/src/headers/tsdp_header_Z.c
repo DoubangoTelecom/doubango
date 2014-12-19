@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/tsdp_parser_header_Z.rl" */
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -26,9 +24,6 @@
 /**@file tsdp_header_Z.c
  * @brief SDP "z=" header (Time Zones).
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
- * 
  */
 #include "tinysdp/headers/tsdp_header_Z.h"
 
@@ -42,7 +37,7 @@
 *	Ragel state machine.
 */
 
-/* #line 93 "./ragel/tsdp_parser_header_Z.rl" */
+/* #line 88 "./ragel/tsdp_parser_header_Z.rl" */
 
 
 
@@ -100,8 +95,9 @@ tsdp_header_Z_t *tsdp_header_Z_parse(const char *data, tsk_size_t size)
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 105 "./src/headers/tsdp_header_Z.c" */
+/* #line 101 "./src/headers/tsdp_header_Z.c" */
 static const char _tsdp_machine_parser_header_Z_actions[] = {
 	0, 1, 0, 1, 3, 1, 4, 2, 
 	1, 0, 2, 4, 2, 2, 5, 0, 
@@ -176,19 +172,19 @@ static const int tsdp_machine_parser_header_Z_error = 0;
 static const int tsdp_machine_parser_header_Z_en_main = 1;
 
 
-/* #line 151 "./ragel/tsdp_parser_header_Z.rl" */
+/* #line 147 "./ragel/tsdp_parser_header_Z.rl" */
 	(void)(tsdp_machine_parser_header_Z_first_final);
 	(void)(tsdp_machine_parser_header_Z_error);
 	(void)(tsdp_machine_parser_header_Z_en_main);
 	
-/* #line 185 "./src/headers/tsdp_header_Z.c" */
+/* #line 181 "./src/headers/tsdp_header_Z.c" */
 	{
 	cs = tsdp_machine_parser_header_Z_start;
 	}
 
-/* #line 155 "./ragel/tsdp_parser_header_Z.rl" */
+/* #line 151 "./ragel/tsdp_parser_header_Z.rl" */
 	
-/* #line 192 "./src/headers/tsdp_header_Z.c" */
+/* #line 188 "./src/headers/tsdp_header_Z.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -263,13 +259,13 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 48 "./ragel/tsdp_parser_header_Z.rl" */
+/* #line 43 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 52 "./ragel/tsdp_parser_header_Z.rl" */
+/* #line 47 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(!zone){
 			zone = tsdp_zone_create_null();
@@ -277,7 +273,7 @@ _match:
 	}
 	break;
 	case 2:
-/* #line 58 "./ragel/tsdp_parser_header_Z.rl" */
+/* #line 53 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(zone){
 			tsk_list_push_back_data(hdr_Z->zones,(void**)&zone);
@@ -285,7 +281,7 @@ _match:
 	}
 	break;
 	case 3:
-/* #line 64 "./ragel/tsdp_parser_header_Z.rl" */
+/* #line 59 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(zone){
 			TSK_PARSER_SET_INTEGER_EX(zone->time, uint64_t, atoi64);
@@ -293,7 +289,7 @@ _match:
 	}
 	break;
 	case 4:
-/* #line 70 "./ragel/tsdp_parser_header_Z.rl" */
+/* #line 65 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(zone){
 			TSK_PARSER_SET_STRING(zone->typed_time);
@@ -301,14 +297,14 @@ _match:
 	}
 	break;
 	case 5:
-/* #line 76 "./ragel/tsdp_parser_header_Z.rl" */
+/* #line 71 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(zone){
 			zone->shifted_back = tsk_true;
 		}
 	}
 	break;
-/* #line 312 "./src/headers/tsdp_header_Z.c" */
+/* #line 308 "./src/headers/tsdp_header_Z.c" */
 		}
 	}
 
@@ -325,7 +321,7 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 1:
-/* #line 52 "./ragel/tsdp_parser_header_Z.rl" */
+/* #line 47 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(!zone){
 			zone = tsdp_zone_create_null();
@@ -333,7 +329,7 @@ _again:
 	}
 	break;
 	case 2:
-/* #line 58 "./ragel/tsdp_parser_header_Z.rl" */
+/* #line 53 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(zone){
 			tsk_list_push_back_data(hdr_Z->zones,(void**)&zone);
@@ -341,14 +337,14 @@ _again:
 	}
 	break;
 	case 4:
-/* #line 70 "./ragel/tsdp_parser_header_Z.rl" */
+/* #line 65 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(zone){
 			TSK_PARSER_SET_STRING(zone->typed_time);
 		}
 	}
 	break;
-/* #line 352 "./src/headers/tsdp_header_Z.c" */
+/* #line 348 "./src/headers/tsdp_header_Z.c" */
 		}
 	}
 	}
@@ -356,16 +352,17 @@ _again:
 	_out: {}
 	}
 
-/* #line 156 "./ragel/tsdp_parser_header_Z.rl" */
+/* #line 152 "./ragel/tsdp_parser_header_Z.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if(zone){
 		TSK_OBJECT_SAFE_FREE(zone);
 	}
 
 	if( cs < 
-/* #line 367 "./src/headers/tsdp_header_Z.c" */
+/* #line 364 "./src/headers/tsdp_header_Z.c" */
 12
-/* #line 161 "./ragel/tsdp_parser_header_Z.rl" */
+/* #line 158 "./ragel/tsdp_parser_header_Z.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"z=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Z);

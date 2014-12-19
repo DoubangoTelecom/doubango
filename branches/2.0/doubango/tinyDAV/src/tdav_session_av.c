@@ -1413,7 +1413,7 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 #if HAVE_SRTP
 	// this is SRTP negotiation -> do not trust the remote profile
 	if(is_srtp_dtls_local_enabled || is_srtp_sdes_local_enabled){
-		tsk_size_t i, j;
+		int32_t i, j;
 		const sdp_acap_xt *acap;
 		int ret;
 		if(is_srtp_sdes_local_enabled){
@@ -1907,7 +1907,7 @@ static const sdp_acap_xt* _sdp_acaps_find_by_field(const sdp_acap_xt (*acaps)[SD
 	}
 
 	i = 0, j = 0;
-	size = tsk_strlen(field);
+	size = (int32_t)tsk_strlen(field);
 	while((*acaps)[j].tag && j < SDP_CAPS_COUNT_MAX){
 		k = _sdp_str_index_of((*acaps)[j].value, field);
 		if(k == 0 && (*acaps)[j].value[size] == ':'){
@@ -1946,7 +1946,7 @@ static int _sdp_acaps_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_acap_xt (*
 	
 	acaps_idx = 0;
 	while((A = _sdp_findA_at(sdp, "acap", acaps_idx++))){
-		if(!(size = tsk_strlen(A->value))){
+		if (!(size = (int32_t)tsk_strlen(A->value))){
 			goto next;
 		}
 		if(sscanf(A->value, "%d", &tag) == EOF){
@@ -1979,7 +1979,7 @@ _SDP_DECLARE_INDEX_OF(tcap);
 
 static int _sdp_tcaps_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_tcap_xt (*tcaps)[SDP_CAPS_COUNT_MAX], tsk_bool_t reset)
 {
-	tsk_size_t tcaps_count, tcaps_idx, profiles_count;
+	int32_t tcaps_count, tcaps_idx, profiles_count;
 	const tsdp_header_A_t* A;
 	int32_t tag, index, size, tag_fake;
 	char tcap[256];
@@ -2004,7 +2004,7 @@ static int _sdp_tcaps_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_tcap_xt (*
 	index = 0;
 	tcaps_idx = 0;
 	while((A = _sdp_findA_at(sdp, "tcap", tcaps_idx++))){
-		if(!(size = tsk_strlen(A->value))){
+		if (!(size = (int32_t)tsk_strlen(A->value))){
 			goto next;
 		}
 		if(sscanf(&A->value[index], "%d", &tag) == EOF || (_sdp_integer_length(tag) + 1 >= size)){
@@ -2025,7 +2025,7 @@ static int _sdp_tcaps_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_tcap_xt (*
 				(*tcaps)[tcaps_count + profiles_count].tag = tag_fake;
 				(*tcaps)[tcaps_count + profiles_count].profile = _sdp_profile_from_string(tcap); // split profiles
 			}
-			if((index += tsk_strlen(tcap) + 1/*SPACE*/) >= size){
+			if ((index += (int32_t)tsk_strlen(tcap) + 1/*SPACE*/) >= size){
 				break;
 			}
 			++tag_fake;
@@ -2120,7 +2120,7 @@ static int _sdp_pcfgs_from_sdp(const sdp_headerM_Or_Message* sdp, sdp_acap_xt (*
 	pcfgs_idx = 0;
 	tcap_curr = tsk_null;
 	while((A = _sdp_findA_at(sdp, "pcfg", pcfgs_idx++))){
-		if(!(size = tsk_strlen(A->value))){
+		if (!(size = (int32_t)tsk_strlen(A->value))){
 			goto next_A;
 		}
 		if(sscanf(A->value, "%d", &tag) == EOF || (_sdp_integer_length(tag) + 1 >= size)){
@@ -2180,7 +2180,7 @@ next_a:
 				tcap_curr = tsk_null;
 			}
 next_pcfg:
-			if((index += tsk_strlen(pcfg) + 1/*SPACE*/) >= size){
+			if ((index += (int32_t)tsk_strlen(pcfg) + 1/*SPACE*/) >= size){
 				break;
 			}
 		}
@@ -2291,7 +2291,7 @@ static int _sdp_pcfg_ensure(sdp_headerM_Or_Message* sdp, const sdp_pcfg_xt* pcfg
 	}
 
 	for(i = 0; i < SDP_CAPS_COUNT_MAX && pcfg->acaps[i].tag > 0; ++i){
-		if(sscanf(pcfg->acaps[i].value, "%255s%*s", field) != EOF && (n = tsk_strlen(field)) > 2){
+		if (sscanf(pcfg->acaps[i].value, "%255s%*s", field) != EOF && (n = (int32_t)tsk_strlen(field)) > 2){
 			field[n - 2] = '\0';
 			_sdp_add_headerA(sdp, field, &pcfg->acaps[i].value[n + 1/*SPACE*/]);
 		}

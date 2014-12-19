@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2009-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,10 +20,6 @@
 
 /**@file tmsrp_header_Dummy.c
  * @brief MSRP Dummy header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinymsrp/headers/tmsrp_header_Dummy.h"
 
@@ -80,7 +74,7 @@ int tmsrp_header_Dummy_tostring(const tmsrp_header_t* header, tsk_buffer_t* outp
 	if(header){
 		const tmsrp_header_Dummy_t *Dummy = (const tmsrp_header_Dummy_t *)header;
 		if(Dummy->value){
-			return tsk_buffer_append(output, Dummy->value, strlen(Dummy->value));
+			return tsk_buffer_append(output, Dummy->value, tsk_strlen(Dummy->value));
 		}
 		return 0;
 	}
@@ -98,6 +92,7 @@ tmsrp_header_Dummy_t *tmsrp_header_Dummy_parse(const char *data, tsk_size_t size
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(eof);
 	(void)(tmsrp_machine_parser_header_Dummy_first_final);
@@ -105,6 +100,7 @@ tmsrp_header_Dummy_t *tmsrp_header_Dummy_parse(const char *data, tsk_size_t size
 	(void)(tmsrp_machine_parser_header_Dummy_en_main);
 	%%write init;
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse Dummy header.");

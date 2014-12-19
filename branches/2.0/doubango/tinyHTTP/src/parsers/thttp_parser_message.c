@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/thttp_parser_message.rl" */
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -21,13 +19,9 @@
 * along with DOUBANGO.
 *
 */
-
 /**@file thttp_parser_message.c
  * @brief HTTP parser.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinyhttp/parsers/thttp_parser_message.h"
 #include "tinyhttp/parsers/thttp_parser_header.h"
@@ -45,13 +39,14 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 *	Ragel state machine.
 */
 
-/* #line 165 "./ragel/thttp_parser_message.rl" */
+/* #line 159 "./ragel/thttp_parser_message.rl" */
 
 
 
+TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 /* Regel data */
 
-/* #line 55 "./src/parsers/thttp_parser_message.c" */
+/* #line 50 "./src/parsers/thttp_parser_message.c" */
 static const char _thttp_machine_parser_message_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -165,7 +160,8 @@ static const int thttp_machine_parser_message_error = 0;
 static const int thttp_machine_parser_message_en_main = 1;
 
 
-/* #line 170 "./ragel/thttp_parser_message.rl" */
+/* #line 165 "./ragel/thttp_parser_message.rl" */
+TSK_RAGEL_DISABLE_WARNINGS_END()
 
 /**	Parses raw HTTP buffer.
  *
@@ -197,9 +193,9 @@ int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t **result, tsk_
 	/* Check result */
 
 	if( state->cs < 
-/* #line 201 "./src/parsers/thttp_parser_message.c" */
+/* #line 197 "./src/parsers/thttp_parser_message.c" */
 36
-/* #line 200 "./ragel/thttp_parser_message.rl" */
+/* #line 196 "./ragel/thttp_parser_message.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse HTTP message.");
 		TSK_OBJECT_SAFE_FREE(*result);
@@ -215,12 +211,12 @@ static void thttp_message_parser_init(tsk_ragel_state_t *state)
 
 	/* Regel machine initialization. */
 	
-/* #line 219 "./src/parsers/thttp_parser_message.c" */
+/* #line 215 "./src/parsers/thttp_parser_message.c" */
 	{
 	cs = thttp_machine_parser_message_start;
 	}
 
-/* #line 215 "./ragel/thttp_parser_message.rl" */
+/* #line 211 "./ragel/thttp_parser_message.rl" */
 	
 	state->cs = cs;
 }
@@ -232,8 +228,9 @@ static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message
 	const char *pe = state->pe;
 	const char *eof = state->eof;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 237 "./src/parsers/thttp_parser_message.c" */
+/* #line 234 "./src/parsers/thttp_parser_message.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -308,13 +305,13 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 49 "./ragel/thttp_parser_message.rl" */
+/* #line 43 "./ragel/thttp_parser_message.rl" */
 	{
 		state->tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 54 "./ragel/thttp_parser_message.rl" */
+/* #line 48 "./ragel/thttp_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -333,7 +330,7 @@ _match:
 	}
 	break;
 	case 2:
-/* #line 72 "./ragel/thttp_parser_message.rl" */
+/* #line 66 "./ragel/thttp_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -345,7 +342,7 @@ _match:
 	}
 	break;
 	case 3:
-/* #line 83 "./ragel/thttp_parser_message.rl" */
+/* #line 77 "./ragel/thttp_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -358,7 +355,7 @@ _match:
 	}
 	break;
 	case 4:
-/* #line 95 "./ragel/thttp_parser_message.rl" */
+/* #line 89 "./ragel/thttp_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -374,7 +371,7 @@ _match:
 	}
 	break;
 	case 5:
-/* #line 110 "./ragel/thttp_parser_message.rl" */
+/* #line 104 "./ragel/thttp_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -387,7 +384,7 @@ _match:
 	}
 	break;
 	case 6:
-/* #line 122 "./ragel/thttp_parser_message.rl" */
+/* #line 116 "./ragel/thttp_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -402,7 +399,7 @@ _match:
 	}
 	break;
 	case 7:
-/* #line 145 "./ragel/thttp_parser_message.rl" */
+/* #line 139 "./ragel/thttp_parser_message.rl" */
 	{
 		state->cs = cs;
 		state->p = p;
@@ -417,7 +414,7 @@ _match:
 		eof = state->eof;
 	}
 	break;
-/* #line 421 "./src/parsers/thttp_parser_message.c" */
+/* #line 418 "./src/parsers/thttp_parser_message.c" */
 		}
 	}
 
@@ -430,7 +427,8 @@ _again:
 	_out: {}
 	}
 
-/* #line 227 "./ragel/thttp_parser_message.rl" */
+/* #line 224 "./ragel/thttp_parser_message.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 
 	state->cs = cs;
 	state->p = p;

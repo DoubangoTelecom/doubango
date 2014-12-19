@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/thttp_parser_header_Content_Type.rl" */
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,10 +22,6 @@
 
 /**@file thttp_header_Content_Type.c
  * @brief HTTP Content-Type header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinyhttp/headers/thttp_header_Content_Type.h"
 
@@ -40,7 +34,7 @@
 *	Ragel state machine.
 */
 
-/* #line 79 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 73 "./ragel/thttp_parser_header_Content_Type.rl" */
 
 
 thttp_header_Content_Type_t* thttp_header_content_type_create(const char* type)
@@ -75,8 +69,9 @@ thttp_header_Content_Type_t *thttp_header_Content_Type_parse(const char *data, t
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 80 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 75 "./src/headers/thttp_header_Content_Type.c" */
 static const char _thttp_machine_parser_header_Content_Type_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3
@@ -232,20 +227,20 @@ static const int thttp_machine_parser_header_Content_Type_error = 0;
 static const int thttp_machine_parser_header_Content_Type_en_main = 1;
 
 
-/* #line 114 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 109 "./ragel/thttp_parser_header_Content_Type.rl" */
 	(void)(eof);
 	(void)(thttp_machine_parser_header_Content_Type_first_final);
 	(void)(thttp_machine_parser_header_Content_Type_error);
 	(void)(thttp_machine_parser_header_Content_Type_en_main);
 	
-/* #line 242 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 237 "./src/headers/thttp_header_Content_Type.c" */
 	{
 	cs = thttp_machine_parser_header_Content_Type_start;
 	}
 
-/* #line 119 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 114 "./ragel/thttp_parser_header_Content_Type.rl" */
 	
-/* #line 249 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 244 "./src/headers/thttp_header_Content_Type.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -320,29 +315,29 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 46 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 40 "./ragel/thttp_parser_header_Content_Type.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 50 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 44 "./ragel/thttp_parser_header_Content_Type.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_ctype->type);
 	}
 	break;
 	case 2:
-/* #line 54 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 48 "./ragel/thttp_parser_header_Content_Type.rl" */
 	{		
 		TSK_PARSER_ADD_PARAM(THTTP_HEADER_PARAMS(hdr_ctype));
 	}
 	break;
 	case 3:
-/* #line 58 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 52 "./ragel/thttp_parser_header_Content_Type.rl" */
 	{
 	}
 	break;
-/* #line 346 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 341 "./src/headers/thttp_header_Content_Type.c" */
 		}
 	}
 
@@ -355,12 +350,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 120 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 115 "./ragel/thttp_parser_header_Content_Type.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 362 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 358 "./src/headers/thttp_header_Content_Type.c" */
 55
-/* #line 121 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 117 "./ragel/thttp_parser_header_Content_Type.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse Content-Type header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ctype);

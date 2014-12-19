@@ -1,8 +1,6 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
@@ -21,10 +19,6 @@
 */
 /**@file tnet_dns_resolvconf.c
  * @brief Parser for "/etc/resolv.conf" file to retrive DNS servers.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tnet_dns_resolvconf.h"
 
@@ -102,7 +96,9 @@ tnet_addresses_L_t * tnet_dns_resolvconf_parse(const char* path)
 	const char *pe;
 	const char *eof;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	(void)(eof);
 	(void)(tdns_machine_resolvconf_first_final);
 	(void)(tdns_machine_resolvconf_error);
@@ -118,7 +114,7 @@ tnet_addresses_L_t * tnet_dns_resolvconf_parse(const char* path)
 		fseek(fd, 0L, SEEK_END);
 		len = ftell(fd);
 		fseek(fd, 0L, SEEK_SET);
-		if(!(buf = (char*)tsk_calloc(len + 1, 1))){
+		if (!(buf = (char*)tsk_calloc(len + 1, 1))) {
 			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %ld", (len + 1));
 			goto bail;
 		}
@@ -132,7 +128,7 @@ tnet_addresses_L_t * tnet_dns_resolvconf_parse(const char* path)
 
 		servers = tsk_list_create();
 	}
-	else{
+	else {
 #if ANDROID || defined(__APPLE__) /* TARGET_OS_IPHONE not defined for bsd libraries */
 		TSK_DEBUG_INFO("Failed to open [%s]. But don't panic, we have detected that you are using Google Android/iOS Systems.\n"
 			"You should look at the Progammer's Guide for more information.\n If you are not using DNS functions, don't worry about this warning.", 
@@ -143,10 +139,12 @@ tnet_addresses_L_t * tnet_dns_resolvconf_parse(const char* path)
 		goto bail;
 	}
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write init;
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
-	if( cs < %%{ write first_final; }%% ){
+	if (cs < %%{ write first_final; }%% ) {
 		TSK_DEBUG_ERROR("Failed to parse %s.", fullpath);
 		TSK_OBJECT_SAFE_FREE(servers);
 	}

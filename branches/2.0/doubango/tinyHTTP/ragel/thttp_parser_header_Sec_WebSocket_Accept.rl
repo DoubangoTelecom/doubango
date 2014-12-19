@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2012 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango(dot)org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,9 +20,6 @@
 
 /**@file thttp_header_Sec_WebSocket_Accept.c
  * @brief WebSocket "Sec-WebSocket-Accept" header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango(dor)org>
- *
  */
 #include "tinyhttp/headers/thttp_header_Sec_WebSocket_Accept.h"
 
@@ -84,6 +79,7 @@ thttp_header_Sec_WebSocket_Accept_t *thttp_header_Sec_WebSocket_Accept_parse(con
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(eof);
 	(void)(thttp_machine_parser_header_Sec_WebSocket_Accept_first_final);
@@ -91,6 +87,7 @@ thttp_header_Sec_WebSocket_Accept_t *thttp_header_Sec_WebSocket_Accept_parse(con
 	(void)(thttp_machine_parser_header_Sec_WebSocket_Accept_en_main);
 	%%write init;
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse Sec-WebSocket-Accept header.");

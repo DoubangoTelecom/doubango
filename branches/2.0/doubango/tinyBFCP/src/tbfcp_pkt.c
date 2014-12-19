@@ -208,8 +208,8 @@ int tbfcp_pkt_write_with_padding(const tbfcp_pkt_t* pc_self, uint8_t* p_buff_ptr
     }
 
     p_buff_ptr[0] = (((uint8_t)pc_self->hdr.ver) << 5) | (pc_self->hdr.reserved & 0x7F);
-    p_buff_ptr[1] = pc_self->hdr.primitive;
-    *((uint32_t*)&p_buff_ptr[2]) = tnet_htons(((*p_written - TBFCP_PKT_HDR_SIZE_IN_OCTETS) >> 2));
+    p_buff_ptr[1] = (uint8_t)pc_self->hdr.primitive;
+	*((uint32_t*)&p_buff_ptr[2]) = tnet_htons((unsigned short)((*p_written - TBFCP_PKT_HDR_SIZE_IN_OCTETS) >> 2));
     *((uint32_t*)&p_buff_ptr[4]) = (uint32_t)tnet_htonl(pc_self->hdr.conf_id);
     *((uint16_t*)&p_buff_ptr[8]) = tnet_htons(pc_self->hdr.transac_id);
     *((uint16_t*)&p_buff_ptr[10]) = tnet_htons(pc_self->hdr.user_id);
@@ -464,7 +464,7 @@ int tbfcp_pkt_create_HelloAck_2(uint32_t conf_id, uint16_t transac_id, uint16_t 
         return ret;
     }
     /* SUPPORTED-ATTRIBUTES */
-    if ((ret = tbfcp_attr_octetstring_create(tbfcp_attribute_type_SUPPORTED_ATTRIBUTES, kBfcpFieldMNo, kNullOctetStringPtr, __supp_attrs_count, &p_supp_attr))) {
+    if ((ret = tbfcp_attr_octetstring_create(tbfcp_attribute_type_SUPPORTED_ATTRIBUTES, kBfcpFieldMNo, kNullOctetStringPtr, (uint8_t)__supp_attrs_count, &p_supp_attr))) {
         return ret;
     }
     for (u = 0; u < p_supp_attr->OctetStringLength; ++u) {
@@ -475,7 +475,7 @@ int tbfcp_pkt_create_HelloAck_2(uint32_t conf_id, uint16_t transac_id, uint16_t 
         return ret;
     }
     /* SUPPORTED-PRIMITIVES */
-    if ((ret = tbfcp_attr_octetstring_create(tbfcp_attribute_type_SUPPORTED_PRIMITIVES, kBfcpFieldMNo, kNullOctetStringPtr, __supp_prims_count, &p_supp_prim))) {
+    if ((ret = tbfcp_attr_octetstring_create(tbfcp_attribute_type_SUPPORTED_PRIMITIVES, kBfcpFieldMNo, kNullOctetStringPtr, (uint8_t)__supp_prims_count, &p_supp_prim))) {
         return ret;
     }
     for (u = 0; u < p_supp_prim->OctetStringLength; ++u) {

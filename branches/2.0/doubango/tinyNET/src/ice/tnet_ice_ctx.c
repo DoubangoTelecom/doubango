@@ -1,6 +1,6 @@
 /*
-* Copyright (C) 2012-2014 Mamadou DIOP
-* Copyright (C) 2012-2014 Doubango Telecom <http://www.doubango.org>.
+* Copyright (C) 2012-2015 Mamadou DIOP
+* Copyright (C) 2012-2015 Doubango Telecom <http://www.doubango.org>.
 *
 * This file is part of Open Source Doubango Framework.
 *
@@ -8,12 +8,12 @@
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -64,7 +64,7 @@
 /**@ingroup tnet_nat_group
 * Number of retransmission for UDP retransmission in millisecond.
 *	7.2.1.  Sending over UDP
-	Rc SHOULD be configurable and SHOULD have a default of 7.
+Rc SHOULD be configurable and SHOULD have a default of 7.
 */
 #define kIceDefaultRC				4 //7
 
@@ -116,8 +116,8 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_Terminated_X_Failure(va_list *app);
 static int _tnet_ice_ctx_fsm_Any_2_Terminated_X_AnyNotStarted(va_list *app); // Any action if not started
 
 static int _tnet_ice_ctx_servers_clear(struct tnet_ice_ctx_s* self);
-static int _tnet_ice_ctx_server_add(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto, 
-	enum tnet_socket_type_e e_transport, 
+static int _tnet_ice_ctx_server_add(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto,
+enum tnet_socket_type_e e_transport,
 	const char* str_server_addr, uint16_t u_server_port,
 	const char* str_software,
 	const char* str_username, const char* str_password);
@@ -134,14 +134,14 @@ static int _tnet_ice_ctx_turn_callback(const struct tnet_turn_session_event_xs *
 typedef struct tnet_ice_server_s
 {
 	TSK_DECLARE_OBJECT;
-	
+
 	enum tnet_socket_type_e e_transport;
 	tnet_ice_server_proto_t e_proto;
 	char* str_server_addr;
 	uint16_t u_server_port;
 	struct sockaddr_storage obj_server_addr;
 	char* str_software;
-	char* str_username; 
+	char* str_username;
 	char* str_password;
 }
 tnet_ice_server_t;
@@ -154,7 +154,7 @@ static tsk_object_t* tnet_ice_server_ctor(tsk_object_t * self, va_list * app)
 	return self;
 }
 static tsk_object_t* tnet_ice_server_dtor(tsk_object_t * self)
-{ 
+{
 	tnet_ice_server_t *ice_server = self;
 	if (ice_server) {
 		TSK_FREE(ice_server->str_server_addr);
@@ -166,24 +166,24 @@ static tsk_object_t* tnet_ice_server_dtor(tsk_object_t * self)
 	}
 	return self;
 }
-static const tsk_object_def_t tnet_ice_server_def_s = 
+static const tsk_object_def_t tnet_ice_server_def_s =
 {
 	sizeof(tnet_ice_server_t),
-	tnet_ice_server_ctor, 
+	tnet_ice_server_ctor,
 	tnet_ice_server_dtor,
-	tsk_null, 
+	tsk_null,
 };
 
 static tnet_ice_server_t* tnet_ice_server_create(
-	enum tnet_ice_server_proto_e e_proto, 
-	enum tnet_socket_type_e e_transport, 
+enum tnet_ice_server_proto_e e_proto,
+enum tnet_socket_type_e e_transport,
 	const char* str_server_addr, uint16_t u_server_port,
 	const char* str_software,
 	const char* str_username, const char* str_password)
 {
 	tnet_ice_server_t *ice_server;
 	struct sockaddr_storage obj_server_addr;
-	
+
 	if (tsk_strnullORempty(str_server_addr) || !u_server_port) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
@@ -193,7 +193,7 @@ static tnet_ice_server_t* tnet_ice_server_create(
 		TSK_DEBUG_ERROR("Invalid server address (host=%s, port=%d, transport=%d)", str_server_addr, u_server_port, e_transport);
 		return tsk_null;
 	}
-	
+
 	if ((ice_server = tsk_object_new(&tnet_ice_server_def_s))) {
 		ice_server->e_proto = e_proto;
 		ice_server->e_transport = e_transport;
@@ -314,28 +314,28 @@ _fsm_action_t;
 static tsk_object_t* tnet_ice_action_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_ice_action_t *action = self;
-	if(action){
+	if (action){
 	}
 	return self;
 }
 static tsk_object_t* tnet_ice_action_dtor(tsk_object_t * self)
-{ 
+{
 	tnet_ice_action_t *action = self;
-	if(action){
+	if (action){
 	}
 	return self;
 }
-static const tsk_object_def_t tnet_ice_action_def_s = 
+static const tsk_object_def_t tnet_ice_action_def_s =
 {
 	sizeof(tnet_ice_action_t),
-	tnet_ice_action_ctor, 
+	tnet_ice_action_ctor,
 	tnet_ice_action_dtor,
-	tsk_null, 
+	tsk_null,
 };
 static tnet_ice_action_t* tnet_ice_action_create(tsk_fsm_action_id id)
 {
 	tnet_ice_action_t *action = tsk_object_new(&tnet_ice_action_def_s);
-	if(action){
+	if (action){
 		action->id = id;
 	}
 	return action;
@@ -347,32 +347,32 @@ static tnet_ice_action_t* tnet_ice_action_create(tsk_fsm_action_id id)
 static tsk_object_t* tnet_ice_ctx_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_ice_ctx_t *ctx = self;
-	if(ctx){
+	if (ctx){
 		tsk_safeobj_init(ctx);
 
-		if(!(ctx->h_timer_mgr = tsk_timer_manager_create())){
+		if (!(ctx->h_timer_mgr = tsk_timer_manager_create())){
 			TSK_DEBUG_ERROR("Failed to create timer manager");
 			return tsk_null;
 		}
-		if(!(ctx->fsm = tsk_fsm_create(_fsm_state_Started, _fsm_state_Terminated))){
+		if (!(ctx->fsm = tsk_fsm_create(_fsm_state_Started, _fsm_state_Terminated))){
 			TSK_DEBUG_ERROR("Failed to create state machine");
 			return tsk_null;
 		}
-		if(!(ctx->candidates_local = tsk_list_create())){
+		if (!(ctx->candidates_local = tsk_list_create())){
 			TSK_DEBUG_ERROR("Failed to create candidates list");
 			return tsk_null;
 		}
-		if(!(ctx->candidates_remote = tsk_list_create())){
+		if (!(ctx->candidates_remote = tsk_list_create())){
 			TSK_DEBUG_ERROR("Failed to create candidates list");
 			return tsk_null;
 		}
-		if(!(ctx->candidates_pairs = tsk_list_create())){
+		if (!(ctx->candidates_pairs = tsk_list_create())){
 			TSK_DEBUG_ERROR("Failed to create candidates list");
 			return tsk_null;
 		}
-		
+
 		// Create list objects to hold the servers
-		if(!(ctx->servers = tsk_list_create())){
+		if (!(ctx->servers = tsk_list_create())){
 			TSK_DEBUG_ERROR("Failed to create server list");
 			return tsk_null;
 		}
@@ -381,12 +381,12 @@ static tsk_object_t* tnet_ice_ctx_ctor(tsk_object_t * self, va_list * app)
 
 		/*	7.2.1.  Sending over UDP
 			In fixed-line access links, a value of 500 ms is RECOMMENDED.
-		*/
+			*/
 		ctx->RTO = kIceDefaultRTO;
 
 		/*	7.2.1.  Sending over UDP
 			Rc SHOULD be configurable and SHOULD have a default of 7.
-		*/
+			*/
 		ctx->Rc = kIceDefaultRC;
 
 		ctx->tie_breaker = ((tsk_time_now() << 32) ^ tsk_time_now());
@@ -399,11 +399,11 @@ static tsk_object_t* tnet_ice_ctx_ctor(tsk_object_t * self, va_list * app)
 	return self;
 }
 static tsk_object_t* tnet_ice_ctx_dtor(tsk_object_t * self)
-{ 
+{
 	tnet_ice_ctx_t *ctx = self;
-	if(ctx){
+	if (ctx){
 		tnet_ice_ctx_stop(ctx);
-		if(ctx->h_timer_mgr){
+		if (ctx->h_timer_mgr){
 			tsk_timer_manager_destroy(&ctx->h_timer_mgr);
 		}
 
@@ -428,12 +428,12 @@ static tsk_object_t* tnet_ice_ctx_dtor(tsk_object_t * self)
 	TSK_DEBUG_INFO("*** ICE context destroyed ***");
 	return self;
 }
-static const tsk_object_def_t tnet_ice_ctx_def_s = 
+static const tsk_object_def_t tnet_ice_ctx_def_s =
 {
 	sizeof(tnet_ice_ctx_t),
-	tnet_ice_ctx_ctor, 
+	tnet_ice_ctx_ctor,
 	tnet_ice_ctx_dtor,
-	tsk_null, 
+	tsk_null,
 };
 
 
@@ -441,7 +441,7 @@ tnet_ice_ctx_t* tnet_ice_ctx_create(tsk_bool_t is_ice_jingle, tsk_bool_t use_ipv
 {
 	tnet_ice_ctx_t* ctx;
 
-	if(!(ctx = tsk_object_new(&tnet_ice_ctx_def_s))){
+	if (!(ctx = tsk_object_new(&tnet_ice_ctx_def_s))){
 		TSK_DEBUG_ERROR("Failed to create ICE context object");
 		return tsk_null;
 	}
@@ -458,46 +458,46 @@ tnet_ice_ctx_t* tnet_ice_ctx_create(tsk_bool_t is_ice_jingle, tsk_bool_t use_ipv
 
 	tnet_ice_utils_set_ufrag(&ctx->ufrag);
 	tnet_ice_utils_set_pwd(&ctx->pwd);
-	
+
 	ctx->fsm->debug = TNET_ICE_DEBUG_STATE_MACHINE;
 	tsk_fsm_set_callback_terminated(ctx->fsm, TSK_FSM_ONTERMINATED_F(_tnet_ice_ctx_fsm_OnTerminated), (const void*)ctx);
 	tsk_fsm_set(ctx->fsm,
-			// (Started) -> (GatherHostCandidates) -> (GatheringHostCandidates)
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_GatherHostCandidates, _fsm_state_GatheringHostCandidates, _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandidates, "ICE_Started_2_GatheringHostCandidates_X_GatherHostCandidates"),
-			// (GatheringHostCandidates) -> (Success) -> (GatheringHostCandidatesDone)
-			TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringHostCandidates, _fsm_action_Success, _fsm_state_GatheringHostCandidatesDone, _tnet_ice_ctx_fsm_GatheringHostCandidates_2_GatheringHostCandidatesDone_X_Success, "ICE_GatheringHostCandidates_2_GatheringHostCandidatesDone_X_Success"),
-			// (GatheringHostCandidates) -> (Failure) -> (Terminated)
-			TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringHostCandidates, _fsm_action_Failure, _fsm_state_Terminated, _tnet_ice_ctx_fsm_GatheringHostCandidates_2_Terminated_X_Failure, "ICE_GatheringHostCandidates_2_Terminated_X_Failure"),
-			
-			// (GatheringHostCandidatesDone) -> (GatherReflexiveCandidates) -> (GatheringReflexiveCandidates)
-			TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringHostCandidatesDone, _fsm_action_GatherReflexiveCandidates, _fsm_state_GatheringReflexiveCandidates, _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCandidates_X_GatherReflexiveCandidates, "ICE_GatheringHostCandidatesDone_2_GatheringReflexiveCandidates_X_GatherReflexiveCandidates"),
-			// (GatheringReflexiveCandidates) -> (Success) -> GatheringReflexiveCandidatesDone
-			TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringReflexiveCandidates, _fsm_action_Success, _fsm_state_GatheringReflexiveCandidatesDone, _tnet_ice_ctx_fsm_GatheringReflexiveCandidates_2_GatheringReflexiveCandidatesDone_X_Success, "ICE_fsm_GatheringReflexiveCandidates_2_GatheringReflexiveCandidatesDone_X_Success"),
-			// (GatheringReflexiveCandidates) -> (Failure) -> Terminated
-			TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringReflexiveCandidates, _fsm_action_Failure, _fsm_state_Terminated, _tnet_ice_ctx_fsm_GatheringReflexiveCandidates_2_Terminated_X_Failure, "ICE_GatheringReflexiveCandidates_2_Terminated_X_Failure"),
+		// (Started) -> (GatherHostCandidates) -> (GatheringHostCandidates)
+		TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_GatherHostCandidates, _fsm_state_GatheringHostCandidates, _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandidates, "ICE_Started_2_GatheringHostCandidates_X_GatherHostCandidates"),
+		// (GatheringHostCandidates) -> (Success) -> (GatheringHostCandidatesDone)
+		TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringHostCandidates, _fsm_action_Success, _fsm_state_GatheringHostCandidatesDone, _tnet_ice_ctx_fsm_GatheringHostCandidates_2_GatheringHostCandidatesDone_X_Success, "ICE_GatheringHostCandidates_2_GatheringHostCandidatesDone_X_Success"),
+		// (GatheringHostCandidates) -> (Failure) -> (Terminated)
+		TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringHostCandidates, _fsm_action_Failure, _fsm_state_Terminated, _tnet_ice_ctx_fsm_GatheringHostCandidates_2_Terminated_X_Failure, "ICE_GatheringHostCandidates_2_Terminated_X_Failure"),
 
-			// (GatheringReflexiveCandidatesDone) -> (GatherRelayCandidates) -> (GatheringRelayCandidates)
-			TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringReflexiveCandidatesDone, _fsm_action_GatherRelayCandidates, _fsm_state_GatheringRelayCandidates, _tnet_ice_ctx_fsm_GatheringReflexiveCandidatesDone_2_GatheringRelayCandidates_X_GatherRelayCandidates, "ICE_GatheringReflexiveCandidatesDone_2_GatheringRelayCandidates_X_GatherRelayCandidates"),
-			// (GatheringHostCandidatesDone) -> (GatherRelayCandidates) -> (GatheringRelayCandidates)
-			TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringHostCandidatesDone, _fsm_action_GatherRelayCandidates, _fsm_state_GatheringRelayCandidates, _tnet_ice_ctx_fsm_GatheringReflexiveCandidatesDone_2_GatheringRelayCandidates_X_GatherRelayCandidates, "ICE_GatheringHostCandidatesDone_2_GatheringRelayCandidates_X_GatherRelayCandidates"),
-			// (GatheringRelayCandidates) -> (Success) -> GatheringRelayCandidatesDone
-			TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringRelayCandidates, _fsm_action_Success, _fsm_state_GatheringRelayCandidatesDone, _tnet_ice_ctx_fsm_GatheringRelayCandidates_2_GatheringRelayCandidatesDone_X_Success, "ICE_fsm_GatheringRelayCandidates_2_GatheringRelayCandidatesDone_X_Success"),
-			// (GatheringRelayCandidates) -> (Failure) -> Terminated
-			TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringRelayCandidates, _fsm_action_Failure, _fsm_state_Terminated, _tnet_ice_ctx_fsm_GatheringRelayCandidates_2_Terminated_X_Failure, "ICE_GatheringRelayCandidates_2_Terminated_X_Failure"),
+		// (GatheringHostCandidatesDone) -> (GatherReflexiveCandidates) -> (GatheringReflexiveCandidates)
+		TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringHostCandidatesDone, _fsm_action_GatherReflexiveCandidates, _fsm_state_GatheringReflexiveCandidates, _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCandidates_X_GatherReflexiveCandidates, "ICE_GatheringHostCandidatesDone_2_GatheringReflexiveCandidates_X_GatherReflexiveCandidates"),
+		// (GatheringReflexiveCandidates) -> (Success) -> GatheringReflexiveCandidatesDone
+		TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringReflexiveCandidates, _fsm_action_Success, _fsm_state_GatheringReflexiveCandidatesDone, _tnet_ice_ctx_fsm_GatheringReflexiveCandidates_2_GatheringReflexiveCandidatesDone_X_Success, "ICE_fsm_GatheringReflexiveCandidates_2_GatheringReflexiveCandidatesDone_X_Success"),
+		// (GatheringReflexiveCandidates) -> (Failure) -> Terminated
+		TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringReflexiveCandidates, _fsm_action_Failure, _fsm_state_Terminated, _tnet_ice_ctx_fsm_GatheringReflexiveCandidates_2_Terminated_X_Failure, "ICE_GatheringReflexiveCandidates_2_Terminated_X_Failure"),
 
-			// (GatheringComplet) -> (ConnCheck) -> ConnChecking
-			TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringCompleted, _fsm_action_ConnCheck, _fsm_state_ConnChecking, _tnet_ice_ctx_fsm_GatheringCompleted_2_ConnChecking_X_ConnCheck, "ICE_GatheringCompleted_2_ConnChecking_X_ConnCheck"),
-			// (ConnChecking) -> (Success) -> ConnCheckingCompleted
-			TSK_FSM_ADD_ALWAYS(_fsm_state_ConnChecking, _fsm_action_Success, _fsm_state_ConnCheckingCompleted, _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success, "ICE_ConnChecking_2_ConnCheckingCompleted_X_Success"),
-			// (ConnChecking) -> (Failure) -> Terminated
-			TSK_FSM_ADD_ALWAYS(_fsm_state_ConnChecking, _fsm_action_Failure, _fsm_state_Terminated, _tnet_ice_ctx_fsm_ConnChecking_2_Terminated_X_Failure, "ICE_ConnChecking_2_Terminated_X_Failure"),
-			
-			// (Any) -> (GatheringComplet) -> GatheringCompleted
-			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_GatheringComplet, _fsm_state_GatheringCompleted, _tnet_ice_ctx_fsm_Any_2_GatheringCompleted_X_GatheringComplet, "ICE_Any_2_GatheringCompleted_X_GatheringComplet"),
-			// (Any) -> (Cancel) -> Started
-			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_Cancel, _fsm_state_Started, _tnet_ice_ctx_fsm_Any_2_Started_X_Cancel, "ICE_Any_2_Started_X_Cancel"),
-			// (Any) -> (AnyNotStarted) -> Terminated
-			TSK_FSM_ADD(tsk_fsm_state_any, tsk_fsm_action_any, _tnet_ice_ctx_fsm_cond_NotStarted, _fsm_state_Terminated, _tnet_ice_ctx_fsm_Any_2_Terminated_X_AnyNotStarted, "ICE_fsm_Any_2_Terminated_X_AnyNotStarted")
+		// (GatheringReflexiveCandidatesDone) -> (GatherRelayCandidates) -> (GatheringRelayCandidates)
+		TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringReflexiveCandidatesDone, _fsm_action_GatherRelayCandidates, _fsm_state_GatheringRelayCandidates, _tnet_ice_ctx_fsm_GatheringReflexiveCandidatesDone_2_GatheringRelayCandidates_X_GatherRelayCandidates, "ICE_GatheringReflexiveCandidatesDone_2_GatheringRelayCandidates_X_GatherRelayCandidates"),
+		// (GatheringHostCandidatesDone) -> (GatherRelayCandidates) -> (GatheringRelayCandidates)
+		TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringHostCandidatesDone, _fsm_action_GatherRelayCandidates, _fsm_state_GatheringRelayCandidates, _tnet_ice_ctx_fsm_GatheringReflexiveCandidatesDone_2_GatheringRelayCandidates_X_GatherRelayCandidates, "ICE_GatheringHostCandidatesDone_2_GatheringRelayCandidates_X_GatherRelayCandidates"),
+		// (GatheringRelayCandidates) -> (Success) -> GatheringRelayCandidatesDone
+		TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringRelayCandidates, _fsm_action_Success, _fsm_state_GatheringRelayCandidatesDone, _tnet_ice_ctx_fsm_GatheringRelayCandidates_2_GatheringRelayCandidatesDone_X_Success, "ICE_fsm_GatheringRelayCandidates_2_GatheringRelayCandidatesDone_X_Success"),
+		// (GatheringRelayCandidates) -> (Failure) -> Terminated
+		TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringRelayCandidates, _fsm_action_Failure, _fsm_state_Terminated, _tnet_ice_ctx_fsm_GatheringRelayCandidates_2_Terminated_X_Failure, "ICE_GatheringRelayCandidates_2_Terminated_X_Failure"),
+
+		// (GatheringComplet) -> (ConnCheck) -> ConnChecking
+		TSK_FSM_ADD_ALWAYS(_fsm_state_GatheringCompleted, _fsm_action_ConnCheck, _fsm_state_ConnChecking, _tnet_ice_ctx_fsm_GatheringCompleted_2_ConnChecking_X_ConnCheck, "ICE_GatheringCompleted_2_ConnChecking_X_ConnCheck"),
+		// (ConnChecking) -> (Success) -> ConnCheckingCompleted
+		TSK_FSM_ADD_ALWAYS(_fsm_state_ConnChecking, _fsm_action_Success, _fsm_state_ConnCheckingCompleted, _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success, "ICE_ConnChecking_2_ConnCheckingCompleted_X_Success"),
+		// (ConnChecking) -> (Failure) -> Terminated
+		TSK_FSM_ADD_ALWAYS(_fsm_state_ConnChecking, _fsm_action_Failure, _fsm_state_Terminated, _tnet_ice_ctx_fsm_ConnChecking_2_Terminated_X_Failure, "ICE_ConnChecking_2_Terminated_X_Failure"),
+
+		// (Any) -> (GatheringComplet) -> GatheringCompleted
+		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_GatheringComplet, _fsm_state_GatheringCompleted, _tnet_ice_ctx_fsm_Any_2_GatheringCompleted_X_GatheringComplet, "ICE_Any_2_GatheringCompleted_X_GatheringComplet"),
+		// (Any) -> (Cancel) -> Started
+		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_Cancel, _fsm_state_Started, _tnet_ice_ctx_fsm_Any_2_Started_X_Cancel, "ICE_Any_2_Started_X_Cancel"),
+		// (Any) -> (AnyNotStarted) -> Terminated
+		TSK_FSM_ADD(tsk_fsm_state_any, tsk_fsm_action_any, _tnet_ice_ctx_fsm_cond_NotStarted, _fsm_state_Terminated, _tnet_ice_ctx_fsm_Any_2_Terminated_X_AnyNotStarted, "ICE_fsm_Any_2_Terminated_X_AnyNotStarted")
 		);
 
 	return ctx;
@@ -505,7 +505,7 @@ tnet_ice_ctx_t* tnet_ice_ctx_create(tsk_bool_t is_ice_jingle, tsk_bool_t use_ipv
 
 int tnet_ice_ctx_set_userdata(tnet_ice_ctx_t* self, const void* userdata)
 {
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -515,33 +515,33 @@ int tnet_ice_ctx_set_userdata(tnet_ice_ctx_t* self, const void* userdata)
 
 // @deprecated: use "tnet_ice_ctx_add_server()"
 int tnet_ice_ctx_set_stun(
-	tnet_ice_ctx_t* self, 
-	const char* server_addr, 
-	uint16_t server_port, 
-	const char* software, 
-	const char* username, 
+	tnet_ice_ctx_t* self,
+	const char* server_addr,
+	uint16_t server_port,
+	const char* software,
+	const char* username,
 	const char* password)
 {
 	_tnet_ice_ctx_servers_clear(self);
 	return tnet_ice_ctx_add_server(
 		self,
 		"udp",
-		server_addr, 
+		server_addr,
 		server_port,
 		(!tsk_strnullORempty(username) && !tsk_strnullORempty(password)), /* use_turn*/
 		tsk_true, /* use_stun*/
-		username, 
+		username,
 		password);
 }
 
 int tnet_ice_ctx_add_server(
-	struct tnet_ice_ctx_s* self,
+struct tnet_ice_ctx_s* self,
 	const char* transport_proto, // "udp", "tcp", "tls", "ws", "wss"
-	const char* server_addr, 
+	const char* server_addr,
 	uint16_t server_port,
 	tsk_bool_t use_turn,
 	tsk_bool_t use_stun,
-	const char* username, 
+	const char* username,
 	const char* password)
 {
 	tnet_socket_type_t socket_type;
@@ -579,8 +579,8 @@ int tnet_ice_ctx_add_server(
 	else {
 		TSK_DEBUG_ERROR("'%s' not a valid transport proto", transport_proto);
 		return -1;
-	}	
-	return _tnet_ice_ctx_server_add(self, e_proto, 
+	}
+	return _tnet_ice_ctx_server_add(self, e_proto,
 		socket_type, server_addr, server_port,
 		kStunSoftware,
 		username, password);
@@ -588,7 +588,7 @@ int tnet_ice_ctx_add_server(
 
 int tnet_ice_ctx_set_sync_mode(tnet_ice_ctx_t* self, tsk_bool_t sync_mode)
 {
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -598,7 +598,7 @@ int tnet_ice_ctx_set_sync_mode(tnet_ice_ctx_t* self, tsk_bool_t sync_mode)
 
 int tnet_ice_ctx_set_silent_mode(struct tnet_ice_ctx_s* self, tsk_bool_t silent_mode)
 {
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -609,7 +609,7 @@ int tnet_ice_ctx_set_silent_mode(struct tnet_ice_ctx_s* self, tsk_bool_t silent_
 // Whether to gather reflexive candidates
 int tnet_ice_ctx_set_stun_enabled(struct tnet_ice_ctx_s* self, tsk_bool_t stun_enabled)
 {
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -620,7 +620,7 @@ int tnet_ice_ctx_set_stun_enabled(struct tnet_ice_ctx_s* self, tsk_bool_t stun_e
 // Whether to gather relay candidates
 int tnet_ice_ctx_set_turn_enabled(struct tnet_ice_ctx_s* self, tsk_bool_t turn_enabled)
 {
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -635,16 +635,16 @@ int tnet_ice_ctx_start(tnet_ice_ctx_t* self)
 	tsk_bool_t runnable_started = tsk_false;
 	const char* err = tsk_null;
 
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
 	tsk_safeobj_lock(self);
 
-	if(self->is_started){
+	if (self->is_started){
 		ret = 0;
-		if(!self->is_active){
+		if (!self->is_active){
 			TSK_DEBUG_INFO("ICE restart");
 			ret = _tnet_ice_ctx_restart(self);
 		}
@@ -654,7 +654,7 @@ int tnet_ice_ctx_start(tnet_ice_ctx_t* self)
 	}
 
 	/* === Timer manager === */
-	if((ret = tsk_timer_manager_start(self->h_timer_mgr))){
+	if ((ret = tsk_timer_manager_start(self->h_timer_mgr))){
 		err = "Failed to start timer manager";
 		TSK_DEBUG_ERROR("%s", err);
 		goto bail;
@@ -663,7 +663,7 @@ int tnet_ice_ctx_start(tnet_ice_ctx_t* self)
 
 	/* === Runnable === */
 	TSK_RUNNABLE(self)->run = _tnet_ice_ctx_run;
-	if((ret = tsk_runnable_start(TSK_RUNNABLE(self), tnet_ice_event_def_t))){
+	if ((ret = tsk_runnable_start(TSK_RUNNABLE(self), tnet_ice_event_def_t))){
 		err = "Failed to start runnable";
 		TSK_DEBUG_ERROR("%s", err);
 		goto bail;
@@ -673,21 +673,21 @@ int tnet_ice_ctx_start(tnet_ice_ctx_t* self)
 	self->is_started = tsk_true; // needed by FSM -> "Must" be before fsm_ast()
 	self->is_active = tsk_true;
 
-	if((ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatherHostCandidates))){
+	if ((ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatherHostCandidates))){
 		err = "FSM execution failed";
 		TSK_DEBUG_ERROR("%s", err);
 		goto bail;
 	}
-	
+
 bail:
 	tsk_safeobj_unlock(self);
 
-	if(ret){
+	if (ret){
 		_tnet_ice_ctx_signal_async(self, tnet_ice_event_type_start_failed, err);
-		if(timer_mgr_started){
+		if (timer_mgr_started){
 			tsk_timer_manager_stop(self->h_timer_mgr);
 		}
-		if(runnable_started){
+		if (runnable_started){
 			tsk_runnable_stop(TSK_RUNNABLE(self));
 		}
 		self->is_started = tsk_false;
@@ -699,11 +699,11 @@ bail:
 // register callback to call when we receive early RTP packets while negotaiating ICE pairs
 int tnet_ice_ctx_rtp_callback(tnet_ice_ctx_t* self, tnet_ice_rtp_callback_f rtp_callback, const void* rtp_callback_data)
 {
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	
+
 	self->rtp_callback_data = rtp_callback_data;
 	self->rtp_callback = rtp_callback;
 	return 0;
@@ -712,12 +712,12 @@ int tnet_ice_ctx_rtp_callback(tnet_ice_ctx_t* self, tnet_ice_rtp_callback_f rtp_
 // timeout (millis): <=0 to disable
 int tnet_ice_ctx_set_concheck_timeout(tnet_ice_ctx_t* self, int64_t timeout)
 {
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	self->concheck_timeout = (timeout <=0 ? LONG_MAX : timeout);
+	self->concheck_timeout = (timeout <= 0 ? LONG_MAX : timeout);
 
 	return 0;
 }
@@ -747,15 +747,15 @@ int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candida
 	TSK_DEBUG_INFO("tnet_ice_ctx_set_remote_candidates");
 
 	tsk_list_lock(self->candidates_pairs);
-	if (!TSK_LIST_IS_EMPTY(self->candidates_pairs)) { 
+	if (!TSK_LIST_IS_EMPTY(self->candidates_pairs)) {
 		TSK_DEBUG_WARN("Adding Remote ICE candidates after pairs building");
 	}
 	tsk_list_unlock(self->candidates_pairs);
-	
+
 	// active if remote is full-ICE
 	// in all case we are always full-ICE
 	// self->is_active = tsk_true;
-	
+
 	tsk_list_lock(self->candidates_remote);
 
 	// clear old candidates
@@ -791,14 +791,13 @@ int tnet_ice_ctx_set_remote_candidates(tnet_ice_ctx_t* self, const char* candida
 			}
 			TSK_OBJECT_SAFE_FREE(candidate);
 		}
-	}
-	while (v && (idx < size));
-	
+	} while (v && (idx < size));
+
 	tsk_list_unlock(self->candidates_remote);
-	
+
 	TSK_FREE(copy);
 	TSK_OBJECT_SAFE_FREE(added_candidates);
-	
+
 	if (!tnet_ice_ctx_is_connected(self) && tnet_ice_ctx_got_local_candidates(self) && !TSK_LIST_IS_EMPTY(self->candidates_remote)) {
 		ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_ConnCheck);
 	}
@@ -830,7 +829,7 @@ int tnet_ice_ctx_set_ssl_certs(struct tnet_ice_ctx_s* self, const char* path_pri
 
 tsk_size_t tnet_ice_ctx_count_local_candidates(const tnet_ice_ctx_t* self)
 {
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
@@ -840,16 +839,16 @@ tsk_size_t tnet_ice_ctx_count_local_candidates(const tnet_ice_ctx_t* self)
 tsk_bool_t tnet_ice_ctx_got_local_candidates(const tnet_ice_ctx_t* self)
 {
 	tsk_fsm_state_id curr_state;
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_false;
 	}
-	if(!self->is_started){
+	if (!self->is_started){
 		return tsk_false;
 	}
 
 	curr_state = tsk_fsm_get_current_state(self->fsm);
-	
+
 	return (curr_state >= _fsm_state_GatheringCompleted && curr_state < _fsm_state_Terminated);
 }
 
@@ -857,13 +856,13 @@ const tnet_ice_candidate_t* tnet_ice_ctx_get_local_candidate_at(const tnet_ice_c
 {
 	const tsk_list_item_t *item;
 	tsk_size_t pos = 0;
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
 
 	tsk_list_foreach(item, self->candidates_local){
-		if(pos++ == index){
+		if (pos++ == index){
 			return (const tnet_ice_candidate_t*)item->data;
 		}
 	}
@@ -886,7 +885,7 @@ tsk_bool_t tnet_ice_ctx_is_turn_rtp_active(const struct tnet_ice_ctx_s* self)
 {
 	tsk_bool_t b_active;
 	return tnet_ice_ctx_is_active(self)
-		&& self->turn.ss_nominated_rtp 
+		&& self->turn.ss_nominated_rtp
 		&& tnet_turn_session_is_active(self->turn.ss_nominated_rtp, self->turn.peer_id_rtp, &b_active) == 0
 		&& b_active;
 }
@@ -932,11 +931,11 @@ tsk_bool_t tnet_ice_ctx_use_rtcp(const tnet_ice_ctx_t* self)
 }
 
 int tnet_ice_ctx_get_nominated_symetric_candidates(const tnet_ice_ctx_t* self, uint32_t comp_id,
-										  const tnet_ice_candidate_t** candidate_offer, 
-										  const tnet_ice_candidate_t** candidate_answer_src,
-										  const tnet_ice_candidate_t** candidate_answer_dest)
+	const tnet_ice_candidate_t** candidate_offer,
+	const tnet_ice_candidate_t** candidate_answer_src,
+	const tnet_ice_candidate_t** candidate_answer_dest)
 {
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -946,7 +945,7 @@ int tnet_ice_ctx_get_nominated_symetric_candidates(const tnet_ice_ctx_t* self, u
 int tnet_ice_ctx_recv_stun_message(tnet_ice_ctx_t* self, const void* data, tsk_size_t size, tnet_fd_t local_fd, const struct sockaddr_storage* remote_addr, tsk_bool_t *role_conflict)
 {
 	static const tnet_ice_pair_t* kNullPair = tsk_null; // means seach for the pair using local_fd and remote_addr
-	return _tnet_ice_ctx_recv_stun_message_for_pair(self, kNullPair, data, size, local_fd, remote_addr, role_conflict);	
+	return _tnet_ice_ctx_recv_stun_message_for_pair(self, kNullPair, data, size, local_fd, remote_addr, role_conflict);
 }
 
 int tnet_ice_ctx_send_turn_rtp(struct tnet_ice_ctx_s* self, const void* data, tsk_size_t size)
@@ -956,7 +955,7 @@ int tnet_ice_ctx_send_turn_rtp(struct tnet_ice_ctx_s* self, const void* data, ts
 
 int tnet_ice_ctx_send_turn_rtcp(struct tnet_ice_ctx_s* self, const void* data, tsk_size_t size)
 {
-	return self->use_rtcpmux 
+	return self->use_rtcpmux
 		? tnet_ice_ctx_send_turn_rtp(self, data, size)
 		: _tnet_ice_ctx_send_turn_raw(self, self->turn.ss_nominated_rtcp, self->turn.peer_id_rtcp, data, size);
 }
@@ -976,18 +975,18 @@ int tnet_ice_ctx_cancel(tnet_ice_ctx_t* self)
 {
 	int ret;
 
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	
+
 	tsk_safeobj_lock(self);
-	if(tsk_fsm_get_current_state(self->fsm) == _fsm_state_Started){
+	if (tsk_fsm_get_current_state(self->fsm) == _fsm_state_Started){
 		// Do nothing if already in the "started" state
 		ret = 0;
 		goto bail;
 	}
-	
+
 	self->is_active = tsk_false;
 	self->have_nominated_symetric = tsk_false;
 	self->have_nominated_answer = tsk_false;
@@ -1006,13 +1005,13 @@ int tnet_ice_ctx_stop(tnet_ice_ctx_t* self)
 {
 	int ret;
 
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
-	}	
+	}
 
 	tsk_safeobj_lock(self);
-	if(!self->is_started){
+	if (!self->is_started){
 		ret = 0;
 		goto bail;
 	}
@@ -1056,15 +1055,15 @@ static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandi
 	socket_type = self->use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4;
 
 	addresses = tnet_get_addresses((self->use_ipv6 ? AF_INET6 : AF_INET), self->unicast, self->anycast, self->multicast, dnsserver, if_index_any);
-	if(!addresses || TSK_LIST_IS_EMPTY(addresses)){
+	if (!addresses || TSK_LIST_IS_EMPTY(addresses)){
 		TSK_DEBUG_ERROR("Failed to get addresses");
 		ret = -1;
 		goto bail;
 	}
 
-	
+
 	check_best_local_ip = (tnet_getbestsource(destination, 5060, socket_type, &best_local_ip) == 0);
-	curr_local_pref = local_pref = check_best_local_ip ? 0xFFFE : 0xFFFF;	
+	curr_local_pref = local_pref = check_best_local_ip ? 0xFFFE : 0xFFFF;
 
 	// lock-list
 	tsk_list_lock(self->candidates_local);
@@ -1072,26 +1071,26 @@ static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandi
 	tsk_list_clear_items(self->candidates_local);
 
 	tsk_list_foreach(item, addresses){
-		if(!(address = item->data)){
+		if (!(address = item->data)){
 			continue;
 		}
 
 		// Skip loopback address to avoid problems :)
-		if((address->family == AF_INET && tsk_striequals(address->ip, "127.0.0.1")) || (address->family == AF_INET6 && tsk_striequals(address->ip, "::1"))){
+		if ((address->family == AF_INET && tsk_striequals(address->ip, "127.0.0.1")) || (address->family == AF_INET6 && tsk_striequals(address->ip, "::1"))){
 			continue;
 		}
-		
+
 		// host candidates
-		ret = tnet_ice_utils_create_sockets(socket_type, 
-					address->ip, &socket_rtp,
-					self->use_rtcp ? &socket_rtcp : tsk_null);
-		if(ret == 0){
+		ret = tnet_ice_utils_create_sockets(socket_type,
+			address->ip, &socket_rtp,
+			self->use_rtcp ? &socket_rtcp : tsk_null);
+		if (ret == 0){
 			const char* foundation_rtp = foundation_default;
 			tsk_list_lock(self->candidates_local);
-			if(socket_rtp){
-				if((candidate = tnet_ice_candidate_create(tnet_ice_cand_type_host, socket_rtp, self->is_ice_jingle, tsk_true, self->is_video, self->ufrag, self->pwd, foundation_default))){
+			if (socket_rtp){
+				if ((candidate = tnet_ice_candidate_create(tnet_ice_cand_type_host, socket_rtp, self->is_ice_jingle, tsk_true, self->is_video, self->ufrag, self->pwd, foundation_default))){
 					foundation_rtp = (const char*)candidate->foundation;
-					if(check_best_local_ip && (candidate->socket && (tsk_striequals(candidate->socket->ip, best_local_ip)))){
+					if (check_best_local_ip && (candidate->socket && (tsk_striequals(candidate->socket->ip, best_local_ip)))){
 						curr_local_pref = 0xFFFF;
 						check_best_local_ip = tsk_false;
 						tnet_ice_candidate_set_local_pref(candidate, curr_local_pref);
@@ -1104,8 +1103,8 @@ static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandi
 					}
 				}
 			}
-			if(socket_rtcp){
-				if((candidate = tnet_ice_candidate_create(tnet_ice_cand_type_host, socket_rtcp, self->is_ice_jingle, tsk_false, self->is_video, self->ufrag, self->pwd, foundation_rtp))){
+			if (socket_rtcp){
+				if ((candidate = tnet_ice_candidate_create(tnet_ice_cand_type_host, socket_rtcp, self->is_ice_jingle, tsk_false, self->is_video, self->ufrag, self->pwd, foundation_rtp))){
 					tnet_ice_candidate_set_local_pref(candidate, curr_local_pref);
 					tsk_list_push_back_data(self->candidates_local, (void**)&candidate);
 				}
@@ -1117,10 +1116,10 @@ static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandi
 		TSK_OBJECT_SAFE_FREE(socket_rtcp);
 
 		// break if no longer running
-		if(!self->is_started){
+		if (!self->is_started){
 			break;
 		}
-		
+
 		TSK_DEBUG_INFO("local ip address = %s", address->ip);
 	}
 
@@ -1128,8 +1127,8 @@ static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandi
 	tsk_list_unlock(self->candidates_local);
 
 bail:
-	if(self->is_started){
-		if(ret == 0 && !TSK_LIST_IS_EMPTY(self->candidates_local)){
+	if (self->is_started){
+		if (ret == 0 && !TSK_LIST_IS_EMPTY(self->candidates_local)){
 			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_Success);
 		}
 		else{
@@ -1146,9 +1145,9 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidates_2_GatheringHostCandidatesDo
 {
 	int ret;
 	tnet_ice_ctx_t* self;
-	
+
 	self = va_arg(*app, tnet_ice_ctx_t *);
-	
+
 	ret = _tnet_ice_ctx_signal_async(self, tnet_ice_event_type_gathering_host_candidates_succeed, "Gathering host candidates succeed");
 	if (ret == 0) {
 		if (self->is_stun_enabled && _tnet_ice_ctx_servers_count_by_proto(self, tnet_ice_server_proto_stun) > 0) {
@@ -1166,7 +1165,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidates_2_GatheringHostCandidatesDo
 			}
 		}
 	}
-	
+
 	return ret;
 }
 
@@ -1174,7 +1173,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidates_2_GatheringHostCandidatesDo
 static int _tnet_ice_ctx_fsm_GatheringHostCandidates_2_Terminated_X_Failure(va_list *app)
 {
 	tnet_ice_ctx_t* self;
-	
+
 	self = va_arg(*app, tnet_ice_ctx_t *);
 	return _tnet_ice_ctx_signal_async(self, tnet_ice_event_type_gathering_host_candidates_failed, "Gathering host candidates failed");
 }
@@ -1183,9 +1182,9 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidates_2_Terminated_X_Failure(va_l
 static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCandidates_X_GatherReflexiveCandidates(va_list *app)
 {
 	/*	RFC 5389 - 7.2.1.  Sending over UDP
-		STUN indications are not retransmitted; thus, indication transactions over UDP 
+		STUN indications are not retransmitted; thus, indication transactions over UDP
 		are not reliable.
-	*/
+		*/
 	int ret = 0;
 	tnet_ice_servers_L_t* ice_servers = tsk_null;
 	const tnet_ice_server_t* ice_server;
@@ -1201,7 +1200,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 	tnet_fd_t fd_max = -1;
 	fd_set set;
 	tsk_size_t srflx_addr_count_added = 0, srflx_addr_count_skipped = 0, host_addr_count = 0;
-    long tv_sec, tv_usec; //very important to save these values as timeval could be modified by select() - happens on iOS -
+	long tv_sec, tv_usec; //very important to save these values as timeval could be modified by select() - happens on iOS -
 
 	self = va_arg(*app, tnet_ice_ctx_t *);
 
@@ -1214,10 +1213,10 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 
 	// set all default values to -1
 	// = {{ -1 }} will only set the first element
-	for (i = 0; i < sizeof(fds)/sizeof(fds[0]); ++i) {
+	for (i = 0; i < sizeof(fds) / sizeof(fds[0]); ++i) {
 		fds[i] = TNET_INVALID_FD;
 	}
-	for (i = 0; i < sizeof(fds_skipped)/sizeof(fds_skipped[0]); ++i) {
+	for (i = 0; i < sizeof(fds_skipped) / sizeof(fds_skipped[0]); ++i) {
 		fds_skipped[i] = TNET_INVALID_FD;
 	}
 
@@ -1231,9 +1230,9 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 		if (!(candidate = item->data)) {
 			continue;
 		}
-		
+
 		++host_addr_count;
-		if ((fds_count < sizeof(fds)/sizeof(fds[0])) && candidate->socket) {
+		if ((fds_count < sizeof(fds) / sizeof(fds[0])) && candidate->socket) {
 			fds[fds_count++] = candidate->socket->fd;
 			if (candidate->socket->fd > fd_max) {
 				fd_max = candidate->socket->fd;
@@ -1248,30 +1247,30 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 		retransmission.
 
 		e.g. 0 ms, 500 ms, 1500 ms, 3500 ms, 7500ms, 15500 ms, and 31500 ms
-	*/
+		*/
 	for (i = 0; (i < rc && self->is_started && ((srflx_addr_count_added + srflx_addr_count_skipped) < host_addr_count)); ++i) {
-		tv_sec += rto/1000;
+		tv_sec += rto / 1000;
 		tv_usec += (rto % 1000) * 1000;
-        if (tv_usec >= 1000000) { // > 1000000 is invalid and produce EINVAL when passed to select(iOS)
-            tv_usec -= 1000000;
-            tv_sec++;
-        }
-        // restore values for new select
-        tv.tv_sec = tv_sec;
-        tv.tv_usec = tv_usec;
+		if (tv_usec >= 1000000) { // > 1000000 is invalid and produce EINVAL when passed to select(iOS)
+			tv_usec -= 1000000;
+			tv_sec++;
+		}
+		// restore values for new select
+		tv.tv_sec = tv_sec;
+		tv.tv_usec = tv_usec;
 
 		// Try gathering the reflexive candidate for each server
-		tsk_list_foreach (item_server, ice_servers) {
+		tsk_list_foreach(item_server, ice_servers) {
 			if (!(ice_server = item_server->data)) {
 				continue; // must never happen
 			}
 			TSK_DEBUG_INFO("ICE reflexive candidates gathering ...srv_addr=%s,srv_port=%u,tv_sec=%lu,tv_usec=%lu", ice_server->str_server_addr, ice_server->u_server_port, tv_sec, tv_usec);
-			
+
 			FD_ZERO(&set);
 			for (k = 0; k < fds_count; ++k) {
 				FD_SET(fds[k], &set);
 			}
-			
+
 			// sends STUN binding requets
 			tsk_list_foreach(item, self->candidates_local){
 				if (!(candidate = (tnet_ice_candidate_t*)item->data)) {
@@ -1282,13 +1281,13 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 				}
 			}
 
-			if ((ret = select(fd_max+1, &set, NULL, NULL, &tv))<0) {
+			if ((ret = select(fd_max + 1, &set, NULL, NULL, &tv)) < 0) {
 				TSK_DEBUG_ERROR("select() failed with error code = %d", tnet_geterrno());
 				goto bail;
 			}
 			else if (ret == 0) {
 				// timeout
-				TSK_DEBUG_INFO("STUN request timedout at %d/%d", i, rc-1);
+				TSK_DEBUG_INFO("STUN request timedout at %d/%d", i, rc - 1);
 				rto <<= 1;
 				continue;
 			}
@@ -1297,17 +1296,17 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 				for (k = 0; k < fds_count; ++k) {
 					tnet_fd_t fd = fds[k];
 					if (FD_ISSET(fd, &set)) {
-						tsk_size_t len = 0;
+						unsigned int len = 0;
 						void* data = 0;
 						const tnet_ice_candidate_t* candidate_curr;
 
 						// Check how many bytes are pending
-						if ((ret = tnet_ioctlt(fd, FIONREAD, &len))<0) {
+						if ((ret = tnet_ioctlt(fd, FIONREAD, &len)) < 0) {
 							TSK_DEBUG_ERROR("tnet_ioctlt() failed");
 							continue;
 						}
-						
-						if (len==0) {
+
+						if (len == 0) {
 							TSK_DEBUG_INFO("tnet_ioctlt() retured zero bytes");
 							continue;
 						}
@@ -1316,7 +1315,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 						data = tsk_calloc(len, sizeof(uint8_t));
 						if ((ret = tnet_sockfd_recv(fd, data, len, 0)) < 0) {
 							TSK_FREE(data);
-											
+
 							TSK_DEBUG_ERROR("Recving STUN dgrams failed with error code:%d", tnet_geterrno());
 							continue;
 						}
@@ -1346,7 +1345,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 											   server reflexive candidate and a host candidate will be redundant
 											   when the agent is not behind a NAT.  The agent SHOULD eliminate the
 											   redundant candidate with the lower priority. */
-											for (j = 0; (fds_skipped[j] != TNET_INVALID_FD && j < (sizeof(fds_skipped)/sizeof(fds_skipped[0]))); ++j) {
+											for (j = 0; (fds_skipped[j] != TNET_INVALID_FD && j < (sizeof(fds_skipped) / sizeof(fds_skipped[0]))); ++j) {
 												if (fds_skipped[j] == fd) {
 													already_skipped = tsk_true;
 													break;
@@ -1357,8 +1356,8 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 												++srflx_addr_count_skipped;
 												fds_skipped[j] = fd;
 											}
-											TSK_DEBUG_INFO("Skipping redundant candidate address=%s and port=%d, fd=%d, already_skipped(%u)=%s", 
-												candidate_curr->stun.srflx_addr, 
+											TSK_DEBUG_INFO("Skipping redundant candidate address=%s and port=%d, fd=%d, already_skipped(%u)=%s",
+												candidate_curr->stun.srflx_addr,
 												candidate_curr->stun.srflx_port,
 												fd,
 												j, already_skipped ? "yes" : "no");
@@ -1416,10 +1415,10 @@ bail:
 // GatheringReflexiveCandidates -> (Success) -> GatheringReflexiveCandidatesDone
 static int _tnet_ice_ctx_fsm_GatheringReflexiveCandidates_2_GatheringReflexiveCandidatesDone_X_Success(va_list *app)
 {
-    tnet_ice_ctx_t* self;
-    
-    self = va_arg(*app, tnet_ice_ctx_t *);
-    
+	tnet_ice_ctx_t* self;
+
+	self = va_arg(*app, tnet_ice_ctx_t *);
+
 	if (self->is_started) {
 		int ret = _tnet_ice_ctx_signal_async(self, tnet_ice_event_type_gathering_reflexive_candidates_succeed, "Gathering reflexive candidates succeed");
 		if (ret == 0) {
@@ -1493,12 +1492,12 @@ next_server:
 	ice_server = (tnet_ice_server_t*)item_server->data;
 
 	// Create TURN sessions for each local host candidate
-    tsk_list_foreach(item, self->candidates_local) {
-        if (!(candidate = item->data)) {
-           continue;
-        }
+	tsk_list_foreach(item, self->candidates_local) {
+		if (!(candidate = item->data)) {
+			continue;
+		}
 		TSK_DEBUG_INFO("Gathering relay candidate: local addr=%s=%d, TURN server=%s:%d", candidate->connection_addr, candidate->port, ice_server->str_server_addr, ice_server->u_server_port);
-        
+
 		// Destroy previvious TURN session (if exist)
 		TSK_OBJECT_SAFE_FREE(candidate->turn.ss);
 		if (candidate->type_e == tnet_ice_cand_type_host && candidate->socket) { // do not create TURN session for reflexive candidates
@@ -1539,9 +1538,9 @@ next_server:
 	} // tsk_list_foreach(item, self->candidates_local) {
 
 	rto = self->RTO;
-    rc = self->Rc;
+	rc = self->Rc;
 
-	for (i = 0; (i < rc && self->is_started && ((relay_addr_count_ok + relay_addr_count_nok) < host_addr_count)); ) {
+	for (i = 0; (i < rc && self->is_started && ((relay_addr_count_ok + relay_addr_count_nok) < host_addr_count));) {
 		if (!self->is_started || !self->is_active) {
 			TSK_DEBUG_INFO("ICE context stopped/cancelled while gathering TURN candidates");
 			goto bail;
@@ -1560,7 +1559,7 @@ next_server:
 		relay_addr_count_ok = 0;
 		tsk_list_foreach(item, self->candidates_local) {
 			if (!(candidate = item->data) || !candidate->turn.ss) {
-			   continue;
+				continue;
 			}
 			if ((ret = tnet_turn_session_get_state_alloc(candidate->turn.ss, &e_tunrn_state))) {
 				goto bail;
@@ -1578,7 +1577,7 @@ next_server:
 	// add/delete TURN candidates
 	tsk_list_foreach(item, self->candidates_local) {
 		if (!(candidate = item->data) || !candidate->turn.ss) {
-		   continue;
+			continue;
 		}
 		if ((ret = tnet_turn_session_get_state_alloc(candidate->turn.ss, &e_tunrn_state))) {
 			goto bail;
@@ -1619,10 +1618,10 @@ next_server:
 			TSK_FREE(relay_addr);
 		}
 		else {
-			TSK_OBJECT_SAFE_FREE(candidate->turn.ss); 
+			TSK_OBJECT_SAFE_FREE(candidate->turn.ss);
 		}
 	}
-	
+
 	// Try next TURN server
 	if (self->is_started && item_server && relay_addr_count_added == 0) {
 		goto next_server;
@@ -1630,12 +1629,12 @@ next_server:
 
 bail:
 	if (self->is_started) {
-        if (ret == 0) {
+		if (ret == 0) {
 			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_Success);
-        }
-        else {
+		}
+		else {
 			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_Failure);
-        }
+		}
 	}
 	TSK_OBJECT_SAFE_FREE(ice_servers);
 	return ret;
@@ -1644,14 +1643,14 @@ bail:
 // GatheringRelayCandidates -> (Success) -> GatheringRelayCandidatesDone
 static int _tnet_ice_ctx_fsm_GatheringRelayCandidates_2_GatheringRelayCandidatesDone_X_Success(va_list *app)
 {
-    tnet_ice_ctx_t* self = va_arg(*app, tnet_ice_ctx_t *);
-    if (self->is_started) {
-        // Relay candidates are the last ones -> gathering is competed
-        return _tnet_ice_ctx_fsm_act(self, _fsm_action_GatheringComplet);
-    }
-    else {
-        return -1;
-    }
+	tnet_ice_ctx_t* self = va_arg(*app, tnet_ice_ctx_t *);
+	if (self->is_started) {
+		// Relay candidates are the last ones -> gathering is competed
+		return _tnet_ice_ctx_fsm_act(self, _fsm_action_GatheringComplet);
+	}
+	else {
+		return -1;
+	}
 }
 
 // GatheringReflexiveCandidates -> (Failure) -> Terminated
@@ -1683,12 +1682,12 @@ static int _tnet_ice_ctx_fsm_Any_2_Started_X_Cancel(va_list *app)
 	// tsk_list_lock(self->candidates_local);
 	// tsk_list_clear_items(self->candidates_local);
 	// tsk_list_unlock(self->candidates_local);
-	
+
 	// restore "is_cancelled" until next cancel
 	// set "is_active" to false to allow ICE re-start
 	// self->is_cancelled = tsk_false;
 	// self->is_active = tsk_false;
-	
+
 	// alert user
 	_tnet_ice_ctx_signal_async(self, tnet_ice_event_type_cancelled, "Cancelled");
 
@@ -1708,12 +1707,12 @@ static int _tnet_ice_ctx_fsm_Any_2_GatheringCompleted_X_GatheringComplet(va_list
 	// alert user
 	_tnet_ice_ctx_signal_async(self, tnet_ice_event_type_gathering_completed, "Gathering candidates completed");
 
-	if(self->is_started){
+	if (self->is_started){
 		tsk_list_lock(self->candidates_remote);
 		has_remote_candidates = !TSK_LIST_IS_EMPTY(self->candidates_remote);
 		tsk_list_unlock(self->candidates_remote);
 
-		if(has_remote_candidates){
+		if (has_remote_candidates){
 			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_ConnCheck);
 		}
 	}
@@ -1749,9 +1748,9 @@ static int _tnet_ice_ctx_fsm_GatheringCompleted_2_ConnChecking_X_ConnCheck(va_li
 	void* recvfrom_buff_ptr = tsk_null;
 	tsk_size_t recvfrom_buff_size = 0, tries_count = 0, tries_count_min = kIceConnCheckMinTriesMin;
 	enum tnet_stun_state_e e_state;
-	
+
 	self = va_arg(*app, tnet_ice_ctx_t *);
-	
+
 	// "tries_count" and "tries_count_min"
 	// The connection checks to to the "relay", "prflx", "srflx" and "host" candidates are sent at the same time.
 	// Because the requests are sent at the same time it's possible to have success check for "relay" (or "srflx") candidates before the "host" candidates.
@@ -1761,7 +1760,7 @@ static int _tnet_ice_ctx_fsm_GatheringCompleted_2_ConnChecking_X_ConnCheck(va_li
 start_conneck:
 	role_conflict = tsk_false;
 	restart_conneck = tsk_false;
-	
+
 	tsk_list_lock(self->candidates_pairs);
 	tsk_list_clear_items(self->candidates_pairs);
 	tsk_list_unlock(self->candidates_pairs);
@@ -1779,11 +1778,11 @@ start_conneck:
 	// load fds for both rtp and rtcp sockets / create TURN permissions
 	tsk_list_lock(self->candidates_pairs);
 	tsk_list_foreach(item, self->candidates_pairs){
-		if(!(pair = item->data) || !pair->candidate_offer || !pair->candidate_offer->socket){
+		if (!(pair = item->data) || !pair->candidate_offer || !pair->candidate_offer->socket){
 			continue;
 		}
-		
-		if ((fds_count < sizeof(fds)/sizeof(fds[0])) && pair->candidate_offer->socket) {
+
+		if ((fds_count < sizeof(fds) / sizeof(fds[0])) && pair->candidate_offer->socket) {
 			if (pair->candidate_offer->turn.ss && (ret = tnet_turn_session_get_state_createperm(pair->candidate_offer->turn.ss, pair->turn_peer_id, &e_state)) == 0) {
 				if (e_state == tnet_stun_state_none) {
 					ret = tnet_turn_session_createpermission(((tnet_ice_pair_t *)pair)->candidate_offer->turn.ss, pair->candidate_answer->connection_addr, pair->candidate_answer->port, &((tnet_ice_pair_t *)pair)->turn_peer_id);
@@ -1819,7 +1818,7 @@ start_conneck:
 	while (self->is_started && self->is_active && (time_curr < time_end) && !self->have_nominated_symetric) {
 		tv.tv_sec = 0;
 		tv.tv_usec = (rto * 1000);
-		
+
 		FD_ZERO(&set);
 		for (k = 0; k < fds_count; ++k) {
 			FD_SET(fds[k], &set);
@@ -1833,7 +1832,7 @@ start_conneck:
 			time_start = time_curr;
 			time_end = (time_start + concheck_timeout);
 		}
-		
+
 		// Send ConnCheck requests
 		// the pairs are already sorted by priority (from high to low)
 		if (!self->have_nominated_symetric) {
@@ -1842,12 +1841,12 @@ start_conneck:
 					continue;
 				}
 				switch (pair->state_offer) {
-					case tnet_ice_pair_state_failed:
-					case tnet_ice_pair_state_succeed:
-						continue;
-                    default: break;
+				case tnet_ice_pair_state_failed:
+				case tnet_ice_pair_state_succeed:
+					continue;
+				default: break;
 				}
-				
+
 				ret = tnet_ice_pair_send_conncheck((tnet_ice_pair_t *)pair);
 			}
 		}
@@ -1857,20 +1856,20 @@ start_conneck:
 			goto check_nomination;
 		}
 
-		if ((ret = select (fd_max+1, &set, NULL, NULL, &tv))<0) {
+		if ((ret = select(fd_max + 1, &set, NULL, NULL, &tv)) < 0) {
 			TNET_PRINT_LAST_ERROR("select() failed");
 			goto bail;
 		}
-		else if(ret == 0) {
+		else if (ret == 0) {
 			// timeout
 			// TSK_DEBUG_INFO("STUN request timedout");
 			goto check_nomination; //!\ continue == possible endless loop
 		}
-		else if(ret > 0) {
+		else if (ret > 0) {
 			// there is data to read
 			for (k = 0; k < fds_count; ++k) {
 				tnet_fd_t fd = fds[k];
-				tsk_size_t len = 0;
+				unsigned int len = 0;
 				tsk_size_t read = 0;
 
 				if (!FD_ISSET(fd, &set)) {
@@ -1878,40 +1877,40 @@ start_conneck:
 				}
 
 				// Check how many bytes are pending
-				if ((ret = tnet_ioctlt(fd, FIONREAD, &len))<0) {
+				if ((ret = tnet_ioctlt(fd, FIONREAD, &len)) < 0) {
 					continue;
 				}
-				
-				if(len==0){
+
+				if (len == 0){
 					// TSK_DEBUG_INFO("tnet_ioctlt() returent zero bytes");
 					continue;
 				}
 
 				// Receive pending data
-				if(recvfrom_buff_size < len){
-					if(!(recvfrom_buff_ptr = tsk_realloc(recvfrom_buff_ptr, len))){
+				if (recvfrom_buff_size < len){
+					if (!(recvfrom_buff_ptr = tsk_realloc(recvfrom_buff_ptr, len))){
 						recvfrom_buff_size = 0;
 						goto bail;
 					}
 					recvfrom_buff_size = len;
 				}
-				
+
 				// receive all messages
 				while (self->is_started && self->is_active && read < len && ret == 0) {
-					if ((ret = tnet_sockfd_recvfrom(fd, recvfrom_buff_ptr, recvfrom_buff_size, 0, (struct sockaddr *)&remote_addr)) < 0) {                        
-                        // "EAGAIN" means no data to read
-                        // we must trust "EAGAIN" instead of "read" because pending data could be removed by the system
-                        if (tnet_geterrno() == TNET_ERROR_EAGAIN) {
-                            len = 0;
-                            continue;
-                        }
-										
+					if ((ret = tnet_sockfd_recvfrom(fd, recvfrom_buff_ptr, recvfrom_buff_size, 0, (struct sockaddr *)&remote_addr)) < 0) {
+						// "EAGAIN" means no data to read
+						// we must trust "EAGAIN" instead of "read" because pending data could be removed by the system
+						if (tnet_geterrno() == TNET_ERROR_EAGAIN) {
+							len = 0;
+							continue;
+						}
+
 						TNET_PRINT_LAST_ERROR("Receiving STUN dgrams failed with error code");
 						goto bail;
 					}
 
 					read += ret;
-					
+
 					// recv() STUN message (request / response)
 					ret = tnet_ice_ctx_recv_stun_message(self, recvfrom_buff_ptr, (tsk_size_t)ret, fd, &remote_addr, &role_conflict);
 					if (ret == 0 && role_conflict) {
@@ -1922,8 +1921,8 @@ start_conneck:
 				}
 			}
 		}
-	
-check_nomination:
+
+	check_nomination:
 		// check whether we need to re-start connection checking
 		if (restart_conneck) {
 			goto start_conneck;
@@ -1954,10 +1953,10 @@ bail:
 		}
 		else {
 			if (time_curr >= time_end) {
-				TSK_DEBUG_ERROR("ConnCheck timedout, have_nominated_symetric=%s, have_nominated_answer=%s, have_nominated_offer=%s", 
-					self->have_nominated_symetric?"yes":"false",
-					self->have_nominated_answer?"yes":"false", 
-					self->have_nominated_offer?"yes":"false");
+				TSK_DEBUG_ERROR("ConnCheck timedout, have_nominated_symetric=%s, have_nominated_answer=%s, have_nominated_offer=%s",
+					self->have_nominated_symetric ? "yes" : "false",
+					self->have_nominated_answer ? "yes" : "false",
+					self->have_nominated_offer ? "yes" : "false");
 			}
 			ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_Failure);
 		}
@@ -1971,7 +1970,7 @@ bail:
 // ConnChecking -> (Success) -> ConnCheckingCompleted
 static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_list *app)
 {
-	tnet_ice_ctx_t* self = va_arg(*app, tnet_ice_ctx_t *);	
+	tnet_ice_ctx_t* self = va_arg(*app, tnet_ice_ctx_t *);
 	const tnet_ice_pair_t *pair_offer, *pair_answer_src, *pair_answer_dest;
 	const tsk_list_item_t *item;
 	const tnet_ice_pair_t *pair;
@@ -1989,7 +1988,7 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_l
 	TSK_OBJECT_SAFE_FREE(self->turn.ss_nominated_rtcp);
 
 	tsk_list_lock(self->candidates_pairs);
-	
+
 	// take a reference to the negotiated TURN sessions
 	ret = tnet_ice_pairs_get_nominated_symetric_pairs(self->candidates_pairs, TNET_ICE_CANDIDATE_COMPID_RTP, &pair_offer, &pair_answer_src, &pair_answer_dest);
 	if (ret == 0 && pair_offer && pair_offer->candidate_offer && pair_offer->candidate_offer->type_e == tnet_ice_cand_type_relay && pair_offer->candidate_offer->turn.ss) {
@@ -2046,14 +2045,14 @@ static int _tnet_ice_ctx_fsm_OnTerminated(tnet_ice_ctx_t* self)
 {
 	TSK_DEBUG_INFO("=== ICE CTX SM Terminated ===");
 
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter.");
 		return -1;
 	}
 
 	// still started but no longer active
 	self->is_active = tsk_false;
-	
+
 	return 0;
 }
 
@@ -2065,13 +2064,13 @@ static tsk_bool_t _tnet_ice_ctx_fsm_cond_NotStarted(tnet_ice_ctx_t* self, const 
 static int _tnet_ice_ctx_restart(tnet_ice_ctx_t* self)
 {
 	int ret = 0;
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
 	ret = tsk_fsm_set_current_state(self->fsm, _fsm_state_Started);
-	ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatherHostCandidates);	
+	ret = _tnet_ice_ctx_fsm_act(self, _fsm_action_GatherHostCandidates);
 
 	self->is_active = (ret == 0);
 	return ret;
@@ -2104,13 +2103,13 @@ static int _tnet_ice_ctx_recv_stun_message_for_pair(tnet_ice_ctx_t* self, const 
 	if ((ret = tnet_stun_pkt_read(data, size, &message)) == 0 && message) {
 		if (message->e_type == tnet_stun_pkt_type_binding_request) {
 			tsk_bool_t is_local_conncheck_started = !TSK_LIST_IS_EMPTY(self->candidates_pairs); // if empty means local conncheck haven't started
-			if(!pair && is_local_conncheck_started) {
+			if (!pair && is_local_conncheck_started) {
 				pair = tnet_ice_pairs_find_by_fd_and_addr(self->candidates_pairs, local_fd, remote_addr);
 			}
-			if(!pair && !self->have_nominated_symetric && is_local_conncheck_started){ // pair not found and we're still negotiating
+			if (!pair && !self->have_nominated_symetric && is_local_conncheck_started){ // pair not found and we're still negotiating
 				// rfc 5245 - 7.1.3.2.1.  Discovering Peer Reflexive Candidates
 				tnet_ice_pair_t* pair_peer = tnet_ice_pair_prflx_create(self->candidates_pairs, local_fd, remote_addr);
-				if(pair_peer){
+				if (pair_peer){
 					pair = pair_peer; // copy
 					tsk_list_push_descending_data(self->candidates_pairs, (void**)&pair_peer);
 					TSK_OBJECT_SAFE_FREE(pair_peer);
@@ -2121,10 +2120,10 @@ static int _tnet_ice_ctx_recv_stun_message_for_pair(tnet_ice_ctx_t* self, const 
 				char* resp_phrase = tsk_null;
 				// authenticate the request
 				tnet_ice_pair_auth_conncheck(pair, message, data, size, &resp_code, &resp_phrase);
-				if(resp_code > 0 && resp_phrase){
-					if(resp_code >= 200 && resp_code <= 299){
+				if (resp_code > 0 && resp_phrase){
+					if (resp_code >= 200 && resp_code <= 299){
 						// Before sending the success response check that there are no role conflict
-						if(self->is_controlling){ // I'm ICE-CONTROLLING
+						if (self->is_controlling){ // I'm ICE-CONTROLLING
 							const tnet_stun_attr_vdata_t* stun_att_ice_controlling;
 							if ((ret = tnet_stun_pkt_attr_find_first(message, tnet_stun_attr_type_ice_controlling, (const tnet_stun_attr_t**)&stun_att_ice_controlling)) == 0 && stun_att_ice_controlling){
 								TSK_DEBUG_WARN("Role conflicts (SEND)");
@@ -2200,7 +2199,7 @@ static int _tnet_ice_ctx_send_turn_raw(struct tnet_ice_ctx_s* self, struct tnet_
 		return -1;
 	}
 	// (self);
-	return tnet_turn_session_send_data(turn_ss, turn_peer_id, data, size);
+	return tnet_turn_session_send_data(turn_ss, turn_peer_id, data, (uint16_t)size);
 }
 
 
@@ -2230,9 +2229,9 @@ static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, 
 			continue;
 		}
 #if 0 // TURN:FORCE
-			if (cand_local->type_e != tnet_ice_cand_type_relay) {
-				continue;
-			}
+		if (cand_local->type_e != tnet_ice_cand_type_relay) {
+			continue;
+		}
 #endif
 		tsk_list_foreach(item_remote, remote_candidates) {
 			if (!(cand_remote = item_remote->data)) {
@@ -2274,7 +2273,7 @@ static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, 
 				cand_remote->comp_id,
 				cand_remote->connection_addr,
 				cand_remote->port);
-			
+
 			if ((pair = tnet_ice_pair_create(cand_local, cand_remote, is_controlling, tie_breaker, is_ice_jingle))) {
 				tsk_list_push_descending_data(result_pairs, (void**)&pair);
 			}
@@ -2287,22 +2286,22 @@ static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, 
 		}
 
 		TSK_DEBUG_INFO("*****ICE Pair: [%s %u %s %d] -> [%s %u %s %d]",
-				pair->candidate_offer->foundation,
-				pair->candidate_offer->comp_id,
-				pair->candidate_offer->connection_addr,
-				pair->candidate_offer->port,
+			pair->candidate_offer->foundation,
+			pair->candidate_offer->comp_id,
+			pair->candidate_offer->connection_addr,
+			pair->candidate_offer->port,
 
-				pair->candidate_answer->foundation,
-				pair->candidate_answer->comp_id,
-				pair->candidate_answer->connection_addr,
-				pair->candidate_answer->port);
+			pair->candidate_answer->foundation,
+			pair->candidate_answer->comp_id,
+			pair->candidate_answer->connection_addr,
+			pair->candidate_answer->port);
 	}
 #endif
 
 	tsk_list_unlock(local_candidates);
 	tsk_list_unlock(remote_candidates);
 	tsk_list_unlock(result_pairs);
-	
+
 	return 0;
 }
 
@@ -2314,20 +2313,20 @@ static int _tnet_ice_ctx_fsm_act(tnet_ice_ctx_t* self, tsk_fsm_action_id action_
 	static const char* phrase = "$action$";
 	int ret = 0;
 
-	if(!self || !self->fsm){
+	if (!self || !self->fsm){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if(!(action = tnet_ice_action_create(action_id))){
+	if (!(action = tnet_ice_action_create(action_id))){
 		TSK_DEBUG_ERROR("Failed to create action");
 		return -2;
 	}
 
-	if(self->is_sync_mode) {
+	if (self->is_sync_mode) {
 		ret = tsk_fsm_act(self->fsm, action->id, self, action, self, action);
 	}
 	else {
-		if((e = tnet_ice_event_create(self, tnet_ice_event_type_action, phrase, self->userdata))){
+		if ((e = tnet_ice_event_create(self, tnet_ice_event_type_action, phrase, self->userdata))){
 			tnet_ice_event_set_action(e, action);
 			TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(self), e);
 			goto bail;
@@ -2348,17 +2347,17 @@ bail:
 static int _tnet_ice_ctx_signal_async(tnet_ice_ctx_t* self, tnet_ice_event_type_t type, const char* phrase)
 {
 	tnet_ice_event_t* e;
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if(self->is_silent_mode && type != tnet_ice_event_type_action) { // silent mode ON and not action to move the FSM
+	if (self->is_silent_mode && type != tnet_ice_event_type_action) { // silent mode ON and not action to move the FSM
 		TSK_DEBUG_INFO("ICE silent mode ON...to not notify '%d:%s'", type, phrase);
 		return 0;
 	}
 
-	if((e = tnet_ice_event_create(self, type, phrase, self->userdata))){
+	if ((e = tnet_ice_event_create(self, type, phrase, self->userdata))){
 		TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(self), e);
 		return 0;
 	}
@@ -2380,99 +2379,99 @@ static int _tnet_ice_ctx_turn_callback(const struct tnet_turn_session_event_xs *
 	}
 
 	switch (e->e_type) {
-		case tnet_turn_session_event_type_alloc_ok:
-		case tnet_turn_session_event_type_refresh_ok:		
-		case tnet_turn_session_event_type_chanbind_ok:
-		case tnet_turn_session_event_type_connect_ok:
-		default:
-			{
-				break;
+	case tnet_turn_session_event_type_alloc_ok:
+	case tnet_turn_session_event_type_refresh_ok:
+	case tnet_turn_session_event_type_chanbind_ok:
+	case tnet_turn_session_event_type_connect_ok:
+	default:
+	{
+		break;
+	}
+
+	case tnet_turn_session_event_type_alloc_nok:
+	case tnet_turn_session_event_type_refresh_nok:
+	case tnet_turn_session_event_type_perm_nok:
+	case tnet_turn_session_event_type_chanbind_nok:
+	case tnet_turn_session_event_type_connect_nok:
+	{
+		// Do not raise error event if no nominated candidate because.
+		// TURN error could be raised by the session when we're in "conncheck" state and this is a normal case.
+		if (ctx->is_active && ctx->is_started && ctx->turn.ss_nominated_rtp && ctx->turn.peer_id_rtp != kTurnPeerIdInvalid) {
+			if ((ret = _tnet_ice_ctx_signal_async(ctx, tnet_ice_event_type_turn_connection_broken, "TURN connection is broken"))) {
+				goto bail;
 			}
+		}
+		break;
+	}
 
-		case tnet_turn_session_event_type_alloc_nok:
-		case tnet_turn_session_event_type_refresh_nok:
-		case tnet_turn_session_event_type_perm_nok:
-		case tnet_turn_session_event_type_chanbind_nok:
-		case tnet_turn_session_event_type_connect_nok:
-			{
-				// Do not raise error event if no nominated candidate because.
-				// TURN error could be raised by the session when we're in "conncheck" state and this is a normal case.
-				if (ctx->is_active && ctx->is_started && ctx->turn.ss_nominated_rtp && ctx->turn.peer_id_rtp != kTurnPeerIdInvalid) {
-					if ((ret = _tnet_ice_ctx_signal_async(ctx, tnet_ice_event_type_turn_connection_broken, "TURN connection is broken"))) {
-						goto bail;
-					}
-				}
-				break;
+	case tnet_turn_session_event_type_perm_ok:
+	{
+		enum tnet_turn_transport_e e_req_transport;
+		if ((ret = tnet_turn_session_get_req_transport(session, &e_req_transport))) {
+			goto bail;
+		}
+
+		if (e_req_transport == tnet_turn_transport_tcp) {
+			// TCP-Connect: rfc6062 - 4.3.  Initiating a Connection
+			if ((ret = tnet_turn_session_connect(session, e->u_peer_id))) {
+				goto bail;
 			}
-
-		case tnet_turn_session_event_type_perm_ok:
-			{
-				enum tnet_turn_transport_e e_req_transport;
-				if ((ret = tnet_turn_session_get_req_transport(session, &e_req_transport))) {
-					goto bail;
-				}
-				
-				if (e_req_transport == tnet_turn_transport_tcp) {
-					// TCP-Connect: rfc6062 - 4.3.  Initiating a Connection
-					if ((ret = tnet_turn_session_connect(session, e->u_peer_id))) {
-						goto bail;
-					}
-				}
-				else {
-					// Bind a channel (not required). If succeed, will be used to save bandwidth usage.
-					// TODO: should be done only if first "get_state(chanbind)==none". Not an issue, if it already exists then, will be refreshed.
-					if ((ret = tnet_turn_session_chanbind(session, e->u_peer_id))) {
-						goto bail;
-					}
-				}
-				break;
+		}
+		else {
+			// Bind a channel (not required). If succeed, will be used to save bandwidth usage.
+			// TODO: should be done only if first "get_state(chanbind)==none". Not an issue, if it already exists then, will be refreshed.
+			if ((ret = tnet_turn_session_chanbind(session, e->u_peer_id))) {
+				goto bail;
 			}
+		}
+		break;
+	}
 
-		case tnet_turn_session_event_type_recv_data:
-			{
-				tsk_bool_t role_conflict;
-				tnet_ice_pair_t* pair = tsk_null;
-				if (e->u_peer_id != kTurnPeerIdInvalid) {
-					const tsk_list_item_t *item;
-					tsk_list_lock(ctx->candidates_pairs);
-					tsk_list_foreach(item, ctx->candidates_pairs) {
-						if (((const tnet_ice_pair_t*)item->data)->turn_peer_id == e->u_peer_id) {
-							pair = tsk_object_ref((void*)item->data);
-							break;
-						}
-					}
-					tsk_list_unlock(ctx->candidates_pairs);
+	case tnet_turn_session_event_type_recv_data:
+	{
+		tsk_bool_t role_conflict;
+		tnet_ice_pair_t* pair = tsk_null;
+		if (e->u_peer_id != kTurnPeerIdInvalid) {
+			const tsk_list_item_t *item;
+			tsk_list_lock(ctx->candidates_pairs);
+			tsk_list_foreach(item, ctx->candidates_pairs) {
+				if (((const tnet_ice_pair_t*)item->data)->turn_peer_id == e->u_peer_id) {
+					pair = tsk_object_ref((void*)item->data);
+					break;
 				}
-
-				ret = _tnet_ice_ctx_recv_stun_message_for_pair(
-					ctx, 
-					pair,
-					e->data.pc_data_ptr, e->data.u_data_size, 
-					e->pc_enet ? e->pc_enet->local_fd : TNET_INVALID_FD, 
-					e->pc_enet ? &e->pc_enet->remote_addr : tsk_null, 
-					&role_conflict);
-				TSK_OBJECT_SAFE_FREE(pair);
-				if (ret) {
-					goto bail;
-				}
-
-				// rebuild candidates if role conflict
-				if (role_conflict) {
-					tsk_list_lock(ctx->candidates_pairs);
-					tsk_list_clear_items(ctx->candidates_pairs);
-					tsk_list_unlock(ctx->candidates_pairs);
-
-					TSK_OBJECT_SAFE_FREE(ctx->turn.ss_nominated_rtp);
-					TSK_OBJECT_SAFE_FREE(ctx->turn.ss_nominated_rtcp);
-
-					if ((ret = _tnet_ice_ctx_build_pairs(ctx->candidates_local, ctx->candidates_remote, ctx->candidates_pairs, ctx->is_controlling, ctx->tie_breaker, ctx->is_ice_jingle, ctx->use_rtcpmux))) {
-						TSK_DEBUG_ERROR("_tnet_ice_ctx_build_pairs() failed");
-						goto bail;
-					}
-				}
-
-				break;
 			}
+			tsk_list_unlock(ctx->candidates_pairs);
+		}
+
+		ret = _tnet_ice_ctx_recv_stun_message_for_pair(
+			ctx,
+			pair,
+			e->data.pc_data_ptr, e->data.u_data_size,
+			e->pc_enet ? e->pc_enet->local_fd : TNET_INVALID_FD,
+			e->pc_enet ? &e->pc_enet->remote_addr : tsk_null,
+			&role_conflict);
+		TSK_OBJECT_SAFE_FREE(pair);
+		if (ret) {
+			goto bail;
+		}
+
+		// rebuild candidates if role conflict
+		if (role_conflict) {
+			tsk_list_lock(ctx->candidates_pairs);
+			tsk_list_clear_items(ctx->candidates_pairs);
+			tsk_list_unlock(ctx->candidates_pairs);
+
+			TSK_OBJECT_SAFE_FREE(ctx->turn.ss_nominated_rtp);
+			TSK_OBJECT_SAFE_FREE(ctx->turn.ss_nominated_rtcp);
+
+			if ((ret = _tnet_ice_ctx_build_pairs(ctx->candidates_local, ctx->candidates_remote, ctx->candidates_pairs, ctx->is_controlling, ctx->tie_breaker, ctx->is_ice_jingle, ctx->use_rtcpmux))) {
+				TSK_DEBUG_ERROR("_tnet_ice_ctx_build_pairs() failed");
+				goto bail;
+			}
+		}
+
+		break;
+	}
 	}
 
 	// alert() waiting threads
@@ -2496,28 +2495,28 @@ static void* TSK_STDCALL _tnet_ice_ctx_run(void* self)
 	TSK_DEBUG_INFO("ICE CTX::run -- START");
 
 	TSK_RUNNABLE_RUN_BEGIN(ctx);
-	
+
 	// must because "ctx->callback(e);" could call a function trying to free "ctx"
 	// do not move before "TSK_RUNNABLE_RUN_BEGIN(ctx)", otherwise it'll be required to stop the "runnable" to have "ctx->refCount==0"
 	ctx = tsk_object_ref(ctx);
 
 	if (ctx->is_started && (curr = TSK_RUNNABLE_POP_FIRST(ctx))) {
 		e = (tnet_ice_event_t*)curr->data;
-		switch(e->type) {
-			case tnet_ice_event_type_action:
-				{
-					if(e->action) {
-						tsk_fsm_act(ctx->fsm, e->action->id, ctx, e->action, ctx, e->action);
-					}
-					break;
-				}
-			default:
-				{
-					if(ctx->callback){
-						ctx->callback(e);
-					}
-					break;
-				}
+		switch (e->type) {
+		case tnet_ice_event_type_action:
+		{
+			if (e->action) {
+				tsk_fsm_act(ctx->fsm, e->action->id, ctx, e->action, ctx, e->action);
+			}
+			break;
+		}
+		default:
+		{
+			if (ctx->callback){
+				ctx->callback(e);
+			}
+			break;
+		}
 		}
 		tsk_object_unref(curr);
 	}
@@ -2525,7 +2524,7 @@ static void* TSK_STDCALL _tnet_ice_ctx_run(void* self)
 	if (!(ctx = tsk_object_unref(ctx))) {
 		goto exit;
 	}
-	
+
 	TSK_RUNNABLE_RUN_END(ctx);
 
 exit:
@@ -2555,8 +2554,8 @@ static int _tnet_ice_ctx_servers_clear(struct tnet_ice_ctx_s* self)
 	return 0;
 }
 
-static int _tnet_ice_ctx_server_add(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto, 
-	enum tnet_socket_type_e e_transport, 
+static int _tnet_ice_ctx_server_add(struct tnet_ice_ctx_s* self, enum tnet_ice_server_proto_e e_proto,
+enum tnet_socket_type_e e_transport,
 	const char* str_server_addr, uint16_t u_server_port,
 	const char* str_software,
 	const char* str_username, const char* str_password)
@@ -2576,12 +2575,12 @@ static int _tnet_ice_ctx_server_add(struct tnet_ice_ctx_s* self, enum tnet_ice_s
 	// Create and add the ICE server
 	tsk_list_lock(self->servers);
 	if (_tnet_ice_ctx_server_exists(self, e_proto, e_transport, str_server_addr, u_server_port)) {
-		TSK_DEBUG_WARN("ICE server (proto=%d, transport=%d, addr=%d, port=%u) already exists", e_proto, e_transport, str_server_addr, u_server_port);
+		TSK_DEBUG_WARN("ICE server (proto=%d, transport=%d, addr=%s, port=%hu) already exists", e_proto, e_transport, str_server_addr, u_server_port);
 		ret = 0; // Not an error
 		goto bail;
 	}
 	if (!(ice_server = tnet_ice_server_create(e_proto, e_transport, str_server_addr, u_server_port, str_software, str_username, str_password))) {
-		TSK_DEBUG_ERROR("Failed to create ICE server(proto=%d, transport=%d, addr=%d, port=%u)", e_proto, e_transport, str_server_addr, u_server_port);
+		TSK_DEBUG_ERROR("Failed to create ICE server(proto=%d, transport=%d, addr=%s, port=%hu)", e_proto, e_transport, str_server_addr, u_server_port);
 		goto bail;
 	}
 	tsk_list_push_back_data(self->servers, (void**)&ice_server);

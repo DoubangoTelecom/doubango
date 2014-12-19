@@ -190,7 +190,7 @@ int tnet_tls_socket_write(tnet_tls_socket_handle_t* self, const void* data, tsk_
 
 	/* Write */
 	tsk_safeobj_lock(socket);
-	while(((ret = SSL_write(socket->ssl, data, size)) <= 0) && try_again){
+	while(((ret = SSL_write(socket->ssl, data, (int)size)) <= 0) && try_again){
 		ret = SSL_get_error(socket->ssl, ret);
 		want_read = (ret == SSL_ERROR_WANT_READ);
 		want_write = (ret == SSL_ERROR_WANT_WRITE);
@@ -257,7 +257,7 @@ int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void** data, tsk_size_t
 
 	/* Read Application data */
 ssl_read:	
-	if(rcount && ((ret = SSL_read(socket->ssl, (((uint8_t*)*data)+read), to_read)) <= 0)){
+	if(rcount && ((ret = SSL_read(socket->ssl, (((uint8_t*)*data)+read), (int)to_read)) <= 0)){
 		ret = SSL_get_error(socket->ssl, ret);
 		if(ret == SSL_ERROR_WANT_WRITE || ret == SSL_ERROR_WANT_READ){
 			if(!(ret = tnet_sockfd_waitUntil(socket->fd, TNET_TLS_TIMEOUT, (ret == SSL_ERROR_WANT_WRITE)))){

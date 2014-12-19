@@ -644,7 +644,7 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
 										}
 										if(item == video->avpf.packets->tail){
 											// should never be called unless the tail is too small
-											int32_t old_max = video->avpf.max;
+											int32_t old_max = (int32_t)video->avpf.max;
 											int32_t len_drop = (pkt_rtp->header->seq_num - pid);
 											video->avpf.max = TSK_CLAMP((int32_t)tmedia_defaults_get_avpf_tail_min(), (old_max + len_drop), (int32_t)tmedia_defaults_get_avpf_tail_max());
 											TSK_DEBUG_INFO("**NACK requesting dropped frames. List=[%d-%d], requested=%d, List.Max=%d, List.Count=%d. RTT is probably too high.", 
@@ -701,7 +701,7 @@ static int _tdav_session_video_jb_cb(const tdav_video_jb_cb_data_xt* data)
 						uint16_t seq_nums[16];
 						for(i = 0; i < data->fl.count; i+=16){
 							for(j = 0, k = i; j < 16 && k < data->fl.count; ++j, ++k){
-								seq_nums[j] = (data->fl.seq_num + i + j);
+								seq_nums[j] = (uint16_t)(data->fl.seq_num + i + j);
 								TSK_DEBUG_INFO("Request re-send(%u)", seq_nums[j]);
 							}
 							trtp_manager_signal_pkt_loss(base->rtp_manager, data->ssrc, seq_nums, j);

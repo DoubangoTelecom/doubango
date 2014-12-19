@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +21,6 @@
 
 /**@file tsdp_header_B.c
  * @brief SDP "b=" header (Bandwidth).
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
  * 
  */
 #include "tinysdp/headers/tsdp_header_B.h"
@@ -113,12 +108,14 @@ tsdp_header_B_t *tsdp_header_B_parse(const char *data, tsk_size_t size)
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(tsdp_machine_parser_header_B_first_final);
 	(void)(tsdp_machine_parser_header_B_error);
 	(void)(tsdp_machine_parser_header_B_en_main);
 	%%write init;
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse \"b=\" header.");

@@ -613,7 +613,7 @@ int trtp_rtcp_session_process_rtp_out(trtp_rtcp_session_t* self, const trtp_rtp_
 	}
 
 	++self->packets_count;
-	self->octets_count += size;
+	self->octets_count += (uint32_t)size;
 
 	tsk_safeobj_unlock(self);
 
@@ -887,8 +887,8 @@ static tsk_size_t _trtp_rtcp_session_send_pkt(trtp_rtcp_session_t* self, trtp_rt
 		trtp_rtcp_sdes_chunck_t* chunck = trtp_rtcp_sdes_chunck_create(self->source_local->ssrc);
 		if(chunck){
 			static const char* _name = "test@doubango.org";
-			trtp_rtcp_sdes_chunck_add_item(chunck, trtp_rtcp_sdes_item_type_cname, self->cname, tsk_strlen(self->cname));
-			trtp_rtcp_sdes_chunck_add_item(chunck, trtp_rtcp_sdes_item_type_name, _name, tsk_strlen(_name));
+			trtp_rtcp_sdes_chunck_add_item(chunck, trtp_rtcp_sdes_item_type_cname, self->cname, (uint8_t)tsk_strlen(self->cname));
+			trtp_rtcp_sdes_chunck_add_item(chunck, trtp_rtcp_sdes_item_type_name, _name, (uint8_t)tsk_strlen(_name));
 			trtp_rtcp_report_sdes_add_chunck(self->sdes, chunck);
 			TSK_OBJECT_SAFE_FREE(chunck);
 		}
@@ -899,7 +899,7 @@ static tsk_size_t _trtp_rtcp_session_send_pkt(trtp_rtcp_session_t* self, trtp_rt
 
 	if((buffer = trtp_rtcp_packet_serialize(pkt, __num_bytes_pad))){
 		void* data = buffer->data;
-		int size = buffer->size;
+		int size = (int)buffer->size;
 #if HAVE_SRTP
 		if(self->srtp.session){
 			if(srtp_protect_rtcp(((srtp_t)*self->srtp.session), data, &size) != err_status_ok){
@@ -1176,7 +1176,7 @@ static void SendBYEPacket(trtp_rtcp_session_t* session, event_ e)
 		// serialize and send the packet
 		if((buffer = trtp_rtcp_packet_serialize((const trtp_rtcp_packet_t*)bye, __num_bytes_pad))){
 			void* data = buffer->data;
-			int size = buffer->size;
+			int size = (int)buffer->size;
 #if HAVE_SRTP
 			if(session->srtp.session){
 				if(srtp_protect_rtcp(((srtp_t)*session->srtp.session), data, &size) != err_status_ok){
@@ -1493,7 +1493,7 @@ static void OnReceive(trtp_rtcp_session_t* session, const packet_ p, event_ e, t
 
 	if (PacketType(p) == PACKET_RTCP_REPORT) {
 		if (NewMember(session, p) && (TypeOfEvent(e) == EVENT_REPORT)) {
-			session->members += AddMember(session, p);
+			session->members += (int32_t)AddMember(session, p);
 		}
 		session->avg_rtcp_size = (1./16.)*ReceivedPacketSize + (15./16.)*(session->avg_rtcp_size);
 	} else if (PacketType(p) == PACKET_RTP) {
@@ -1509,8 +1509,8 @@ static void OnReceive(trtp_rtcp_session_t* session, const packet_ p, event_ e, t
 #else
 		if (NewSender(session, p)) {
 			tsk_size_t count = AddSender(session, p);
-			session->senders += count;
-			session->members += count;
+			session->senders += (int32_t)count;
+			session->members += (int32_t)count;
 		}
 #endif
 	} else if (PacketType(p) == PACKET_BYE) {
@@ -1519,8 +1519,8 @@ static void OnReceive(trtp_rtcp_session_t* session, const packet_ p, event_ e, t
 		if (TypeOfEvent(e) == EVENT_REPORT) {
 			double tc = session->tc();
 			tsk_size_t count = RemoveMember(session, p);
-			session->senders -= count;
-			session->members -= count;
+			session->senders -= (int32_t)count;
+			session->members -= (int32_t)count;
 #if 0
 			if (NewSender(session, p) == tsk_false) {
 				RemoveSender(p);

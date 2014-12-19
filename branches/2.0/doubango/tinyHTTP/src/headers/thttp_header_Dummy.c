@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/thttp_parser_header_Dummy.rl" */
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,9 +23,6 @@
 /**@file thttp_header_Dummy.c
  * @brief HTTP 'Dummy' header.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinyhttp/headers/thttp_header_Dummy.h"
 
@@ -42,7 +37,7 @@
 *	Ragel state machine.
 */
 
-/* #line 68 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 63 "./ragel/thttp_parser_header_Dummy.rl" */
 
 
 thttp_header_Dummy_t* thttp_header_dummy_create(const char* name, const char* value)
@@ -81,8 +76,9 @@ thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, tsk_size_t size
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 86 "./src/headers/thttp_header_Dummy.c" */
+/* #line 82 "./src/headers/thttp_header_Dummy.c" */
 static const char _thttp_machine_parser_header_Dummy_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 2, 0, 2
@@ -143,20 +139,20 @@ static const int thttp_machine_parser_header_Dummy_error = 0;
 static const int thttp_machine_parser_header_Dummy_en_main = 1;
 
 
-/* #line 107 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 103 "./ragel/thttp_parser_header_Dummy.rl" */
 	(void)(eof);
 	(void)(thttp_machine_parser_header_Dummy_first_final);
 	(void)(thttp_machine_parser_header_Dummy_error);
 	(void)(thttp_machine_parser_header_Dummy_en_main);
 	
-/* #line 153 "./src/headers/thttp_header_Dummy.c" */
+/* #line 149 "./src/headers/thttp_header_Dummy.c" */
 	{
 	cs = thttp_machine_parser_header_Dummy_start;
 	}
 
-/* #line 112 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 108 "./ragel/thttp_parser_header_Dummy.rl" */
 	
-/* #line 160 "./src/headers/thttp_header_Dummy.c" */
+/* #line 156 "./src/headers/thttp_header_Dummy.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -231,29 +227,29 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 48 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 43 "./ragel/thttp_parser_header_Dummy.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 52 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 47 "./ragel/thttp_parser_header_Dummy.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Dummy->name);
 	}
 	break;
 	case 2:
-/* #line 56 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 51 "./ragel/thttp_parser_header_Dummy.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Dummy->value);
 	}
 	break;
 	case 3:
-/* #line 60 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 55 "./ragel/thttp_parser_header_Dummy.rl" */
 	{
 	}
 	break;
-/* #line 257 "./src/headers/thttp_header_Dummy.c" */
+/* #line 253 "./src/headers/thttp_header_Dummy.c" */
 		}
 	}
 
@@ -266,12 +262,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 113 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 109 "./ragel/thttp_parser_header_Dummy.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 273 "./src/headers/thttp_header_Dummy.c" */
+/* #line 270 "./src/headers/thttp_header_Dummy.c" */
 10
-/* #line 114 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 111 "./ragel/thttp_parser_header_Dummy.rl" */
  ){
 		TSK_OBJECT_SAFE_FREE(hdr_Dummy);
 	}

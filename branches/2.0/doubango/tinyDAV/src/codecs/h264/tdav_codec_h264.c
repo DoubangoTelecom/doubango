@@ -429,7 +429,7 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 			/* decode the picture */
 			av_init_packet(&packet);
 			packet.dts = packet.pts = AV_NOPTS_VALUE;
-			packet.size = h264->decoder.accumulator_pos;
+			packet.size = (int)h264->decoder.accumulator_pos;
 			packet.data = h264->decoder.accumulator;
 			ret = avcodec_decode_video2(h264->decoder.context, h264->decoder.picture, &got_picture_ptr, &packet);
 
@@ -465,8 +465,8 @@ static tsk_size_t tdav_codec_h264_decode(tmedia_codec_t* self, const void* in_da
 				retsize = xsize;
 				TMEDIA_CODEC_VIDEO(h264)->in.width = h264->decoder.context->width;
 				TMEDIA_CODEC_VIDEO(h264)->in.height = h264->decoder.context->height;
-				avpicture_layout((AVPicture *)h264->decoder.picture, h264->decoder.context->pix_fmt, h264->decoder.context->width, h264->decoder.context->height,
-						*out_data, retsize);
+				avpicture_layout((AVPicture *)h264->decoder.picture, h264->decoder.context->pix_fmt, (int)h264->decoder.context->width, (int)h264->decoder.context->height,
+						*out_data, (int)retsize);
 			}
 #endif /* HAVE_FFMPEG */
 		} // else(h264->decoder.passthrough)

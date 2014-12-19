@@ -239,8 +239,8 @@ static int tdav_codec_h264_common_get_profile_and_level(const char* fmtp, profil
 	
 	if((start = tsk_strindexOf(fmtp, size, "profile-level-id")) !=-1){
 		tsk_param_t* param;
-		if((end = tsk_strindexOf((fmtp+start), (size-start), ";")) == -1){
-			end = size;
+		if((end = (int)tsk_strindexOf((fmtp+start), (tsk_size_t)(size-start), ";")) == -1){
+			end = (int)size;
 		}
 		
 		if((param = tsk_params_parse_param((fmtp+start), (end-start)))){

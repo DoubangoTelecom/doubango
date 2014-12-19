@@ -127,9 +127,9 @@ static int _tdav_producer_screencast_gdi_prepare(tmedia_producer_t* p_self, cons
 	TMEDIA_PRODUCER(p_gdi)->video.width = TMEDIA_CODEC_VIDEO(pc_codec)->out.width;
 	TMEDIA_PRODUCER(p_gdi)->video.height = TMEDIA_CODEC_VIDEO(pc_codec)->out.height;
 
-	p_gdi->bitmapInfoNeg.bmiHeader.biSize = p_gdi->bitmapInfoSrc.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	p_gdi->bitmapInfoNeg.bmiHeader.biWidth = p_gdi->bitmapInfoSrc.bmiHeader.biWidth = TMEDIA_PRODUCER(p_gdi)->video.width;
-	p_gdi->bitmapInfoNeg.bmiHeader.biHeight = p_gdi->bitmapInfoSrc.bmiHeader.biHeight = TMEDIA_PRODUCER(p_gdi)->video.height;
+	p_gdi->bitmapInfoNeg.bmiHeader.biSize = p_gdi->bitmapInfoSrc.bmiHeader.biSize = (DWORD)sizeof(BITMAPINFOHEADER);
+	p_gdi->bitmapInfoNeg.bmiHeader.biWidth = p_gdi->bitmapInfoSrc.bmiHeader.biWidth = (LONG)TMEDIA_PRODUCER(p_gdi)->video.width;
+	p_gdi->bitmapInfoNeg.bmiHeader.biHeight = p_gdi->bitmapInfoSrc.bmiHeader.biHeight = (LONG)TMEDIA_PRODUCER(p_gdi)->video.height;
 	p_gdi->bitmapInfoNeg.bmiHeader.biPlanes = p_gdi->bitmapInfoSrc.bmiHeader.biPlanes = 1;
 	p_gdi->bitmapInfoNeg.bmiHeader.biBitCount = p_gdi->bitmapInfoSrc.bmiHeader.biBitCount = 24; 
 	p_gdi->bitmapInfoNeg.bmiHeader.biCompression = p_gdi->bitmapInfoSrc.bmiHeader.biCompression = BI_RGB;
@@ -290,13 +290,13 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self
 	 
 	hSrcDC = GetDC(p_self->hwnd_src);
 	if (!hSrcDC) {
-		TSK_DEBUG_ERROR("GetDC(%x) failed", p_self->hwnd_src);
+		TSK_DEBUG_ERROR("GetDC(%x) failed", (int64_t)p_self->hwnd_src);
 		ret = -5;
 		goto bail;
 	}
     hMemDC = CreateCompatibleDC(hSrcDC);
 	if (!hMemDC) {
-		TSK_DEBUG_ERROR("CreateCompatibleDC(%x) failed", hSrcDC);
+		TSK_DEBUG_ERROR("CreateCompatibleDC(%x) failed", (int64_t)hSrcDC);
 		ret = -6;
 		goto bail;
 	}

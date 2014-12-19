@@ -442,7 +442,7 @@ tsk_sha1_errcode_t tsk_sha1compute(const char* input, tsk_size_t size, tsk_sha1s
 	if( (ret = tsk_sha1reset(&sha)) != shaSuccess ){
 		return ret;
 	}
-	else if ( (ret = tsk_sha1input(&sha, (uint8_t*)input, size)) != shaSuccess ){
+	else if ( (ret = tsk_sha1input(&sha, (uint8_t*)input, (unsigned int)size)) != shaSuccess ){
 		return ret;
 	}
 	else if( (ret = tsk_sha1result(&sha, digest)) != shaSuccess ){

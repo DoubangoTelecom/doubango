@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2009-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,10 +20,6 @@
 
 /**@file tmsrp_header_From_Path.c
  * @brief MSRP "From-Path" header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinymsrp/headers/tmsrp_header_From-Path.h"
 
@@ -113,6 +107,7 @@ tmsrp_header_From_Path_t *tmsrp_header_From_Path_parse(const char *data, tsk_siz
 
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(eof);
 	(void)(tmsrp_machine_parser_header_From_Path_first_final);
@@ -120,6 +115,7 @@ tmsrp_header_From_Path_t *tmsrp_header_From_Path_parse(const char *data, tsk_siz
 	(void)(tmsrp_machine_parser_header_From_Path_en_main);
 	%%write init;
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse 'From-Path' header.");

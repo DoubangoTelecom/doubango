@@ -473,7 +473,7 @@ int tdav_set_codecs(tdav_codec_id_t codecs)
 	for(i=0,prio=0; i<__codec_plugins_all_count && __codec_plugins_all[i]; ++i){
 		if((codecs & __codec_plugins_all[i]->codec_id) || __codec_plugins_all[i]->codec_id == tmedia_codec_id_none){
 			if(_tdav_codec_is_supported((tdav_codec_id_t)__codec_plugins_all[i]->codec_id, __codec_plugins_all[i])){
-				tmedia_codec_plugin_register_2(__codec_plugins_all[i], prio++);
+				tmedia_codec_plugin_register_2(__codec_plugins_all[i], (int)prio++);
 			}
 		}
 	}

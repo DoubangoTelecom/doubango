@@ -1,8 +1,6 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
@@ -21,10 +19,6 @@
 */
 /**@file thttp.c
  * @brief HTTP (RFC 2616) and HTTP basic/digest authetication (RFC 2617) implementations.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "thttp.h"
 
@@ -374,7 +368,7 @@ parse_buffer:
 				/* RFC 2616 - 19.4.6 Introduction of Transfer-Encoding */
 				// read chunk-size, chunk-extension (if any) and CRLF
 				tsk_size_t chunk_size = (tsk_size_t)tsk_atox(start);
-				if((index = tsk_strindexOf(start, (end-start), "\r\n")) >=0){
+				if((index = tsk_strindexOf(start, (tsk_size_t)(end-start), "\r\n")) >=0){
 					start += index + 2/*CRLF*/;
 				}
 				else{
@@ -383,7 +377,7 @@ parse_buffer:
 				}
 
 				if(chunk_size == 0 && ((start + 2) <= end) && *start == '\r' && *(start+ 1) == '\n'){
-					int parsed_len = (start - (const char*)(TSK_BUFFER_TO_U8(dialog->buf))) + 2/*CRLF*/;
+					int parsed_len = (int)(start - (const char*)(TSK_BUFFER_TO_U8(dialog->buf))) + 2/*CRLF*/;
 					tsk_buffer_remove(dialog->buf, 0, parsed_len);
 					have_all_content = tsk_true;
 					break;

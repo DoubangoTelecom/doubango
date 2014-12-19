@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -19,13 +17,9 @@
 * along with DOUBANGO.
 *
 */
-
 /**@file thttp_parser_message.c
  * @brief HTTP parser.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinyhttp/parsers/thttp_parser_message.h"
 #include "tinyhttp/parsers/thttp_parser_header.h"
@@ -165,8 +159,10 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 }%%
 
 
+TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 /* Regel data */
 %%write data;
+TSK_RAGEL_DISABLE_WARNINGS_END()
 
 /**	Parses raw HTTP buffer.
  *
@@ -223,7 +219,9 @@ static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message
 	const char *pe = state->pe;
 	const char *eof = state->eof;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%% write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 
 	state->cs = cs;
 	state->p = p;

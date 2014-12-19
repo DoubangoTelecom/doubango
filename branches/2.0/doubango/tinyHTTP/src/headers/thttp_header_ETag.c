@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/thttp_parser_header_ETag.rl" */
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,10 +22,6 @@
 
 /**@file thttp_header_ETag.c
  * @brief HTTP 'Etag' header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinyhttp/headers/thttp_header_ETag.h"
 
@@ -42,7 +36,7 @@
 *	Ragel state machine.
 */
 
-/* #line 73 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 67 "./ragel/thttp_parser_header_ETag.rl" */
 
 
 thttp_header_ETag_t* thttp_header_etag_create(const char* value)
@@ -83,8 +77,9 @@ thttp_header_ETag_t *thttp_header_ETag_parse(const char *data, tsk_size_t size)
 	
 	const char *tag_start = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 88 "./src/headers/thttp_header_ETag.c" */
+/* #line 83 "./src/headers/thttp_header_ETag.c" */
 static const char _thttp_machine_parser_header_ETag_actions[] = {
 	0, 1, 0, 1, 2, 1, 3, 2, 
 	1, 0
@@ -159,20 +154,20 @@ static const int thttp_machine_parser_header_ETag_error = 0;
 static const int thttp_machine_parser_header_ETag_en_main = 1;
 
 
-/* #line 114 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 109 "./ragel/thttp_parser_header_ETag.rl" */
 	(void)(eof);
 	(void)(thttp_machine_parser_header_ETag_first_final);
 	(void)(thttp_machine_parser_header_ETag_error);
 	(void)(thttp_machine_parser_header_ETag_en_main);
 	
-/* #line 169 "./src/headers/thttp_header_ETag.c" */
+/* #line 164 "./src/headers/thttp_header_ETag.c" */
 	{
 	cs = thttp_machine_parser_header_ETag_start;
 	}
 
-/* #line 119 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 114 "./ragel/thttp_parser_header_ETag.rl" */
 	
-/* #line 176 "./src/headers/thttp_header_ETag.c" */
+/* #line 171 "./src/headers/thttp_header_ETag.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -247,30 +242,30 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 49 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 43 "./ragel/thttp_parser_header_ETag.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 53 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 47 "./ragel/thttp_parser_header_ETag.rl" */
 	{
 		hdr_ETag->isWeak = tsk_true;
 	}
 	break;
 	case 2:
-/* #line 57 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 51 "./ragel/thttp_parser_header_ETag.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_ETag->value);
 		tsk_strunquote(&hdr_ETag->value);
 	}
 	break;
 	case 3:
-/* #line 62 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 56 "./ragel/thttp_parser_header_ETag.rl" */
 	{
 	}
 	break;
-/* #line 274 "./src/headers/thttp_header_ETag.c" */
+/* #line 269 "./src/headers/thttp_header_ETag.c" */
 		}
 	}
 
@@ -283,12 +278,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 120 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 115 "./ragel/thttp_parser_header_ETag.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 290 "./src/headers/thttp_header_ETag.c" */
+/* #line 286 "./src/headers/thttp_header_ETag.c" */
 22
-/* #line 121 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 117 "./ragel/thttp_parser_header_ETag.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse ETag header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ETag);

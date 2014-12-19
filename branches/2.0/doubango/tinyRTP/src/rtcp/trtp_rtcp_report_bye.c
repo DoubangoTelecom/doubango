@@ -100,7 +100,7 @@ trtp_rtcp_report_bye_t* trtp_rtcp_report_bye_deserialize(const void* data, tsk_s
 	trtp_rtcp_report_bye_t* bye = tsk_null;
 	trtp_rtcp_header_t* header = tsk_null;
 	const uint8_t* pdata = (const uint8_t*)data;
-	int32_t size = _size;
+	int32_t size = (int32_t)_size;
 
 	if(!data || size < TRTP_RTCP_PACKET_BYE_MIN_SIZE){
 		TSK_DEBUG_ERROR("Invalid parameter");

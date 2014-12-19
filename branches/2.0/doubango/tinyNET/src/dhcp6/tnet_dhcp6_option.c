@@ -139,7 +139,7 @@ int tnet_dhcp6_option_serialize(const tnet_dhcp6_option_t* self, tsk_buffer_t *o
 				const tnet_dhcp6_option_orequest_t* opt = (const tnet_dhcp6_option_orequest_t*)self->data;
 				if(opt->codes){
 					/* option-len */
-					_2bytes = tnet_htons(opt->codes->size);
+					_2bytes = tnet_htons((unsigned short)opt->codes->size);
 					tsk_buffer_append(output, &(_2bytes), 2);
 					/* option-data */
 					ret = tsk_buffer_append(output, opt->codes->data, opt->codes->size);
@@ -173,7 +173,7 @@ static tsk_object_t* tnet_dhcp6_option_ctor(tsk_object_t * self, va_list * app)
 		if(payload && payload_size){
 			if((option->data = (tnet_dhcp6_option_data_t*)tsk_calloc(payload_size, sizeof(uint8_t)))){
 				memcpy(option->data, payload, payload_size);
-				option->len = payload_size;
+				option->len = (uint16_t)payload_size;
 			}
 		}
 	}

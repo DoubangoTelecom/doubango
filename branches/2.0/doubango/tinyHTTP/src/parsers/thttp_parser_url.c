@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/thttp_parser_url.rl" */
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou Diop.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -21,13 +19,8 @@
 * along with DOUBANGO.
 *
 */
-
 /**@file thttp_parser_url.c
  * @brief HTTP/HTTPS URL parser.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tinyhttp/parsers/thttp_parser_url.h"
 
@@ -39,7 +32,7 @@
 *	Ragel state machine.
 */
 
-/* #line 89 "./ragel/thttp_parser_url.rl" */
+/* #line 82 "./ragel/thttp_parser_url.rl" */
 
 
 /**@ingroup thttp_url_group
@@ -70,8 +63,9 @@ thttp_url_t *thttp_url_parse(const char *urlstring, tsk_size_t length)
 	
 	const char *tag_start = 0;
 	
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 75 "./src/parsers/thttp_parser_url.c" */
+/* #line 69 "./src/parsers/thttp_parser_url.c" */
 static const char _thttp_machine_parser_url_actions[] = {
 	0, 1, 1, 1, 2, 1, 6, 1, 
 	7, 1, 8, 1, 9, 1, 10, 2, 
@@ -287,7 +281,7 @@ static const int thttp_machine_parser_url_error = 0;
 static const int thttp_machine_parser_url_en_main = 56;
 
 
-/* #line 120 "./ragel/thttp_parser_url.rl" */
+/* #line 114 "./ragel/thttp_parser_url.rl" */
 	(void)(ts);
 	(void)(te);
 	(void)(act);
@@ -296,14 +290,14 @@ static const int thttp_machine_parser_url_en_main = 56;
 	(void)(thttp_machine_parser_url_error);
 	(void)(thttp_machine_parser_url_en_main);
 	
-/* #line 300 "./src/parsers/thttp_parser_url.c" */
+/* #line 294 "./src/parsers/thttp_parser_url.c" */
 	{
 	cs = thttp_machine_parser_url_start;
 	}
 
-/* #line 128 "./ragel/thttp_parser_url.rl" */
+/* #line 122 "./ragel/thttp_parser_url.rl" */
 	
-/* #line 307 "./src/parsers/thttp_parser_url.c" */
+/* #line 301 "./src/parsers/thttp_parser_url.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -378,56 +372,56 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 45 "./ragel/thttp_parser_url.rl" */
+/* #line 38 "./ragel/thttp_parser_url.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 50 "./ragel/thttp_parser_url.rl" */
+/* #line 43 "./ragel/thttp_parser_url.rl" */
 	{ url->scheme = tsk_strdup("http"), url->type = thttp_url_http; }
 	break;
 	case 2:
-/* #line 51 "./ragel/thttp_parser_url.rl" */
+/* #line 44 "./ragel/thttp_parser_url.rl" */
 	{ url->scheme = tsk_strdup("https"), url->type = thttp_url_https; }
 	break;
 	case 3:
-/* #line 54 "./ragel/thttp_parser_url.rl" */
+/* #line 47 "./ragel/thttp_parser_url.rl" */
 	{ url->host_type = url->host_type = thttp_host_ipv4; }
 	break;
 	case 4:
-/* #line 55 "./ragel/thttp_parser_url.rl" */
+/* #line 48 "./ragel/thttp_parser_url.rl" */
 	{ url->host_type = url->host_type = thttp_host_ipv6; }
 	break;
 	case 5:
-/* #line 56 "./ragel/thttp_parser_url.rl" */
+/* #line 49 "./ragel/thttp_parser_url.rl" */
 	{ url->host_type = url->host_type = thttp_host_hostname; }
 	break;
 	case 6:
-/* #line 58 "./ragel/thttp_parser_url.rl" */
+/* #line 51 "./ragel/thttp_parser_url.rl" */
 	{
 		TSK_PARSER_SET_STRING(url->host);
 	}
 	break;
 	case 7:
-/* #line 62 "./ragel/thttp_parser_url.rl" */
+/* #line 55 "./ragel/thttp_parser_url.rl" */
 	{
 		have_port = 1;
 		TSK_PARSER_SET_INT(url->port);
 	}
 	break;
 	case 8:
-/* #line 67 "./ragel/thttp_parser_url.rl" */
+/* #line 60 "./ragel/thttp_parser_url.rl" */
 	{
 		TSK_PARSER_SET_STRING(url->hpath);
 	}
 	break;
 	case 10:
-/* #line 75 "./ragel/thttp_parser_url.rl" */
+/* #line 68 "./ragel/thttp_parser_url.rl" */
 	{
 	}
 	break;
-/* #line 431 "./src/parsers/thttp_parser_url.c" */
+/* #line 425 "./src/parsers/thttp_parser_url.c" */
 		}
 	}
 
@@ -444,37 +438,37 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 45 "./ragel/thttp_parser_url.rl" */
+/* #line 38 "./ragel/thttp_parser_url.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 6:
-/* #line 58 "./ragel/thttp_parser_url.rl" */
+/* #line 51 "./ragel/thttp_parser_url.rl" */
 	{
 		TSK_PARSER_SET_STRING(url->host);
 	}
 	break;
 	case 7:
-/* #line 62 "./ragel/thttp_parser_url.rl" */
+/* #line 55 "./ragel/thttp_parser_url.rl" */
 	{
 		have_port = 1;
 		TSK_PARSER_SET_INT(url->port);
 	}
 	break;
 	case 8:
-/* #line 67 "./ragel/thttp_parser_url.rl" */
+/* #line 60 "./ragel/thttp_parser_url.rl" */
 	{
 		TSK_PARSER_SET_STRING(url->hpath);
 	}
 	break;
 	case 9:
-/* #line 71 "./ragel/thttp_parser_url.rl" */
+/* #line 64 "./ragel/thttp_parser_url.rl" */
 	{
 		TSK_PARSER_SET_STRING(url->search);
 	}
 	break;
-/* #line 478 "./src/parsers/thttp_parser_url.c" */
+/* #line 472 "./src/parsers/thttp_parser_url.c" */
 		}
 	}
 	}
@@ -482,12 +476,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 129 "./ragel/thttp_parser_url.rl" */
+/* #line 123 "./ragel/thttp_parser_url.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 489 "./src/parsers/thttp_parser_url.c" */
+/* #line 484 "./src/parsers/thttp_parser_url.c" */
 56
-/* #line 130 "./ragel/thttp_parser_url.rl" */
+/* #line 125 "./ragel/thttp_parser_url.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse HTTP/HTTPS URL: '%.*s'", length, urlstring);
 		TSK_OBJECT_SAFE_FREE(url);

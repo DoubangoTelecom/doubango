@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 /*
-* Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2009-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,10 +22,6 @@
 
 /**@file tmsrp_header_Success_Report.c
  * @brief MSRP 'Success-Report' header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinymsrp/headers/tmsrp_header_Success-Report.h"
 
@@ -41,7 +35,7 @@
 *	Ragel state machine.
 */
 
-/* #line 61 "./ragel/tmsrp_parser_header_Success-Report.rl" */
+/* #line 55 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 
 
 tmsrp_header_Success_Report_t* tmsrp_header_Success_Report_create(tsk_bool_t isSuccess)
@@ -73,8 +67,9 @@ tmsrp_header_Success_Report_t *tmsrp_header_Success_Report_parse(const char *dat
 	const char *eof = pe;
 	tmsrp_header_Success_Report_t *hdr_Success_Report = tmsrp_header_Success_Report_create_null();
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 78 "./src/headers/tmsrp_header_Success-Report.c" */
+/* #line 73 "./src/headers/tmsrp_header_Success-Report.c" */
 static const char _tmsrp_machine_parser_header_Success_Report_actions[] = {
 	0, 1, 0, 1, 1
 };
@@ -156,20 +151,20 @@ static const int tmsrp_machine_parser_header_Success_Report_error = 0;
 static const int tmsrp_machine_parser_header_Success_Report_en_main = 1;
 
 
-/* #line 93 "./ragel/tmsrp_parser_header_Success-Report.rl" */
+/* #line 88 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 	(void)(eof);
 	(void)(tmsrp_machine_parser_header_Success_Report_first_final);
 	(void)(tmsrp_machine_parser_header_Success_Report_error);
 	(void)(tmsrp_machine_parser_header_Success_Report_en_main);
 	
-/* #line 166 "./src/headers/tmsrp_header_Success-Report.c" */
+/* #line 161 "./src/headers/tmsrp_header_Success-Report.c" */
 	{
 	cs = tmsrp_machine_parser_header_Success_Report_start;
 	}
 
-/* #line 98 "./ragel/tmsrp_parser_header_Success-Report.rl" */
+/* #line 93 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 	
-/* #line 173 "./src/headers/tmsrp_header_Success-Report.c" */
+/* #line 168 "./src/headers/tmsrp_header_Success-Report.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -244,18 +239,18 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "./ragel/tmsrp_parser_header_Success-Report.rl" */
+/* #line 41 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 	{
 		hdr_Success_Report->yes = 1;
 	}
 	break;
 	case 1:
-/* #line 51 "./ragel/tmsrp_parser_header_Success-Report.rl" */
+/* #line 45 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 	{
 		hdr_Success_Report->yes = 0;
 	}
 	break;
-/* #line 259 "./src/headers/tmsrp_header_Success-Report.c" */
+/* #line 254 "./src/headers/tmsrp_header_Success-Report.c" */
 		}
 	}
 
@@ -272,18 +267,18 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 47 "./ragel/tmsrp_parser_header_Success-Report.rl" */
+/* #line 41 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 	{
 		hdr_Success_Report->yes = 1;
 	}
 	break;
 	case 1:
-/* #line 51 "./ragel/tmsrp_parser_header_Success-Report.rl" */
+/* #line 45 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 	{
 		hdr_Success_Report->yes = 0;
 	}
 	break;
-/* #line 287 "./src/headers/tmsrp_header_Success-Report.c" */
+/* #line 282 "./src/headers/tmsrp_header_Success-Report.c" */
 		}
 	}
 	}
@@ -291,12 +286,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 99 "./ragel/tmsrp_parser_header_Success-Report.rl" */
+/* #line 94 "./ragel/tmsrp_parser_header_Success-Report.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < 
-/* #line 298 "./src/headers/tmsrp_header_Success-Report.c" */
+/* #line 294 "./src/headers/tmsrp_header_Success-Report.c" */
 22
-/* #line 100 "./ragel/tmsrp_parser_header_Success-Report.rl" */
+/* #line 96 "./ragel/tmsrp_parser_header_Success-Report.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Success-Report' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Success_Report);

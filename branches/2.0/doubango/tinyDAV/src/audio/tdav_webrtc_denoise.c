@@ -1,19 +1,19 @@
 /*
-* Copyright (C) 2011-204 Mamadou DIOP
-* Copyright (C) 2011-204 Doubango Telecom <http://www.doubango.org>
-*	
+* Copyright (C) 2011-2015 Mamadou DIOP
+* Copyright (C) 2011-2015 Doubango Telecom <http://www.doubango.org>
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -63,7 +63,7 @@ tdav_webrtc_pin_xt;
 typedef struct tdav_webrtc_resampler_s
 {
 	TSK_DECLARE_OBJECT;
-	
+
 	tmedia_resampler_t* p_resampler;
 	void* p_bufftmp_ptr; // used to convert float <->int16
 	tsk_size_t n_bufftmp_size_in_bytes;
@@ -78,7 +78,7 @@ typedef struct tdav_webrtc_resampler_s
 		void* p_buff_ptr;
 		tsk_size_t n_buff_size_in_bytes;
 		tsk_size_t n_buff_size_in_samples;
-	} out;	
+	} out;
 }
 tdav_webrtc_resampler_t;
 
@@ -96,7 +96,7 @@ typedef struct tdav_webrtc_denoise_s
 #else
 	TDAV_NsHandle *NS_inst;
 #endif
-	
+
 	uint32_t echo_tail;
 	uint32_t echo_skew;
 
@@ -126,7 +126,7 @@ static int tdav_webrtc_denoise_set(tmedia_denoise_t* _self, const tmedia_param_t
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	
+
 	if (param->value_type == tmedia_pvt_int32) {
 		if (tsk_striequals(param->key, "echo-tail")) {
 			int32_t echo_tail = *((int32_t*)param->value);
@@ -149,7 +149,7 @@ static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t record_fram
 		return -1;
 	}
 
-	if (denoiser->AEC_inst || 
+	if (denoiser->AEC_inst ||
 #if HAVE_SPEEX_DSP && PREFER_SPEEX_DENOISER
 		denoiser->SpeexDenoiser_proc
 #else
@@ -159,7 +159,7 @@ static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t record_fram
 		TSK_DEBUG_ERROR("Denoiser already initialized");
 		return -2;
 	}
-	
+
 	denoiser->echo_tail = TSK_CLAMP(WEBRTC_MIN_ECHO_TAIL, TMEDIA_DENOISE(denoiser)->echo_tail, WEBRTC_MAX_ECHO_TAIL);
 	denoiser->echo_skew = TMEDIA_DENOISE(denoiser)->echo_skew;
 	TSK_DEBUG_INFO("echo_tail=%d, echo_skew=%d, echo_supp_enabled=%d, noise_supp_enabled=%d", denoiser->echo_tail, denoiser->echo_skew, self->echo_supp_enabled, self->noise_supp_enabled);
@@ -186,7 +186,7 @@ static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t record_fram
 	pin_record_in.n_duration = (((record_frame_size_samples * 1000) / record_sampling_rate)) / record_channels;
 	pin_record_den.n_sample_size = sizeof(sample_t);
 	pin_record_den.n_rate = denoiser->neg.sampling_rate;
-	
+
 	pin_record_den.n_channels = 1;
 	pin_record_den.n_duration = pin_record_in.n_duration;
 	if (pin_record_in.n_sample_size != pin_record_den.n_sample_size || pin_record_in.n_rate != pin_record_den.n_rate || pin_record_in.n_channels != pin_record_den.n_channels) {
@@ -233,7 +233,7 @@ static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t record_fram
 
 #if TDAV_UNDER_MOBILE
 #else
-	{	
+	{
 		AecConfig aecConfig;
 #if WEBRTC_AEC_AGGRESSIVE
 		aecConfig.nlpMode = kAecNlpAggressive;
@@ -249,7 +249,7 @@ static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t record_fram
 	}
 #endif
 
-	
+
 	//
 	//	Noise Suppression instance
 	//
@@ -272,12 +272,12 @@ static int tdav_webrtc_denoise_open(tmedia_denoise_t* self, uint32_t record_fram
 		}
 #endif
 	}
-	
+
 	TSK_DEBUG_INFO("WebRTC denoiser opened: record:%uHz,%uchannels // playback:%uHz,%uchannels // neg:%uHz,%uchannels",
 		record_sampling_rate, record_channels,
 		playback_sampling_rate, playback_channels,
 		denoiser->neg.sampling_rate, denoiser->neg.channels);
-	
+
 	return ret;
 }
 
@@ -289,8 +289,8 @@ static int tdav_webrtc_denoise_echo_playback(tmedia_denoise_t* self, const void*
 	tsk_safeobj_lock(p_self);
 	if (p_self->AEC_inst && echo_frame && echo_frame_size_bytes) {
 		const sample_t* _echo_frame = (const sample_t*)echo_frame;
-		uint32_t _echo_frame_size_bytes = echo_frame_size_bytes;
-		uint32_t _echo_frame_size_samples = (_echo_frame_size_bytes / sizeof(int16_t));
+		tsk_size_t _echo_frame_size_bytes = echo_frame_size_bytes;
+		tsk_size_t _echo_frame_size_samples = (_echo_frame_size_bytes / sizeof(int16_t));
 		// IN -> DEN
 		if (p_self->playback.p_rpl_in2den) {
 			if ((ret = _tdav_webrtc_resampler_process(p_self->playback.p_rpl_in2den, _echo_frame, _echo_frame_size_bytes))) {
@@ -303,7 +303,7 @@ static int tdav_webrtc_denoise_echo_playback(tmedia_denoise_t* self, const void*
 		// PROCESS
 		if (_echo_frame_size_samples && _echo_frame) {
 			uint32_t _samples;
-			for (_samples = 0; _samples < _echo_frame_size_samples; _samples+= p_self->neg.nb_samples_per_process) {
+			for (_samples = 0; _samples < _echo_frame_size_samples; _samples += p_self->neg.nb_samples_per_process) {
 				if ((ret = TDAV_WebRtcAec_BufferFarend(p_self->AEC_inst, &_echo_frame[_samples], p_self->neg.nb_samples_per_process))){
 					TSK_DEBUG_ERROR("WebRtcAec_BufferFarend failed with error code = %d, nb_samples_per_process=%u", ret, p_self->neg.nb_samples_per_process);
 					goto bail;
@@ -320,16 +320,16 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 {
 	tdav_webrtc_denoise_t *p_self = (tdav_webrtc_denoise_t *)self;
 	int ret = 0;
-	
+
 	*silence_or_noise = tsk_false;
 
 	tsk_safeobj_lock(p_self);
 
 	if (p_self->AEC_inst && audio_frame && audio_frame_size_bytes) {
-		uint32_t _samples;
+		tsk_size_t _samples;
 		const sample_t* _audio_frame = (const sample_t*)audio_frame;
-		uint32_t _audio_frame_size_bytes = audio_frame_size_bytes;
-		uint32_t _audio_frame_size_samples = (_audio_frame_size_bytes / sizeof(int16_t));
+		tsk_size_t _audio_frame_size_bytes = audio_frame_size_bytes;
+		tsk_size_t _audio_frame_size_samples = (_audio_frame_size_bytes / sizeof(int16_t));
 		// IN -> DEN
 		if (p_self->record.p_rpl_in2den) {
 			if ((ret = _tdav_webrtc_resampler_process(p_self->record.p_rpl_in2den, _audio_frame, _audio_frame_size_bytes))) {
@@ -358,7 +358,7 @@ static int tdav_webrtc_denoise_process_record(tmedia_denoise_t* self, void* audi
 #endif
 		// PROCESS
 		if (_audio_frame_size_samples && _audio_frame) {
-			for (_samples = 0; _samples < _audio_frame_size_samples; _samples+= p_self->neg.nb_samples_per_process) {
+			for (_samples = 0; _samples < _audio_frame_size_samples; _samples += p_self->neg.nb_samples_per_process) {
 				if ((ret = TDAV_WebRtcAec_Process(p_self->AEC_inst, &_audio_frame[_samples], tsk_null, (sample_t*)&_audio_frame[_samples], tsk_null, p_self->neg.nb_samples_per_process, p_self->echo_tail, p_self->echo_skew))){
 					TSK_DEBUG_ERROR("WebRtcAec_Process with error code = %d, nb_samples_per_process=%u", ret, p_self->neg.nb_samples_per_process);
 					goto bail;
@@ -393,7 +393,7 @@ bail:
 static int tdav_webrtc_denoise_process_playback(tmedia_denoise_t* self, void* audio_frame, uint32_t audio_frame_size_bytes)
 {
 	tdav_webrtc_denoise_t *denoiser = (tdav_webrtc_denoise_t *)self;
-	
+
 	(void)(denoiser);
 
 	// Not mandatory to denoise audio before playback.
@@ -466,7 +466,7 @@ static int _tdav_webrtc_resampler_create(const tdav_webrtc_pin_xt* p_pin_in, con
 	(*pp_resampler)->out.n_buff_size_in_samples = (*pp_resampler)->out.n_buff_size_in_bytes / p_pin_out->n_sample_size;
 	(*pp_resampler)->in.n_buff_size_in_bytes = ((((p_pin_in->n_rate * p_pin_in->n_duration) / 1000)) * p_pin_in->n_channels) * p_pin_in->n_sample_size;
 	(*pp_resampler)->in.n_buff_size_in_samples = (*pp_resampler)->in.n_buff_size_in_bytes / p_pin_in->n_sample_size;
-	
+
 	(*pp_resampler)->n_bufftmp_size_in_bytes = (((48000 * TSK_MAX(p_pin_in->n_duration, p_pin_out->n_duration)) / 1000) * 2/*channels*/) * sizeof(float); // Max
 	(*pp_resampler)->p_bufftmp_ptr = tsk_malloc((*pp_resampler)->n_bufftmp_size_in_bytes);
 	if (!(*pp_resampler)->p_bufftmp_ptr) {
@@ -474,7 +474,7 @@ static int _tdav_webrtc_resampler_create(const tdav_webrtc_pin_xt* p_pin_in, con
 		ret = -3;
 		goto bail;
 	}
-	
+
 	memcpy(&(*pp_resampler)->in.x_pin, p_pin_in, sizeof(tdav_webrtc_pin_xt));
 	memcpy(&(*pp_resampler)->out.x_pin, p_pin_out, sizeof(tdav_webrtc_pin_xt));
 bail:
@@ -505,7 +505,7 @@ static int _tdav_webrtc_resampler_process(tdav_webrtc_resampler_t *p_self, const
 		if (p_self->in.x_pin.n_sample_size == sizeof(int16_t)) {
 			// int16_t -> float
 			const int16_t* p_src = (const int16_t*)p_buff_ptr;
-			float* p_dst = (float*) p_self->p_bufftmp_ptr;
+			float* p_dst = (float*)p_self->p_bufftmp_ptr;
 			for (index = 0; index < _n_buff_size_in_samples; ++index) {
 				p_dst[index] = (float)p_src[index];
 			}
@@ -513,7 +513,7 @@ static int _tdav_webrtc_resampler_process(tdav_webrtc_resampler_t *p_self, const
 		else {
 			// float -> int16_t
 			const float* p_src = (const float*)p_buff_ptr;
-			int16_t* p_dst = (int16_t*) p_self->p_bufftmp_ptr;
+			int16_t* p_dst = (int16_t*)p_self->p_bufftmp_ptr;
 			for (index = 0; index < _n_buff_size_in_samples; ++index) {
 				p_dst[index] = (int16_t)p_src[index];
 			}
@@ -536,12 +536,12 @@ static tsk_object_t* tdav_webrtc_resampler_ctor(tsk_object_t * self, va_list * a
 {
 	tdav_webrtc_resampler_t *p_resampler = (tdav_webrtc_resampler_t*)self;
 	if (p_resampler) {
-		
+
 	}
 	return self;
 }
 static tsk_object_t* tdav_webrtc_resampler_dtor(tsk_object_t * self)
-{ 
+{
 	tdav_webrtc_resampler_t *p_resampler = (tdav_webrtc_resampler_t*)self;
 	if (p_resampler) {
 		TSK_OBJECT_SAFE_FREE(p_resampler->p_resampler);
@@ -550,12 +550,12 @@ static tsk_object_t* tdav_webrtc_resampler_dtor(tsk_object_t * self)
 	}
 	return self;
 }
-static const tsk_object_def_t tdav_webrtc_resampler_def_s = 
+static const tsk_object_def_t tdav_webrtc_resampler_def_s =
 {
 	sizeof(tdav_webrtc_resampler_t),
-	tdav_webrtc_resampler_ctor, 
+	tdav_webrtc_resampler_ctor,
 	tdav_webrtc_resampler_dtor,
-	tsk_object_cmp, 
+	tsk_object_cmp,
 };
 const tsk_object_def_t *tdav_webrtc_resampler_def_t = &tdav_webrtc_resampler_def_s;
 
@@ -568,7 +568,7 @@ const tsk_object_def_t *tdav_webrtc_resampler_def_t = &tdav_webrtc_resampler_def
 static tsk_object_t* tdav_webrtc_denoise_ctor(tsk_object_t * _self, va_list * app)
 {
 	tdav_webrtc_denoise_t *self = _self;
-	if(self){
+	if (self){
 		/* init base */
 		tmedia_denoise_init(TMEDIA_DENOISE(self));
 		/* init self */
@@ -581,9 +581,9 @@ static tsk_object_t* tdav_webrtc_denoise_ctor(tsk_object_t * _self, va_list * ap
 }
 /* destructor */
 static tsk_object_t* tdav_webrtc_denoise_dtor(tsk_object_t * _self)
-{ 
+{
 	tdav_webrtc_denoise_t *self = _self;
-	if(self){
+	if (self){
 		/* deinit base (will close the denoise if not done yet) */
 		tmedia_denoise_deinit(TMEDIA_DENOISE(self));
 		/* deinit self */
@@ -600,15 +600,15 @@ static tsk_object_t* tdav_webrtc_denoise_dtor(tsk_object_t * _self)
 	return self;
 }
 /* object definition */
-static const tsk_object_def_t tdav_webrtc_denoise_def_s = 
+static const tsk_object_def_t tdav_webrtc_denoise_def_s =
 {
 	sizeof(tdav_webrtc_denoise_t),
-	tdav_webrtc_denoise_ctor, 
+	tdav_webrtc_denoise_ctor,
 	tdav_webrtc_denoise_dtor,
-	tsk_null, 
+	tsk_null,
 };
 /* plugin definition*/
-static const tmedia_denoise_plugin_def_t tdav_webrtc_denoise_plugin_def_s = 
+static const tmedia_denoise_plugin_def_t tdav_webrtc_denoise_plugin_def_s =
 {
 	&tdav_webrtc_denoise_def_s,
 

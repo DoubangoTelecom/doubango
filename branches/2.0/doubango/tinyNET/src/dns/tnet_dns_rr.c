@@ -1,20 +1,18 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -22,9 +20,6 @@
 /**@file tnet_dns_rr.c
  * @brief DNS Resource Record (RFC 1034 and 1035).
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tnet_dns_rr.h"
 
@@ -66,11 +61,11 @@ tnet_dns_rr_t* tnet_dns_rr_create()
 */
 int tnet_dns_rr_init(tnet_dns_rr_t *rr, tnet_dns_qtype_t qtype, tnet_dns_qclass_t qclass)
 {
-	if(rr){
-		if(!rr->initialized){
+	if (rr){
+		if (!rr->initialized){
 			rr->qtype = qtype;
 			rr->qclass = qclass;
-			
+
 			rr->initialized = tsk_true;
 			return 0;
 		}
@@ -85,11 +80,11 @@ int tnet_dns_rr_init(tnet_dns_rr_t *rr, tnet_dns_qtype_t qtype, tnet_dns_qclass_
 */
 int tnet_dns_rr_deinit(tnet_dns_rr_t *rr)
 {
-	if(rr){
-		if(rr->initialized){
+	if (rr){
+		if (rr->initialized){
 			TSK_FREE(rr->name);
 			TSK_FREE(rr->rpdata);
-			
+
 			rr->initialized = tsk_false;
 			return 0;
 		}
@@ -103,17 +98,17 @@ int tnet_dns_rr_deinit(tnet_dns_rr_t *rr)
 int tnet_dns_rr_charstring_deserialize(const void* data, char** charstring, tsk_size_t *offset)
 {
 	/* RFC 1035 - 3.3. Standard RRs
-		<character-string> is a single length octet followed by that number of characters. 
+		<character-string> is a single length octet followed by that number of characters.
 		<character-string> is treated as binary information, and can be up to 256 characters in
 		length (including the length octet).
-	*/
-	uint8_t* dataPtr = (((uint8_t*)data)+ *offset);
+		*/
+	uint8_t* dataPtr = (((uint8_t*)data) + *offset);
 	uint8_t length = *dataPtr;
-	
+
 	*charstring = tsk_strndup((const char*)(dataPtr + 1), length);
 	*offset += (1 + length);
-	
-	return 0;	
+
+	return 0;
 }
 
 /** Deserializes a QName.
@@ -126,36 +121,36 @@ int tnet_dns_rr_qname_deserialize(const void* data, char** name, tsk_size_t *off
 		+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 		| 1  1|                OFFSET                   |
 		+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-	*/
+		*/
 	uint8_t* dataPtr = (((uint8_t*)data) + *offset);
 	unsigned usingPtr = 0; /* Do not change. */
 
-	while(*dataPtr){
+	while (*dataPtr){
 		usingPtr = ((*dataPtr & 0xC0) == 0xC0);
 
-		if(usingPtr){
+		if (usingPtr){
 			tsk_size_t ptr_offset = (*dataPtr & 0x3F);
-			ptr_offset = ptr_offset << 8 | *(dataPtr+1);
-			
+			ptr_offset = ptr_offset << 8 | *(dataPtr + 1);
+
 			*offset += 2;
 			return tnet_dns_rr_qname_deserialize(data, name, &ptr_offset);
 		}
 		else{
 			uint8_t length;
 
-			if(*name){
+			if (*name){
 				tsk_strcat(name, ".");
-			}	
+			}
 
 			length = *dataPtr;
-			*offset+=1, dataPtr++;
+			*offset += 1, dataPtr++;
 
 			tsk_strncat(name, (const char*)dataPtr, length);
 			*offset += length, dataPtr += length;
 		}
 	}
 
-	*offset+=1;
+	*offset += 1;
 
 	return 0;
 }
@@ -206,23 +201,23 @@ int tnet_dns_rr_qname_serialize(const char* qname, tsk_buffer_t* output)
 {
 	/*
 		QNAME       a domain name represented as a sequence of labels, where
-					each label consists of a length octet followed by that
-					number of octets.  The domain name terminates with the
-					zero length octet for the null label of the root.  Note
-					that this field may be an odd number of octets; no
-					padding is used.
+		each label consists of a length octet followed by that
+		number of octets.  The domain name terminates with the
+		zero length octet for the null label of the root.  Note
+		that this field may be an odd number of octets; no
+		padding is used.
 
-					Example: "doubango.com" ==> 8doubango3comNULL
-	*/
+		Example: "doubango.com" ==> 8doubango3comNULL
+		*/
 	static uint8_t null = 0;
 
-	if(qname){
+	if (qname){
 		char* saveptr;
 		char* _qname = tsk_strdup(qname);
 		char* label = tsk_strtok_r(_qname, ".", &saveptr);
 
-		while(label){
-			uint8_t length = tsk_strlen(label);
+		while (label){
+			uint8_t length = (uint8_t)tsk_strlen(label);
 			tsk_buffer_append(output, &length, 1);
 			tsk_buffer_append(output, label, tsk_strlen(label));
 
@@ -253,7 +248,7 @@ tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, tsk_size_t size, tsk_si
 	char* qname = tsk_null;
 
 	/* Check validity */
-	if(!dataPtr || !size){
+	if (!dataPtr || !size){
 		goto bail;
 	}
 
@@ -273,84 +268,84 @@ tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, tsk_size_t size, tsk_si
 	rdlength = tnet_ntohs_2(dataPtr);
 	dataPtr += 2, *offset += 2;
 
-	switch(qtype){
-		case qtype_a:
-			{
-				rr = (tnet_dns_rr_t *)tnet_dns_a_create(qname, qclass, ttl, rdlength, dataStart, *offset);
-				break;
-			}
+	switch (qtype){
+	case qtype_a:
+	{
+		rr = (tnet_dns_rr_t *)tnet_dns_a_create(qname, qclass, ttl, rdlength, dataStart, *offset);
+		break;
+	}
 
-		case qtype_aaaa:
-			{
-				rr = (tnet_dns_rr_t *)tnet_dns_aaaa_create(qname, qclass, ttl, rdlength, dataStart, *offset);
-				break;
-			}
+	case qtype_aaaa:
+	{
+		rr = (tnet_dns_rr_t *)tnet_dns_aaaa_create(qname, qclass, ttl, rdlength, dataStart, *offset);
+		break;
+	}
 
-		case qtype_cname:
-			{
-				rr = (tnet_dns_rr_t *)tnet_dns_cname_create(qname, qclass, ttl, rdlength, dataStart, *offset);
-				break;
-			}
+	case qtype_cname:
+	{
+		rr = (tnet_dns_rr_t *)tnet_dns_cname_create(qname, qclass, ttl, rdlength, dataStart, *offset);
+		break;
+	}
 
-		case qtype_mx:
-			{
-				rr = (tnet_dns_rr_t *)tnet_dns_mx_create(qname, qclass, ttl, rdlength, dataStart, *offset);
-				break;
-			}
+	case qtype_mx:
+	{
+		rr = (tnet_dns_rr_t *)tnet_dns_mx_create(qname, qclass, ttl, rdlength, dataStart, *offset);
+		break;
+	}
 
-		case qtype_naptr:
-			{
-				rr = (tnet_dns_rr_t *)tnet_dns_naptr_create(qname, qclass, ttl, rdlength, dataStart, *offset);
-				break;
-			}
+	case qtype_naptr:
+	{
+		rr = (tnet_dns_rr_t *)tnet_dns_naptr_create(qname, qclass, ttl, rdlength, dataStart, *offset);
+		break;
+	}
 
-		case qtype_ns:
-			{
-				rr = (tnet_dns_rr_t *)tnet_dns_ns_create(qname, qclass, ttl, rdlength, dataStart, *offset);
-				break;
-			}
+	case qtype_ns:
+	{
+		rr = (tnet_dns_rr_t *)tnet_dns_ns_create(qname, qclass, ttl, rdlength, dataStart, *offset);
+		break;
+	}
 
-		case qtype_opt:
-			{
-				unsigned payload_size = qclass;
-				rr = (tnet_dns_rr_t *)tnet_dns_opt_create(payload_size);
-				break;
-			}
+	case qtype_opt:
+	{
+		unsigned payload_size = qclass;
+		rr = (tnet_dns_rr_t *)tnet_dns_opt_create(payload_size);
+		break;
+	}
 
-		case qtype_ptr:
-			{
-				rr = (tnet_dns_rr_t *)tnet_dns_ptr_create(qname, qclass, ttl, rdlength, dataStart, *offset);
-				break;
-			}
+	case qtype_ptr:
+	{
+		rr = (tnet_dns_rr_t *)tnet_dns_ptr_create(qname, qclass, ttl, rdlength, dataStart, *offset);
+		break;
+	}
 
-		case qtype_soa:
-			{
-				rr = (tnet_dns_rr_t *)tnet_dns_soa_create(qname, qclass, ttl, rdlength, dataStart, *offset);
-				break;
-			}
+	case qtype_soa:
+	{
+		rr = (tnet_dns_rr_t *)tnet_dns_soa_create(qname, qclass, ttl, rdlength, dataStart, *offset);
+		break;
+	}
 
-		case qtype_srv:
-			{
-				rr = (tnet_dns_rr_t *)tnet_dns_srv_create(qname, qclass, ttl, rdlength, dataStart, *offset);
-				break;
-			}
+	case qtype_srv:
+	{
+		rr = (tnet_dns_rr_t *)tnet_dns_srv_create(qname, qclass, ttl, rdlength, dataStart, *offset);
+		break;
+	}
 
-		case qtype_txt:
-			{
-				rr = (tnet_dns_rr_t *)tnet_dns_txt_create(qname, qclass, ttl, rdlength, dataStart, *offset);
-				break;
-			}
+	case qtype_txt:
+	{
+		rr = (tnet_dns_rr_t *)tnet_dns_txt_create(qname, qclass, ttl, rdlength, dataStart, *offset);
+		break;
+	}
 
-		default:
-			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-				break;
-			}
+	default:
+	{
+		TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+		break;
+	}
 	}
 
 bail:
 	TSK_FREE(qname);
-	
+
 	*offset += rdlength;
 	return rr;
 }
@@ -359,7 +354,7 @@ bail:
 */
 int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output)
 {
-	if(!rr || !output){
+	if (!rr || !output){
 		return -1;
 	}
 
@@ -367,7 +362,7 @@ int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output)
 	{
 		tnet_dns_rr_qname_serialize(rr->name, output);
 	}
-	
+
 	/*=== TYPE ===*/
 	{
 		uint16_t qtype = tnet_htons(rr->qtype);
@@ -391,30 +386,30 @@ int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output)
 		uint16_t length = tnet_htons(rr->rdlength);
 		tsk_buffer_append(output, &(length), 2);
 	}
-	
+
 	/*===  RDATA : Request never contains data
 	===*/
-	if(!rr->rpdata){
+	if (!rr->rpdata){
 		goto done;
 	}
 
-	switch(rr->qtype){
-		case qtype_a:
-		case qtype_aaaa:
-		case qtype_cname:
-		case qtype_mx:
-		case qtype_naptr:
-		case qtype_ns:
-		case qtype_opt:
-		case qtype_ptr:
-		case qtype_soa:
-		case qtype_srv:
-		case qtype_txt:
-		default:
-			{
-				TSK_DEBUG_WARN("DNS Request should not contains RDATA (not supported).");
-				break;
-			}
+	switch (rr->qtype){
+	case qtype_a:
+	case qtype_aaaa:
+	case qtype_cname:
+	case qtype_mx:
+	case qtype_naptr:
+	case qtype_ns:
+	case qtype_opt:
+	case qtype_ptr:
+	case qtype_soa:
+	case qtype_srv:
+	case qtype_txt:
+	default:
+	{
+		TSK_DEBUG_WARN("DNS Request should not contains RDATA (not supported).");
+		break;
+	}
 	}
 
 done:
@@ -428,16 +423,16 @@ done:
 static tsk_object_t* tnet_dns_rr_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_rr_t *rr = self;
-	if(rr){
+	if (rr){
 		tnet_dns_rr_init(rr, qtype_any, qclass_any);
 	}
 	return self;
 }
 
-static tsk_object_t* tnet_dns_rr_dtor(tsk_object_t * self) 
-{ 
+static tsk_object_t* tnet_dns_rr_dtor(tsk_object_t * self)
+{
 	tnet_dns_rr_t *rr = self;
-	if(rr){
+	if (rr){
 		tnet_dns_rr_deinit(rr);
 	}
 	return self;

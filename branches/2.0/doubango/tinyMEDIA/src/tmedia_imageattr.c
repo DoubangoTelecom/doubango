@@ -1,9 +1,7 @@
 
 /* #line 1 "./ragel/tmedia_imageattr.rl" */
 /*
-* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2012-2015 Doubango Telecom <http://www.doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,12 +22,10 @@
 
 /**@file tmedia_imageattr.c
  * @brief 'image-attr' parser as per RFC 6236
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
  */
 #include "tinymedia/tmedia_imageattr.h"
 
+#include "tsk_ragel_state.h"
 #include "tsk_debug.h"
 
 #include <stdlib.h>
@@ -38,7 +34,7 @@
 *	Ragel state machine.
 */
 
-/* #line 139 "./ragel/tmedia_imageattr.rl" */
+/* #line 135 "./ragel/tmedia_imageattr.rl" */
 
 
 static int tmedia_imageattr_reset(tmedia_imageattr_xt* self)
@@ -70,8 +66,9 @@ int tmedia_imageattr_parse(tmedia_imageattr_xt* self, const void* in_data, tsk_s
 	tmedia_imageattr_xyrange_xt* xyrange = tsk_null;
 	tmedia_imageattr_srange_xt* srange = tsk_null;
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	
-/* #line 75 "./src/tmedia_imageattr.c" */
+/* #line 72 "./src/tmedia_imageattr.c" */
 static const char _tmedia_machine_imageattr_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -688,21 +685,21 @@ static const int tmedia_machine_imageattr_error = 0;
 static const int tmedia_machine_imageattr_en_main = 1;
 
 
-/* #line 171 "./ragel/tmedia_imageattr.rl" */
+/* #line 168 "./ragel/tmedia_imageattr.rl" */
 	(void)(eof);
 	(void)(tmedia_machine_imageattr_first_final);
 	(void)(tmedia_machine_imageattr_error);
 	(void)(tmedia_machine_imageattr_en_main);
 	
-/* #line 698 "./src/tmedia_imageattr.c" */
+/* #line 695 "./src/tmedia_imageattr.c" */
 	{
 	cs = tmedia_machine_imageattr_start;
 	}
 
-/* #line 176 "./ragel/tmedia_imageattr.rl" */
+/* #line 173 "./ragel/tmedia_imageattr.rl" */
 	tmedia_imageattr_reset(self);
 	
-/* #line 706 "./src/tmedia_imageattr.c" */
+/* #line 703 "./src/tmedia_imageattr.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -776,13 +773,13 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 44 "./ragel/tmedia_imageattr.rl" */
+/* #line 40 "./ragel/tmedia_imageattr.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 48 "./ragel/tmedia_imageattr.rl" */
+/* #line 44 "./ragel/tmedia_imageattr.rl" */
 	{
 		sets = &self->send.sets[0];
 		sets_count = &self->send.count;
@@ -790,7 +787,7 @@ _match:
 	}
 	break;
 	case 2:
-/* #line 54 "./ragel/tmedia_imageattr.rl" */
+/* #line 50 "./ragel/tmedia_imageattr.rl" */
 	{
 		sets = &self->recv.sets[0];
 		sets_count = &self->recv.count;
@@ -798,55 +795,55 @@ _match:
 	}
 	break;
 	case 3:
-/* #line 60 "./ragel/tmedia_imageattr.rl" */
+/* #line 56 "./ragel/tmedia_imageattr.rl" */
 	{
 		xyrange = (*sets_count < TMEDIA_imageattr_ARRAY_MAX_SIZE) ? &sets[*sets_count].xrange : tsk_null;
 	}
 	break;
 	case 4:
-/* #line 63 "./ragel/tmedia_imageattr.rl" */
+/* #line 59 "./ragel/tmedia_imageattr.rl" */
 	{
 		xyrange = (*sets_count < TMEDIA_imageattr_ARRAY_MAX_SIZE) ? &sets[*sets_count].yrange : tsk_null;
 	}
 	break;
 	case 5:
-/* #line 66 "./ragel/tmedia_imageattr.rl" */
+/* #line 62 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(*sets_count < TMEDIA_imageattr_ARRAY_MAX_SIZE) (*sets_count)++;
 	}
 	break;
 	case 6:
-/* #line 69 "./ragel/tmedia_imageattr.rl" */
+/* #line 65 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(xyrange) xyrange->is_range = 0;
 	}
 	break;
 	case 7:
-/* #line 72 "./ragel/tmedia_imageattr.rl" */
+/* #line 68 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(xyrange) xyrange->is_range = 1;
 	}
 	break;
 	case 8:
-/* #line 75 "./ragel/tmedia_imageattr.rl" */
+/* #line 71 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(xyrange)xyrange->range.start = atoi(tag_start);
 	}
 	break;
 	case 9:
-/* #line 78 "./ragel/tmedia_imageattr.rl" */
+/* #line 74 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(xyrange)xyrange->range.step = atoi(tag_start);
 	}
 	break;
 	case 10:
-/* #line 81 "./ragel/tmedia_imageattr.rl" */
+/* #line 77 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(xyrange)xyrange->range.end = atoi(tag_start);
 	}
 	break;
 	case 11:
-/* #line 84 "./ragel/tmedia_imageattr.rl" */
+/* #line 80 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(xyrange && xyrange->array.count < TMEDIA_imageattr_ARRAY_MAX_SIZE){
 			xyrange->array.values[xyrange->array.count++] = atoi(tag_start);
@@ -854,7 +851,7 @@ _match:
 	}
 	break;
 	case 12:
-/* #line 89 "./ragel/tmedia_imageattr.rl" */
+/* #line 85 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(*sets_count < TMEDIA_imageattr_ARRAY_MAX_SIZE){
 			sets[*sets_count].qvalue = atof(tag_start);
@@ -862,25 +859,25 @@ _match:
 	}
 	break;
 	case 13:
-/* #line 95 "./ragel/tmedia_imageattr.rl" */
+/* #line 91 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(srange) srange->is_range = 0;
 	}
 	break;
 	case 14:
-/* #line 98 "./ragel/tmedia_imageattr.rl" */
+/* #line 94 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(srange) srange->is_range = 1;
 	}
 	break;
 	case 15:
-/* #line 101 "./ragel/tmedia_imageattr.rl" */
+/* #line 97 "./ragel/tmedia_imageattr.rl" */
 	{
 		srange = (*sets_count < TMEDIA_imageattr_ARRAY_MAX_SIZE) ? &sets[*sets_count].srange : tsk_null;
 	}
 	break;
 	case 16:
-/* #line 104 "./ragel/tmedia_imageattr.rl" */
+/* #line 100 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(srange && srange->array.count < TMEDIA_imageattr_ARRAY_MAX_SIZE){
 			srange->array.values[srange->array.count++] = atof(tag_start);
@@ -888,30 +885,30 @@ _match:
 	}
 	break;
 	case 17:
-/* #line 109 "./ragel/tmedia_imageattr.rl" */
+/* #line 105 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(srange) srange->range.start = atof(tag_start);
 	}
 	break;
 	case 18:
-/* #line 112 "./ragel/tmedia_imageattr.rl" */
+/* #line 108 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(srange) srange->range.end = atof(tag_start);
 	}
 	break;
 	case 19:
-/* #line 116 "./ragel/tmedia_imageattr.rl" */
+/* #line 112 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(*sets_count < TMEDIA_imageattr_ARRAY_MAX_SIZE) sets[*sets_count].prange.start = atof(tag_start);
 	}
 	break;
 	case 20:
-/* #line 119 "./ragel/tmedia_imageattr.rl" */
+/* #line 115 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(*sets_count < TMEDIA_imageattr_ARRAY_MAX_SIZE) sets[*sets_count].prange.end = atof(tag_start), sets[*sets_count].prange.is_present = 1;
 	}
 	break;
-/* #line 915 "./src/tmedia_imageattr.c" */
+/* #line 912 "./src/tmedia_imageattr.c" */
 		}
 	}
 
@@ -928,12 +925,12 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 5:
-/* #line 66 "./ragel/tmedia_imageattr.rl" */
+/* #line 62 "./ragel/tmedia_imageattr.rl" */
 	{
 		if(*sets_count < TMEDIA_imageattr_ARRAY_MAX_SIZE) (*sets_count)++;
 	}
 	break;
-/* #line 937 "./src/tmedia_imageattr.c" */
+/* #line 934 "./src/tmedia_imageattr.c" */
 		}
 	}
 	}
@@ -941,12 +938,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 178 "./ragel/tmedia_imageattr.rl" */
+/* #line 175 "./ragel/tmedia_imageattr.rl" */
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 
 	if( cs < 
-/* #line 948 "./src/tmedia_imageattr.c" */
+/* #line 946 "./src/tmedia_imageattr.c" */
 325
-/* #line 179 "./ragel/tmedia_imageattr.rl" */
+/* #line 177 "./ragel/tmedia_imageattr.rl" */
  ){
 		TSK_DEBUG_ERROR("Parsing failed to parse image-attr=%s", (char*)in_data);
 		return -1;

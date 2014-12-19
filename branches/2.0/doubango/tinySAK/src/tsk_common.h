@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,10 +20,6 @@
 
 /**@file tsk_common.h
  * Commons.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 
 #ifndef _TINYSAK_COMMON_H_
@@ -55,7 +49,11 @@ typedef int tsk_boolean_t;
 #define TSK_TO_UINT16(u8_ptr) (((uint16_t)(u8_ptr)[0]) | ((uint16_t)(u8_ptr)[1])<<8)
 
 typedef int tsk_ssize_t; /**< Signed size */
-typedef unsigned int tsk_size_t; /**< Unsigned size */
+#if defined (_SIZE_T_DEFINED)
+typedef size_t tsk_size_t;
+#else
+typedef unsigned int tsk_size_t;
+#endif
 
 
 #if defined(va_copy)
@@ -93,5 +91,11 @@ typedef unsigned int tsk_size_t; /**< Unsigned size */
 #	define tsk_atomic_inc(_ptr_) ++(*(_ptr_))
 #	define tsk_atomic_dec(_ptr_) --(*(_ptr_))
 #endif
+
+// Substract with saturation
+#define tsk_subsat_int32_ptr(pvoid_p0, pvoid_p1, pint_ret) { \
+	int64_t int64_ret = (int64_t)(((const char*)(pvoid_p0)) - ((const char*)(pvoid_p1))); \
+	*(pint_ret) = (int)((int64_ret > 2147483647) ? 2147483647 : ((int64_ret < -2147483647) ? -2147483647 : int64_ret)); \
+}
 
 #endif /* _TINYSAK_COMMON_H_ */

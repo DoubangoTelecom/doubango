@@ -148,7 +148,11 @@ int tsk_object_cmp(const tsk_object_t *object1, const tsk_object_t *object2)
 	if (objdef && *objdef && (*objdef)->comparator) {
 		return (*objdef)->comparator(object1, object2);
 	}
-	return ((int*)object1 - (int*)object2);
+	else {
+		int ret;
+		tsk_subsat_int32_ptr(object1, object2, &ret);
+		return ret;
+	}
 }
 
 /**@ingroup tsk_object_group

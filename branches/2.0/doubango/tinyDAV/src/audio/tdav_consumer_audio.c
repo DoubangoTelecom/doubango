@@ -1,29 +1,24 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
-*
 */
 
 /**@file tdav_consumer_audio.c
 * @brief Base class for all Audio consumers.
-*
-* @author Mamadou Diop <diopmamadou(at)doubango.org>
 */
 #include "tinydav/audio/tdav_consumer_audio.h"
 
@@ -60,12 +55,12 @@ int tdav_consumer_audio_init(tdav_consumer_audio_t* self)
 
 	TSK_DEBUG_INFO("tdav_consumer_audio_init()");
 
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	/* base */
-	if((ret = tmedia_consumer_init(TMEDIA_CONSUMER(self)))){
+	if ((ret = tmedia_consumer_init(TMEDIA_CONSUMER(self)))){
 		return ret;
 	}
 
@@ -91,22 +86,24 @@ int tdav_consumer_audio_init(tdav_consumer_audio_t* self)
 * >0 : @a consumer1 greater than @a consumer2.<br>
 */
 int tdav_consumer_audio_cmp(const tsk_object_t* consumer1, const tsk_object_t* consumer2)
-{	
-	return (TDAV_CONSUMER_AUDIO(consumer1) - TDAV_CONSUMER_AUDIO(consumer2));
+{
+	int ret;
+	tsk_subsat_int32_ptr(consumer1, consumer2, &ret);
+	return ret;
 }
 
 int tdav_consumer_audio_set(tdav_consumer_audio_t* self, const tmedia_param_t* param)
 {
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	if(param->plugin_type == tmedia_ppt_consumer){
-		if(param->value_type == tmedia_pvt_int32){
-			if(tsk_striequals(param->key, "gain")){
+	if (param->plugin_type == tmedia_ppt_consumer){
+		if (param->value_type == tmedia_pvt_int32){
+			if (tsk_striequals(param->key, "gain")){
 				int32_t gain = *((int32_t*)param->value);
-				if(gain<TDAV_AUDIO_GAIN_MAX && gain>=0){
+				if (gain < TDAV_AUDIO_GAIN_MAX && gain >= 0){
 					TMEDIA_CONSUMER(self)->audio.gain = (uint8_t)gain;
 					TSK_DEBUG_INFO("audio consumer gain=%u", gain);
 				}
@@ -115,7 +112,7 @@ int tdav_consumer_audio_set(tdav_consumer_audio_t* self, const tmedia_param_t* p
 					return -2;
 				}
 			}
-			else if(tsk_striequals(param->key, "volume")){
+			else if (tsk_striequals(param->key, "volume")){
 				TMEDIA_CONSUMER(self)->audio.volume = TSK_TO_INT32((uint8_t*)param->value);
 				TMEDIA_CONSUMER(self)->audio.volume = TSK_CLAMP(0, TMEDIA_CONSUMER(self)->audio.volume, 100);
 			}
@@ -130,23 +127,23 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, const void* data, tsk_s
 {
 	int ret;
 
-	if(!self || !data || !self->jitterbuffer){
+	if (!self || !data || !self->jitterbuffer){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
 	tsk_safeobj_lock(self);
 
-	if(!TMEDIA_JITTER_BUFFER(self->jitterbuffer)->opened){
+	if (!TMEDIA_JITTER_BUFFER(self->jitterbuffer)->opened){
 		uint32_t rate = TMEDIA_CONSUMER(self)->audio.out.rate ? TMEDIA_CONSUMER(self)->audio.out.rate : TMEDIA_CONSUMER(self)->audio.in.rate;
 		uint32_t channels = TMEDIA_CONSUMER(self)->audio.out.channels ? TMEDIA_CONSUMER(self)->audio.out.channels : tmedia_defaults_get_audio_channels_playback();
-		if((ret = tmedia_jitterbuffer_open(self->jitterbuffer, TMEDIA_CONSUMER(self)->audio.ptime, rate, channels))){
+		if ((ret = tmedia_jitterbuffer_open(self->jitterbuffer, TMEDIA_CONSUMER(self)->audio.ptime, rate, channels))){
 			TSK_DEBUG_ERROR("Failed to open jitterbuffer (%d)", ret);
 			tsk_safeobj_unlock(self);
 			return ret;
 		}
 	}
-	
+
 	ret = tmedia_jitterbuffer_put(self->jitterbuffer, (void*)data, data_size, proto_hdr);
 
 	tsk_safeobj_unlock(self);
@@ -158,19 +155,19 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, const void* data, tsk_s
 tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, tsk_size_t out_size)
 {
 	tsk_size_t ret_size = 0;
-	if(!self || !self->jitterbuffer){
+	if (!self || !self->jitterbuffer){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 
 	tsk_safeobj_lock(self);
 
-	if(!TMEDIA_JITTER_BUFFER(self->jitterbuffer)->opened){
+	if (!TMEDIA_JITTER_BUFFER(self->jitterbuffer)->opened){
 		int ret;
 		uint32_t frame_duration = TMEDIA_CONSUMER(self)->audio.ptime;
 		uint32_t rate = TMEDIA_CONSUMER(self)->audio.out.rate ? TMEDIA_CONSUMER(self)->audio.out.rate : TMEDIA_CONSUMER(self)->audio.in.rate;
 		uint32_t channels = TMEDIA_CONSUMER(self)->audio.out.channels ? TMEDIA_CONSUMER(self)->audio.out.channels : tmedia_defaults_get_audio_channels_playback();
-		if((ret = tmedia_jitterbuffer_open(TMEDIA_JITTER_BUFFER(self->jitterbuffer), frame_duration, rate, channels))){
+		if ((ret = tmedia_jitterbuffer_open(TMEDIA_JITTER_BUFFER(self->jitterbuffer), frame_duration, rate, channels))){
 			TSK_DEBUG_ERROR("Failed to open jitterbuffer (%d)", ret);
 			tsk_safeobj_unlock(self);
 			return 0;
@@ -178,14 +175,14 @@ tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, 
 	}
 	ret_size = tmedia_jitterbuffer_get(TMEDIA_JITTER_BUFFER(self->jitterbuffer), out_data, out_size);
 
-	tsk_safeobj_unlock(self);	
+	tsk_safeobj_unlock(self);
 
 	// denoiser
 	if (self->denoise && self->denoise->opened && (self->denoise->echo_supp_enabled || self->denoise->noise_supp_enabled)) {
 		if (self->denoise->echo_supp_enabled) {
 			// Echo process last frame 
 			if (self->denoise->playback_frame && self->denoise->playback_frame->size) {
-				tmedia_denoise_echo_playback(self->denoise, self->denoise->playback_frame->data, self->denoise->playback_frame->size);
+				tmedia_denoise_echo_playback(self->denoise, self->denoise->playback_frame->data, (uint32_t)self->denoise->playback_frame->size);
 			}
 			if (ret_size){
 				// save
@@ -196,7 +193,7 @@ tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, 
 #if 1 // suppress noise if not supported by remote party's encoder
 		// suppress noise
 		if (self->denoise->noise_supp_enabled && ret_size) {
-			tmedia_denoise_process_playback(self->denoise, out_data, ret_size);
+			tmedia_denoise_process_playback(self->denoise, out_data, (uint32_t)ret_size);
 		}
 #endif
 	}
@@ -206,7 +203,7 @@ tsk_size_t tdav_consumer_audio_get(tdav_consumer_audio_t* self, void* out_data, 
 
 int tdav_consumer_audio_tick(tdav_consumer_audio_t* self)
 {
-	if(!self || !self->jitterbuffer){
+	if (!self || !self->jitterbuffer){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
@@ -253,13 +250,13 @@ int tdav_consumer_audio_deinit(tdav_consumer_audio_t* self)
 {
 	int ret;
 
-	if(!self){
+	if (!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
 	/* base */
-	if((ret = tmedia_consumer_deinit(TMEDIA_CONSUMER(self)))){
+	if ((ret = tmedia_consumer_deinit(TMEDIA_CONSUMER(self)))){
 		/* return ret; */
 	}
 

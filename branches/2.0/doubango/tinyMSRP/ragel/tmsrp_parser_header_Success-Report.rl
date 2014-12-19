@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2009-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,10 +20,6 @@
 
 /**@file tmsrp_header_Success_Report.c
  * @brief MSRP 'Success-Report' header.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinymsrp/headers/tmsrp_header_Success-Report.h"
 
@@ -75,7 +69,7 @@ int tmsrp_header_Success_Report_tostring(const tmsrp_header_t* header, tsk_buffe
 	if(header){
 		const tmsrp_header_Success_Report_t *Success_Report = (const tmsrp_header_Success_Report_t *)header;
 		const char* value = Success_Report->yes ? "yes" : "no";
-		return tsk_buffer_append(output, value, strlen(value));
+		return tsk_buffer_append(output, value, tsk_strlen(value));
 	}
 
 	return -1;
@@ -89,6 +83,7 @@ tmsrp_header_Success_Report_t *tmsrp_header_Success_Report_parse(const char *dat
 	const char *eof = pe;
 	tmsrp_header_Success_Report_t *hdr_Success_Report = tmsrp_header_Success_Report_create_null();
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	%%write data;
 	(void)(eof);
 	(void)(tmsrp_machine_parser_header_Success_Report_first_final);
@@ -96,6 +91,7 @@ tmsrp_header_Success_Report_t *tmsrp_header_Success_Report_parse(const char *dat
 	(void)(tmsrp_machine_parser_header_Success_Report_en_main);
 	%%write init;
 	%%write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 	
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse 'Success-Report' header.");

@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2009-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -21,10 +19,6 @@
 */
 /**@file tmsrp_machine_message.rl
  * @brief Ragel file.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinymsrp/parsers/tmsrp_parser_message.h"
 
@@ -267,8 +261,10 @@ static void set_payload(tmsrp_message_t* msrp_msg, const void* ptr, tsk_size_t l
 	main := msrp_req_or_resp;
 }%%
 
+TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 /* Ragel data */
 %% write data;
+TSK_RAGEL_DISABLE_WARNINGS_END()
 
 tmsrp_message_t* tmsrp_message_parse(const void *input, tsk_size_t size)
 {
@@ -306,11 +302,13 @@ tmsrp_message_t* tmsrp_message_parse_2(const void *input, tsk_size_t size, tsk_s
 		goto bail;
 	}
 
+	TSK_RAGEL_DISABLE_WARNINGS_BEGIN()
 	/* Ragel init */
 	%% write init;
 
 	/* Ragel execute */
 	%% write exec;
+	TSK_RAGEL_DISABLE_WARNINGS_END()
 
 	/* Check result */
 	if( cs < %%{ write first_final; }%% ){

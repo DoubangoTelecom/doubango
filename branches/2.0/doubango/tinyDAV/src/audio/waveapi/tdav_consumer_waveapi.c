@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2010-2015 Mamadou DIOP
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +21,6 @@
 /**@file tdav_consumer_waveapi.c
  * @brief Audio Consumer for Win32 and WinCE platforms.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tinydav/audio/waveapi/tdav_consumer_waveapi.h"
 
@@ -73,7 +68,7 @@ static int create_wavehdr(tdav_consumer_waveapi_t* consumer, tsk_size_t index)
 
 	consumer->hWaveHeaders[index] = tsk_calloc(1, sizeof(WAVEHDR));
 	consumer->hWaveHeaders[index]->lpData = tsk_calloc(1, consumer->bytes_per_notif);
-	consumer->hWaveHeaders[index]->dwBufferLength = consumer->bytes_per_notif;
+	consumer->hWaveHeaders[index]->dwBufferLength = (DWORD)consumer->bytes_per_notif;
 	consumer->hWaveHeaders[index]->dwFlags = WHDR_BEGINLOOP | WHDR_ENDLOOP;
 	consumer->hWaveHeaders[index]->dwLoops = 0x01;
 	consumer->hWaveHeaders[index]->dwUser = index;

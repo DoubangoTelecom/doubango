@@ -152,7 +152,7 @@ static int _tbfcp_attr_write(const tbfcp_attr_t* pc_self, uint8_t* p_buff_ptr, t
     case tbfcp_attribute_format_Unsigned16:
     case tbfcp_attribute_format_OctetString16: {
         *p_written = TBFCP_ATTR_HDR_SIZE_IN_OCTETS + 2;
-        p_buff_ptr[1] = *p_written;
+        p_buff_ptr[1] = (uint8_t)*p_written;
         if (pc_self->format == tbfcp_attribute_format_Unsigned16) {
             *((uint16_t*)&p_buff_ptr[2]) = tnet_htons(((const tbfcp_attr_unsigned16_t*)pc_self)->Unsigned16);
         }
@@ -168,7 +168,7 @@ static int _tbfcp_attr_write(const tbfcp_attr_t* pc_self, uint8_t* p_buff_ptr, t
     case tbfcp_attribute_format_OctetString: {
         const tbfcp_attr_octetstring_t* _pc_self = (const tbfcp_attr_octetstring_t*)pc_self;
         *p_written = TBFCP_ATTR_HDR_SIZE_IN_OCTETS + ((_pc_self->OctetStringLength && _pc_self->OctetString) ? _pc_self->OctetStringLength : 0);
-        p_buff_ptr[1] = *p_written;
+        p_buff_ptr[1] = (uint8_t)*p_written;
         if (_pc_self->OctetStringLength && _pc_self->OctetString) {
             memcpy(&p_buff_ptr[2], _pc_self->OctetString, _pc_self->OctetStringLength);
         }
@@ -190,7 +190,7 @@ static int _tbfcp_attr_write(const tbfcp_attr_t* pc_self, uint8_t* p_buff_ptr, t
         if ((ret = tbfcp_attr_get_size_in_octetunits_without_padding(pc_self, p_written))) {
             return ret;
         }
-        p_buff_ptr[1] = *p_written;
+        p_buff_ptr[1] = (uint8_t)*p_written;
         p_buff_ptr += 2;
         n_buff_size -= 2;
         if (_pc_self->extra_hdr_size_in_octets) {

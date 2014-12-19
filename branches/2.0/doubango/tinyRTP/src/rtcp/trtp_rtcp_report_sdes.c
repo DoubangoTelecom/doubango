@@ -96,7 +96,7 @@ trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_deserialize(const void* data, tsk
 	trtp_rtcp_report_sdes_t* sdes = tsk_null;
 	trtp_rtcp_header_t* header = tsk_null;
 	const uint8_t* pdata = (const uint8_t*)data;
-	int32_t size = _size;
+	int32_t size = (int32_t)_size;
 
 	if(!data || size < TRTP_RTCP_HEADER_SIZE){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -127,7 +127,7 @@ trtp_rtcp_report_sdes_t* trtp_rtcp_report_sdes_deserialize(const void* data, tsk
 		while(i++ < header->rc && size > TRTP_RTCP_SDES_CHUNCK_MIN_SIZE){
 			if((chunck = trtp_rtcp_sdes_chunck_deserialize(pdata, size))){
 				chunck_size = trtp_rtcp_sdes_chunck_get_size(chunck);
-				if((size -= chunck_size)){
+				if((size -= (int32_t)chunck_size)){
 					pdata += chunck_size;
 				}
 				tsk_list_push_ascending_data(sdes->chuncks, (void**)&chunck);
@@ -188,7 +188,7 @@ int trtp_rtcp_report_sdes_add_chunck(trtp_rtcp_report_sdes_t* self, trtp_rtcp_sd
 	}
 
 	chunck = tsk_object_ref(chunck);
-	TRTP_RTCP_PACKET(self)->header->length_in_bytes += trtp_rtcp_sdes_chunck_get_size(chunck);
+	TRTP_RTCP_PACKET(self)->header->length_in_bytes += (uint32_t)trtp_rtcp_sdes_chunck_get_size(chunck);
 	TRTP_RTCP_PACKET(self)->header->length_in_words_minus1 = ((TRTP_RTCP_PACKET(self)->header->length_in_bytes >> 2) - 1) 
 		+  ((TRTP_RTCP_PACKET(self)->header->length_in_bytes & 0x03) ? 1 : 0);
 	++TRTP_RTCP_PACKET(self)->header->rc;
