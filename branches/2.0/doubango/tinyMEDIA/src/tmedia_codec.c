@@ -338,13 +338,13 @@ tsk_bool_t tmedia_codec_plugin_is_registered_2(tmedia_codec_id_t codec_id)
  * @param count Number of plugins in the list.
  * @return 0 if succeed and non-zero error code otherwise.
  */
-int tmedia_codec_plugin_registered_get_all(const struct tmedia_codec_plugin_def_s*** plugins, tsk_size_t* count)
+int tmedia_codec_plugin_registered_get_all(const struct tmedia_codec_plugin_def_s*(** plugins)[TMED_CODEC_MAX_PLUGINS], tsk_size_t* count)
 {
 	if(!plugins || !count) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	*plugins = (const struct tmedia_codec_plugin_def_s**)&__tmedia_codec_plugins;
+	*plugins = &__tmedia_codec_plugins;
 	*count = sizeof(__tmedia_codec_plugins)/sizeof(__tmedia_codec_plugins[0]);
 	return 0;
 }

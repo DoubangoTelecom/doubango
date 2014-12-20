@@ -317,7 +317,7 @@ TINYMEDIA_API int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* 
 TINYMEDIA_API int tmedia_codec_plugin_register_2(const tmedia_codec_plugin_def_t* plugin, int prio);
 TINYMEDIA_API tsk_bool_t tmedia_codec_plugin_is_registered(const tmedia_codec_plugin_def_t* plugin);
 TINYMEDIA_API tsk_bool_t tmedia_codec_plugin_is_registered_2(tmedia_codec_id_t codec_id);
-TINYMEDIA_API int tmedia_codec_plugin_registered_get_all(const struct tmedia_codec_plugin_def_s*** plugins, tsk_size_t* count);
+TINYMEDIA_API int tmedia_codec_plugin_registered_get_all(const struct tmedia_codec_plugin_def_s*(** plugins)[TMED_CODEC_MAX_PLUGINS], tsk_size_t* count);
 TINYMEDIA_API const struct tmedia_codec_plugin_def_s* tmedia_codec_plugin_registered_get_const(tmedia_codec_id_t codec_id);
 TINYMEDIA_API int tmedia_codec_plugin_unregister(const tmedia_codec_plugin_def_t* plugin);
 TINYMEDIA_API int tmedia_codec_plugin_unregister_all();
