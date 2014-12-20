@@ -31,7 +31,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #endif
 
 // Shared libraries not allowed on WP8 and iOS
-#if !TDAV_UNDER_WINDOWS_PHONE && !TDAV_UNDER_WINDOWS_CE && !TDAV_UNDER_IPHONE
+#if !TDAV_UNDER_WINDOWS_PHONE && !TDAV_UNDER_IPHONE
 #include "tsk_plugin.h"
 #	if TDAV_UNDER_WINDOWS
 #		define TDAV_HAVE_PLUGIN_EXT_WIN32	1
@@ -200,23 +200,23 @@ int tdav_init()
 			}
 		}
 		/* DirectShow (Video consumer, Video producer) */
-		if(tdav_win32_is_winxp_or_later()){
+		if (tdav_win32_is_winxp_or_later()) {
 			tsk_sprintf(&full_path, "%s/pluginDirectShow.dll", tdav_get_current_directory_const());
-			if(tsk_plugin_file_exist(full_path) && (__dll_plugin_dshow = tsk_plugin_create(full_path))){
+			if (tsk_plugin_file_exist(full_path) && (__dll_plugin_dshow = tsk_plugin_create(full_path))) {
 				plugins_count += tmedia_plugin_register(__dll_plugin_dshow, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 			}
 		}
 		/* Audio DSP (Resampler, AEC, NS, AGC...) */
-		if(tdav_win32_is_winvista_or_later()){
+		if (tdav_win32_is_winvista_or_later()){
 			tsk_sprintf(&full_path, "%s/pluginWinAudioDSP.dll", tdav_get_current_directory_const());
-			if(tsk_plugin_file_exist(full_path) && (__dll_plugin_audio_dsp = tsk_plugin_create(full_path))){
+			if(tsk_plugin_file_exist(full_path) && (__dll_plugin_audio_dsp = tsk_plugin_create(full_path))) {
 				plugins_count += tmedia_plugin_register(__dll_plugin_audio_dsp, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 			}
 		}
 		/* IPSec implementation using Windows Filtering Platform (WFP) */
-		if(tdav_win32_is_winvista_or_later()){
+		if (tdav_win32_is_winvista_or_later()) {
 			tsk_sprintf(&full_path, "%s/pluginWinIPSecVista.dll", tdav_get_current_directory_const());
-			if(tsk_plugin_file_exist(full_path) && (tipsec_plugin_register_file(full_path, &__dll_plugin_ipsec_wfp) == 0)){
+			if (tsk_plugin_file_exist(full_path) && (tipsec_plugin_register_file(full_path, &__dll_plugin_ipsec_wfp) == 0)) {
 				plugins_count += 1; // at least one
 				__b_ipsec_supported = tsk_true;
 			}
@@ -482,7 +482,8 @@ int tdav_set_codecs(tdav_codec_id_t codecs)
 
 static inline int _tdav_codec_plugins_collect()
 {
-	const struct tmedia_codec_plugin_def_s** plugins = tsk_null;
+#if defined(_MSC_VER) // TODO: Why next code crash on CentOS64 when built with debug enabled ("-g -O0")
+	const struct tmedia_codec_plugin_def_s* (* plugins)[TMED_CODEC_MAX_PLUGINS];
 	tsk_size_t i, count;
 	int ret;
 	static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/sizeof(__codec_plugins_all[0]);
@@ -490,10 +491,24 @@ static inline int _tdav_codec_plugins_collect()
 	ret = _tdav_codec_plugins_disperse();
 	if((ret = tmedia_codec_plugin_registered_get_all(&plugins, &count)) == 0) {
 		for(i = 0; i < count && i < __codec_plugins_all_count; ++i) {
-			__codec_plugins_all[i] = plugins[i];
+			__codec_plugins_all[i] = (*plugins)[i];
 		}
 	}
 	return 0;
+#else
+	extern const tmedia_codec_plugin_def_t* __tmedia_codec_plugins[TMED_CODEC_MAX_PLUGINS];
+
+	static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/sizeof(__codec_plugins_all[0]);
+
+	int ret = _tdav_codec_plugins_disperse();
+	if (ret == 0) {
+		tsk_size_t i, count_max = sizeof(__tmedia_codec_plugins)/sizeof(__tmedia_codec_plugins[0]);
+		for(i = 0; i < count_max && i < __codec_plugins_all_count; ++i) {
+			__codec_plugins_all[i] = __tmedia_codec_plugins[i];
+		}
+	}
+	return ret;
+#endif
 }
 
 static inline int _tdav_codec_plugins_disperse()
