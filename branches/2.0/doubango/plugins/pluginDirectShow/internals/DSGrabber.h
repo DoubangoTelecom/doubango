@@ -29,14 +29,14 @@
 
 class DSDisplay;
 
-#ifdef _WIN32_WCE
-#	include <tinydshow/wce/InxbISampleGrabberCB.h>
+#if defined(_WIN32_WCE)
+#	include "internals/wince/DSISampleGrabberCB.h"
 #endif
 
 
 class DSGrabber : public
-#ifdef _WIN32_WCE
-	InxbISampleGrabberCB
+#if defined(_WIN32_WCE)
+	DSISampleGrabberCB
 #else
 	ISampleGrabberCB
 #endif

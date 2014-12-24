@@ -62,14 +62,16 @@ const HMODULE GetCurrentModule()
 
 int tdav_win32_init()
 {
-#if !(TDAV_UNDER_WINDOWS_RT || TDAV_UNDER_WINDOWS_CE)
+#if !TDAV_UNDER_WINDOWS_RT
 	MMRESULT result;
 	
+#if !TDAV_UNDER_WINDOWS_CE
 	CoInitializeEx(NULL, COINIT_MULTITHREADED);
+#endif
 
 	// Timers accuracy
 	result = timeBeginPeriod(1);
-	if(result){
+	if (result) {
 		TSK_DEBUG_ERROR("timeBeginPeriod(1) returned result=%u", result);
 	}
 
@@ -90,10 +92,10 @@ int tdav_win32_init()
 
 int tdav_win32_get_osversion(unsigned long* version_major, unsigned long* version_minor)
 {
-	if(version_major){
+	if (version_major) {
 		*version_major = dwMajorVersion;
 	}
-	if(version_minor){
+	if (version_minor) {
 		*version_minor = dwMinorVersion;
 	}
 	return 0;
@@ -101,7 +103,7 @@ int tdav_win32_get_osversion(unsigned long* version_major, unsigned long* versio
 
 tsk_bool_t tdav_win32_is_win7_or_later()
 {
-	if(dwMajorVersion == -1 || dwMinorVersion == -1){
+	if (dwMajorVersion == -1 || dwMinorVersion == -1) {
 		TSK_DEBUG_ERROR("Version numbers are invalid");
 		return tsk_false;
 	}
@@ -110,7 +112,7 @@ tsk_bool_t tdav_win32_is_win7_or_later()
 
 tsk_bool_t tdav_win32_is_winvista_or_later()
 {
-	if(dwMajorVersion == -1 || dwMinorVersion == -1){
+	if (dwMajorVersion == -1 || dwMinorVersion == -1) {
 		TSK_DEBUG_ERROR("Version numbers are invalid");
 		return tsk_false;
 	}
@@ -119,7 +121,7 @@ tsk_bool_t tdav_win32_is_winvista_or_later()
 
 tsk_bool_t tdav_win32_is_winxp_or_later()
 {
-	if(dwMajorVersion == -1 || dwMinorVersion == -1){
+	if (dwMajorVersion == -1 || dwMinorVersion == -1) {
 		TSK_DEBUG_ERROR("Version numbers are invalid");
 		return tsk_false;
 	}
@@ -134,7 +136,7 @@ const char* tdav_get_current_directory_const()
 #else
 	static char CURRENT_DIR_PATH[MAX_PATH] = { 0 };
 	static DWORD CURRENT_DIR_PATH_LEN = 0;
-	if(CURRENT_DIR_PATH_LEN == 0) {
+	if (CURRENT_DIR_PATH_LEN == 0) {
 		// NULL HMODULE will get the path to the executable not the DLL. When runing the code in Internet Explorer this is a BIG issue as the path is where IE.exe is installed.
 #if TDAV_UNDER_WINDOWS_CE
 		static wchar_t TMP_CURRENT_DIR_PATH[MAX_PATH] = { 0 };

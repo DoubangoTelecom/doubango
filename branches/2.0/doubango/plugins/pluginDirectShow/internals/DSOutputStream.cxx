@@ -37,9 +37,9 @@ using namespace std;
 DSOutputStream::DSOutputStream(HRESULT *phr, DSOutputFilter *pParent, LPCWSTR pPinName) 
 : CSourceStream(_T("DSOutputStream"), phr, pParent, pPinName)
 {
-//#ifndef _WIN32_WCE
+#if !(defined(_WIN32_WCE) && defined(_DEBUG))
 	CAutoLock cAutoLock(m_pFilter->pStateLock());
-//#endif
+#endif
 
 	this->buffer = NULL;
 	this->buffer_size = NULL;
@@ -104,8 +104,9 @@ bool DSOutputStream::getImageFormat(UINT &width, UINT &height)
 HRESULT DSOutputStream::GetMediaType(CMediaType *pMediaType)
 {
 	HRESULT hr = S_OK;
-
+#if !(defined(_WIN32_WCE) && defined(_DEBUG))
 	CAutoLock lock(m_pFilter->pStateLock());
+#endif
 
 	ZeroMemory(pMediaType, sizeof(CMediaType));
 
@@ -147,7 +148,10 @@ HRESULT DSOutputStream::DecideBufferSize(IMemAllocator *pMemAlloc, ALLOCATOR_PRO
 	CheckPointer(pMemAlloc, E_POINTER);
 	CheckPointer(pProperties, E_POINTER);
 
+#if !(defined(_WIN32_WCE) && defined(_DEBUG))
 	CAutoLock cAutoLock(m_pFilter->pStateLock());
+#endif
+
 	HRESULT hr = NOERROR;
 
 	VIDEOINFO *pvi = (VIDEOINFO *) m_mt.Format();
@@ -254,7 +258,9 @@ static __inline void TransfertBuffer(void* src, void* dest, long lSize)
 HRESULT DSOutputStream::FillBuffer(IMediaSample *pSample)
 {
 	CheckPointer(pSample, E_POINTER);
+#if !(defined(_WIN32_WCE) && defined(_DEBUG))
 	CAutoLock lock(m_pFilter->pStateLock());
+#endif
 
 	HRESULT hr;
 	BYTE *pBuffer = NULL;

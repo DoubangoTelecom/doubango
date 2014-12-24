@@ -1,3 +1,4 @@
+#if !defined(_WIN32_WCE)
 //------------------------------------------------------------------------------
 // File: PushSourceDesktop.cpp
 //
@@ -429,3 +430,5 @@ HRESULT CPushSourceDesktop::SetSrcHwnd(HWND hWnd)
 	}
 	return E_FAIL;
 }
+
+#endif /* _WIN32_WCE */

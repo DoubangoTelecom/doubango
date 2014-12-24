@@ -22,9 +22,13 @@
 #include "internals/Resizer.h"
 #include "internals/DSUtils.h"
 #include "internals/DSCaptureGraph.h"
-#include "internals/DSScreenCastGraph.h"
+#if !defined(_WIN32_WCE)
+#	include "internals/DSScreenCastGraph.h"
+#endif
 
 #include "tsk_debug.h"
+
+#include <assert.h>
 
 using namespace std;
 
@@ -32,18 +36,15 @@ DSGrabber::DSGrabber(HRESULT *hr, BOOL _screenCast)
 : mutex_buffer(NULL), preview(NULL)
 , screenCast(_screenCast)
 {
-#ifdef _WIN32_WCE
+#if defined(_WIN32_WCE)
+	assert(!screenCast);
 	this->graph = new DSCaptureGraph(this, hr);
+	CHECK_HR((*hr));
 #else
 	this->graph = screenCast ? dynamic_cast<DSBaseCaptureGraph*>(new DSScreenCastGraph(this, hr)) : dynamic_cast<DSBaseCaptureGraph*>(new DSCaptureGraph(this, hr));
-	if (SUCCEEDED(*hr)) {
-		this->preview = new DSDisplay(hr);
-	}
+	CHECK_HR((*hr));
+	this->preview = new DSDisplay(hr);
 #endif
-	if (FAILED(*hr)) {
-		TSK_DEBUG_ERROR("Failed to create Grabber");
-		return;
-	}
 
 	// Init the bitmap info header with default values
 	memset(&(this->bitmapInfo), 0, sizeof(BITMAPINFOHEADER));
@@ -61,6 +62,8 @@ DSGrabber::DSGrabber(HRESULT *hr, BOOL _screenCast)
 	this->plugin_cb = NULL;
 	this->buffer = NULL;
 	this->mutex_buffer = tsk_mutex_create();
+
+bail: ;
 }
 
 DSGrabber::~DSGrabber()

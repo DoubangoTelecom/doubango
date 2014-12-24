@@ -27,15 +27,14 @@
 #define SAFE_RELEASE(x) if ((x)) { (x)->Release(); (x) = NULL; }
 #define SAFE_DELETE_PTR(x) if ((x)) { delete (x); (x) = NULL; }
 #define SAFE_DELETE_ARRAY(x) if ((x)) { delete[] (x); (x) = NULL; }
+// In CHECK_HR(x) When (x) is a function it will be executed twice when used in "TSK_DEBUG_ERROR(x)" and "If(x)"
+#define CHECK_HR(x) { HRESULT __hr__ = (x); if (FAILED(__hr__)) { TSK_DEBUG_ERROR("Operation Failed (%08x)", __hr__); goto bail; } }
 
 #define DS_NANOS_TO_100NS(NANOS) (((LONGLONG)(NANOS)) / 100ui64)
 #define DS_MICROS_TO_100NS(MICROS) (((LONGLONG)(MICROS)) * 10ui64)
 #define DS_MILLIS_TO_100NS(MILLIS) (((LONGLONG)(MILLIS)) * 10000ui64)
 #define DS_SECONDS_TO_100NS(SEC) (((LONGLONG)(SEC)) * 10000000ui64)
-//#define DS_100NS_TO_SECONDS(NANOS) (((LONGLONG)(NANOS)) / 10000000ui64)  
-
-//#define SECONDS_TO_100NS(s) (LONGLONG)(10000000/(s))
-//#define SECONDS_FROM_100NS(ns) (10000000/(ns))
+#define DS_SECONDS_FROM_100NS(SEC) (10000000ui64/(SEC))
 
 #define COCREATE(cls, iid, target) \
 	CoCreateInstance(cls, NULL, CLSCTX_INPROC_SERVER, iid, reinterpret_cast<void**>(&target))

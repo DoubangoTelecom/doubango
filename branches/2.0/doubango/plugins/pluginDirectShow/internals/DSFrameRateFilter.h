@@ -23,21 +23,6 @@
 #include <streams.h>
 #include <math.h>
 
-// TODO: do it only once
-#if !defined(TDSHOW_DEFINE_GUID) && !defined(_WIN32_WCE)
-#define TDSHOW_DEFINE_GUID(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
-        EXTERN_C const GUID DECLSPEC_SELECTANY name \
-                = { l, w1, w2, { b1, b2,  b3,  b4,  b5,  b6,  b7,  b8 } }
-#elif !defined(TDSHOW_DEFINE_GUID) && defined(_WIN32_WCE)
-#define TDSHOW_DEFINE_GUID(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
-        EXTERN_C const GUID __declspec(selectany) name \
-                = { l, w1, w2, { b1, b2,  b3,  b4,  b5,  b6,  b7,  b8 } }
-#endif
-
-// {7F9F08CF-139F-40b2-A283-01C4EC26A452}
-TDSHOW_DEFINE_GUID(CLSID_DSFrameRateFilter, 
-0x7f9f08cf, 0x139f, 0x40b2, 0xa2, 0x83, 0x1, 0xc4, 0xec, 0x26, 0xa4, 0x52);
-
 class DSFrameRateFilter : public CTransInPlaceFilter
 {
 public:

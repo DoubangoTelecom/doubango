@@ -397,7 +397,8 @@ LRESULT DSDisplay::handleEvents(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 	case WM_GRAPHNOTIFY:
 		{
-			long evCode, param1, param2;
+			long evCode;
+			LONG_PTR param1, param2;
 			HRESULT hr;
 			while (hr = this->graph->getMediaEvent()->GetEvent(&evCode, &param1, &param2, 0), SUCCEEDED(hr))
 			{
@@ -470,7 +471,7 @@ void DSDisplay::hook()
 		//this->parentWindowProc = (WNDPROC)SetWindowLong( this->window, GWL_WNDPROC, (LONG) __directshow__WndProcWindow );
 		//__directshow__Displays[this->window] = this;
 #else
-		this->parentWindowProc = (WNDPROC) SetWindowLongPtr(this->window, GWL_WNDPROC, (LONG) __directshow__WndProcWindow);
+		this->parentWindowProc = (WNDPROC) SetWindowLongPtr(this->window, GWLP_WNDPROC, (LONG_PTR) __directshow__WndProcWindow);
 		// Add this instance to the callback map
 		tsk_object_new(tdshow_display_def_t, this->window, this);
 #endif
@@ -541,7 +542,7 @@ void DSDisplay::unhook()
 		//this->parentWindowProc = (WNDPROC)SetWindowLong( this->window, GWL_WNDPROC, (LONG) this->parentWindowProc );
 		//this->parentWindowProc = (WNDPROC)SetWindowLong( this->window, GWL_WNDPROC, (LONG) this->parentWindowProc );
 #else
-		SetWindowLongPtr(this->window, GWL_WNDPROC, (LONG) this->parentWindowProc);
+		SetWindowLongPtr(this->window, GWLP_WNDPROC, (LONG_PTR) this->parentWindowProc);
 #endif
 	}
 	if(lock)
