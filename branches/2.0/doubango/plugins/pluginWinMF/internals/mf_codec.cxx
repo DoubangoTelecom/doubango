@@ -773,26 +773,45 @@ bail:
 	return hr;
 }
 
+HRESULT MFCodecVideo::IsSetSliceMaxSizeInBytesSupported(BOOL &supported)
+{
+	HRESULT hr = S_OK;
+	supported = FALSE;
+
+	if ((m_eId == MFCodecId_H264Base || m_eId == MFCodecId_H264Main))
+	{
+#if defined(CODECAPI_AVEncSliceControlMode) && defined(CODECAPI_AVEncSliceControlSize)
+		if (m_pCodecAPI->IsSupported(&CODECAPI_AVEncSliceControlMode) == S_OK && m_pCodecAPI->IsSupported(&CODECAPI_AVEncSliceControlSize) == S_OK) {
+			supported = TRUE;
+		}
+#endif
+	}
+	return hr;
+}
+
 HRESULT MFCodecVideo::SetSliceMaxSizeInBytes(UINT32 nSliceMaxSizeInBytes)
 {
 	assert(IsValid() && nSliceMaxSizeInBytes > 0);
 
 	HRESULT hr = S_OK;
 
+	if ((m_eId == MFCodecId_H264Base || m_eId == MFCodecId_H264Main))
+	{
 #if defined(CODECAPI_AVEncSliceControlMode) && defined(CODECAPI_AVEncSliceControlSize)
-	if (m_pCodecAPI->IsSupported(&CODECAPI_AVEncSliceControlMode) == S_OK && m_pCodecAPI->IsSupported(&CODECAPI_AVEncSliceControlSize) == S_OK) {
-		VARIANT var = { 0 };
-		var.vt = VT_UI4;
+		if (m_pCodecAPI->IsSupported(&CODECAPI_AVEncSliceControlMode) == S_OK && m_pCodecAPI->IsSupported(&CODECAPI_AVEncSliceControlSize) == S_OK) {
+			VARIANT var = { 0 };
+			var.vt = VT_UI4;
 
-		var.ulVal = 1; // Bits
-		CHECK_HR(hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncSliceControlMode, &var));
+			var.ulVal = 1; // Bits
+			CHECK_HR(hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncSliceControlMode, &var));
 
-		var.ulVal = (nSliceMaxSizeInBytes << 3); // From Bytes to Bits
-		CHECK_HR(hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncSliceControlSize, &var));
-	}
+			var.ulVal = (nSliceMaxSizeInBytes << 3); // From Bytes to Bits
+			CHECK_HR(hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncSliceControlSize, &var));
+		}
 #else
-	CHECK_HR(hr = S_OK);
+		CHECK_HR(hr = S_OK);
 #endif
+	}
 
 bail:
 	return hr;
@@ -804,17 +823,20 @@ HRESULT MFCodecVideo::RequestKeyFrame()
 		
 	HRESULT hr = S_OK;
 
+	if ((m_eId == MFCodecId_H264Base || m_eId == MFCodecId_H264Main))
+	{
 #if defined(CODECAPI_AVEncVideoForceKeyFrame)
-	if (m_pCodecAPI->IsSupported(&CODECAPI_AVEncVideoForceKeyFrame) == S_OK) {
-		VARIANT var = { 0 };
+		if (m_pCodecAPI->IsSupported(&CODECAPI_AVEncVideoForceKeyFrame) == S_OK) {
+			VARIANT var = { 0 };
 
-		var.vt = VT_UI4;
-		var.ulVal = 1;
-		CHECK_HR(hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncVideoForceKeyFrame, &var));
-	}
+			var.vt = VT_UI4;
+			var.ulVal = 1;
+			CHECK_HR(hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncVideoForceKeyFrame, &var));
+		}
 #else
-	CHECK_HR(hr = S_OK);
+		CHECK_HR(hr = S_OK);
 #endif
+	}
 
 bail:
 	return hr;

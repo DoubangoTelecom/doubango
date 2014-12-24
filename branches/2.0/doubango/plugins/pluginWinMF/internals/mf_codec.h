@@ -129,6 +129,7 @@ public:
 	virtual HRESULT SetSliceMaxSizeInBytes(UINT32 nSliceMaxSizeInBytes);
 	virtual HRESULT RequestKeyFrame();
 
+	virtual HRESULT IsSetSliceMaxSizeInBytesSupported(BOOL &supported);
 	virtual inline UINT32 GetFrameRate() { return m_nFrameRate; }
 	virtual inline UINT32 GetWidth() { return m_nWidth; }
 	virtual inline UINT32 GetHeight() { return m_nHeight; }
