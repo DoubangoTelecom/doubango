@@ -26,7 +26,9 @@
 DSOutputFilter::DSOutputFilter(LPUNKNOWN pUnk, HRESULT *phr) 
 : CSource(_T("TDSHOW_OUTPUT"), pUnk, CLSID_TdshowOutputFilter)
 {
+#if !(defined(_WIN32_WCE) && defined(_DEBUG))
     CAutoLock cAutoLock(&m_cStateLock);
+#endif
 
 	// Add one source stream (output pin)!
 	this->outputStream = new DSOutputStream(phr, this, _T("Out"));

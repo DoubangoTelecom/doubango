@@ -24,11 +24,12 @@
 #include <atlbase.h>
 #include <atlstr.h>
 #include <iostream>
+#include <assert.h>
 
 #include "tsk_debug.h"
 
-#ifdef _WIN32_WCE
-#	include <internals/wce/cpropertybag.h>
+#if defined (_WIN32_WCE)
+#	include "internals/wince/cpropertybag.h"
 #endif
 
 HRESULT enumerateCaptureDevices(const std::string &prefix, std::vector<VideoGrabberName> *names)
@@ -174,7 +175,7 @@ HRESULT createSourceFilter(std::string *devicePath, IBaseFilter **sourceFilter)
 	// Set sourceFilter to null
 	SAFE_RELEASE((*sourceFilter));
 
-#ifdef _WIN32_WCE
+#if defined( _WIN32_WCE)
 	CPropertyBag  pBag;
 	HANDLE	handle = NULL;
 	DEVMGR_DEVICE_INFORMATION di;
@@ -215,7 +216,7 @@ HRESULT createSourceFilter(std::string *devicePath, IBaseFilter **sourceFilter)
 		memset(mbstr_name,NULL,MAX_PATH); 
 		wcstombs(mbstr_name, pwzName, MAX_PATH);
 
-		if(equals(std::string((const char*)mbstr_name), (*devicePath)) || ("0" == (*devicePath)))
+		if((std::string((const char*)mbstr_name) == (*devicePath)) || ("0" == (*devicePath)))
 		{
 			varCamName = pwzName;
 			if( varCamName.vt != VT_BSTR )

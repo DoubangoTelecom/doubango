@@ -26,7 +26,8 @@
 using namespace std;
 
 #ifdef _WIN32_WCE
-DSCaptureGraph::DSCaptureGraph(InxbISampleGrabberCB* callback, HRESULT *hr)
+DSCaptureGraph::DSCaptureGraph(DSISampleGrabberCB* callback, HRESULT *hr)
+: DSBaseCaptureGraph(callback, hr)
 #else
 DSCaptureGraph::DSCaptureGraph(ISampleGrabberCB* callback, HRESULT *hr)
 : DSBaseCaptureGraph(callback, hr)
@@ -69,7 +70,7 @@ DSCaptureGraph::~DSCaptureGraph()
 	SAFE_RELEASE(this->mediaController);
 	SAFE_RELEASE(this->grabberController);
 
-#ifdef _WIN32_WCE
+#if defined(_WIN32_WCE)
 	SAFE_RELEASE(this->colorConvertor565);
 #else
 #endif
@@ -153,8 +154,8 @@ HRESULT DSCaptureGraph::setParameters(DSCaptureFormat *format, int framerate)
 	hr = this->streamConfiguration->SetFormat(mediaType);
 	if (FAILED(hr)) goto bail;
 
-#ifdef _WIN32_WCE
-	hr = this->grabberController->SetFps((int) SECONDS_FROM_100NS(vih->AvgTimePerFrame)/*format->getFramerate()*/, framerate);
+#if defined(_WIN32_WCE)
+	hr = this->grabberController->SetFps((int) DS_SECONDS_FROM_100NS(vih->AvgTimePerFrame)/*format->getFramerate()*/, framerate);
 	if (FAILED(hr)) goto bail;
 	hr = this->grabberController->SetSize(w,h);
 #else
@@ -171,8 +172,8 @@ bail:
 	return hr;
 }
 
-#ifdef _WIN32_WCE
-#	include <tinydshow/wce/DSInxbNullFilter.h>
+#if defined(_WIN32_WCE)
+#	include "internals/wince/DSNullFilter.h"
 #endif
 
 HRESULT DSCaptureGraph::connect()
@@ -189,9 +190,14 @@ HRESULT DSCaptureGraph::connect()
 		return E_FAIL;
 	}
 
+	if (!this->graphBuilder){
+		TSK_DEBUG_ERROR("Invalid grash builder");
+		return E_FAIL;
+	}
+
 	if (this->captureFormat->isRGB())
 	{
-#if _WIN32_WCE
+#if defined(_WIN32_WCE)
 		hr = ConnectFilters(this->graphBuilder, this->sourceFilter, this->colorConvertor565)		;	if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
 		hr = ConnectFilters(this->graphBuilder, this->colorConvertor565, this->sampleGrabberFilter)	;	if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
 		hr = ConnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter);	if(FAILED(hr)) { TSK_DEBUG_ERROR("ConnectFilters failed"); return hr; }
@@ -203,7 +209,7 @@ HRESULT DSCaptureGraph::connect()
 	}
 	else
 	{
-#ifdef _WIN32_WCE
+#if defined(_WIN32_WCE)
 		hr = ConnectFilters(this->graphBuilder, this->sourceFilter, this->colorConvertor565)		;	if(FAILED(hr))return hr;
 		hr = ConnectFilters(this->graphBuilder, this->colorConvertor565, this->sampleGrabberFilter)	;	if(FAILED(hr))return hr;
 		hr = ConnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter);	if(FAILED(hr))return hr;
@@ -223,19 +229,17 @@ HRESULT DSCaptureGraph::disconnect()
 {
 	HRESULT hr;
 
-	if (!this->sourceFilter)
-	{
+	if (!this->sourceFilter) {
 		return E_FAIL;
 	}
 
-	if (!this->captureFormat)
-	{
+	if (!this->captureFormat) {
 		return E_FAIL;
 	}
 
 	if (this->captureFormat->isRGB())
 	{
-#ifdef _WIN32_WCE
+#if defined(_WIN32_WCE)
 		hr = DisconnectFilters(this->graphBuilder, this->sourceFilter, this->colorConvertor565);
 		hr = DisconnectFilters(this->graphBuilder, this->colorConvertor565, this->sampleGrabberFilter);
 		hr = DisconnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter);
@@ -247,7 +251,7 @@ HRESULT DSCaptureGraph::disconnect()
 	}
 	else
 	{
-#ifdef _WIN32_WCE
+#if defined(_WIN32_WCE)
 		hr = DisconnectFilters(this->graphBuilder, this->sourceFilter, this->colorConvertor565); if(FAILED(hr))return hr;
 		hr = DisconnectFilters(this->graphBuilder, this->colorConvertor565, this->sampleGrabberFilter); if(FAILED(hr))return hr;
 		hr = DisconnectFilters(this->graphBuilder, this->sampleGrabberFilter, this->nullRendererFilter); if(FAILED(hr))return hr;
@@ -265,13 +269,13 @@ HRESULT DSCaptureGraph::start()
 {
 	HRESULT hr;
 
-	if(isRunning() && !isPaused()){
+	if (isRunning() && !isPaused()) {
 		return S_OK;
 	}
 	
 	//this->mediaController->Stop();
 
-	hr = this->mediaController->Run();
+	hr = this->mediaController ? this->mediaController->Run() : E_POINTER;
 	/*if (hr == S_FALSE)
 	{
 		cerr << "DSCaptureGraph::mediaController->Start() has failed with " << hr << ". Waiting for transition." << endl;
@@ -282,7 +286,7 @@ HRESULT DSCaptureGraph::start()
 
 	if (!SUCCEEDED(hr))
 	{
-#ifdef _WIN32_WCE
+#if defined(_WIN32_WCE)
 		MessageBox(NULL, _T("Starting DirectShow Graph Failed"), _T("Failure"), MB_OK);
 		//assert(1==15);
 #endif
@@ -296,9 +300,9 @@ HRESULT DSCaptureGraph::start()
 HRESULT DSCaptureGraph::pause()
 {
 	HRESULT hr = S_OK;
-	if(isRunning()){
+	if (isRunning()) {
 		hr = this->mediaController->Pause();
-		if(SUCCEEDED(hr)){
+		if (SUCCEEDED(hr)) {
 			this->paused = TRUE;
 		}
 	}
@@ -339,7 +343,7 @@ bool DSCaptureGraph::isPaused()
 
 HRESULT DSCaptureGraph::getConnectedMediaType(AM_MEDIA_TYPE *mediaType)
 {
-#ifdef _WIN32_WCE
+#if defined(_WIN32_WCE)
 	memmove(mediaType, &this->grabberController->GetMediaType(), sizeof(AM_MEDIA_TYPE));
 	return S_OK;
 #else
@@ -351,77 +355,64 @@ HRESULT DSCaptureGraph::createCaptureGraph()
 {
 	HRESULT hr;
 
-#ifdef _WIN32_WCE
-
+#if defined(_WIN32_WCE)
 	// Create capture graph builder
-	hr = COCREATE(CLSID_CaptureGraphBuilder, IID_ICaptureGraphBuilder2, this->captureGraphBuilder)	; if(FAILED(hr)) return hr;
-	hr = COCREATE(CLSID_FilterGraph, IID_IGraphBuilder, this->graphBuilder)							; if(FAILED(hr)) return hr;
-	hr = this->captureGraphBuilder->SetFiltergraph(this->graphBuilder)								; if(FAILED(hr)) return hr;
+	CHECK_HR(hr = COCREATE(CLSID_CaptureGraphBuilder, IID_ICaptureGraphBuilder2, this->captureGraphBuilder));
+	CHECK_HR(hr = COCREATE(CLSID_FilterGraph, IID_IGraphBuilder, this->graphBuilder));
+	CHECK_HR(hr = this->captureGraphBuilder->SetFiltergraph(this->graphBuilder));
 	
 	// Create filters
 	LPUNKNOWN pUnk1 = NULL, pUnk2 = NULL;
-	hr = COCREATE(CLSID_Colour, IID_IBaseFilter, this->colorConvertor565)						;if(FAILED(hr)) return hr;
-	this->sampleGrabberFilter = new DSSampleGrabber(FITLER_SAMPLE_GRABBER, pUnk1, &hr)			;if(FAILED(hr)) return hr;
-	this->nullRendererFilter = new DSInxbNullFilter(/*FILTER_NULL_RENDERER,*/ pUnk2, &hr)		;if(FAILED(hr)) return hr;
-	this->grabberController = (DSSampleGrabber*)(this->sampleGrabberFilter);					;if(!this->grabberController) return E_FAIL;
+	CHECK_HR(hr = COCREATE(CLSID_Colour, IID_IBaseFilter, this->colorConvertor565));
+	this->sampleGrabberFilter = new DSSampleGrabber(FITLER_SAMPLE_GRABBER, pUnk1, &hr); CHECK_HR(hr);
+	this->nullRendererFilter = new DSNullFilter(/*FILTER_NULL_RENDERER,*/ pUnk2, &hr); CHECK_HR(hr);
+	this->grabberController = (DSSampleGrabber*)(this->sampleGrabberFilter); if (!this->grabberController) CHECK_HR(E_FAIL);
 
 	// Add Filters
-	hr = this->graphBuilder->AddFilter(this->colorConvertor565, FILTER_COLOR_CONVERTOR_565)	;if(FAILED(hr)) return hr;
-	hr = this->graphBuilder->AddFilter(this->sampleGrabberFilter, FITLER_SAMPLE_GRABBER)	;if(FAILED(hr)) return hr;
-	hr = this->graphBuilder->AddFilter(this->nullRendererFilter, FILTER_NULL_RENDERER)		;if(FAILED(hr)) return hr;
+	CHECK_HR(hr = this->graphBuilder->AddFilter(this->colorConvertor565, FILTER_COLOR_CONVERTOR_565));
+	CHECK_HR(hr = this->graphBuilder->AddFilter(this->sampleGrabberFilter, FITLER_SAMPLE_GRABBER));
+	CHECK_HR(hr = this->graphBuilder->AddFilter(this->nullRendererFilter, FILTER_NULL_RENDERER));
 	
 	// Find media control
-	hr = QUERY(this->graphBuilder, IID_IMediaControl, this->mediaController);
-	if(FAILED(hr)) return hr;
+	CHECK_HR(hr = QUERY(this->graphBuilder, IID_IMediaControl, this->mediaController));
 
 	// Set callback
-	hr = this->grabberController->SetCallback(this->grabberCallback);
-	if(FAILED(hr)) return hr;
+	CHECK_HR(hr = this->grabberController->SetCallback(this->grabberCallback));
 #else
 	// Create capture graph builder
-	hr = COCREATE(CLSID_CaptureGraphBuilder2, IID_ICaptureGraphBuilder2, this->captureGraphBuilder);
-	if(FAILED(hr)) return hr;
+	CHECK_HR(hr = COCREATE(CLSID_CaptureGraphBuilder2, IID_ICaptureGraphBuilder2, this->captureGraphBuilder));
 
 	// Create the graph builder
-	hr = COCREATE(CLSID_FilterGraph, IID_IGraphBuilder, this->graphBuilder);
-	if(FAILED(hr)) return hr;
+	CHECK_HR(hr = COCREATE(CLSID_FilterGraph, IID_IGraphBuilder, this->graphBuilder));
 
 	// Initialize the Capture Graph Builder.
-	hr = this->captureGraphBuilder->SetFiltergraph(this->graphBuilder);
-	if(FAILED(hr)) return hr;
+	CHECK_HR(hr = this->captureGraphBuilder->SetFiltergraph(this->graphBuilder));
 
 	// Create the sample grabber filter
-	hr = COCREATE(CLSID_SampleGrabber, IID_IBaseFilter, this->sampleGrabberFilter);
-	if(FAILED(hr)) return hr;
+	CHECK_HR(hr = COCREATE(CLSID_SampleGrabber, IID_IBaseFilter, this->sampleGrabberFilter));
 
 	// Create tdshow filter
 	LPUNKNOWN pUnk = NULL;
-	this->frameRateFilter = new DSFrameRateFilter(FILTER_FRAMERATE, pUnk, &hr);
-	if(FAILED(hr) || this->frameRateFilter == NULL) return hr;
+	this->frameRateFilter = new DSFrameRateFilter(FILTER_FRAMERATE, pUnk, &hr); CHECK_HR(hr);
+	if (!this->frameRateFilter == NULL) CHECK_HR(E_FAIL);
 
 	// Create the NULL renderer
-	hr = COCREATE(CLSID_NullRenderer, IID_IBaseFilter, this->nullRendererFilter);
-	if(FAILED(hr)) return hr;
+	CHECK_HR(hr = COCREATE(CLSID_NullRenderer, IID_IBaseFilter, this->nullRendererFilter));
 
 	// Add sample grabber to the graph
-	hr = this->graphBuilder->AddFilter(this->sampleGrabberFilter, FITLER_SAMPLE_GRABBER);
-	if(FAILED(hr)) return hr;
+	CHECK_HR(hr = this->graphBuilder->AddFilter(this->sampleGrabberFilter, FITLER_SAMPLE_GRABBER));
 
 	// Add null renderer to the graph
-	hr = this->graphBuilder->AddFilter(this->nullRendererFilter, FILTER_NULL_RENDERER);
-	if(FAILED(hr)) return hr;
+	CHECK_HR(hr = this->graphBuilder->AddFilter(this->nullRendererFilter, FILTER_NULL_RENDERER));
 
 	// Add tdshow filter
-	hr = this->graphBuilder->AddFilter(this->frameRateFilter, FILTER_FRAMERATE);
-	if(FAILED(hr)) return hr;
+	CHECK_HR(hr = this->graphBuilder->AddFilter(this->frameRateFilter, FILTER_FRAMERATE));
 
 	// Find media control
-	hr = QUERY(this->graphBuilder, IID_IMediaControl, this->mediaController);
-	if(FAILED(hr)) return hr;
+	CHECK_HR(hr = QUERY(this->graphBuilder, IID_IMediaControl, this->mediaController));
 
 	// Create the sample grabber
-	hr = QUERY(this->sampleGrabberFilter, IID_ISampleGrabber, this->grabberController);
-	if(FAILED(hr)) return hr;
+	CHECK_HR(hr = QUERY(this->sampleGrabberFilter, IID_ISampleGrabber, this->grabberController));
 
 	// Set the sample grabber media type (RGB24)
 	// TODO : CHECK
@@ -431,16 +422,15 @@ HRESULT DSCaptureGraph::createCaptureGraph()
 	mt.subtype = MEDIASUBTYPE_RGB24;
 	mt.formattype = FORMAT_VideoInfo;
 
-	hr = this->grabberController->SetMediaType(&mt);
-	if(FAILED(hr)) return hr;
+	CHECK_HR(hr = this->grabberController->SetMediaType(&mt));
 
 	// Set sample grabber media type
 	this->grabberController->SetOneShot(FALSE);
 	this->grabberController->SetBufferSamples(FALSE);
 
-	hr = this->grabberController->SetCallback(this->grabberCallback, 1);
-	if(FAILED(hr)) return hr;
+	CHECK_HR(hr = this->grabberController->SetCallback(this->grabberCallback, 1));
 #endif
 
+bail:
 	return hr;
 }

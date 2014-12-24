@@ -19,18 +19,22 @@
 
 #include <atlbase.h>
 #include <atlstr.h>
+#if !defined(_WIN32_WCE)
 #include <d3d9.h>
+#endif
 
 #include "tsk_debug.h"
 
 HWND GetMainWindow()
 {
 	HWND hWnd;
-	if(!(hWnd = GetActiveWindow())){
-		if(!(hWnd = GetForegroundWindow())){
-			if(!(hWnd = GetConsoleWindow())){
+	if (!(hWnd = GetActiveWindow())) {
+		if (!(hWnd = GetForegroundWindow())) {
+#if !defined(_WIN32_WCE)
+			if (!(hWnd = GetConsoleWindow())) {
 				return NULL;
 			}
+#endif
 		}
 	}
 	return hWnd;
@@ -39,7 +43,7 @@ HWND GetMainWindow()
 bool IsMainThread()
 {	
 	HWND hWnd = GetMainWindow();
-	if(hWnd){
+	if (hWnd) {
 		DWORD mainTid = GetWindowThreadProcessId(hWnd, NULL);
 		DWORD currentTid = GetCurrentThreadId();
 		return (mainTid == currentTid);
@@ -49,6 +53,9 @@ bool IsMainThread()
 
 bool IsD3D9Supported()
 {
+#if defined(_WIN32_WCE)
+	return false;
+#else
 	static bool g_bChecked = false;
 	static bool g_bSupported = false;
 
@@ -113,6 +120,7 @@ bail:
 	SAFE_RELEASE(pDevice);
 	SAFE_RELEASE(pD3D);
 	return g_bSupported;
+#endif /* _WIN32_WCE */
 }
 
 IPin *GetPin(IBaseFilter *filter, PIN_DIRECTION direction)
@@ -243,7 +251,7 @@ bool RemoveAllFilters(IGraphBuilder *graphBuilder)
 static LRESULT CALLBACK __create__WndProcWindow(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HANDLE* event = reinterpret_cast<HANDLE*>(wParam);
-	BOOL* isScreenCast = reinterpret_cast<BOOL*>(GetPropA(hWnd, "screnCast"));
+	BOOL* isScreenCast = reinterpret_cast<BOOL*>(GetProp(hWnd, TEXT("screnCast")));
 
 	if(event && lParam){
 		switch(uMsg){
@@ -300,15 +308,18 @@ int createOnUIThead(HWND hWnd, void** ppRet, BOOL display, BOOL screnCast)
 		DWORD retWait, retryCount = 3;		
 
 		if(!hWnd){
-			if(!(hWnd = FindWindowA(NULL, "Boghe - IMS/RCS Client"))){
+			if (!(hWnd = FindWindow(NULL, TEXT("Boghe - IMS/RCS Client")))) {
 				if(!(hWnd = GetMainWindow())){
 					TSK_DEBUG_ERROR("No Window handle could be used");
 					return -2;
 				}
 			}
 		}
-
-		WNDPROC wndProc = (WNDPROC) SetWindowLongPtr(hWnd, GWL_WNDPROC, (LONG) __create__WndProcWindow);
+#if defined(_WIN32_WCE)
+		WNDPROC wndProc = (WNDPROC) SetWindowLong(hWnd, GWL_WNDPROC, (LONG) __create__WndProcWindow);
+#else
+		WNDPROC wndProc = (WNDPROC) SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR) __create__WndProcWindow);
+#endif
 		if (!wndProc) {
 			TSK_DEBUG_ERROR("SetWindowLongPtr() failed with errcode=%d", GetLastError());
 			return createOnCurrentThead(hWnd, ppRet, display, screnCast);
@@ -318,8 +329,8 @@ int createOnUIThead(HWND hWnd, void** ppRet, BOOL display, BOOL screnCast)
 			TSK_DEBUG_ERROR("Failed to create new event");
 			ret = -4; goto bail;
 		}
-		SetPropA(hWnd, "screnCast", screnCast ? &__isScreenCastTrue : &__isScreenCastFalse);
-		if (!PostMessageA(hWnd, display ? WM_CREATE_DISPLAY_ON_UI_THREAD : WM_CREATE_GRABBER_ON_UI_THREAD, reinterpret_cast<WPARAM>(event), reinterpret_cast<LPARAM>(ppRet))) {
+		SetProp(hWnd, TEXT("screnCast"), screnCast ? &__isScreenCastTrue : &__isScreenCastFalse);
+		if (!PostMessage(hWnd, display ? WM_CREATE_DISPLAY_ON_UI_THREAD : WM_CREATE_GRABBER_ON_UI_THREAD, reinterpret_cast<WPARAM>(event), reinterpret_cast<LPARAM>(ppRet))) {
 			TSK_DEBUG_ERROR("PostMessageA() failed");
 			ret = -5; goto bail;
 		}
@@ -332,7 +343,11 @@ int createOnUIThead(HWND hWnd, void** ppRet, BOOL display, BOOL screnCast)
 	bail:
 		// restore
 		if (hWnd && wndProc) {
-			SetWindowLongPtr(hWnd, GWL_WNDPROC, (LONG)wndProc);
+#if defined(_WIN32_WCE)
+			SetWindowLong(hWnd, GWL_WNDPROC, (LONG)wndProc);
+#else
+			SetWindowLongPtr(hWnd, GWLP_WNDPROC, (LONG_PTR)wndProc);
+#endif
 		}
 		if (event) {
 			CloseHandle(event);

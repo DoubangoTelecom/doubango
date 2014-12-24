@@ -1,3 +1,4 @@
+#if !defined(_WIN32_WCE)
 //------------------------------------------------------------------------------
 // File: DibHelper.cpp
 //
@@ -76,3 +77,4 @@ HBITMAP CopyScreenToBitmap(LPRECT lpRect, BYTE *pData, BITMAPINFO *pHeader)
     return hBitmap;
 }
 
+#endif /* _WIN32_WCE */

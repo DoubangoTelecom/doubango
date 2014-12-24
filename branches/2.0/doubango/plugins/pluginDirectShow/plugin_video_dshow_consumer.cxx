@@ -30,7 +30,7 @@
 // Whether to use Direct3D device for direct rendering or DirectShow graph and custom source
 // Using DirectShow (DS) introduce delay when the input fps is different than the one in the custom src.
 // It's very hard to have someting accurate when using DS because the input FPS change depending on the congestion control. D3D is the best choice as frames are displayed as they arrive
-#if !defined(PLUGIN_DS_CV_USE_D3D9)
+#if !defined(PLUGIN_DS_CV_USE_D3D9) && !defined(_WIN32_WCE)
 #	define PLUGIN_DS_CV_USE_D3D9	 1
 #endif
 
@@ -1036,7 +1036,7 @@ static HRESULT HookWindow(plugin_video_dshow_consumer_t *pSelf, HWND hWnd)
 	CHECK_HR(hr = UnhookWindow(pSelf));
 
 	if ((pSelf->hWindow = hWnd)) {
-		pSelf->wndProc = (WNDPROC)SetWindowLongPtr(pSelf->hWindow, GWL_WNDPROC, (LONG)WndProc);
+		pSelf->wndProc = (WNDPROC)SetWindowLongPtr(pSelf->hWindow, GWLP_WNDPROC, (LONG_PTR)WndProc);
 		if (!pSelf->wndProc) {
 			TSK_DEBUG_ERROR("HookWindowLongPtr() failed with errcode=%d", GetLastError());
 			CHECK_HR(hr = E_FAIL);
@@ -1052,7 +1052,7 @@ static HRESULT UnhookWindow(struct plugin_video_dshow_consumer_s *pSelf)
 {
 	tsk_safeobj_lock(pSelf);
 	if (pSelf->hWindow && pSelf->wndProc) {
-		SetWindowLongPtr(pSelf->hWindow, GWL_WNDPROC, (LONG)pSelf->wndProc);
+		SetWindowLongPtr(pSelf->hWindow, GWLP_WNDPROC, (LONG_PTR)pSelf->wndProc);
 		pSelf->wndProc = NULL;
 	}
 	if(pSelf->hWindow)
@@ -1163,8 +1163,8 @@ static int plugin_video_dshow_consumer_start(tmedia_consumer_t* self)
 
 	// create display on UI thread
 	if(!consumer->display){
-		if(consumer->create_on_ui_thread) createOnUIThead(reinterpret_cast<HWND>((void*)consumer->window), (void**)&consumer->display, true);
-		else createOnCurrentThead(reinterpret_cast<HWND>((void*)consumer->window), (void**)&consumer->display, true);
+		if (consumer->create_on_ui_thread) createOnUIThead(reinterpret_cast<HWND>((void*)consumer->window), (void**)&consumer->display, true, false);
+		else createOnCurrentThead(reinterpret_cast<HWND>((void*)consumer->window), (void**)&consumer->display, true, false);
 		
 		if(!consumer->display){
 			TSK_DEBUG_ERROR("Failed to create display");
@@ -1316,3 +1316,4 @@ static const tmedia_consumer_plugin_def_t plugin_video_dshow_consumer_plugin_def
 const tmedia_consumer_plugin_def_t *plugin_video_dshow_consumer_plugin_def_t = &plugin_video_dshow_consumer_plugin_def_s;
 
 #endif /* PLUGIN_DS_CV_USE_D3D9 */
+

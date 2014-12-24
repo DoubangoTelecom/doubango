@@ -24,10 +24,10 @@
 #include "internals/DSBaseCaptureGraph.h"
 #include "internals/DSFrameRateFilter.h"
 
-#ifdef _WIN32_WCE
-#	include "internals/wce/DSSampleGrabber.h"
-#	include "internals/wce/DSInxbNullFilter.h"
-#	include "internals/wce/InxbISampleGrabberCB.h"
+#if defined(_WIN32_WCE)
+#	include "internals/wince/DSSampleGrabber.h"
+#	include "internals/wince/DSNullFilter.h"
+#	include "internals/wince/DSISampleGrabberCB.h"
 #else
 #	include <qedit.h>
 #endif
@@ -37,7 +37,7 @@ class DSCaptureGraph : public DSBaseCaptureGraph
 {
 public:
 #ifdef _WIN32_WCE
-	DSCaptureGraph(InxbISampleGrabberCB* callback, HRESULT *hr);
+	DSCaptureGraph(DSISampleGrabberCB* callback, HRESULT *hr);
 #else
 	DSCaptureGraph(ISampleGrabberCB* callback, HRESULT *hr);
 #endif
@@ -66,7 +66,7 @@ private:
 
 private:
 #ifdef _WIN32_WCE
-	InxbISampleGrabberCB			*grabberCallback;
+	DSISampleGrabberCB			*grabberCallback;
 #else
 	ISampleGrabberCB				*grabberCallback;
 #endif

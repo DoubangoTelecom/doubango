@@ -94,7 +94,7 @@ static int tnet_socket_close(tnet_socket_t *sock);
 tnet_socket_t* tnet_socket_create_2(const char* host, tnet_port_t port_, tnet_socket_type_t type, tsk_bool_t nonblocking, tsk_bool_t bindsocket)
 {
 	tnet_socket_t *sock;
-	if ((sock = tsk_object_new(tnet_socket_def_t))){
+	if ((sock = tsk_object_new(tnet_socket_def_t))) {
 		int status;
 		tsk_istr_t port;
 		struct addrinfo *result = tsk_null;
@@ -116,7 +116,7 @@ tnet_socket_t* tnet_socket_create_2(const char* host, tnet_port_t port_, tnet_so
 			if (TNET_SOCKET_TYPE_IS_IPV6(sock->type)){
 				memcpy(local_hostname, "::", 2);
 			}
-			else{
+			else {
 				memcpy(local_hostname, "0.0.0.0", 7);
 			}
 		}
@@ -133,7 +133,7 @@ tnet_socket_t* tnet_socket_create_2(const char* host, tnet_port_t port_, tnet_so
 			;
 
 		/* Performs getaddrinfo */
-		if((status = tnet_getaddrinfo(local_hostname, port, &hints, &result))){
+		if ((status = tnet_getaddrinfo(local_hostname, port, &hints, &result))) {
 			TNET_PRINT_LAST_ERROR("tnet_getaddrinfo(family=%d, hostname=%s and port=%s) failed: [%s]",
 				hints.ai_family, local_hostname, port, tnet_gai_strerror(status));
 			goto bail;
@@ -177,7 +177,7 @@ tnet_socket_t* tnet_socket_create_2(const char* host, tnet_port_t port_, tnet_so
 			if (ptr->ai_family == AF_INET6) {
 				TNET_SOCKET_TYPE_SET_IPV6Only(sock->type);
 			}
-			else{
+			else {
 				TNET_SOCKET_TYPE_SET_IPV4Only(sock->type);
 			}
 			break;

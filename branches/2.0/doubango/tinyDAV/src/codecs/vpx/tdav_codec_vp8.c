@@ -660,7 +660,7 @@ const tmedia_codec_plugin_def_t *tdav_codec_vp8_plugin_def_t = &tdav_codec_vp8_p
 int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 {
 	vpx_codec_err_t vpx_ret;
-	vpx_enc_frame_flags_t enc_flags;
+	vpx_enc_frame_flags_t enc_flags = 0; // VPX_EFLAG_XXX
 
 	if(self->encoder.initialized){
 		TSK_DEBUG_ERROR("VP8 encoder already inialized");
@@ -712,8 +712,6 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 	self->encoder.cfg.rc_buf_sz = 1000;
 #endif
 
-	enc_flags = 0; //VPX_EFLAG_XXX
-
 	if((vpx_ret = vpx_codec_enc_init(&self->encoder.context, vp8_interface_enc, &self->encoder.cfg, enc_flags)) != VPX_CODEC_OK){
 		TSK_DEBUG_ERROR("vpx_codec_enc_init failed with error =%s", vpx_codec_err_to_string(vpx_ret));
 		return -3;
@@ -726,7 +724,7 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 	vpx_codec_control(&self->encoder.context, VP8E_SET_NOISE_SENSITIVITY, 2);
 #endif
 	/* vpx_codec_control(&self->encoder.context, VP8E_SET_CPUUSED, 0); */
-
+	
 	TSK_DEBUG_INFO("[VP8] target_bitrate=%d kbps", self->encoder.target_bitrate);
 	
 	return 0;

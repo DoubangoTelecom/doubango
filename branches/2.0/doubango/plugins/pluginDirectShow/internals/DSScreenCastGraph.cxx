@@ -1,3 +1,4 @@
+#if !defined(_WIN32_WCE)
 /* Copyright (C) 2014 Mamadou DIOP
 *	
 * This file is part of Open Source Doubango Framework.
@@ -252,3 +253,5 @@ HRESULT DSScreenCastGraph::createCaptureGraph()
 
 	return hr;
 }
+
+#endif /* _WIN32_WCE */

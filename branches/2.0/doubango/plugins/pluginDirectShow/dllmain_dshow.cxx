@@ -52,6 +52,7 @@ CFactoryTemplate g_Templates[]=
 };
 int g_cTemplates = sizeof(g_Templates)/sizeof(g_Templates[0]);
 
+#if !defined(_WIN32_WCE)
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
@@ -67,6 +68,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	}
 	return TRUE;
 }
+#endif
 
 typedef enum PLUGIN_INDEX_E
 {
