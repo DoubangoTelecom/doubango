@@ -780,7 +780,7 @@ HRESULT MFCodecVideo::SetSliceMaxSizeInBytes(UINT32 nSliceMaxSizeInBytes)
 	HRESULT hr = S_OK;
 
 #if defined(CODECAPI_AVEncSliceControlMode) && defined(CODECAPI_AVEncSliceControlSize)
-	if (m_pCodecAPI->IsSupported(&CODECAPI_AVEncSliceControlMode) && m_pCodecAPI->IsSupported(&CODECAPI_AVEncSliceControlSize)) {
+	if (m_pCodecAPI->IsSupported(&CODECAPI_AVEncSliceControlMode) == S_OK && m_pCodecAPI->IsSupported(&CODECAPI_AVEncSliceControlSize) == S_OK) {
 		VARIANT var = { 0 };
 		var.vt = VT_UI4;
 
@@ -805,7 +805,7 @@ HRESULT MFCodecVideo::RequestKeyFrame()
 	HRESULT hr = S_OK;
 
 #if defined(CODECAPI_AVEncVideoForceKeyFrame)
-	if (m_pCodecAPI->IsSupported(&CODECAPI_AVEncVideoForceKeyFrame)) {
+	if (m_pCodecAPI->IsSupported(&CODECAPI_AVEncVideoForceKeyFrame) == S_OK) {
 		VARIANT var = { 0 };
 
 		var.vt = VT_UI4;
