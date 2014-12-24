@@ -23,6 +23,7 @@
 
 #include "tsk_debug.h"
 
+#include <Codecapi.h>
 #include <initguid.h>
 #include <wmcodecdsp.h>
 #include <d3d9.h>
@@ -61,6 +62,7 @@ DWORD MFUtils::g_dwMinorVersion = -1;
 
 BOOL MFUtils::g_bLowLatencyH264Checked = FALSE;
 BOOL MFUtils::g_bLowLatencyH264Supported = FALSE;
+BOOL MFUtils::g_bLowLatencyH264SupportsMaxSliceSize = FALSE;
 
 BOOL MFUtils::g_bD3D9Checked = FALSE;
 BOOL MFUtils::g_bD3D9Supported = FALSE;
@@ -261,8 +263,7 @@ BOOL MFUtils::IsLowLatencyH264Supported()
 			1080, // HEIGHT
 			tmedia_get_video_bandwidth_kbps_2(1920, 1080, 30) * 1024) // BITRATE
 		);
-
-
+	CHECK_HR(pEncoderCodec->IsSetSliceMaxSizeInBytesSupported(MFUtils::g_bLowLatencyH264SupportsMaxSliceSize));
 
 	TSK_DEBUG_INFO("Probing H.264 MFT decoder...");
 	pDecoderCodec = MFCodecVideoH264::CreateCodecH264Main(MFCodecType_Decoder, pDecoderMFT);
@@ -286,6 +287,11 @@ bail:
 #endif /* PLUGIN_MF_DISABLE_CODECS */
 
 	return MFUtils::g_bLowLatencyH264Supported;
+}
+
+BOOL MFUtils::IsLowLatencyH264SupportsMaxSliceSize()
+{
+	return MFUtils::IsLowLatencyH264Supported() && MFUtils::g_bLowLatencyH264SupportsMaxSliceSize;
 }
 
 HRESULT MFUtils::IsAsyncMFT(

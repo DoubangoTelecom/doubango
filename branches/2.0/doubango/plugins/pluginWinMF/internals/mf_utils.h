@@ -57,6 +57,7 @@ static HRESULT Shutdown();
 
 static BOOL IsD3D9Supported();
 static BOOL IsLowLatencyH264Supported();
+static BOOL IsLowLatencyH264SupportsMaxSliceSize();
 
 static HRESULT IsAsyncMFT(
 	IMFTransform *pMFT, // The MFT to check
@@ -244,6 +245,7 @@ private:
 
 	static BOOL g_bLowLatencyH264Checked;
 	static BOOL g_bLowLatencyH264Supported;
+	static BOOL g_bLowLatencyH264SupportsMaxSliceSize;
 
 	static BOOL g_bD3D9Checked;
 	static BOOL g_bD3D9Supported;
