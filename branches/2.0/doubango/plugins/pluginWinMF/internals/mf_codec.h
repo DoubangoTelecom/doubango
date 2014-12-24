@@ -126,6 +126,7 @@ public:
 		);
 	virtual HRESULT SetGOPSize(UINT32 nFramesCount);
 	virtual HRESULT SetBitRate(UINT32 nBitRateInBps);
+	virtual HRESULT SetSliceMaxSizeInBytes(UINT32 nSliceMaxSizeInBytes);
 	virtual HRESULT RequestKeyFrame();
 
 	virtual inline UINT32 GetFrameRate() { return m_nFrameRate; }
