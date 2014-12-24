@@ -773,20 +773,47 @@ bail:
 	return hr;
 }
 
+HRESULT MFCodecVideo::SetSliceMaxSizeInBytes(UINT32 nSliceMaxSizeInBytes)
+{
+	assert(IsValid() && nSliceMaxSizeInBytes > 0);
+
+	HRESULT hr = S_OK;
+
+#if defined(CODECAPI_AVEncSliceControlMode) && defined(CODECAPI_AVEncSliceControlSize)
+	if (m_pCodecAPI->IsSupported(&CODECAPI_AVEncSliceControlMode) && m_pCodecAPI->IsSupported(&CODECAPI_AVEncSliceControlSize)) {
+		VARIANT var = { 0 };
+		var.vt = VT_UI4;
+
+		var.ulVal = 1; // Bits
+		CHECK_HR(hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncSliceControlMode, &var));
+
+		var.ulVal = (nSliceMaxSizeInBytes << 3); // From Bytes to Bits
+		CHECK_HR(hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncSliceControlSize, &var));
+	}
+#else
+	CHECK_HR(hr = S_OK);
+#endif
+
+bail:
+	return hr;
+}
+
 HRESULT MFCodecVideo::RequestKeyFrame()
 {
 	assert(IsValid());
 		
 	HRESULT hr = S_OK;
 
-#if defined(CODECAPI_AVEncVideoForceKeyFrame) // Win8 only
-	VARIANT var = {0};
+#if defined(CODECAPI_AVEncVideoForceKeyFrame)
+	if (m_pCodecAPI->IsSupported(&CODECAPI_AVEncVideoForceKeyFrame)) {
+		VARIANT var = { 0 };
 
-	var.vt = VT_UI4;
-	var.ulVal = 1;
-	CHECK_HR(hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncVideoForceKeyFrame, &var));
+		var.vt = VT_UI4;
+		var.ulVal = 1;
+		CHECK_HR(hr = m_pCodecAPI->SetValue(&CODECAPI_AVEncVideoForceKeyFrame, &var));
+	}
 #else
-	CHECK_HR(hr = E_NOTIMPL);
+	CHECK_HR(hr = S_OK);
 #endif
 
 bail:

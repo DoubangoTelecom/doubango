@@ -200,11 +200,6 @@ static tsk_size_t mf_codec_h264_encode(tmedia_codec_t* self, const void* in_data
 		TSK_DEBUG_ERROR("Encoder not opened or not ready");
 		return 0;
 	}
-
-	if(h264->encoder.passthrough) {
-		tdav_codec_h264_rtp_encap(common, (const uint8_t*)in_data, in_size);
-		return 0;
-	}
 	
 
 	HRESULT hr = S_OK;
@@ -235,6 +230,11 @@ static tsk_size_t mf_codec_h264_encode(tmedia_codec_t* self, const void* in_data
 	if(send_hdr){
 		//FIXME: MF_MT_MPEG_SEQUENCE_HEADER 
 		// tdav_codec_h264_rtp_encap(TDAV_CODEC_H264_COMMON(h264), h264->encoder.context->extradata, (tsk_size_t)h264->encoder.context->extradata_size);
+	}
+
+	if (h264->encoder.passthrough) {
+		tdav_codec_h264_rtp_encap(common, (const uint8_t*)in_data, in_size);
+		return 0;
 	}
 
 	// Encode data
@@ -632,6 +632,7 @@ int mf_codec_h264_open_encoder(mf_codec_h264_t* self)
 			self->encoder.max_bitrate_bps));
 
 	CHECK_HR(hr = self->encoder.pInst->SetGOPSize(self->encoder.neg_fps * PLUGIN_MF_H264_GOP_SIZE_IN_SECONDS));
+	CHECK_HR(hr = self->encoder.pInst->SetSliceMaxSizeInBytes((H264_RTP_PAYLOAD_SIZE - 100)));
 bail:
 	return SUCCEEDED(hr) ? 0 : -1;
 }
