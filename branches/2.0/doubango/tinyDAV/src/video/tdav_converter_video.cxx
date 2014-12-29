@@ -58,6 +58,10 @@ typedef struct tdav_converter_video_libyuv_s
 		uint8* ptr;
 		int size;
 	}scale;
+	struct{
+		uint8* ptr;
+		int size;
+	}mirror;
 }
 tdav_converter_video_libyuv_t;
 
@@ -188,7 +192,7 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 	
 	src_w = (int)_self->srcWidth , src_h = (int)_self->srcHeight;
 	
-	if(self->toI420){
+	if (self->toI420) {
 		tsk_size_t x_in_size;
 		// check input size
 		x_in_size = _tdav_converter_video_libyuv_is_chroma_varsize(_self->srcChroma) ? buffer_size : _tdav_converter_video_libyuv_get_size(_self->srcChroma, src_w, src_h);
@@ -220,10 +224,23 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 					dst_u, dst_u_stride,
 					dst_v, dst_v_stride,
 					crop_x, crop_y,
-					(int)_self->srcWidth, (int)(_self->flip ? (_self->srcHeight * -1) : _self->srcHeight),
+					(int)_self->srcWidth, (int)(_self->flip ? (_self->srcHeight * -1) : _self->srcHeight), // vertical flip
 					(int)_self->srcWidth, (int)_self->srcHeight,
 					kRotate0,
 					(uint32) self->srcFormat);
+		// mirror: horizontal flip (front camera video)
+		if (_self->mirror) {
+			RESIZE_BUFFER(self->mirror.ptr, self->mirror.size, s);
+			ret = I420Mirror(
+					dst_y, dst_y_stride,
+					dst_u, dst_u_stride,
+					dst_v, dst_v_stride,
+					self->mirror.ptr, dst_y_stride,
+					(self->mirror.ptr + ls), dst_u_stride,
+					(self->mirror.ptr + ls + (ls >> 2)), dst_v_stride,
+					(int)_self->srcWidth, (int)_self->srcHeight);
+			memcpy(dst_y, self->mirror.ptr, s);
+		}
 		
 		if (ret){
 			TSK_DEBUG_ERROR("ConvertToI420 failed with error code = %d, in_size:%u", ret, x_in_size);
@@ -368,9 +385,28 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 		src_y_stride = src_w;
 		src_u_stride = src_v_stride = ((src_y_stride + 1) >> 1);
 
-		if(scale){
-            ls = dst_w * dst_h;
+		// mirror: horizontal flip (front camera video)
+		if ((_self->mirror)) {
+			ls = src_w * src_h;
 			s = ((ls * 3) >> 1);
+			if (s < (int)buffer_size) { // security check
+				RESIZE_BUFFER(self->mirror.ptr, self->mirror.size, s);
+				ret = I420Mirror(
+						src_y, src_y_stride,
+						src_u, src_u_stride,
+						src_v, src_v_stride,
+						self->mirror.ptr, src_y_stride,
+						(self->mirror.ptr + ls), src_u_stride,
+						(self->mirror.ptr + ls + (ls >> 2)), src_v_stride,
+						src_w, src_h);
+				memcpy(src_y, self->mirror.ptr, s);
+			}
+		}
+
+		if(scale){
+			ls = dst_w * dst_h;
+			s = ((ls * 3) >> 1);
+
 			RESIZE_BUFFER(self->scale.ptr, self->scale.size, s);
 			dst_y = self->scale.ptr;
 			dst_u = (dst_y + (dst_w * dst_h));
@@ -409,7 +445,7 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
                     src_u, src_u_stride,
                     src_v, src_v_stride,
                     (uint8*)*output, dst_sample_stride,
-					(int)_self->dstWidth, (_self->flip ? ((int)_self->dstHeight * -1) : (int)_self->dstHeight),
+					(int)_self->dstWidth, (_self->flip ? ((int)_self->dstHeight * -1) : (int)_self->dstHeight), // vertical flip
 					(uint32) self->dstFormat);
 		if(ret){
 			TSK_DEBUG_ERROR("ConvertFromI420 failed with error code = %d", ret);
@@ -439,6 +475,7 @@ static tsk_object_t* tdav_converter_video_libyuv_dtor(tsk_object_t * self)
 		TSK_FREE(converter->chroma.ptr);
 		TSK_FREE(converter->rotate.ptr);
 		TSK_FREE(converter->scale.ptr);
+		TSK_FREE(converter->mirror.ptr);
 	}
 
 	return self;

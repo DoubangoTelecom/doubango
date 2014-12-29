@@ -66,6 +66,7 @@ typedef struct tmedia_producer_s
 		tmedia_chroma_t chroma;
 		int fps;
 		int rotation;
+		tsk_bool_t mirror;
 		tsk_size_t width;
 		tsk_size_t height;
 	} video;

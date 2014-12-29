@@ -50,6 +50,16 @@ public class ProxyVideoProducer : ProxyPlugin {
     return ret;
   }
 
+  public bool getMirror() {
+    bool ret = tinyWRAPPINVOKE.ProxyVideoProducer_getMirror(swigCPtr);
+    return ret;
+  }
+
+  public bool setMirror(bool bMirror) {
+    bool ret = tinyWRAPPINVOKE.ProxyVideoProducer_setMirror(swigCPtr, bMirror);
+    return ret;
+  }
+
   public bool setActualCameraOutputSize(uint nWidth, uint nHeight) {
     bool ret = tinyWRAPPINVOKE.ProxyVideoProducer_setActualCameraOutputSize(swigCPtr, nWidth, nHeight);
     return ret;

@@ -6835,6 +6835,32 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoProducer_setRotation(void *
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoProducer_getMirror(void * jarg1) {
+  unsigned int jresult ;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  bool result;
+  
+  arg1 = (ProxyVideoProducer *)jarg1; 
+  result = (bool)((ProxyVideoProducer const *)arg1)->getMirror();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoProducer_setMirror(void * jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  bool arg2 ;
+  bool result;
+  
+  arg1 = (ProxyVideoProducer *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  result = (bool)(arg1)->setMirror(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_ProxyVideoProducer_setActualCameraOutputSize(void * jarg1, unsigned int jarg2, unsigned int jarg3) {
   unsigned int jresult ;
   ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;

@@ -1825,6 +1825,8 @@ sub DESTROY {
 
 *getRotation = *tinyWRAPc::ProxyVideoProducer_getRotation;
 *setRotation = *tinyWRAPc::ProxyVideoProducer_setRotation;
+*getMirror = *tinyWRAPc::ProxyVideoProducer_getMirror;
+*setMirror = *tinyWRAPc::ProxyVideoProducer_setMirror;
 *setActualCameraOutputSize = *tinyWRAPc::ProxyVideoProducer_setActualCameraOutputSize;
 *push = *tinyWRAPc::ProxyVideoProducer_push;
 *setCallback = *tinyWRAPc::ProxyVideoProducer_setCallback;
@@ -2592,6 +2594,8 @@ package tinyWRAP;
 *tmedia_chroma_yuv422p = *tinyWRAPc::tmedia_chroma_yuv422p;
 *tmedia_chroma_uyvy422 = *tinyWRAPc::tmedia_chroma_uyvy422;
 *tmedia_chroma_yuv420p = *tinyWRAPc::tmedia_chroma_yuv420p;
+*tmedia_chroma_mjpeg = *tinyWRAPc::tmedia_chroma_mjpeg;
+*tmedia_chroma_yuyv422 = *tinyWRAPc::tmedia_chroma_yuyv422;
 *tmedia_mode_none = *tinyWRAPc::tmedia_mode_none;
 *tmedia_mode_optional = *tinyWRAPc::tmedia_mode_optional;
 *tmedia_mode_mandatory = *tinyWRAPc::tmedia_mode_mandatory;
@@ -2630,6 +2634,7 @@ package tinyWRAP;
 *tmedia_pref_video_size_hvga = *tinyWRAPc::tmedia_pref_video_size_hvga;
 *tmedia_pref_video_size_vga = *tinyWRAPc::tmedia_pref_video_size_vga;
 *tmedia_pref_video_size_4cif = *tinyWRAPc::tmedia_pref_video_size_4cif;
+*tmedia_pref_video_size_wvga = *tinyWRAPc::tmedia_pref_video_size_wvga;
 *tmedia_pref_video_size_svga = *tinyWRAPc::tmedia_pref_video_size_svga;
 *tmedia_pref_video_size_480p = *tinyWRAPc::tmedia_pref_video_size_480p;
 *tmedia_pref_video_size_720p = *tinyWRAPc::tmedia_pref_video_size_720p;

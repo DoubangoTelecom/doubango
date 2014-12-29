@@ -43,6 +43,14 @@ public class ProxyVideoProducer extends ProxyPlugin {
     return tinyWRAPJNI.ProxyVideoProducer_setRotation(swigCPtr, this, nRot);
   }
 
+  public boolean getMirror() {
+    return tinyWRAPJNI.ProxyVideoProducer_getMirror(swigCPtr, this);
+  }
+
+  public boolean setMirror(boolean bMirror) {
+    return tinyWRAPJNI.ProxyVideoProducer_setMirror(swigCPtr, this, bMirror);
+  }
+
   public boolean setActualCameraOutputSize(long nWidth, long nHeight) {
     return tinyWRAPJNI.ProxyVideoProducer_setActualCameraOutputSize(swigCPtr, this, nWidth, nHeight);
   }

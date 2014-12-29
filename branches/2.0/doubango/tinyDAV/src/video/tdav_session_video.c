@@ -398,9 +398,10 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 #define ENCODED_NEED_FLIP TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip
 #define ENCODED_NEED_RESIZE (base->producer->video.width != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.width || base->producer->video.height != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.height)
 #define PRODUCED_FRAME_NEED_ROTATION (base->producer->video.rotation != 0)
+#define PRODUCED_FRAME_NEED_MIRROR (base->producer->video.mirror != tsk_false)
 #define PRODUCED_FRAME_NEED_CHROMA_CONVERSION (base->producer->video.chroma != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.chroma)
 		// Video codecs only accept YUV420P buffers ==> do conversion if needed or producer doesn't have the right size
-		if(PRODUCER_OUTPUT_RAW && (PRODUCED_FRAME_NEED_CHROMA_CONVERSION || PRODUCER_SIZE_CHANGED || ENCODED_NEED_FLIP || ENCODED_NEED_RESIZE ||PRODUCED_FRAME_NEED_ROTATION)){
+		if(PRODUCER_OUTPUT_RAW && (PRODUCED_FRAME_NEED_CHROMA_CONVERSION || PRODUCER_SIZE_CHANGED || ENCODED_NEED_FLIP || ENCODED_NEED_RESIZE ||PRODUCED_FRAME_NEED_ROTATION || PRODUCED_FRAME_NEED_MIRROR)){
 			// Create video converter if not already done or producer size have changed
 			if(!video->conv.toYUV420 || PRODUCER_SIZE_CHANGED){
 				TSK_OBJECT_SAFE_FREE(video->conv.toYUV420);
@@ -444,7 +445,7 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 			}
 
 			// update one-shot parameters
-			tmedia_converter_video_set(video->conv.toYUV420, base->producer->video.rotation, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip, video->encoder.scale_rotated_frames);
+			tmedia_converter_video_set(video->conv.toYUV420, base->producer->video.rotation, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip, base->producer->video.mirror, video->encoder.scale_rotated_frames);
 			
 			yuv420p_size = tmedia_converter_video_process(video->conv.toYUV420, buffer, size, &video->encoder.conv_buffer, &video->encoder.conv_buffer_size);
 			if(!yuv420p_size || !video->encoder.conv_buffer){
