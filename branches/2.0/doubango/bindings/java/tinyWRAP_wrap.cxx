@@ -9611,6 +9611,38 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoPro
 }
 
 
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoProducer_1getMirror(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoProducer **)&jarg1; 
+  result = (bool)((ProxyVideoProducer const *)arg1)->getMirror();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoProducer_1setMirror(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  jboolean jresult = 0 ;
+  ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+  bool arg2 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(ProxyVideoProducer **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  result = (bool)(arg1)->setMirror(arg2);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_ProxyVideoProducer_1setActualCameraOutputSize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jlong jarg3) {
   jboolean jresult = 0 ;
   ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;

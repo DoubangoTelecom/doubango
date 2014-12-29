@@ -516,7 +516,7 @@ static const tmedia_producer_plugin_def_t twrap_producer_proxy_video_plugin_def_
 tmedia_chroma_t ProxyVideoProducer::s_eDefaultChroma = tmedia_chroma_nv21;
 
 ProxyVideoProducer::ProxyVideoProducer(tmedia_chroma_t eChroma, struct twrap_producer_proxy_video_s* pProducer)
-:m_pCallback(tsk_null), m_eChroma(eChroma), m_nRotation(0), m_pWrappedPlugin(pProducer), ProxyPlugin(twrap_proxy_plugin_video_producer)
+:m_pCallback(tsk_null), m_eChroma(eChroma), m_nRotation(0), m_bMirror(false), m_pWrappedPlugin(pProducer), ProxyPlugin(twrap_proxy_plugin_video_producer)
 {
 	if(m_pWrappedPlugin){
 		m_pWrappedPlugin->id = this->getId();
@@ -536,8 +536,23 @@ int ProxyVideoProducer::getRotation()const
 bool ProxyVideoProducer::setRotation(int nRot)
 {
 	m_nRotation = nRot;
-	if(m_pWrappedPlugin){
+	if (m_pWrappedPlugin) {
 		TMEDIA_PRODUCER(m_pWrappedPlugin)->video.rotation = m_nRotation;
+		return true;
+	}
+	return false;
+}
+
+bool ProxyVideoProducer::getMirror()const
+{
+	return m_bMirror;
+}
+
+bool ProxyVideoProducer::setMirror(bool bMirror)
+{
+	m_bMirror = bMirror;
+	if (m_pWrappedPlugin) {
+		TMEDIA_PRODUCER(m_pWrappedPlugin)->video.mirror = m_bMirror ? tsk_true : tsk_false;
 		return true;
 	}
 	return false;

@@ -464,6 +464,8 @@ public class tinyWRAPJNI {
   public final static native void delete_ProxyVideoProducer(long jarg1);
   public final static native int ProxyVideoProducer_getRotation(long jarg1, ProxyVideoProducer jarg1_);
   public final static native boolean ProxyVideoProducer_setRotation(long jarg1, ProxyVideoProducer jarg1_, int jarg2);
+  public final static native boolean ProxyVideoProducer_getMirror(long jarg1, ProxyVideoProducer jarg1_);
+  public final static native boolean ProxyVideoProducer_setMirror(long jarg1, ProxyVideoProducer jarg1_, boolean jarg2);
   public final static native boolean ProxyVideoProducer_setActualCameraOutputSize(long jarg1, ProxyVideoProducer jarg1_, long jarg2, long jarg3);
   public final static native int ProxyVideoProducer_push(long jarg1, ProxyVideoProducer jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native void ProxyVideoProducer_setCallback(long jarg1, ProxyVideoProducer jarg1_, long jarg2, ProxyVideoProducerCallback jarg2_);

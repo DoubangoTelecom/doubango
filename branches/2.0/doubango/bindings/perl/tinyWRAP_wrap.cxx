@@ -20411,6 +20411,72 @@ XS(_wrap_ProxyVideoProducer_setRotation) {
 }
 
 
+XS(_wrap_ProxyVideoProducer_getMirror) {
+  {
+    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: ProxyVideoProducer_getMirror(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_getMirror" "', argument " "1"" of type '" "ProxyVideoProducer const *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+    result = (bool)((ProxyVideoProducer const *)arg1)->getMirror();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_ProxyVideoProducer_setMirror) {
+  {
+    ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
+    bool arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    bool val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: ProxyVideoProducer_setMirror(self,bMirror);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_ProxyVideoProducer, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ProxyVideoProducer_setMirror" "', argument " "1"" of type '" "ProxyVideoProducer *""'"); 
+    }
+    arg1 = reinterpret_cast< ProxyVideoProducer * >(argp1);
+    ecode2 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ProxyVideoProducer_setMirror" "', argument " "2"" of type '" "bool""'");
+    } 
+    arg2 = static_cast< bool >(val2);
+    result = (bool)(arg1)->setMirror(arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_ProxyVideoProducer_setActualCameraOutputSize) {
   {
     ProxyVideoProducer *arg1 = (ProxyVideoProducer *) 0 ;
@@ -28037,6 +28103,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::delete_ProxyVideoProducer", _wrap_delete_ProxyVideoProducer},
 {"tinyWRAPc::ProxyVideoProducer_getRotation", _wrap_ProxyVideoProducer_getRotation},
 {"tinyWRAPc::ProxyVideoProducer_setRotation", _wrap_ProxyVideoProducer_setRotation},
+{"tinyWRAPc::ProxyVideoProducer_getMirror", _wrap_ProxyVideoProducer_getMirror},
+{"tinyWRAPc::ProxyVideoProducer_setMirror", _wrap_ProxyVideoProducer_setMirror},
 {"tinyWRAPc::ProxyVideoProducer_setActualCameraOutputSize", _wrap_ProxyVideoProducer_setActualCameraOutputSize},
 {"tinyWRAPc::ProxyVideoProducer_push", _wrap_ProxyVideoProducer_push},
 {"tinyWRAPc::ProxyVideoProducer_setCallback", _wrap_ProxyVideoProducer_setCallback},
@@ -28442,7 +28510,7 @@ XS(SWIG_init) {
   
   /* Install commands */
   for (i = 0; swig_commands[i].name; i++) {
-    // Casts only needed for Perl < 5.10.
+    /* Casts only needed for Perl < 5.10. */
 #ifdef __cplusplus
     newXS(const_cast<char*>(swig_commands[i].name), swig_commands[i].wrapper, const_cast<char*>(__FILE__));
 #else
@@ -29141,6 +29209,16 @@ XS(SWIG_init) {
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_chroma_mjpeg", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_chroma_mjpeg)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_chroma_yuyv422", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_chroma_yuyv422)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tmedia_mode_none", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_mode_none)));
     SvREADONLY_on(sv);
@@ -29328,6 +29406,11 @@ XS(SWIG_init) {
   /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tmedia_pref_video_size_4cif", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_pref_video_size_4cif)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tmedia_pref_video_size_wvga", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tmedia_pref_video_size_wvga)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {

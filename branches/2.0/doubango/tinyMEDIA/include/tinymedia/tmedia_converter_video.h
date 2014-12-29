@@ -56,6 +56,7 @@ typedef struct tmedia_converter_video_s
 	// one shot parameters
 	int rotation;
 	tsk_bool_t flip;
+	tsk_bool_t mirror;
 	tsk_bool_t scale_rotated_frames;
 
 	const struct tmedia_converter_video_plugin_def_s* plugin;
@@ -64,10 +65,11 @@ tmedia_converter_video_t;
 
 #define TMEDIA_DECLARE_CONVERTER_VIDEO tmedia_converter_video_t __converter__
 
-#define tmedia_converter_video_set(self, _rotation, _flip, _scale_rotated_frames) \
+#define tmedia_converter_video_set(self, _rotation, _flip, _mirror, _scale_rotated_frames) \
 	if((self)){ \
 		(self)->rotation  = (_rotation); \
 		(self)->flip  = (_flip); \
+		(self)->mirror  = (_mirror); \
 		(self)->scale_rotated_frames  = (_scale_rotated_frames); \
 	}
 #define tmedia_converter_video_set_rotation(self, _rotation) \
@@ -77,6 +79,10 @@ tmedia_converter_video_t;
 #define tmedia_converter_video_set_flip(self, _flip) \
 	if((self)){ \
 		(self)->flip  = (_flip); \
+	}
+#define tmedia_converter_video_set_mirror(self, _mirror) \
+	if((self)){ \
+		(self)->mirror  = (_mirror); \
 	}
 #define tmedia_converter_video_set_scale_rotated_frames(self, _scale_rotated_frames) \
 	if((self)){ \

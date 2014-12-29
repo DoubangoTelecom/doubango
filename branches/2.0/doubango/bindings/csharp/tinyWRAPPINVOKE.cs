@@ -1533,6 +1533,12 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_setRotation")]
   public static extern bool ProxyVideoProducer_setRotation(HandleRef jarg1, int jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_getMirror")]
+  public static extern bool ProxyVideoProducer_getMirror(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_setMirror")]
+  public static extern bool ProxyVideoProducer_setMirror(HandleRef jarg1, bool jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_ProxyVideoProducer_setActualCameraOutputSize")]
   public static extern bool ProxyVideoProducer_setActualCameraOutputSize(HandleRef jarg1, uint jarg2, uint jarg3);
 

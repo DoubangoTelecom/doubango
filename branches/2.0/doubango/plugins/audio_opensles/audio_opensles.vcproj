@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="audio_opensles"
 	ProjectGUID="{1C451CD7-337D-4E72-8788-9607D263752B}"
 	RootNamespace="audio_opensles"
