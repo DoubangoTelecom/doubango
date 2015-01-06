@@ -1731,7 +1731,7 @@ static int _tnet_ice_ctx_fsm_GatheringCompleted_2_ConnChecking_X_ConnCheck(va_li
 #if !defined(FD_SETSIZE)
 #define FD_SETSIZE 64
 #endif
-	int ret;
+	int ret, err;
 	const tsk_list_item_t *item;
 	tnet_ice_ctx_t* self;
 	tnet_fd_t fds[FD_SETSIZE] = { -1 };
@@ -1898,14 +1898,19 @@ start_conneck:
 				// receive all messages
 				while (self->is_started && self->is_active && read < len && ret == 0) {
 					if ((ret = tnet_sockfd_recvfrom(fd, recvfrom_buff_ptr, recvfrom_buff_size, 0, (struct sockaddr *)&remote_addr)) < 0) {
-						// "EAGAIN" means no data to read
-						// we must trust "EAGAIN" instead of "read" because pending data could be removed by the system
-						if (tnet_geterrno() == TNET_ERROR_EAGAIN) {
+                        err = tnet_geterrno();
+						/* "EAGAIN" means no data to read. We must trust "EAGAIN" instead of "read" because pending data could be removed by the system
+                         */
+                        /* "WSAECONNRESET"
+                         The virtual circuit was reset by the remote side executing a hard or abortive close. The application should close the socket as it is no longer usable. On a UDP-datagram socket, this error would indicate that a previous send operation resulted in an ICMP "Port Unreachable" message.
+                         */
+						if (err == TNET_ERROR_EAGAIN || err == TNET_ERROR_CONNRESET) {
+                            // TODO: remove "fd" from the list if "E_CONNRESET"
 							len = 0;
 							continue;
 						}
 
-						TNET_PRINT_LAST_ERROR("Receiving STUN dgrams failed with error code");
+						TNET_PRINT_LAST_ERROR("Receiving STUN dgrams failed with errno=%d", err);
 						goto bail;
 					}
 

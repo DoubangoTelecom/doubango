@@ -49,7 +49,7 @@ typedef int tsk_boolean_t;
 #define TSK_TO_UINT16(u8_ptr) (((uint16_t)(u8_ptr)[0]) | ((uint16_t)(u8_ptr)[1])<<8)
 
 typedef int tsk_ssize_t; /**< Signed size */
-#if defined (_SIZE_T_DEFINED)
+#if defined (_SIZE_T_DEFINED) || defined(_SIZE_T)
 typedef size_t tsk_size_t;
 #else
 typedef unsigned int tsk_size_t;
