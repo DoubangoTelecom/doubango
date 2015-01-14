@@ -44,20 +44,20 @@
 #	pragma comment(lib, "../thirdparties/win32/lib/g729b/g729b.a")
 #endif
 
-Word16 bad_lsf;        /* bad LSF indicator   */
+int16_t bad_lsf;        /* bad LSF indicator   */
 
 #ifndef G729_ENABLE_VAD
-#	define G729_ENABLE_VAD		1
+#	define G729_ENABLE_VAD		0 // FIXME: speexJB not prepared for such feature
 #endif
 
-static Word16 bin2int(Word16 no_of_bits, const Word16 *bitstream);
-static void int2bin(Word16 value, Word16 no_of_bits, Word16 *bitstream);
+static int16_t bin2int(int16_t no_of_bits, const int16_t *bitstream);
+static void int2bin(int16_t value, int16_t no_of_bits, int16_t *bitstream);
 
-static void unpack_G729(const uint8_t bitstream[], Word16 bits[], int len);
-static void unpack_SID(const uint8_t bitstream[], Word16 bits[]);
+static void unpack_G729(const uint8_t bitstream[], int16_t bits[], int len);
+static void unpack_SID(const uint8_t bitstream[], int16_t bits[]);
 
-static void pack_G729(const Word16 ituBits[], uint8_t bitstream[]);
-static void pack_SID(const Word16 ituBits[], uint8_t bitstream[]);
+static void pack_G729(const int16_t ituBits[], uint8_t bitstream[]);
+static void pack_SID(const int16_t ituBits[], uint8_t bitstream[]);
 
 /* ============ G.729ab Plugin interface ================= */
 
@@ -124,7 +124,7 @@ static tsk_size_t tdav_codec_g729ab_encode(tmedia_codec_t* self, const void* in_
 	}
 
 	for(i=0; i<frame_count; i++){
-		extern Word16 *new_speech;
+		extern int16_t *new_speech;
 		
 		if(g729a->encoder.frame == 32767){
 			g729a->encoder.frame = 256;
@@ -133,7 +133,7 @@ static tsk_size_t tdav_codec_g729ab_encode(tmedia_codec_t* self, const void* in_
 			g729a->encoder.frame++;
 		}
 		
-		memcpy(new_speech, &((uint8_t*)in_data)[i*L_FRAME*sizeof(Word16)], sizeof(Word16)*L_FRAME);
+		memcpy(new_speech, &((uint8_t*)in_data)[i*L_FRAME*sizeof(int16_t)], sizeof(int16_t)*L_FRAME);
 		
 		Pre_Process(new_speech, L_FRAME);
 		Coder_ld8a(g729a->encoder.prm, g729a->encoder.frame, g729a->encoder.vad_enable);
@@ -149,7 +149,11 @@ static tsk_size_t tdav_codec_g729ab_encode(tmedia_codec_t* self, const void* in_
 		}
 		else{ // RATE_0
 			//TSK_DEBUG_INFO("G729_RATE_0 - Not transmitted");
-			return 0;
+            if (!g729a->encoder.vad_enable) {
+                // silence
+                memset(&((uint8_t*)(*out_data))[out_size], 0, 10);
+                out_size += 10;
+            }
 		}
 	}
 
@@ -244,7 +248,7 @@ static tsk_bool_t tdav_codec_g729ab_sdp_att_match(const tmedia_codec_t* codec, c
 		const char* val_str;
 		if((params = tsk_params_fromstring(att_value, ";", tsk_true))){
 			if((val_str = tsk_params_get_param_value(params, "annexb"))){
-				g729a->encoder.vad_enable = tsk_strequals(val_str, "yes");
+                g729a->encoder.vad_enable &= tsk_strequals(val_str, "yes") ? 1 : 0;
 			}
 			TSK_OBJECT_SAFE_FREE(params);
 		}
@@ -276,15 +280,15 @@ static char* tdav_codec_g729ab_sdp_att_get(const tmedia_codec_t* codec, const ch
 
 
 /**
-* Converts from bitstream (ITU bits) to word16 value
+* Converts from bitstream (ITU bits) to int16_t value
 * @param no_of_bits number of bits to read
 * @param bitstream array containing bits
 * @retval decimal value of bit pattern
 */
-static Word16 bin2int(Word16 no_of_bits, const Word16 *bitstream)
+static int16_t bin2int(int16_t no_of_bits, const int16_t *bitstream)
 {
-	Word16   value, i;
-	Word16 bit;
+	int16_t   value, i;
+	int16_t bit;
 	
 	value = 0;
 	for(i = 0; i < no_of_bits; i++){
@@ -303,20 +307,20 @@ static Word16 bin2int(Word16 no_of_bits, const Word16 *bitstream)
  */
 
 /**
-* Writes Word16 value to bitstream
+* Writes int16_t value to bitstream
 * @param value decimal value to write
 * @param no_of_bits number of bits from value to write
 * @param bitstream pointer to the destination stream (ITU bits)
 */
-static void int2bin(Word16 value, Word16 no_of_bits, Word16 *bitstream)
+static void int2bin(int16_t value, int16_t no_of_bits, int16_t *bitstream)
 {
-	Word16 *pt_bitstream;
-	Word16   i, bit;
+	int16_t *pt_bitstream;
+	int16_t   i, bit;
 
 	pt_bitstream = bitstream + no_of_bits;
 
 	for (i = 0; i < no_of_bits; i++){
-		bit = value & (Word16)0x0001;      /* get lsb */
+		bit = value & (int16_t)0x0001;      /* get lsb */
 		if (bit == 0){
 			*--pt_bitstream = BIT_0;
 		}
@@ -333,9 +337,9 @@ static void int2bin(Word16 value, Word16 no_of_bits, Word16 *bitstream)
 * @param bits ITU bitstream used as destination (0 - BIT_0, 1 - BIT_1)
 * @param len length of the RTP bitstream
 */
-static void unpack_G729(const uint8_t bitstream[], Word16 bits[], int len)  
+static void unpack_G729(const uint8_t bitstream[], int16_t bits[], int len)  
 {  
-	Word16 i;  
+	int16_t i;
 	*bits++ = SYNC_WORD;     /* bit[0], at receiver this bits indicates BFI */
 	switch(len){
 		case 10:
@@ -358,12 +362,12 @@ static void unpack_G729(const uint8_t bitstream[], Word16 bits[], int len)
 * @param bitstream RTP bitstream to unpack
 * @param bits ITU bitstream used as destination (0 - BIT_0, 1 - BIT_1)
 */
-static void unpack_SID(const uint8_t bitstream[], Word16 bits[])
+static void unpack_SID(const uint8_t bitstream[], int16_t bits[])
 {  
    *bits++ = SYNC_WORD; 
    *bits++ = RATE_SID_OCTET;
-   int2bin((Word16)bitstream[0], 8, &bits[0]);
-   int2bin((Word16)bitstream[1], 8, &bits[8]);
+   int2bin((int16_t)bitstream[0], 8, &bits[0]);
+   int2bin((int16_t)bitstream[1], 8, &bits[8]);
 }
 
 /**
@@ -371,24 +375,24 @@ static void unpack_SID(const uint8_t bitstream[], Word16 bits[])
 * @param ituBits ITU stream to pack (80 shorts)
 * @param bitstream RTP bitstream (80 bits, 5 shorts, 10 bytes)
 */
-static void pack_G729(const Word16 ituBits[], uint8_t bitstream[])
+static void pack_G729(const int16_t ituBits[], uint8_t bitstream[])
 {  
-	Word16 word16, i;
-	for(i=0; i<5; i++){
-		word16 = bin2int(16, (Word16*)&ituBits[i*16]);
-		bitstream[i*2] = word16>>8, bitstream[(i*2)+1] = (word16 & 0xFF);
-	}
-} 
+    int16_t word16, i;
+    for(i=0; i<5; i++){
+        word16 = bin2int(16, (int16_t*)&ituBits[i*16]);
+        bitstream[i*2] = word16>>8, bitstream[(i*2)+1] = (word16 & 0xFF);
+    }
+}
 
 /**
 * Pack ITU bits containing SID frame as RTP stream
 * @param ituBits ITU stream to pack
 * @param bitstream RTP bitstream (15 bits, 1 short, 2 bytes)
 */
-static void pack_SID(const Word16 ituBits[], uint8_t bitstream[])
+static void pack_SID(const int16_t ituBits[], uint8_t bitstream[])
 {  
-	Word16 word16 = bin2int(16, ituBits);
-	bitstream[0] = word16>>8, bitstream[1] = (word16 & 0xFF);
+    int16_t word16 = bin2int(16, ituBits);
+    bitstream[0] = word16>>8, bitstream[1] = (word16 & 0xFF);
 }  
 
 
