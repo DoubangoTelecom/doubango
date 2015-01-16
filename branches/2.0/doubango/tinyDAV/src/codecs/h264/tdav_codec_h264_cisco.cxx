@@ -34,6 +34,7 @@
 #include "tinymedia/tmedia_params.h"
 #include "tinymedia/tmedia_defaults.h"
 
+#include "tsk_mutex.h"
 #include "tsk_params.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
@@ -61,6 +62,7 @@ typedef struct tdav_codec_h264_cisco_s
 		int neg_fps;
 		int max_bitrate_bps;
 		int32_t max_bw_kpbs;
+        tsk_mutex_handle_t* mutex;
 	} encoder;
 	
 	// decoder
@@ -163,7 +165,11 @@ static int tdav_codec_h264_cisco_set(tmedia_codec_t* self, const tmedia_param_t*
 
 	if (reconf) {
 		if (h264->encoder.pInst) {
-			long err = h264->encoder.pInst->InitializeExt(&h264->encoder.sEncParam);
+            long err;
+            // lock required because of https://code.google.com/p/doubango/issues/detail?id=422
+            tsk_mutex_lock(h264->encoder.mutex);
+			err = h264->encoder.pInst->InitializeExt(&h264->encoder.sEncParam);
+            tsk_mutex_unlock(h264->encoder.mutex);
 			if (err != cmResultSuccess) {
 				TSK_DEBUG_ERROR("InitializeExt failed: %ld", err);
 				return -1;
@@ -298,10 +304,15 @@ static tsk_size_t tdav_codec_h264_cisco_encode(tmedia_codec_t* self, const void*
 	// h264->encoder.sEncPic.uiTimeStamp = rand();
 
 	memset(&bsInfo, 0, sizeof(bsInfo));
+    
+    tsk_mutex_lock(h264->encoder.mutex);
 	if ((err = h264->encoder.pInst->EncodeFrame(&h264->encoder.sEncPic, &bsInfo)) != cmResultSuccess) {
 		TSK_DEBUG_ERROR("OpenH264 setting EncodeFrame() failed: %ld", err);
+        tsk_mutex_unlock(h264->encoder.mutex);
 		return 0;
 	}
+    tsk_mutex_unlock(h264->encoder.mutex);
+    
 	if (bsInfo.eFrameType != videoFrameTypeInvalid) {
 		for (int iLayerNum = 0; iLayerNum < bsInfo.iLayerNum; ++iLayerNum) {
 			unsigned char* pBsBuf = bsInfo.sLayerInfo[iLayerNum].pBsBuf;
@@ -662,6 +673,12 @@ static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self)
 	self->encoder.sEncPic.iStride[0] = self->encoder.sEncPic.iPicWidth;
 	self->encoder.sEncPic.iStride[1] = self->encoder.sEncPic.iStride[0] >> 1;
 	self->encoder.sEncPic.iStride[2] = self->encoder.sEncPic.iStride[1];
+    
+    // Create encoder mutex
+    if (!self->encoder.mutex && !(self->encoder.mutex = tsk_mutex_create())) {
+        TSK_DEBUG_ERROR("Failed to create mutex for the encoder");
+        goto bail;
+    }
 
 	ret = 0;
 
@@ -680,6 +697,9 @@ static int tdav_codec_h264_cisco_close_encoder(tdav_codec_h264_cisco_t* self)
 		if (self->encoder.buffer) {
 			TSK_FREE(self->encoder.buffer);
 		}
+        if (self->encoder.mutex) {
+            tsk_mutex_destroy(&self->encoder.mutex);
+        }
 		self->encoder.frame_count = 0;
 	}
 	return 0;
