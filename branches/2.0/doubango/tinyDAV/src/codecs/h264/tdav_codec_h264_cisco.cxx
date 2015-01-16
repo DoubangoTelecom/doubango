@@ -311,8 +311,8 @@ static tsk_size_t tdav_codec_h264_cisco_encode(tmedia_codec_t* self, const void*
         tsk_mutex_unlock(h264->encoder.mutex);
 		return 0;
 	}
-    tsk_mutex_unlock(h264->encoder.mutex);
     
+    // Memory held by bsInfo is freed when "InitializeExt()" is called this is why the unlock is after reading the output stream
 	if (bsInfo.eFrameType != videoFrameTypeInvalid) {
 		for (int iLayerNum = 0; iLayerNum < bsInfo.iLayerNum; ++iLayerNum) {
 			unsigned char* pBsBuf = bsInfo.sLayerInfo[iLayerNum].pBsBuf;
@@ -327,6 +327,8 @@ static tsk_size_t tdav_codec_h264_cisco_encode(tmedia_codec_t* self, const void*
 			}
 		}
 	}
+    tsk_mutex_unlock(h264->encoder.mutex);
+    
 	h264 ->encoder.force_idr = tsk_false; // reset
 	
 	return 0;
