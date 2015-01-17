@@ -78,7 +78,21 @@ enum vp8_dec_control_id {
   /** control function to get the bit depth of the stream. */
   VP9D_GET_BIT_DEPTH,
 
-  /** For testing. */
+  /** control function to set the byte alignment of the planes in the reference
+   * buffers. Valid values are power of 2, from 32 to 1024. A value of 0 sets
+   * legacy alignment. I.e. Y plane is aligned to 32 bytes, U plane directly
+   * follows Y plane, and V plane directly follows U plane. Default value is 0.
+   */
+  VP9_SET_BYTE_ALIGNMENT,
+
+  /** control function to invert the decoding order to from right to left. The
+   * function is used in a test to confirm the decoding independence of tile
+   * columns. The function may be used in application where this order
+   * of decoding is desired.
+   *
+   * TODO(yaowu): Rework the unit test that uses this control, and in a future
+   *              release, this test-only control shall be removed.
+   */
   VP9_INVERT_TILE_DECODE_ORDER,
 
   VP8_DECODER_CTRL_ID_MAX

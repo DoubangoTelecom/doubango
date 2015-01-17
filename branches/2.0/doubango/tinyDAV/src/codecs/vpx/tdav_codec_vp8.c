@@ -25,7 +25,7 @@
  * The RTP packetizer/depacketizer follows draft-ietf-payload-vp8 and draft-bankoski-vp8-bitstream-05
  * Google's VP8 (http://www.webmproject.org/) encoder/decoder
  *
- * @author Mamadou Diop <diopmamadou(at)doubango(dot)org>
+ * We require v1.3.0 (2013-12-02 10:37:51) or later. For iOS, because of issue 423 (https://code.google.com/p/doubango/issues/detail?id=423) we require a version after "Mon, 28 Apr 2014 22:42:23 +0100 (14:42 -0700)" integrating fix in http://git.chromium.org/gitweb/?p=webm/libvpx.git;a=commit;h=33df6d1fc1d268b4901b74b4141f83594266f041
  *
  */
 #include "tinydav/codecs/vpx/tdav_codec_vp8.h"
@@ -103,9 +103,11 @@ typedef struct tdav_codec_vp8_s
 		void* accumulator;
 		tsk_size_t accumulator_pos;
 		tsk_size_t accumulator_size;
+        tsk_size_t first_part_size;
 		uint16_t last_seq;
 		uint32_t last_timestamp;
 		tsk_bool_t idr;
+        tsk_bool_t corrupted;
 	} decoder;
 }
 tdav_codec_vp8_t;
@@ -277,7 +279,7 @@ static tsk_size_t tdav_codec_vp8_encode(tmedia_codec_t* self, const void* in_dat
 	++vp8->encoder.frame_count;
 	++vp8->encoder.pic_id;
 
-	while((pkt = vpx_codec_get_cx_data(&vp8->encoder.context, &iter))){
+	while ((pkt = vpx_codec_get_cx_data(&vp8->encoder.context, &iter))) {
 		switch(pkt->kind){
 			case VPX_CODEC_CX_FRAME_PKT:
 				{
@@ -306,10 +308,11 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 	const uint8_t* pdata = in_data;
 	const uint8_t* pdata_end = (pdata + in_size);
 	tsk_size_t ret = 0;
+    tsk_bool_t fatal_error = tsk_false;
 	static const tsk_size_t xmax_size = (3840 * 2160 * 3) >> 3; // >>3 instead of >>1 (not an error)
 	uint8_t S, PartID;
 
-	if(!self || !in_data || in_size<1 || !out_data || !vp8->decoder.initialized){
+	if (!self || !in_data || in_size<1 || !out_data || !vp8->decoder.initialized) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
@@ -319,7 +322,7 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 		
 		X = (*pdata & 0x80)>>7;
 		R = (*pdata & 0x40)>>6;
-		if(R){
+		if (R) {
 			TSK_DEBUG_ERROR("R<>0");
 			return 0;
 		}
@@ -327,40 +330,40 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 		S = (*pdata & 0x10)>>4;
 		PartID = (*pdata & 0x0F);
 		// skip "REQUIRED" header
-		if(++pdata >= pdata_end){ 
+		if (++pdata >= pdata_end) {
 			TSK_DEBUG_ERROR("Too short"); goto bail; 
 		}
 		// check "OPTIONAL" headers
-		if(X){
+		if (X) {
 			I = (*pdata & 0x80);
 			L = (*pdata & 0x40);
 			T = (*pdata & 0x20);
 			K = (*pdata & 0x10);
-			if(++pdata >= pdata_end){ 
+			if (++pdata >= pdata_end) {
 				TSK_DEBUG_ERROR("Too short"); goto bail; 
 			}
 
-			if(I){
-				if(*pdata & 0x80){ // M
+			if (I) {
+				if (*pdata & 0x80) { // M
 					// PictureID on 16bits 
-					if((pdata += 2) >= pdata_end){ 
+					if ((pdata += 2) >= pdata_end) {
 						TSK_DEBUG_ERROR("Too short"); goto bail; 
 					}
 				}
-				else{
+				else {
 					// PictureID on 8bits
-					if(++pdata >= pdata_end){ 
+					if (++pdata >= pdata_end) {
 						TSK_DEBUG_ERROR("Too short"); goto bail; 
 					}
 				}
 			}
-			if(L){
-				if(++pdata >= pdata_end){ 
+			if (L) {
+				if (++pdata >= pdata_end) {
 					TSK_DEBUG_ERROR("Too short"); goto bail; 
 				}
 			}
-			if(T || K){
-				if(++pdata >= pdata_end){ 
+			if (T || K) {
+				if (++pdata >= pdata_end) {
 					TSK_DEBUG_ERROR("Too short"); goto bail; 
 				}
 			}
@@ -368,6 +371,13 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 	}
 
 	in_size = (pdata_end - pdata);
+    
+    // Packet lost?
+    if (vp8->decoder.last_seq && (vp8->decoder.last_seq + 1) != rtp_hdr->seq_num) {
+        TSK_DEBUG_INFO("[VP8] Packet loss, seq_num=%d", (vp8->decoder.last_seq + 1));
+        vp8->decoder.corrupted = tsk_true;
+    }
+    vp8->decoder.last_seq = rtp_hdr->seq_num;
 
 	// New frame ?
 	if(vp8->decoder.last_timestamp != rtp_hdr->timestamp){
@@ -396,43 +406,61 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 			  frame.  When set to 1 the current frame is an interframe.  Defined
 			  in [RFC6386]
 		*/
-		if(PartID == 0 && S == 1 && in_size > 0){
-			vp8->decoder.idr = !(*pdata & 0x01);
-		}
-		else{
-			vp8->decoder.idr = tsk_false;
-		}
+        
+        // Reset accumulator position
+        vp8->decoder.accumulator_pos = 0;
+        
+        // Make sure the header is present
+        if (S != 1 || PartID != 0 || in_size < 3) {
+            TSK_DEBUG_WARN("VP8 payload header is missing");
+            fatal_error = tsk_true;
+            goto bail;
+        }
+        
+        {
+            /* SizeN:  The size of the first partition in bytes is calculated from
+            the 19 bits in Size0, Size1, and Size2 as 1stPartitionSize = Size0
+            + 8 * Size1 + 2048 * Size2.  [RFC6386]. */
+            vp8->decoder.first_part_size = ((pdata[0] >> 5) & 0xFF) + 8 * pdata[1] + 2048 * pdata[2];
+        }
+        
+        // Starting new frame...reset "corrupted" value
+        vp8->decoder.corrupted = tsk_false;
+        
+		// Key frame?
+        vp8->decoder.idr = !(pdata[0] & 0x01);
+		
+        // Update timestamp
 		vp8->decoder.last_timestamp = rtp_hdr->timestamp;
 	}
 
-	// Packet lost?
-	if(vp8->decoder.last_seq && (vp8->decoder.last_seq + 1) != rtp_hdr->seq_num){
-		TSK_DEBUG_INFO("[VP8] Packet loss, seq_num=%d", (vp8->decoder.last_seq + 1));
-	}
-	vp8->decoder.last_seq = rtp_hdr->seq_num;
-
-	if(in_size > xmax_size){
-		TSK_DEBUG_ERROR("%u too big to contain valid encoded data. xmax_size=%u", in_size, xmax_size);
+	if (in_size > xmax_size) {
+        vp8->decoder.accumulator_pos = 0;
+		TSK_DEBUG_ERROR("%u too big to contain valid encoded data. xmax_size=%u", (unsigned)in_size, (unsigned)xmax_size);
+        fatal_error = tsk_true;
 		goto bail;
 	}
 	// start-accumulator
-	if(!vp8->decoder.accumulator){
-		if(!(vp8->decoder.accumulator = tsk_calloc(in_size, sizeof(uint8_t)))){
+	if (!vp8->decoder.accumulator) {
+		if (!(vp8->decoder.accumulator = tsk_calloc(in_size, sizeof(uint8_t)))) {
 			TSK_DEBUG_ERROR("Failed to allocated new buffer");
+            fatal_error = tsk_true;
 			goto bail;
 		}
 		vp8->decoder.accumulator_size = in_size;
 	}
-	if((vp8->decoder.accumulator_pos + in_size) >= xmax_size){
+	if ((vp8->decoder.accumulator_pos + in_size) >= xmax_size) {
 		TSK_DEBUG_ERROR("BufferOverflow");
 		vp8->decoder.accumulator_pos = 0;
+        fatal_error = tsk_true;
 		goto bail;
 	}
-	if((vp8->decoder.accumulator_pos + in_size) > vp8->decoder.accumulator_size){
-		if(!(vp8->decoder.accumulator = tsk_realloc(vp8->decoder.accumulator, (vp8->decoder.accumulator_pos + in_size)))){
+	if ((vp8->decoder.accumulator_pos + in_size) > vp8->decoder.accumulator_size) {
+		if (!(vp8->decoder.accumulator = tsk_realloc(vp8->decoder.accumulator, (vp8->decoder.accumulator_pos + in_size)))) {
 			TSK_DEBUG_ERROR("Failed to reallocated new buffer");
 			vp8->decoder.accumulator_pos = 0;
 			vp8->decoder.accumulator_size = 0;
+            fatal_error = tsk_true;
 			goto bail;
 		}
 		vp8->decoder.accumulator_size = (vp8->decoder.accumulator_pos + in_size);
@@ -442,43 +470,43 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 	vp8->decoder.accumulator_pos += in_size;
 	// end-accumulator
 
-	// FIXME: First partition is decodable
-	// for better error handling we should decode it
-	// (vp8->decoder.last_PartID == 0 && vp8->decoder.last_S && S) => previous was "first decodable" and current is new one
-	if(rtp_hdr->marker /*|| (vp8->decoder.last_PartID == 0 && vp8->decoder.last_S)*/){
+	// Decode the frame if we have a marker or the first partition is complete and not corrupted
+	if (rtp_hdr->marker /*|| (!vp8->decoder.corrupted && vp8->decoder.first_part_size == vp8->decoder.accumulator_pos)*/) {
 		vpx_image_t *img;
 		vpx_codec_iter_t iter = tsk_null;
 		vpx_codec_err_t vpx_ret;
 		const uint8_t* pay_ptr = (const uint8_t*)vp8->decoder.accumulator;
 		const tsk_size_t pay_size = vp8->decoder.accumulator_pos;
 
-		// in all cases: reset accumulator
+		// in all cases: reset accumulator position
 		vp8->decoder.accumulator_pos = 0;
 
 #if 0 /* http://groups.google.com/a/webmproject.org/group/apps-devel/browse_thread/thread/c84438e70fe122fa/2dfc322018aa22a8 */
 		// libvpx will crash very ofen when the frame is corrupted => for now we decided not to decode such frame
 		// according to the latest release there is a function to check if the frame 
 		// is corrupted or not => To be checked
-		if(vp8->decoder.frame_corrupted){
-			vp8->decoder.frame_corrupted = tsk_false;
+		if(vp8->decoder.corrupted){
+			vp8->decoder.corrupted = tsk_false;
 			goto bail;
 		}
 #endif
+        
+        if (pay_size < vp8->decoder.first_part_size) {
+            TSK_DEBUG_WARN("[VP8] No enough bytes for the first part: %u < %u", (unsigned)pay_size, (unsigned)vp8->decoder.first_part_size);
+            // Not a fatal error
+            goto bail;
+        }
 		
 		vpx_ret = vpx_codec_decode(&vp8->decoder.context, pay_ptr, (int)pay_size, tsk_null, 0);
 		
-		if(vpx_ret != VPX_CODEC_OK){
+		if (vpx_ret != VPX_CODEC_OK) {
 			TSK_DEBUG_INFO("vpx_codec_decode failed with error =%s", vpx_codec_err_to_string(vpx_ret));
-			if(TMEDIA_CODEC_VIDEO(self)->in.callback){
-				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
-				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
-				TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
-			}
+            fatal_error = tsk_true;
 			goto bail;
 		}
-		else if(vp8->decoder.idr){
+		else if (vp8->decoder.idr) {
 			TSK_DEBUG_INFO("Decoded VP8 IDR");
-			if(TMEDIA_CODEC_VIDEO(self)->in.callback){
+			if (TMEDIA_CODEC_VIDEO(self)->in.callback) {
 				TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_idr;
 				TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
 				TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
@@ -487,7 +515,7 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 		
 		// copy decoded data
 		ret = 0;
-		while((img = vpx_codec_get_frame(&vp8->decoder.context, &iter))){
+		while ((img = vpx_codec_get_frame(&vp8->decoder.context, &iter))) {
 			unsigned int plane, y;
 			tsk_size_t xsize;
 
@@ -496,10 +524,9 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 			TMEDIA_CODEC_VIDEO(vp8)->in.height = img->d_h;
 			xsize = (TMEDIA_CODEC_VIDEO(vp8)->in.width * TMEDIA_CODEC_VIDEO(vp8)->in.height * 3) >> 1;
 			// allocate destination buffer
-			if(*out_max_size < xsize){
-				if(!(*out_data = tsk_realloc(*out_data, xsize))){
+			if (*out_max_size < xsize) {
+				if (!(*out_data = tsk_realloc(*out_data, xsize))) {
 					TSK_DEBUG_ERROR("Failed to allocate new buffer");
-					vp8->decoder.accumulator_pos = 0;
 					*out_max_size = 0;
 					goto bail;
 				}
@@ -507,11 +534,11 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 			}
 
 			// layout picture
-			for(plane=0; plane < 3; plane++) {
+			for (plane=0; plane < 3; plane++) {
                 unsigned char *buf =img->planes[plane];
-                for(y=0; y<img->d_h >> (plane ? 1 : 0); y++) {
+                for (y=0; y<img->d_h >> (plane ? 1 : 0); y++) {
 					unsigned int w_count = img->d_w >> (plane ? 1 : 0);
-					if((ret + w_count) > *out_max_size){
+					if ((ret + w_count) > *out_max_size) {
 						TSK_DEBUG_ERROR("BufferOverflow");
 						ret = 0;
 						goto bail;
@@ -525,6 +552,12 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 	}
 
 bail:
+    if (fatal_error && TMEDIA_CODEC_VIDEO(self)->in.callback) {
+        TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
+        TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
+        TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
+    }
+    fatal_error = tsk_true;
 
 //	vp8->decoder.last_PartID = PartID;
 //	vp8->decoder.last_S = S;
@@ -690,6 +723,9 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 #if defined(VPX_ERROR_RESILIENT_PARTITIONS)
 	self->encoder.cfg.g_error_resilient |= VPX_ERROR_RESILIENT_PARTITIONS;
 #endif
+#if defined(VPX_CODEC_USE_OUTPUT_PARTITION)
+    enc_flags |= VPX_CODEC_USE_OUTPUT_PARTITION;
+#endif
 	self->encoder.cfg.g_lag_in_frames = 0;
 #if TDAV_UNDER_WINDOWS
 	{
@@ -724,6 +760,26 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 	vpx_codec_control(&self->encoder.context, VP8E_SET_NOISE_SENSITIVITY, 2);
 #endif
 	/* vpx_codec_control(&self->encoder.context, VP8E_SET_CPUUSED, 0); */
+    
+    // Set number of partitions
+#if defined(VPX_CODEC_USE_OUTPUT_PARTITION)
+    {
+        unsigned _s = TMEDIA_CODEC_VIDEO(self)->out.height * TMEDIA_CODEC_VIDEO(self)->out.width;
+        if (_s < (352 * 288)) {
+            vpx_codec_control(&self->encoder.context, VP8E_SET_TOKEN_PARTITIONS, VP8_ONE_TOKENPARTITION);
+        }
+        else if (_s < (352 * 288) * 2 * 2) {
+            vpx_codec_control(&self->encoder.context, VP8E_SET_TOKEN_PARTITIONS, VP8_TWO_TOKENPARTITION);
+        }
+        else if (_s < (352 * 288) * 4 * 4) {
+            vpx_codec_control(&self->encoder.context, VP8E_SET_TOKEN_PARTITIONS, VP8_FOUR_TOKENPARTITION);
+        }
+        else if (_s < (352 * 288) * 8 * 8) {
+            vpx_codec_control(&self->encoder.context, VP8E_SET_TOKEN_PARTITIONS, VP8_EIGHT_TOKENPARTITION);
+        }
+    }
+#endif
+    
 	
 	TSK_DEBUG_INFO("[VP8] target_bitrate=%d kbps", self->encoder.target_bitrate);
 	
@@ -808,61 +864,64 @@ int tdav_codec_vp8_close_decoder(tdav_codec_vp8_t* self)
 
 static void tdav_codec_vp8_encap(tdav_codec_vp8_t* self, const vpx_codec_cx_pkt_t *pkt)
 {
-	tsk_bool_t non_ref, is_keyframe, part_start;
-	uint8_t *frame_ptr;
-	uint32_t part_size, part_ID, pkt_size, index;
-
-	if(!self || !pkt || !pkt->data.frame.buf || !pkt->data.frame.sz){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return;
-	}
-
-	index = 0;
-	frame_ptr = pkt->data.frame.buf ;
-	pkt_size = (uint32_t)pkt->data.frame.sz;
-	non_ref = (pkt->data.frame.flags & VPX_FRAME_IS_DROPPABLE);
-	is_keyframe = (pkt->data.frame.flags & VPX_FRAME_IS_KEY);
-
-	// check P bit validity
-#if 0
-	if((is_keyframe && (*frame_ptr & 0x01)) || (!is_keyframe && !(*frame_ptr & 0x01))){// 4.3. VP8 Payload Header
-		TSK_DEBUG_ERROR("Invalid payload header");
-		return;
-	}
-	if(is_keyframe){
-		TSK_DEBUG_INFO("Sending VP8 keyframe...");
-	}
-#endif
-
+    tsk_bool_t non_ref, is_keyframe, part_start;
+    uint8_t *frame_ptr;
+    uint32_t part_size, part_ID, pkt_size, index;
+    
+    if (!self || !pkt || !pkt->data.frame.buf || !pkt->data.frame.sz) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return;
+    }
+    
+    index = 0;
+    frame_ptr = pkt->data.frame.buf ;
+    pkt_size = (uint32_t)pkt->data.frame.sz;
+    non_ref = (pkt->data.frame.flags & VPX_FRAME_IS_DROPPABLE);
+    is_keyframe = (pkt->data.frame.flags & VPX_FRAME_IS_KEY);
+    
+    
+#if defined(VPX_CODEC_USE_OUTPUT_PARTITION)
+    part_ID = pkt->data.frame.partition_id;
+    part_start = tsk_true;
+    part_size = pkt_size;
+    while (index < part_size) {
+        uint32_t frag_size = TSK_MIN(TDAV_VP8_RTP_PAYLOAD_MAX_SIZE, (part_size - index));
+        tdav_codec_vp8_rtp_callback(
+            self,
+            &frame_ptr[index],
+            frag_size,
+            part_ID,
+            part_start,
+            non_ref,
+            ((pkt->data.frame.flags & VPX_FRAME_IS_FRAGMENT) == 0 && (index + frag_size) == part_size) // RTP marker?
+        );
+        part_start = tsk_false;
+        index += frag_size;
+    }
+#else
 	// first partition (contains modes and motion vectors)
 	part_ID = 0; // The first VP8 partition(containing modes and motion vectors) MUST be labeled with PartID = 0
-	part_size = (frame_ptr[2] << 16) | (frame_ptr[1] << 8) | frame_ptr[0];
-	part_size = (part_size >> 5) & 0x7FFFF;
-	if(part_size > pkt_size){
-		TSK_DEBUG_ERROR("part_size is > pkt_size(%u,%u)", part_size, pkt_size);
-		return;
-	}
-
 	part_start = tsk_true;
-
-#if 0 // The first partition could be as big as 10kb for HD 720p video frames => we have to split it
-	tdav_codec_vp8_rtp_callback(self, &frame_ptr[index], part_size, part_ID, part_start, non_ref, (index + part_size)==pkt_size);
-	index += part_size;
-#else
+    part_size = (frame_ptr[2] << 16) | (frame_ptr[1] << 8) | frame_ptr[0];
+    part_size = (part_size >> 5) & 0x7FFFF;
+    if (part_size > pkt_size) {
+        TSK_DEBUG_ERROR("part_size is > pkt_size(%u,%u)", part_size, pkt_size);
+        return;
+    }
+    
 	// first,first,....partitions (or fragment if part_size > TDAV_VP8_RTP_PAYLOAD_MAX_SIZE)
-	while(index<part_size){
+	while (index<part_size) {
 		uint32_t frag_size = TSK_MIN(TDAV_VP8_RTP_PAYLOAD_MAX_SIZE, (part_size - index));
 		tdav_codec_vp8_rtp_callback(self, &frame_ptr[index], frag_size, part_ID, part_start, non_ref, tsk_false);
 		part_start = tsk_false;
 		index += frag_size;
 	}
-#endif
 
 	// second,third,... partitions (or fragment if part_size > TDAV_VP8_RTP_PAYLOAD_MAX_SIZE)
 	// FIXME: low FEC
 	part_start = tsk_true;
-	while(index<pkt_size){
-		if(part_start){
+	while (index<pkt_size) {
+		if (part_start) {
 			/* PartID SHOULD be incremented for each subsequent partition,
 			  but MAY be kept at 0 for all packets.  PartID MUST NOT be larger
 			  than 8.
@@ -880,6 +939,7 @@ static void tdav_codec_vp8_encap(tdav_codec_vp8_t* self, const vpx_codec_cx_pkt_
 		*/
 		part_start = tsk_false;
 	}
+#endif /* VPX_CODEC_USE_OUTPUT_PARTITION */
 }
 
 static void tdav_codec_vp8_rtp_callback(tdav_codec_vp8_t *self, const void *data, tsk_size_t size, uint32_t partID, tsk_bool_t part_start, tsk_bool_t non_ref, tsk_bool_t last)
