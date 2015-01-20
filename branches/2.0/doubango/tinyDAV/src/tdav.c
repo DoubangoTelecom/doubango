@@ -85,6 +85,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #include "tinydav/codecs/h264/tdav_codec_h264.h"
 #include "tinydav/codecs/h264/tdav_codec_h264_cuda.h"
 #include "tinydav/codecs/h264/tdav_codec_h264_cisco.h"
+#include "tinydav/codecs/h264/tdav_codec_h264_intel.h"
 #include "tinydav/codecs/theora/tdav_codec_theora.h"
 #include "tinydav/codecs/mp4ves/tdav_codec_mp4ves.h"
 #include "tinydav/codecs/vpx/tdav_codec_vp8.h"
@@ -327,6 +328,10 @@ int tdav_init()
 #elif HAVE_H264_PASSTHROUGH
 	tmedia_codec_plugin_register(tdav_codec_h264_base_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_h264_main_plugin_def_t);
+#endif
+#if HAVE_INTEL_MEDIA_SDK
+	tmedia_codec_plugin_register(tdav_codec_h264_intel_base_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_h264_intel_main_plugin_def_t);
 #endif
 #if HAVE_OPENH264
 	tmedia_codec_plugin_register(tdav_codec_h264_cisco_base_plugin_def_t);

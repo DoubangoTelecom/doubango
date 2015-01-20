@@ -307,7 +307,7 @@ static tsk_size_t mf_codec_h264_decode(tmedia_codec_t* self, const void* in_data
 	if (*((uint8_t*)in_data) & 0x80) {
 		TSK_DEBUG_WARN("F=1");
 		/* reset accumulator */
-		h264->decoder.accumulator = 0;
+		h264->decoder.accumulator_pos = 0;
 		return 0;
 	}
 

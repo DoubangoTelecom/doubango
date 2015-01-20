@@ -469,7 +469,7 @@ static tsk_size_t tdav_codec_h264_cuda_decode(tmedia_codec_t* self, const void* 
 	if(*((uint8_t*)in_data) >> 7){
 		TSK_DEBUG_WARN("F=1");
 		/* reset accumulator */
-		h264->decoder.accumulator = 0;
+		h264->decoder.accumulator_pos = 0;
 		goto bail;
 	}
 

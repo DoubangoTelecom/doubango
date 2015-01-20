@@ -43,7 +43,7 @@
 // the corret fps will be computed using the RTP timestamps
 #define TDAV_VIDEO_JB_FPS		TDAV_VIDEO_JB_FPS_MAX
 #define TDAV_VIDEO_JB_FPS_MIN	10
-#define TDAV_VIDEO_JB_FPS_MAX	60
+#define TDAV_VIDEO_JB_FPS_MAX	120
 // Number of correct consecutive video frames to receive before computing the FPS
 #define TDAV_VIDEO_JB_FPS_PROB	(TDAV_VIDEO_JB_FPS << 1)
 // Maximum gap allowed (used to detect seqnum wrpping)

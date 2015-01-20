@@ -49,7 +49,11 @@ Video Processor MFT (http://msdn.microsoft.com/en-us/library/windows/desktop/hh1
 EXTERN_C const GUID CLSID_VideoProcessorMFT; // defined in mf_utils.cxx
 
 #if !defined(HAVE_IMFVideoProcessorControl)
-#	define HAVE_IMFVideoProcessorControl 0 // Win8 only
+#	if defined(__IMFVideoProcessorControl_INTERFACE_DEFINED__)
+#		define HAVE_IMFVideoProcessorControl 1
+#	else
+#		define HAVE_IMFVideoProcessorControl 0
+#	endif
 #endif
 #if !defined(E_BOUNDS)
 #	define E_BOUNDS _HRESULT_TYPEDEF_(0x8000000BL)
