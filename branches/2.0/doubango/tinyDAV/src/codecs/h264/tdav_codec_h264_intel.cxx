@@ -496,7 +496,11 @@ public:
 		m_sParamReq.mfx.FrameInfo.CropH = pWrappedCodec->encoder.neg_height;
 		m_sParamReq.mfx.FrameInfo.Width = INTEL_ALIGN16(pWrappedCodec->encoder.neg_width); // must be a multiple of 16 
 		m_sParamReq.mfx.FrameInfo.Height = INTEL_ALIGN16(pWrappedCodec->encoder.neg_height); // must be a multiple of 16 
+#if INTEL_DX11_D3D
+		m_sParamReq.IOPattern = MFX_IOPATTERN_IN_VIDEO_MEMORY;
+#else
 		m_sParamReq.IOPattern = MFX_IOPATTERN_IN_SYSTEM_MEMORY;
+#endif
 
 		memset(&m_sOpt2MaxFrameSize, 0, sizeof(m_sOpt2MaxFrameSize));
 		m_sOpt2MaxFrameSize.Header.BufferId = MFX_EXTBUFF_CODING_OPTION2;
