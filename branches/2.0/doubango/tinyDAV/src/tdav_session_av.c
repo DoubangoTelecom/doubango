@@ -397,6 +397,12 @@ tsk_bool_t tdav_session_av_get(tdav_session_av_t* self, tmedia_param_t* param)
 #endif /* HAVE_SRTP */
 			}
 		}
+		else if (param->value_type == tmedia_pvt_pobject){
+			if (tsk_striequals(param->key, "producer")){
+				*((tsk_object_t**)param->value) = tsk_object_ref(self->producer); // up to the caller to release the object
+				return tsk_true;
+			}
+		}
 	}
 
 	return tsk_false;

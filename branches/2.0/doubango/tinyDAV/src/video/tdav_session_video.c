@@ -390,18 +390,18 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 			TSK_DEBUG_ERROR("Not started");
 			return 0;
 		}
-	
+
 #define PRODUCER_OUTPUT_FIXSIZE (base->producer->video.chroma != tmedia_chroma_mjpeg) // whether the output data has a fixed size/length
 #define PRODUCER_OUTPUT_RAW (base->producer->encoder.codec_id == tmedia_codec_id_none) // Otherwise, frames from the producer are already encoded
-#define PRODUCER_SIZE_CHANGED (video->conv.producerWidth && video->conv.producerWidth != base->producer->video.width) || (video->conv.producerHeight && video->conv.producerHeight != base->producer->video.height) \
-|| (video->conv.xProducerSize && (video->conv.xProducerSize != size && PRODUCER_OUTPUT_FIXSIZE))
-#define ENCODED_NEED_FLIP TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip
+#define PRODUCER_SIZE_CHANGED ((video->conv.producerWidth && video->conv.producerWidth != base->producer->video.width) || (video->conv.producerHeight && video->conv.producerHeight != base->producer->video.height) \
+|| (video->conv.xProducerSize && (video->conv.xProducerSize != size && PRODUCER_OUTPUT_FIXSIZE)))
+#define ENCODED_NEED_FLIP (TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip)
 #define ENCODED_NEED_RESIZE (base->producer->video.width != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.width || base->producer->video.height != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.height)
 #define PRODUCED_FRAME_NEED_ROTATION (base->producer->video.rotation != 0)
 #define PRODUCED_FRAME_NEED_MIRROR (base->producer->video.mirror != tsk_false)
 #define PRODUCED_FRAME_NEED_CHROMA_CONVERSION (base->producer->video.chroma != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.chroma)
 		// Video codecs only accept YUV420P buffers ==> do conversion if needed or producer doesn't have the right size
-		if(PRODUCER_OUTPUT_RAW && (PRODUCED_FRAME_NEED_CHROMA_CONVERSION || PRODUCER_SIZE_CHANGED || ENCODED_NEED_FLIP || ENCODED_NEED_RESIZE ||PRODUCED_FRAME_NEED_ROTATION || PRODUCED_FRAME_NEED_MIRROR)){
+		if (PRODUCER_OUTPUT_RAW && (PRODUCED_FRAME_NEED_CHROMA_CONVERSION || PRODUCER_SIZE_CHANGED || ENCODED_NEED_FLIP || ENCODED_NEED_RESIZE ||PRODUCED_FRAME_NEED_ROTATION || PRODUCED_FRAME_NEED_MIRROR)) {
 			// Create video converter if not already done or producer size have changed
 			if(!video->conv.toYUV420 || PRODUCER_SIZE_CHANGED){
 				TSK_OBJECT_SAFE_FREE(video->conv.toYUV420);
