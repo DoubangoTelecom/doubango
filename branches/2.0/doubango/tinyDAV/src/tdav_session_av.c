@@ -211,6 +211,12 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+	if (!base->initialized) {
+		int ret = tmedia_session_init(base, media_type);
+		if (ret != 0) {
+			return ret;
+		}
+	}
 
 	/* base::init(): called by tmedia_session_create() */
 

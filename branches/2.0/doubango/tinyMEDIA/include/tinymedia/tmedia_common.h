@@ -268,6 +268,7 @@ TINYMEDIA_API tmedia_type_t tmedia_type_from_sdp_headerM(const struct tsdp_heade
 TINYMEDIA_API int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t* channels);
 TINYMEDIA_API int tmedia_video_get_size(tmedia_pref_video_size_t pref_vs, unsigned *width, unsigned *height);
 TINYMEDIA_API int tmedia_video_get_closest_cif_size(tmedia_pref_video_size_t pref_vs, tmedia_pref_video_size_t *cif_vs);
+TINYMEDIA_API int tmedia_video_get_closest_pref_size(unsigned width, unsigned height, tmedia_pref_video_size_t *pref_vs);
 TINYMEDIA_API int tmedia_parse_video_fmtp(const char* fmtp, tmedia_pref_video_size_t pref_vs, unsigned* width, unsigned* height, unsigned* fps);
 TINYMEDIA_API int tmedia_parse_video_imageattr(const char* imageattr, tmedia_pref_video_size_t pref_vs, unsigned* in_width, unsigned* in_height, unsigned* out_width, unsigned* out_height);
 TINYMEDIA_API char* tmedia_get_video_fmtp(tmedia_pref_video_size_t pref_vs);

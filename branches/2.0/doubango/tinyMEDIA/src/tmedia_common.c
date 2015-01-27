@@ -267,6 +267,24 @@ int tmedia_video_get_closest_cif_size(tmedia_pref_video_size_t pref_vs, tmedia_p
 	return -2;
 }
 
+int tmedia_video_get_closest_pref_size(unsigned width, unsigned height, tmedia_pref_video_size_t *pref_vs)
+{
+	int i;
+	unsigned size;
+	if (!pref_vs){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	size = width * height;
+	for (i = 0; i<sizeof(fmtp_sizes) / sizeof(fmtp_sizes[0]); i++){
+		if (size >= fmtp_sizes[i].height * fmtp_sizes[i].width){
+			*pref_vs = fmtp_sizes[i].pref_vs;
+			return 0;
+		}
+	}
+	return -2;
+}
+
 int tmedia_parse_video_fmtp(const char* fmtp, tmedia_pref_video_size_t pref_vs, unsigned* width, unsigned* height, unsigned* fps)
 {
 	int ret = -2;
