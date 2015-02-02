@@ -45,3 +45,4 @@ UpdateVersion plugins/pluginWASAPI/version.rc
 UpdateVersion plugins/pluginWinAudioDSP/version.rc
 UpdateVersion plugins/pluginWinMF/version.rc
 UpdateVersion plugins/pluginWinIPSecVista/version.rc
+UpdateVersion plugins/pluginWinDD/version.rc
