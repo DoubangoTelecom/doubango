@@ -35,8 +35,9 @@
 #include <Shlwapi.h> /* PathRemoveFileSpec */
 #endif
 
-/*
+/* https://msdn.microsoft.com/en-us/library/windows/desktop/ms724834%28v=vs.85%29.aspx
 Version Number    Description
+6.2				  Windows 8 / Windows Server 2012
 6.1               Windows 7     / Windows 2008 R2
 6.0               Windows Vista / Windows 2008
 5.2               Windows 2003 
@@ -99,6 +100,15 @@ int tdav_win32_get_osversion(unsigned long* version_major, unsigned long* versio
 		*version_minor = dwMinorVersion;
 	}
 	return 0;
+}
+
+tsk_bool_t tdav_win32_is_win8_or_later()
+{
+	if (dwMajorVersion == -1 || dwMinorVersion == -1) {
+		TSK_DEBUG_ERROR("Version numbers are invalid");
+		return tsk_false;
+	}
+	return ((dwMajorVersion > 6) || ((dwMajorVersion == 6) && (dwMinorVersion >= 2)));
 }
 
 tsk_bool_t tdav_win32_is_win7_or_later()

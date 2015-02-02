@@ -38,6 +38,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 		static struct tsk_plugin_s* __dll_plugin_wasapi = tsk_null; /* Windows Audio Session API (WASAPI): Windows [Vista - 8] */
 		static struct tsk_plugin_s* __dll_plugin_dshow = tsk_null; /* DirectShow: Windows [XP - 8] */
 		static struct tsk_plugin_s* __dll_plugin_mf = tsk_null; /* Media Foundation and WASAPI : Windows [7 - 8] */
+		static struct tsk_plugin_s* __dll_plugin_dd = tsk_null; /* Microsoft Desktop Duplication API : Windows [8 - ] */
 		static struct tsk_plugin_s* __dll_plugin_cuda = tsk_null; /* Media Foundation and WASAPI : Windows [XP - 8] */
 		static struct tsk_plugin_s* __dll_plugin_audio_dsp = tsk_null; /* Audio DSP, Resampler, AEC, NS, AGC...: Windows [Vista - 8] */
 		static struct tsk_plugin_s* __dll_plugin_ipsec_wfp = tsk_null; /* IPSec implementation using WFP (Windows Filtering platform): Windows [Vista - 8] */
@@ -193,6 +194,14 @@ int tdav_init()
 			plugins_count += tmedia_plugin_register(__dll_plugin_cuda, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
 		}
 #endif
+		/* Microsoft Desktop Duplication API (Screen capture) */
+		if (tdav_win32_is_win8_or_later()){
+			tsk_sprintf(&full_path, "%s/pluginWinDD.dll", tdav_get_current_directory_const());
+			if (tsk_plugin_file_exist(full_path) && (__dll_plugin_dd = tsk_plugin_create(full_path))){
+				plugins_count += tmedia_plugin_register(__dll_plugin_dd, tsk_plugin_def_type_all, tsk_plugin_def_media_type_all);
+			}
+		}
+
 		/* Media Foundation (Video converter, Video consumer, Video producer, Microsoft H.264 codec, Intel Quick Sync H.264 codec) */
 		if(tdav_win32_is_win7_or_later()){
 			tsk_sprintf(&full_path, "%s/pluginWinMF.dll", tdav_get_current_directory_const());
@@ -705,6 +714,7 @@ int tdav_deinit()
 		TSK_OBJECT_SAFE_FREE(__dll_plugin_cuda);
 		TSK_OBJECT_SAFE_FREE(__dll_plugin_wasapi);
 		TSK_OBJECT_SAFE_FREE(__dll_plugin_mf);
+		TSK_OBJECT_SAFE_FREE(__dll_plugin_dd);
 		TSK_OBJECT_SAFE_FREE(__dll_plugin_dshow);
 		TSK_OBJECT_SAFE_FREE(__dll_plugin_audio_dsp);
 		TSK_OBJECT_SAFE_FREE(__dll_plugin_ipsec_wfp);
