@@ -23,6 +23,7 @@
 
 #include "tsk_debug.h"
 
+#include <KS.h>/*  KS.H must be included before codecapi.H */
 #include <Codecapi.h>
 #include <initguid.h>
 #include <wmcodecdsp.h>
