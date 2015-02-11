@@ -16,36 +16,12 @@
     <ClCompile Include="..\src\tipsec.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\tipsec_common.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\tipsec_racoon.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\tipsec_vista.c">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\tipsec_xp.c">
-      <Filter>src</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\tinyipsec_config.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\src\tipsec.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\tipsec_common.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\tipsec_racoon.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\tipsec_vista.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\tipsec_xp.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

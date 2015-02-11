@@ -154,6 +154,7 @@ MFCodec::~MFCodec()
 	if(m_bIsAsync && m_pMFT)
 	{
 		m_pMFT->ProcessMessage(MFT_MESSAGE_NOTIFY_END_OF_STREAM, NULL);
+		m_pMFT->ProcessMessage(MFT_MESSAGE_COMMAND_DRAIN, NULL);
 	}
 
 	SafeRelease(&m_pMFT);

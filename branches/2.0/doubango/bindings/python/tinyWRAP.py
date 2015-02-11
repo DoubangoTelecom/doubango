@@ -1781,6 +1781,7 @@ tmedia_pref_video_size_4cif = _tinyWRAP.tmedia_pref_video_size_4cif
 tmedia_pref_video_size_wvga = _tinyWRAP.tmedia_pref_video_size_wvga
 tmedia_pref_video_size_svga = _tinyWRAP.tmedia_pref_video_size_svga
 tmedia_pref_video_size_480p = _tinyWRAP.tmedia_pref_video_size_480p
+tmedia_pref_video_size_xga = _tinyWRAP.tmedia_pref_video_size_xga
 tmedia_pref_video_size_720p = _tinyWRAP.tmedia_pref_video_size_720p
 tmedia_pref_video_size_16cif = _tinyWRAP.tmedia_pref_video_size_16cif
 tmedia_pref_video_size_1080p = _tinyWRAP.tmedia_pref_video_size_1080p

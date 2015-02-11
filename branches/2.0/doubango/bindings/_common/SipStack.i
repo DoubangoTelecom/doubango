@@ -354,6 +354,7 @@ typedef enum tmedia_pref_video_size_s
 	tmedia_pref_video_size_wvga, // 800 x 480
 	tmedia_pref_video_size_svga, // 800 x 600
 	tmedia_pref_video_size_480p, // 852 x 480
+	tmedia_pref_video_size_xga, // 1024 x 768
 	tmedia_pref_video_size_720p, // 1280 x 720
 	tmedia_pref_video_size_16cif, // 1408 x 1152
 	tmedia_pref_video_size_1080p, // 1920 x 1080
