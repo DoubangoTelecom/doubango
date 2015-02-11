@@ -396,27 +396,30 @@ static const tdav_video_frame_t* _tdav_video_jb_get_frame(tdav_video_jb_t* self,
 static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
 {
 	tdav_video_jb_t* jb = (tdav_video_jb_t*)arg;
-	uint64_t delay;
-	uint16_t missing_seq_num_start = 0, prev_missing_seq_num_start = 0;
-	tsk_size_t missing_seq_num_count = 0, prev_lasted_missing_seq_num_count = 0;
+	//uint64_t delay;
+	int32_t missing_seq_num_start = 0, prev_missing_seq_num_start = 0;
+	int32_t missing_seq_num_count = 0, prev_lasted_missing_seq_num_count = 0;
 	const tdav_video_frame_t* frame;
 	tsk_list_item_t* item;
-	uint64_t next_decode_duration = (1000 / jb->fps), now;
-	uint64_t x_decode_duration = (1000 / jb->fps); // expected
-	uint64_t x_decode_time = tsk_time_now();//expected
-	tsk_bool_t postpone;
+	uint64_t next_decode_duration = 0, now, _now;
+	//uint64_t x_decode_duration = (1000 / jb->fps); // expected
+	//uint64_t x_decode_time = tsk_time_now();//expected
+	tsk_bool_t postpone, cleaning_delay = tsk_false;
 	static const uint64_t __toomuch_delay_to_be_valid = 10000; // guard against systems with buggy "tsk_time_now()" -Won't say Windows ...but :)-
 
 	jb->decode_last_seq_num_with_mark = -1; // -1 -> unset
 	jb->decode_last_time = tsk_time_now();
 
 	(void)(now);
-	(void)(delay);
+	//(void)(delay);
 	
 	TSK_DEBUG_INFO("Video jitter buffer thread - ENTER");
 
 	while(jb->started){
-		tsk_condwait_timedwait(jb->decode_thread_cond, next_decode_duration);
+		now = tsk_time_now();
+		if (next_decode_duration > 0) {
+			tsk_condwait_timedwait(jb->decode_thread_cond, next_decode_duration);
+		}
 
 		if(!jb->started){
 			break;
@@ -435,7 +438,7 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
 			if (jb->frames_count < (int64_t)jb->latency_max){
 				frame = (const tdav_video_frame_t*)jb->frames->head->data;
 				if(!tdav_video_frame_is_complete(frame, jb->decode_last_seq_num_with_mark, &missing_seq_num_start, &missing_seq_num_count)){
-					TSK_DEBUG_INFO("Time to decode frame...but some RTP packets are missing (missing_seq_num_start=%hu, missing_seq_num_count=%u, last_seq_num_with_mark=%d). Postpone :(", missing_seq_num_start, missing_seq_num_count, jb->decode_last_seq_num_with_mark);
+					TSK_DEBUG_INFO("Time to decode frame...but some RTP packets are missing (missing_seq_num_start=%d, missing_seq_num_count=%d, last_seq_num_with_mark=%d). Postpone :(", missing_seq_num_start, missing_seq_num_count, jb->decode_last_seq_num_with_mark);
 					// signal to the session that a sequence number is missing (will send a NACK)
 					// the missing seqnum has been already requested in jb_put() and here we request it again only ONE time
 					if(jb->callback){
@@ -486,16 +489,26 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
 		}
 		
 #if 1
-		now = tsk_time_now();
-		if (jb->frames_count > (int64_t)jb->latency_max){
-			x_decode_time = now;
+		if (cleaning_delay || jb->frames_count > (int64_t)jb->latency_max){
+			//x_decode_time = now;
 			next_decode_duration = 0;
+			cleaning_delay = ((jb->frames_count << 1) > (int64_t)jb->latency_max); // cleanup up2 half
 		}
 		else{
-			delay = ( (now > x_decode_time) ? (now - x_decode_time) : (x_decode_duration >> 1)/* do not use zero to avoid endless loop when there is no frame to display */ );
-			next_decode_duration = (delay > x_decode_duration) ? 0 : (x_decode_duration - delay);
-			x_decode_duration = (1000 / jb->fps);
-			x_decode_time += x_decode_duration;
+			next_decode_duration = (1000 / jb->fps);
+			_now = tsk_time_now();
+			if (_now > now) {
+				if ((_now - now) > next_decode_duration){
+					next_decode_duration = 0;
+				}
+				else {
+					next_decode_duration -= (_now - now);
+				}
+			}
+			//delay = ( (now > x_decode_time) ? (now - x_decode_time) : (x_decode_duration >> 1)/* do not use zero to avoid endless loop when there is no frame to display */ );
+			//next_decode_duration = (delay > x_decode_duration) ? 0 : (x_decode_duration - delay);
+			//x_decode_duration = (1000 / jb->fps);
+			//x_decode_time += x_decode_duration;
 		}
 		//delay = /*(now - x_decode_time);*/(now > x_decode_time) ? (now - x_decode_time) : ( (jb->frames_count >= jb->latency_max) ? 0 : (x_decode_duration >> 1) )/* do not use zero to avoid endless loop when there is no frame to display */;
 		// delay = (jb->frames_count > jb->latency_max) ? 0 : ( (now > x_decode_time) ? (now - x_decode_time) : (x_decode_duration >> 1)/* do not use zero to avoid endless loop when there is no frame to display */ );

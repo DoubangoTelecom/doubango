@@ -120,7 +120,12 @@ int tdav_video_frame_put(tdav_video_frame_t* self, trtp_rtp_packet_t* rtp_pkt)
 	rtp_pkt = tsk_object_ref(rtp_pkt);
 	self->highest_seq_num = TSK_MAX(self->highest_seq_num, rtp_pkt->header->seq_num);
 	tsk_list_lock(self->pkts);
-	tsk_list_push_ascending_data(self->pkts, (void**)&rtp_pkt);
+	if (tdav_video_frame_find_by_seq_num(self, rtp_pkt->header->seq_num)) {
+		TSK_DEBUG_INFO("JB: Packet with seq_num=%hu duplicated", rtp_pkt->header->seq_num);
+	}
+	else {
+		tsk_list_push_ascending_data(self->pkts, (void**)&rtp_pkt);
+	}
 	tsk_list_unlock(self->pkts);
 
 	return 0;
@@ -202,7 +207,7 @@ IMPORTANT: This function assume that the RTP packets use the marker bit to signa
 *@param missing_seq_num A missing seq num if any. This value is set only if the function returns False.
 *@return True if the frame is complete and False otherwise. If False is returned then, missing_seq_num is set.
 */
-tsk_bool_t tdav_video_frame_is_complete(const tdav_video_frame_t* self, int32_t last_seq_num_with_mark, uint16_t* missing_seq_num_start, tsk_size_t* missing_seq_num_count)
+tsk_bool_t tdav_video_frame_is_complete(const tdav_video_frame_t* self, int32_t last_seq_num_with_mark, int32_t* missing_seq_num_start, int32_t* missing_seq_num_count)
 {
 	const trtp_rtp_packet_t* pkt;
 	const tsk_list_item_t *item;

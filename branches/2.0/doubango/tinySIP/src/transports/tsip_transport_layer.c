@@ -306,6 +306,10 @@ parse_buffer:
 			}
 		}
 	}
+	else {
+		TSK_DEBUG_ERROR("Failed to parse pending stream....reset buffer");
+		tsk_buffer_cleanup(peer->rcv_buff_stream);
+	}
 
 	if(message && message->firstVia && message->Call_ID && message->CSeq && message->From && message->To){
 		/* Signal we got at least one valid SIP message */
@@ -684,6 +688,12 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 		data_size = e->size;
 	}
 	
+	if (data_size == 4 && ((data_ptr[0] == '\r' && data_ptr[1] == '\n'&& data_ptr[2] == '\r' && data_ptr[3] == '\n') || (data_ptr[0] == 0x00 && data_ptr[1] == 0x00 && data_ptr[2] == 0x00 && data_ptr[3] == 0x00))) {
+		TSK_DEBUG_INFO("2CRLF");
+		tsip_transport_send_raw(transport, tsk_null, 0, data_ptr, data_size, __null_callid);
+		return 0;
+	}
+
 	tsk_ragel_state_init(&state, data_ptr, data_size);
 	if(tsip_message_parse(&state, &message, tsk_true) == tsk_true 
 		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)

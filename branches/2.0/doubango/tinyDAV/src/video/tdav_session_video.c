@@ -107,7 +107,7 @@ static const tmedia_codec_action_t __action_encode_bw_down = tmedia_codec_action
 	tsk_bool_t too_close = tsk_false; \
 	if((__now - (__self)->avpf.last_fir_time) > TDAV_SESSION_VIDEO_AVPF_FIR_HONOR_INTERVAL_MIN){ /* guard to avoid sending too many FIR */ \
 		_tdav_session_video_codec_set((__self), "action", __action_encode_idr); \
-	}else { too_close = tsk_true; TSK_DEBUG_INFO("***IDR request tooo close...ignoring****"); } \
+	}else { too_close = tsk_true; TSK_DEBUG_INFO("***IDR request tooo close(%llu ms)...ignoring****", (__now - (__self)->avpf.last_fir_time)); } \
 	if((__self)->cb_rtcpevent.func){ \
 		(__self)->cb_rtcpevent.func((__self)->cb_rtcpevent.context, tmedia_rtcp_event_type_fir, (__ssrc_media)); \
 	} \

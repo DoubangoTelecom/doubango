@@ -102,6 +102,7 @@ static int tdav_codec_h264_cisco_set(tmedia_codec_t* self, const tmedia_param_t*
 			switch (action) {
 				case tmedia_codec_action_encode_idr:
 					{
+						TSK_DEBUG_INFO("OpenH264 force_idr action");
 						h264->encoder.force_idr = tsk_true;
 						return 0;
 					}
@@ -121,7 +122,7 @@ static int tdav_codec_h264_cisco_set(tmedia_codec_t* self, const tmedia_param_t*
 						layer->iMaxSpatialBitrate = h264->encoder.sEncParam.iMaxBitrate;
 						layer->iSpatialBitrate = h264->encoder.sEncParam.iTargetBitrate;
 						reconf = tsk_true;
-						TSK_DEBUG_INFO("New target bitrate = %d kbps", rc_target_bitrate);
+						TSK_DEBUG_INFO("OpenH264  new target bitrate = %d kbps", rc_target_bitrate);
 						break;
 					}
 			}
@@ -273,12 +274,15 @@ static tsk_size_t tdav_codec_h264_cisco_encode(tmedia_codec_t* self, const void*
 		);
 
 	if (send_idr) {
+		TSK_DEBUG_INFO("OpenH264 call ForceIntraFrame");
 		if ((err = h264->encoder.pInst->ForceIntraFrame(true)) != cmResultSuccess) {
 			TSK_DEBUG_WARN("OpenH264 ForceIntraFrame(%d) failed: %ld", send_idr, err);
 		}
 	}
 	if (send_hdr) {
+#if 0 // Not needed
 		memset(&bsInfo, 0, sizeof(bsInfo));
+		tsk_mutex_lock(h264->encoder.mutex);
 		if ((err = h264->encoder.pInst->EncodeParameterSets(&bsInfo)) != cmResultSuccess) {
 			TSK_DEBUG_WARN("OpenH264 EncodeParameterSets(%d) failed: %ld", send_idr, err);
 		}
@@ -296,6 +300,8 @@ static tsk_size_t tdav_codec_h264_cisco_encode(tmedia_codec_t* self, const void*
 				}
 			}
 		}
+		tsk_mutex_unlock(h264->encoder.mutex);
+#endif
 	}
 
 	h264->encoder.sEncPic.pData[0] = ((unsigned char*)in_data);
@@ -437,8 +443,14 @@ static tsk_size_t tdav_codec_h264_cisco_decode(tmedia_codec_t* self, const void*
 			out_ptr, out_stride, out_width, out_height);
 
 		if (err != cmResultSuccess) {
-			TSK_DEBUG_WARN("OpenH264 DecodeFrame failed: %ld", err);
-			goto bail;
+			if (0 && err == dsDataErrorConcealed) {
+				TSK_DEBUG_INFO("OpenH264: Data error concealed");
+				err = cmResultSuccess;
+			}
+			else {
+				TSK_DEBUG_WARN("OpenH264: DecodeFrame failed: %ld", err);
+				goto bail;
+			}
 		}
 		// Do we have a complete frame?
 		if (!(got_picture_ptr = ((out_ptr[0] && out_ptr[1] && out_ptr[2]) && (out_stride[0] && out_stride[1]) && out_width && out_height))) {
@@ -501,7 +513,7 @@ bail:
 		h264->decoder.accumulator_pos = 0;
 	}
 	if (err != cmResultSuccess){
-		TSK_DEBUG_INFO("Failed to decode the buffer with error code =%d, size=%u, append=%s", ret, h264->decoder.accumulator_pos, append_scp ? "yes" : "no");
+		TSK_DEBUG_INFO("Failed to decode the buffer with error code =%ld, size=%u, append=%s", err, h264->decoder.accumulator_pos, append_scp ? "yes" : "no");
 		if (TMEDIA_CODEC_VIDEO(self)->in.callback) {
 			TMEDIA_CODEC_VIDEO(self)->in.result.type = tmedia_video_decode_result_type_error;
 			TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;

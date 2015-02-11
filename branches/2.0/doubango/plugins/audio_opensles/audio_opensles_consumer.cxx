@@ -62,13 +62,13 @@ int audio_consumer_opensles_get_data_10ms(const audio_consumer_opensles_t* _self
 	audio_consumer_opensles_t* self = const_cast<audio_consumer_opensles_t*>(_self);
 
 	if(self->buffer.index == self->buffer.size){
-		tdav_consumer_audio_tick(TDAV_CONSUMER_AUDIO(self));
 		if((tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(self), self->buffer.ptr, self->buffer.size)) != self->buffer.size){
 			nSamplesOut = 0;
 			self->buffer.index = self->buffer.size;
 			return 0;
 		}
 		self->buffer.index = 0;
+		tdav_consumer_audio_tick(TDAV_CONSUMER_AUDIO(self));
 	}
 	
 	int nSamplesInBits = (nSamples * nBytesPerSample);
