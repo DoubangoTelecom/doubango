@@ -153,18 +153,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\tipsec.c" />
-    <ClCompile Include="..\src\tipsec_common.c" />
-    <ClCompile Include="..\src\tipsec_racoon.c" />
-    <ClCompile Include="..\src\tipsec_vista.c" />
-    <ClCompile Include="..\src\tipsec_xp.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\tinyipsec_config.h" />
     <ClInclude Include="..\src\tipsec.h" />
-    <ClInclude Include="..\src\tipsec_common.h" />
-    <ClInclude Include="..\src\tipsec_racoon.h" />
-    <ClInclude Include="..\src\tipsec_vista.h" />
-    <ClInclude Include="..\src\tipsec_xp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsPhone\v$(TargetPlatformVersion)\Microsoft.Cpp.WindowsPhone.$(TargetPlatformVersion).targets" />

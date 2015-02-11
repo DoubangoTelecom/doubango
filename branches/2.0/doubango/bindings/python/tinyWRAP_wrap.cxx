@@ -28036,6 +28036,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tmedia_pref_video_size_wvga",SWIG_From_int(static_cast< int >(tmedia_pref_video_size_wvga)));
   SWIG_Python_SetConstant(d, "tmedia_pref_video_size_svga",SWIG_From_int(static_cast< int >(tmedia_pref_video_size_svga)));
   SWIG_Python_SetConstant(d, "tmedia_pref_video_size_480p",SWIG_From_int(static_cast< int >(tmedia_pref_video_size_480p)));
+  SWIG_Python_SetConstant(d, "tmedia_pref_video_size_xga",SWIG_From_int(static_cast< int >(tmedia_pref_video_size_xga)));
   SWIG_Python_SetConstant(d, "tmedia_pref_video_size_720p",SWIG_From_int(static_cast< int >(tmedia_pref_video_size_720p)));
   SWIG_Python_SetConstant(d, "tmedia_pref_video_size_16cif",SWIG_From_int(static_cast< int >(tmedia_pref_video_size_16cif)));
   SWIG_Python_SetConstant(d, "tmedia_pref_video_size_1080p",SWIG_From_int(static_cast< int >(tmedia_pref_video_size_1080p)));

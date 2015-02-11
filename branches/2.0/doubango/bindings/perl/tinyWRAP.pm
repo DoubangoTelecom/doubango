@@ -2637,6 +2637,7 @@ package tinyWRAP;
 *tmedia_pref_video_size_wvga = *tinyWRAPc::tmedia_pref_video_size_wvga;
 *tmedia_pref_video_size_svga = *tinyWRAPc::tmedia_pref_video_size_svga;
 *tmedia_pref_video_size_480p = *tinyWRAPc::tmedia_pref_video_size_480p;
+*tmedia_pref_video_size_xga = *tinyWRAPc::tmedia_pref_video_size_xga;
 *tmedia_pref_video_size_720p = *tinyWRAPc::tmedia_pref_video_size_720p;
 *tmedia_pref_video_size_16cif = *tinyWRAPc::tmedia_pref_video_size_16cif;
 *tmedia_pref_video_size_1080p = *tinyWRAPc::tmedia_pref_video_size_1080p;
