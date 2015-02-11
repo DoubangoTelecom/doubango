@@ -40,7 +40,7 @@
 #if !defined(PLUGIN_MF_DISABLE_CODECS)
 // Must be "0" to use "Microsoft"/"Intel Quick Sync" MFT codecs. Testing: When set to "1", libx264 and FFmpeg will be used.
 // Metropolis code (G2J.COM TelePresence client) has "PLUGIN_MF_DISABLE_CODECS=1" because of interop issues against Tandberg and Intel QuickSync H.264 implementations.
-#	define PLUGIN_MF_DISABLE_CODECS 0
+#	define PLUGIN_MF_DISABLE_CODECS 1
 #endif
 #if !defined(PLUGIN_MF_DISABLE_MS_H264_ENCODER)
 // MS H.264 encoder produces artifacts when bundled with the producer. Disable until we found why this happens.
