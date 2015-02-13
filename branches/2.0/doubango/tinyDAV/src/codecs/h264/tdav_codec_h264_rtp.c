@@ -351,8 +351,8 @@ void tdav_codec_h264_rtp_callback(struct tdav_codec_h264_common_s *self, const v
 	
 	//TSK_DEBUG_INFO("==> SCP %2x %2x %2x %2x", pdata[0], pdata[1], pdata[2], pdata[3]);
 
-	if (self->pack_mode == Single_NAL_Unit_Mode || size < H264_RTP_PAYLOAD_SIZE) {
-		if (self->pack_mode == Single_NAL_Unit_Mode && size > H264_RTP_PAYLOAD_SIZE) {
+	if (self->pack_mode_local == Single_NAL_Unit_Mode || size < H264_RTP_PAYLOAD_SIZE) {
+		if (self->pack_mode_local == Single_NAL_Unit_Mode && size > H264_RTP_PAYLOAD_SIZE) {
 			TSK_DEBUG_WARN("pack_mode=Single_NAL_Unit_Mode but size(%d) > H264_RTP_PAYLOAD_SIZE(%d). Did you forget to set \"avctx->rtp_payload_size\"?", size, H264_RTP_PAYLOAD_SIZE);
 		}
 		// Can be packet in a Single Nal Unit

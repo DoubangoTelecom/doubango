@@ -810,7 +810,7 @@ static int tdav_codec_h264_cisco_init(tdav_codec_h264_cisco_t* self, profile_idc
 	}
 
 	(self)->encoder.max_bw_kpbs = tmedia_defaults_get_bandwidth_video_upload_max();
-	common->pack_mode = H264_PACKETIZATION_MODE;
+	common->pack_mode_local = H264_PACKETIZATION_MODE;
 	common->profile = profile;
 	common->level = level;
 	// A.2.1.1 Constrained Baseline profile 

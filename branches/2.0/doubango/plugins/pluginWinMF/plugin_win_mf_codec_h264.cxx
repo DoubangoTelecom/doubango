@@ -719,10 +719,10 @@ int mf_codec_h264_init(mf_codec_h264_t* self, profile_idc_t profile)
 
 	(self)->encoder.max_bw_kpbs = tmedia_defaults_get_bandwidth_video_upload_max();
 	if (MFUtils::IsLowLatencyH264SupportsMaxSliceSize()) {
-		common->pack_mode = H264_PACKETIZATION_MODE;
+		common->pack_mode_local = H264_PACKETIZATION_MODE;
 	}
 	else {
-		common->pack_mode = Non_Interleaved_Mode;
+		common->pack_mode_local = Non_Interleaved_Mode;
 	}
 	common->profile = profile;
 	common->level = level;

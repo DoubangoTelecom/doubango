@@ -638,7 +638,7 @@ static int tdav_codec_h264_cuda_init(tdav_codec_h264_cuda_t* self, profile_idc_t
 
 	sem = tsk_semaphore_create_2(1);
 
-	TDAV_CODEC_H264_COMMON(self)->pack_mode = H264_PACKETIZATION_MODE;
+	TDAV_CODEC_H264_COMMON(self)->pack_mode_local = H264_PACKETIZATION_MODE;
 	TDAV_CODEC_H264_COMMON(self)->profile = profile;
 	TMEDIA_CODEC_VIDEO(self)->in.max_mbps = TMEDIA_CODEC_VIDEO(self)->out.max_mbps = H264_MAX_MBPS*1000;
 	TMEDIA_CODEC_VIDEO(self)->in.max_br = TMEDIA_CODEC_VIDEO(self)->out.max_br = H264_MAX_BR*1000;
