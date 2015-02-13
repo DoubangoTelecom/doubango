@@ -1706,10 +1706,10 @@ static int tdav_codec_h264_intel_init(tdav_codec_h264_intel_t* self, profile_idc
 
 	(self)->encoder.max_bw_kpbs = tmedia_defaults_get_bandwidth_video_upload_max();
 	if (/*MFUtils::IsLowLatencyH264SupportsMaxSliceSize()*/0) { // TODO: MSDK doesn't support PM=0. Neg. PM=1 but try to do the best to produce SingleNalUnits
-		common->pack_mode = H264_PACKETIZATION_MODE;
+		common->pack_mode_local = H264_PACKETIZATION_MODE;
 	}
 	else {
-		common->pack_mode = Non_Interleaved_Mode;
+		common->pack_mode_local = Non_Interleaved_Mode;
 	}
 	common->profile = profile;
 	common->level = level;

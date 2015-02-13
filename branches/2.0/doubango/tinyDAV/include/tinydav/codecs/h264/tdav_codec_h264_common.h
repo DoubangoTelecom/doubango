@@ -91,6 +91,7 @@ static const int32_t H264_LEVEL_TO_ZERO_BASED_INDEX[255] = {
 
 // Because of FD, declare it here
 typedef enum packetization_mode_e{
+	Unknown_Mode = -1,
 	Single_NAL_Unit_Mode = 0,		/* Single NAL mode (Only nals from 1-23 are allowed) */
 	Non_Interleaved_Mode = 1,		/* Non-interleaved Mode: 1-23, 24 (STAP-A), 28 (FU-A) are allowed */
 	Interleaved_Mode = 2			/* 25 (STAP-B), 26 (MTAP16), 27 (MTAP24), 28 (FU-A), and 29 (FU-B) are allowed.*/
@@ -106,7 +107,8 @@ typedef struct tdav_codec_h264_common_s
 	level_idc_t level;
 	unsigned maxFS;
 
-	packetization_mode_t pack_mode;
+	packetization_mode_t pack_mode_remote; // remote packetization mode
+	packetization_mode_t pack_mode_local; // local packetization mode
 
 	struct{
 		uint8_t* ptr;
@@ -213,6 +215,8 @@ static int tdav_codec_h264_common_init(tdav_codec_h264_common_t * h264)
 			h264->level = level;
 		}
 		h264->profile_iop = 0x80;
+		h264->pack_mode_local = H264_PACKETIZATION_MODE;
+		h264->pack_mode_remote = Unknown_Mode;
 	}
 	return 0;
 }
@@ -343,8 +347,9 @@ static tsk_bool_t tdav_codec_h264_common_sdp_att_match(tdav_codec_h264_common_t*
 
 			/* === packetization-mode ===*/
 			if ((val_int = tsk_params_get_param_value_as_int(params, "packetization-mode")) != -1) {
-				if((packetization_mode_t)val_int == Single_NAL_Unit_Mode || (packetization_mode_t)val_int == Non_Interleaved_Mode){
-					TDAV_CODEC_H264_COMMON(h264)->pack_mode = (packetization_mode_t)val_int;
+				if ((packetization_mode_t)val_int == Single_NAL_Unit_Mode || (packetization_mode_t)val_int == Non_Interleaved_Mode) {
+					TDAV_CODEC_H264_COMMON(h264)->pack_mode_remote = (packetization_mode_t)val_int;
+					TDAV_CODEC_H264_COMMON(h264)->pack_mode_local = TSK_MAX(TDAV_CODEC_H264_COMMON(h264)->pack_mode_local, TDAV_CODEC_H264_COMMON(h264)->pack_mode_remote);
 				}
 				else {
 					TSK_DEBUG_INFO("packetization-mode not matching");
@@ -391,12 +396,15 @@ static char* tdav_codec_h264_common_sdp_att_get(const tdav_codec_h264_common_t* 
 		char* fmtp = tsk_null;
 #if 1
 		// Required by "TANDBERG/4120 (X7.2.2)" and CISCO TelePresence		
-		tsk_sprintf(&fmtp, "profile-level-id=%x;max-mbps=%d;max-fs=%d;packetization-mode=%d", 
+		tsk_sprintf(&fmtp, "profile-level-id=%x;max-mbps=%d;max-fs=%d", 
 				((h264->profile << 16) | (h264->profile_iop << 8) | (h264->level & 0xff)), 
 				MaxMBPS[H264_LEVEL_TO_ZERO_BASED_INDEX[h264->level]],
-				h264->maxFS,
-				h264->pack_mode
+				h264->maxFS
 			);
+		// Do not restrict packetisation-mode until we knwon what the remote party supports
+		if (h264->pack_mode_remote != Unknown_Mode) {
+			tsk_strcat_2(&fmtp, ";packetization-mode=%d", h264->pack_mode_local);
+		}
 #else
 		tsk_sprintf(&fmtp, "profile-level-id=%x; packetization-mode=%d", ((h264->profile << 16) | (h264->profile_iop << 8) | (h264->level & 0xff)), h264->pack_mode);
 #endif

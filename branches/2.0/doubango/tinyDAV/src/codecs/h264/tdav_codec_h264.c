@@ -915,7 +915,7 @@ int tdav_codec_h264_init(tdav_codec_h264_t* self, profile_idc_t profile)
 	}
 
 	(self)->encoder.max_bw_kpbs = tmedia_defaults_get_bandwidth_video_upload_max();
-	TDAV_CODEC_H264_COMMON(self)->pack_mode = H264_PACKETIZATION_MODE;
+	TDAV_CODEC_H264_COMMON(self)->pack_mode_local = H264_PACKETIZATION_MODE;
 	TDAV_CODEC_H264_COMMON(self)->profile = profile;
 	TDAV_CODEC_H264_COMMON(self)->level = level;
 	TMEDIA_CODEC_VIDEO(self)->in.max_mbps = TMEDIA_CODEC_VIDEO(self)->out.max_mbps = H264_MAX_MBPS*1000;
