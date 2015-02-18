@@ -250,10 +250,12 @@ PTR_INFO* THREADMANAGER::GetPointerInfo()
 //
 // Waits infinitely for all spawned threads to terminate
 //
-void THREADMANAGER::WaitForThreadTermination()
+bool THREADMANAGER::WaitForThreadTermination(DWORD timeout /*= INFINITE*/)
 {
+	bool bRet = true;
     if (m_ThreadCount != 0)
     {
-        WaitForMultipleObjectsEx(m_ThreadCount, m_ThreadHandles, TRUE, INFINITE, FALSE);
+		bRet = (WaitForMultipleObjectsEx(m_ThreadCount, m_ThreadHandles, TRUE, timeout, FALSE) != WAIT_TIMEOUT);
     }
+	return bRet;
 }

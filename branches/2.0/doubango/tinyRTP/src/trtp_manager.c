@@ -1609,6 +1609,8 @@ int trtp_manager_stop(trtp_manager_t* self)
 		return -1;
 	}
 
+	TSK_DEBUG_INFO("trtp_manager_stop()");
+
 	tsk_safeobj_lock(self);
 
 	// We haven't started the ICE context which means we must not stop it
