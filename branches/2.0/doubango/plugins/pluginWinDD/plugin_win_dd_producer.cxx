@@ -31,6 +31,7 @@
 #include "tsk_time.h"
 #include "tsk_string.h"
 #include "tsk_thread.h"
+#include "tsk_safeobj.h"
 #include "tsk_debug.h"
 
 #include "internals/DisplayManager.h"
@@ -47,6 +48,10 @@
 
 #define DD_CHECK_HR(x) { HRESULT __hr__ = (x); if (FAILED(__hr__)) { DD_DEBUG_ERROR("Operation Failed (%08x)", __hr__); goto bail; } }
 
+#if !defined(DD_DDPROC_THREAD_TIMEOUT)
+#	define DD_DDPROC_THREAD_TIMEOUT 1500
+#endif
+
 //
 //	plugin_win_dd_producer_t
 //
@@ -54,10 +59,11 @@ typedef struct plugin_win_dd_producer_s
 {
 	TMEDIA_DECLARE_PRODUCER;
 
-	bool bStarted, bPrepared, bMuted, bWindowHooked;
+	bool bStarted, bPrepared, bMuted, bWindowHooked, bThreadTerminationDelayed;
 	tsk_thread_handle_t* ppTread[1];
 
 	OUTPUTMANAGER *pOutMgr;
+	THREADMANAGER *pThreadMgr;
 	
 	// Window handles
 	HWND hwndPreview;
@@ -76,7 +82,7 @@ plugin_win_dd_producer_t;
 
 
 // Forward declarations
-static int _plugin_win_dd_producer_unprepare(plugin_win_dd_producer_t* pSelf);
+static int _plugin_win_dd_producer_unprepare(plugin_win_dd_producer_t* pSelf, bool bCleanup = false);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 static HRESULT HookWindow(struct plugin_win_dd_producer_s *pSelf, HWND hWnd);
@@ -174,10 +180,20 @@ static int plugin_win_dd_producer_prepare(tmedia_producer_t* self, const tmedia_
 		DD_DEBUG_ERROR("Invalid parameter");
 		DD_CHECK_HR(hr = E_UNEXPECTED);
 	}
+
 	if (pSelf->bPrepared)
 	{
 		DD_DEBUG_WARN("DD video producer already prepared");
 		DD_CHECK_HR(hr = E_UNEXPECTED);
+	}
+
+	if (pSelf->bThreadTerminationDelayed)
+	{
+		DD_DEBUG_INFO("Thread termination was delayed ...cleanup now");
+		if (_plugin_win_dd_producer_unprepare(pSelf, true/*cleanup?*/) != 0)
+		{
+			DD_CHECK_HR(hr = E_UNEXPECTED);
+		}
 	}
 	
 	TMEDIA_PRODUCER(pSelf)->video.fps = TMEDIA_CODEC_VIDEO(codec)->out.fps;
@@ -191,49 +207,49 @@ static int plugin_win_dd_producer_prepare(tmedia_producer_t* self, const tmedia_
 		TMEDIA_PRODUCER(pSelf)->video.height);
 
 	// Event used by the threads to signal an unexpected error and we want to quit the app
-	pSelf->hlUnexpectedErrorEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
-	if (!pSelf->hlUnexpectedErrorEvent)
+	if (!pSelf->hlUnexpectedErrorEvent && !(pSelf->hlUnexpectedErrorEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr)))
 	{
 		ProcessFailure(nullptr, L"UnexpectedErrorEvent creation failed", L"Error", E_UNEXPECTED);
 		DD_CHECK_HR(hr = E_UNEXPECTED);
 	}
 
 	// Event for when a thread encounters an expected error
-	pSelf->hlExpectedErrorEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
-	if (!pSelf->hlExpectedErrorEvent)
+	if (!pSelf->hlExpectedErrorEvent && !(pSelf->hlExpectedErrorEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr)))
 	{
 		ProcessFailure(nullptr, L"ExpectedErrorEvent creation failed", L"Error", E_UNEXPECTED);
 		DD_CHECK_HR(hr = E_UNEXPECTED);
 	}
 
 	// Event for Occlution
-	pSelf->hlOcclutionEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
-	if (!pSelf->hlOcclutionEvent)
+	if (!pSelf->hlOcclutionEvent && !(pSelf->hlOcclutionEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr)))
 	{
 		ProcessFailure(nullptr, L"OcclutionEvent creation failed", L"Error", E_UNEXPECTED);
 		DD_CHECK_HR(hr = E_UNEXPECTED);
 	}
 
 	// Event to tell spawned threads to quit
-	pSelf->hlTerminateThreadsEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
-	if (!pSelf->hlTerminateThreadsEvent)
+	if (!pSelf->hlTerminateThreadsEvent && !(pSelf->hlTerminateThreadsEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr)))
 	{
 		ProcessFailure(nullptr, L"TerminateThreadsEvent creation failed", L"Error", E_UNEXPECTED);
 		DD_CHECK_HR(hr = E_UNEXPECTED);
 	}
 
 	// Load simple cursor
-	pSelf->hcCursor = LoadCursor(nullptr, IDC_ARROW);
-	if (!pSelf->hcCursor)
+	if (!pSelf->hcCursor && !(pSelf->hcCursor = LoadCursor(nullptr, IDC_ARROW)))
 	{
 		ProcessFailure(nullptr, L"Cursor load failed", L"Error", E_UNEXPECTED);
 		DD_CHECK_HR(hr = E_UNEXPECTED);
 	}
 	
-	pSelf->pOutMgr = new OUTPUTMANAGER();
-	if (!pSelf->pOutMgr)
+	if (!pSelf->pOutMgr && !(pSelf->pOutMgr = new OUTPUTMANAGER()))
 	{
 		ProcessFailure(nullptr, L"Out manager allocation failed", L"Error", E_OUTOFMEMORY);
+		DD_CHECK_HR(hr = E_OUTOFMEMORY);
+	}
+
+	if (!pSelf->pThreadMgr && !(pSelf->pThreadMgr = new THREADMANAGER()))
+	{
+		ProcessFailure(nullptr, L"Thread managed allocation failed", L"Error", E_OUTOFMEMORY);
 		DD_CHECK_HR(hr = E_OUTOFMEMORY);
 	}
 
@@ -256,7 +272,7 @@ static int plugin_win_dd_producer_start(tmedia_producer_t* self)
 	if (pSelf->bStarted)
 	{
 		DD_DEBUG_INFO("Producer already started");
-		return 0;
+		goto bail;
 	}
 	if (!pSelf->bPrepared)
 	{
@@ -302,7 +318,6 @@ static int plugin_win_dd_producer_pause(tmedia_producer_t* self)
 	if (!pSelf->bStarted)
 	{
 		DD_DEBUG_INFO("MF video producer not started");
-		return 0;
 	}
 
 	return 0;
@@ -317,9 +332,9 @@ static int plugin_win_dd_producer_stop(tmedia_producer_t* self)
 		DD_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-
-	pSelf->bStarted = false;
 	
+	pSelf->bStarted = false;
+
 	UnhookWindow(pSelf);
 
 	if (pSelf->hlTerminateThreadsEvent)
@@ -332,10 +347,12 @@ static int plugin_win_dd_producer_stop(tmedia_producer_t* self)
 	}
 
 	// next start() will be called after prepare()
-	return _plugin_win_dd_producer_unprepare(pSelf);
+	int ret = _plugin_win_dd_producer_unprepare(pSelf);
+
+	return ret;
 }
 
-static int _plugin_win_dd_producer_unprepare(plugin_win_dd_producer_t* pSelf)
+static int _plugin_win_dd_producer_unprepare(plugin_win_dd_producer_t* pSelf, bool bCleanup /*= false*/)
 {
 	HRESULT hr = S_OK;
 
@@ -350,37 +367,60 @@ static int _plugin_win_dd_producer_unprepare(plugin_win_dd_producer_t* pSelf)
 		DD_CHECK_HR(hr = E_UNEXPECTED);
 	}
 
-	if (pSelf->hlUnexpectedErrorEvent)
+	pSelf->bThreadTerminationDelayed = false;
+
+	// Thread manager must be destroyed before the events and output manager
+	if (pSelf->pThreadMgr)
 	{
-		CloseHandle(pSelf->hlUnexpectedErrorEvent);
-		pSelf->hlUnexpectedErrorEvent = nullptr;
-	}
-	if (pSelf->hlExpectedErrorEvent)
-	{
-		CloseHandle(pSelf->hlExpectedErrorEvent);
-		pSelf->hlExpectedErrorEvent = nullptr;
-	}
-	if (pSelf->hlOcclutionEvent)
-	{
-		CloseHandle(pSelf->hlOcclutionEvent);
-		pSelf->hlOcclutionEvent = nullptr;
-	}
-	if (pSelf->hlTerminateThreadsEvent)
-	{
-		CloseHandle(pSelf->hlTerminateThreadsEvent);
-		pSelf->hlTerminateThreadsEvent = nullptr;
+		// if we are cleaning the producer then all threads must exit only when all threads are destroyed
+		// https://code.google.com/p/sincity/issues/detail?id=7
+		if (pSelf->pThreadMgr->WaitForThreadTermination(bCleanup ? INFINITE : DD_DDPROC_THREAD_TIMEOUT) == true)
+		{
+			delete pSelf->pThreadMgr;
+			pSelf->pThreadMgr = nullptr;
+		}
+		else
+		{
+			// Thread wait timedout
+			DD_DEBUG_WARN("DDProc thread termination delayed");
+			pSelf->bThreadTerminationDelayed = true;
+		}
 	}
 
-	if (pSelf->hcCursor)
+	if (!pSelf->bThreadTerminationDelayed)
 	{
-		DestroyCursor(pSelf->hcCursor);
-		pSelf->hcCursor = nullptr;
-	}
+		if (pSelf->hlUnexpectedErrorEvent)
+		{
+			CloseHandle(pSelf->hlUnexpectedErrorEvent);
+			pSelf->hlUnexpectedErrorEvent = nullptr;
+		}
+		if (pSelf->hlExpectedErrorEvent)
+		{
+			CloseHandle(pSelf->hlExpectedErrorEvent);
+			pSelf->hlExpectedErrorEvent = nullptr;
+		}
+		if (pSelf->hlOcclutionEvent)
+		{
+			CloseHandle(pSelf->hlOcclutionEvent);
+			pSelf->hlOcclutionEvent = nullptr;
+		}
+		if (pSelf->hlTerminateThreadsEvent)
+		{
+			CloseHandle(pSelf->hlTerminateThreadsEvent);
+			pSelf->hlTerminateThreadsEvent = nullptr;
+		}
 
-	if (pSelf->pOutMgr)
-	{
-		delete pSelf->pOutMgr;
-		pSelf->pOutMgr = nullptr;
+		if (pSelf->hcCursor)
+		{
+			DestroyCursor(pSelf->hcCursor);
+			pSelf->hcCursor = nullptr;
+		}
+
+		if (pSelf->pOutMgr)
+		{
+			delete pSelf->pOutMgr;
+			pSelf->pOutMgr = nullptr;
+		}
 	}
 
 	pSelf->bPrepared = false;
@@ -463,7 +503,7 @@ static tsk_object_t* plugin_win_dd_producer_dtor(tsk_object_t * self)
 		/* deinit base */
 		tmedia_producer_deinit(TMEDIA_PRODUCER(pSelf));
 		/* deinit self */
-		_plugin_win_dd_producer_unprepare(pSelf);
+		_plugin_win_dd_producer_unprepare(pSelf, true/*cleanup*/);
 
 		DD_DEBUG_INFO("*** WinDD producer destroyed ***");
 	}
@@ -636,6 +676,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //
 DWORD WINAPI DDProc(_In_ void* Param)
 {
+	DD_DEBUG_INFO("DDProc (producer) - ENTER");
+
 	// Classes
 	DISPLAYMANAGER DispMgr;
 	DUPLICATIONMANAGER DuplMgr;
@@ -708,7 +750,7 @@ DWORD WINAPI DDProc(_In_ void* Param)
 	bool WaitToProcessCurrentFrame = false;
 	FRAME_DATA CurrentData;
 
-	while ((WaitForSingleObjectEx(TData->TerminateThreadsEvent, 0, FALSE) == WAIT_TIMEOUT))
+	while (TData->Producer->is_started &&  (WaitForSingleObjectEx(TData->TerminateThreadsEvent, 0, FALSE) == WAIT_TIMEOUT))
 	{
 		if (!WaitToProcessCurrentFrame)
 		{
@@ -781,7 +823,10 @@ DWORD WINAPI DDProc(_In_ void* Param)
 		TimeNow = tsk_time_now();
 		if ((TimeNow - TimeLastFrame) > TimeFrameDuration)
 		{
-			hr = DuplMgr.SendData(const_cast<struct tmedia_producer_s*>(TData->Producer), &CurrentData);
+			if (!((const plugin_win_dd_producer_t*)TData->Producer)->bMuted)
+			{
+				hr = DuplMgr.SendData(const_cast<struct tmedia_producer_s*>(TData->Producer), &CurrentData);
+			}
 			if (SUCCEEDED(hr))
 			{
 				TimeLastFrame = TimeNow;
@@ -829,6 +874,8 @@ Exit:
 		KeyMutex = nullptr;
 	}
 
+	DD_DEBUG_INFO("DDProc (producer) - EXIT");
+
 	return 0;
 }
 
@@ -838,8 +885,7 @@ static void* TSK_STDCALL DDThread(void *pArg)
 	plugin_win_dd_producer_t *pSelf = (plugin_win_dd_producer_t *)pArg;
 	HRESULT hr = S_OK;
 	INT SingleOutput = -1;
-
-	THREADMANAGER ThreadMgr;
+	
 	RECT DeskBounds = {};
 	UINT OutputCount = 1;
 	
@@ -878,12 +924,12 @@ static void* TSK_STDCALL DDThread(void *pArg)
 			{
 				// Terminate other threads
 				SetEvent(pSelf->hlTerminateThreadsEvent);
-				ThreadMgr.WaitForThreadTermination();
+				pSelf->pThreadMgr->WaitForThreadTermination();
 				ResetEvent(pSelf->hlTerminateThreadsEvent);
 				ResetEvent(pSelf->hlExpectedErrorEvent);
 
 				// Clean up
-				ThreadMgr.Clean();
+				pSelf->pThreadMgr->Clean();
 				pSelf->pOutMgr->CleanRefs();
 
 				// As we have encountered an error due to a system transition we wait before trying again, using this dynamic wait
@@ -903,7 +949,7 @@ static void* TSK_STDCALL DDThread(void *pArg)
 				HANDLE SharedHandle = pSelf->pOutMgr->GetSharedHandle();
 				if (SharedHandle)
 				{
-					Ret = ThreadMgr.Initialize(SingleOutput, OutputCount, pSelf->hlUnexpectedErrorEvent, pSelf->hlExpectedErrorEvent, pSelf->hlTerminateThreadsEvent, SharedHandle, TMEDIA_PRODUCER(pSelf), &DeskBounds);
+					Ret = pSelf->pThreadMgr->Initialize(SingleOutput, OutputCount, pSelf->hlUnexpectedErrorEvent, pSelf->hlExpectedErrorEvent, pSelf->hlTerminateThreadsEvent, SharedHandle, TMEDIA_PRODUCER(pSelf), &DeskBounds);
 				}
 				else
 				{
@@ -921,7 +967,7 @@ static void* TSK_STDCALL DDThread(void *pArg)
 			// Nothing else to do, so try to present to write out to window if not occluded
 			if (!Occluded || !pSelf->bWindowHooked)
 			{
-				Ret = pSelf->pOutMgr->UpdateApplicationWindow(ThreadMgr.GetPointerInfo(), &Occluded);
+				Ret = pSelf->pOutMgr->UpdateApplicationWindow(pSelf->pThreadMgr->GetPointerInfo(), &Occluded);
 			}
 		}
 
@@ -943,7 +989,10 @@ static void* TSK_STDCALL DDThread(void *pArg)
 	}
 
 bail:
+	
+	DD_DEBUG_INFO("DDThread (producer) - BAIL");
 
+#if 0 // Done by unprepare()
 	// Make sure all other threads have exited
 	if (SetEvent(pSelf->hlTerminateThreadsEvent))
 	{
@@ -954,6 +1003,7 @@ bail:
 	CloseHandle(pSelf->hlUnexpectedErrorEvent); pSelf->hlUnexpectedErrorEvent = NULL;
 	CloseHandle(pSelf->hlExpectedErrorEvent); pSelf->hlExpectedErrorEvent = NULL;
 	CloseHandle(pSelf->hlTerminateThreadsEvent); pSelf->hlTerminateThreadsEvent = NULL;
+#endif
 
 	DD_DEBUG_INFO("DDThread (producer) - EXIT");
 

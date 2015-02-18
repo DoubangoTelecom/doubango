@@ -18,7 +18,7 @@ class THREADMANAGER
         void Clean();
 		DUPL_RETURN Initialize(INT SingleOutput, UINT OutputCount, HANDLE UnexpectedErrorEvent, HANDLE ExpectedErrorEvent, HANDLE TerminateThreadsEvent, HANDLE SharedHandle, _In_ const struct tmedia_producer_s* Producer, _In_ RECT* DesktopDim);
         PTR_INFO* GetPointerInfo();
-        void WaitForThreadTermination();
+		bool WaitForThreadTermination(DWORD timeout = INFINITE);
 
     private:
         DUPL_RETURN InitializeDx(_Out_ DX_RESOURCES* Data);
