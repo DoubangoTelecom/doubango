@@ -123,7 +123,7 @@
 				Optimization="3"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="..\thirdparties\common\include;..\thirdparties\win32\include;include;..\tinyMSRP\include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinyBFCP\include;..\tinySDP\include;..\tinyIPSec\src;..\tinyNET\src;..\tinySAK\src;..\thirdparties\win32\include\BroadVoice16\bvcommon;..\thirdparties\win32\include\BroadVoice16\bv16"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_WARN;WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS;HAVE_SRTP=1;HAVE_G729=0;HAVE_BV16=0;HAVE_H264=1;HAVE_OPENH264=1;HAVE_OPENCORE_AMR=1;HAVE_ILBC=0;HAVE_LIBGSM=1;HAVE_LIBOPUS=1;HAVE_DSOUND_H=1;HAVE_WAVE_API=1;HAVE_FFMPEG=1;HAVE_WEBRTC=1;HAVE_SPEEX_DSP=1;HAVE_SPEEX_JB=1;HAVE_LIB_SPEEX=1;HAVE_LIBVPX=1;HAVE_LIBYUV=1;G192BITSTREAM=0;_WIN32_WINNT=0x0501"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_WARN;WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS;HAVE_SRTP=1;HAVE_G729=0;HAVE_BV16=0;HAVE_H264=1;HAVE_OPENH264=1;HAVE_OPENCORE_AMR=0;HAVE_ILBC=0;HAVE_LIBGSM=1;HAVE_LIBOPUS=1;HAVE_DSOUND_H=1;HAVE_WAVE_API=1;HAVE_FFMPEG=0;HAVE_WEBRTC=1;HAVE_SPEEX_DSP=1;HAVE_SPEEX_JB=1;HAVE_LIB_SPEEX=1;HAVE_LIBVPX=1;HAVE_LIBYUV=1;G192BITSTREAM=0;_WIN32_WINNT=0x0501"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="false"
 				UsePrecompiledHeader="0"
@@ -684,6 +684,10 @@
 					</File>
 					<File
 						RelativePath=".\src\codecs\h264\tdav_codec_h264_cuda.cxx"
+						>
+					</File>
+					<File
+						RelativePath=".\src\codecs\h264\tdav_codec_h264_intel.cxx"
 						>
 					</File>
 					<File

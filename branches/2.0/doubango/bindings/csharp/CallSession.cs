@@ -178,6 +178,21 @@ public class CallSession : InviteSession {
     return ret;
   }
 
+  public bool setVideoFps(int fps) {
+    bool ret = tinyWRAPPINVOKE.CallSession_setVideoFps(swigCPtr, fps);
+    return ret;
+  }
+
+  public bool setVideoBandwidthUploadMax(int max) {
+    bool ret = tinyWRAPPINVOKE.CallSession_setVideoBandwidthUploadMax(swigCPtr, max);
+    return ret;
+  }
+
+  public bool setVideoBandwidthDownloadMax(int max) {
+    bool ret = tinyWRAPPINVOKE.CallSession_setVideoBandwidthDownloadMax(swigCPtr, max);
+    return ret;
+  }
+
   public bool setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength) {
     bool ret = tinyWRAPPINVOKE.CallSession_setQoS(swigCPtr, (int)type, (int)strength);
     return ret;

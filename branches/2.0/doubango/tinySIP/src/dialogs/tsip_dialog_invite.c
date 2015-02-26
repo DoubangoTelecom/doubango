@@ -1103,6 +1103,10 @@ int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self)
 			TMEDIA_SESSION_SET_STR(self->msession_mgr->type, "dtls-file-pvk", TSIP_DIALOG_GET_STACK(self)->security.tls.pvk),
 			TMEDIA_SESSION_SET_INT32(self->msession_mgr->type, "dtls-cert-verify", TSIP_DIALOG_GET_STACK(self)->security.tls.verify),
 
+			TMEDIA_SESSION_SET_INT32(tmedia_video, "fps", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.video_fps),
+			TMEDIA_SESSION_SET_INT32(tmedia_video, "bandwidth-max-upload", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.video_bw_up),
+			TMEDIA_SESSION_SET_INT32(tmedia_video, "bandwidth-max-download", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.video_bw_down),
+
 			tsk_null);
 }
 

@@ -225,6 +225,7 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 	self->use_rtcp = tmedia_defaults_get_rtcp_enabled();
 	self->use_rtcpmux = tmedia_defaults_get_rtcpmux_enabled();
 	self->avpf_mode_set = self->avpf_mode_neg = tmedia_defaults_get_avpf_mode();
+	self->fps = -1; // use what is negotiated by the codec unless overrided by the user
 	self->bandwidth_max_upload_kbps = ((media_type & tmedia_video || (media_type & tmedia_bfcp_video) == tmedia_bfcp_video) ? tmedia_defaults_get_bandwidth_video_upload_max() : INT_MAX); // INT_MAX or <=0 means undefined
 	self->bandwidth_max_download_kbps = ((media_type & tmedia_video || (media_type & tmedia_bfcp_video) == tmedia_bfcp_video) ? tmedia_defaults_get_bandwidth_video_download_max() : INT_MAX); // INT_MAX or <=0 means undefined
 	self->congestion_ctrl_enabled = tmedia_defaults_get_congestion_ctrl_enabled(); // whether to enable draft-alvestrand-rtcweb-congestion-03 and draft-alvestrand-rmcat-remb-01
@@ -345,6 +346,18 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 				self->is_webrtc2sip_mode_enabled = (TSK_TO_INT32((uint8_t*)param->value) != 0);
 				return tsk_true;
 			}
+			else if (tsk_striequals(param->key, "bandwidth-max-upload")) {
+				self->bandwidth_max_upload_kbps = TSK_TO_INT32((uint8_t*)param->value);
+				return tsk_true;
+			}
+			else if (tsk_striequals(param->key, "bandwidth-max-download")) {
+				self->bandwidth_max_download_kbps = TSK_TO_INT32((uint8_t*)param->value);
+				return tsk_true;
+			}
+			else if (tsk_striequals(param->key, "fps")) {
+				self->fps = TSK_TO_INT32((uint8_t*)param->value);
+				return tsk_true;
+			}
 		}
 		else if(param->value_type == tmedia_pvt_pobject){
 			if(tsk_striequals(param->key, "natt-ctx")){
@@ -412,6 +425,23 @@ tsk_bool_t tdav_session_av_get(tdav_session_av_t* self, tmedia_param_t* param)
 	}
 
 	return tsk_false;
+}
+
+int tdav_session_av_init_encoder(tdav_session_av_t* self, struct tmedia_codec_s* encoder)
+{
+	if (!self || !encoder) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	encoder->bandwidth_max_upload = self->bandwidth_max_upload_kbps;
+	encoder->bandwidth_max_download = self->bandwidth_max_download_kbps;
+	if ((encoder->type & tmedia_video) || (encoder->type & tmedia_bfcp_video)) {
+		if (self->fps > 0) {
+			tmedia_codec_video_t* video = TMEDIA_CODEC_VIDEO(encoder);
+			video->out.fps = self->fps;
+		}
+	}
+	return 0;
 }
 
 int tdav_session_av_prepare(tdav_session_av_t* self)

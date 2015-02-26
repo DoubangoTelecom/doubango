@@ -115,7 +115,6 @@ typedef struct tdav_codec_h264_intel_s
 		int neg_height;
 		int neg_fps;
 		int max_bitrate_bps;
-		int32_t max_bw_kpbs;
 	} encoder;
 
 	// decoder
@@ -464,7 +463,7 @@ public:
 		max_bw_kpbs = TSK_CLAMP(
 			0,
 			tmedia_get_video_bandwidth_kbps_2(pWrappedCodec->encoder.neg_width, pWrappedCodec->encoder.neg_height, pWrappedCodec->encoder.neg_fps),
-			pWrappedCodec->encoder.max_bw_kpbs
+			TMEDIA_CODEC(pWrappedCodec)->bandwidth_max_upload
 			);
 		pWrappedCodec->encoder.max_bitrate_bps = (max_bw_kpbs * 1024);
 
@@ -1704,7 +1703,6 @@ static int tdav_codec_h264_intel_init(tdav_codec_h264_intel_t* self, profile_idc
 		goto bail;
 	}
 
-	(self)->encoder.max_bw_kpbs = tmedia_defaults_get_bandwidth_video_upload_max();
 	if (/*MFUtils::IsLowLatencyH264SupportsMaxSliceSize()*/0) { // TODO: MSDK doesn't support PM=0. Neg. PM=1 but try to do the best to produce SingleNalUnits
 		common->pack_mode_local = H264_PACKETIZATION_MODE;
 	}

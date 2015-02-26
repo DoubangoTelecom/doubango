@@ -60,8 +60,6 @@ typedef struct tdav_codec_h264_cisco_s
 		int neg_width;
 		int neg_height;
 		int neg_fps;
-		int max_bitrate_bps;
-		int32_t max_bw_kpbs;
         tsk_mutex_handle_t* mutex;
 	} encoder;
 	
@@ -606,7 +604,7 @@ const tmedia_codec_plugin_def_t *tdav_codec_h264_cisco_base_plugin_def_t = &tdav
 
 static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self)
 {
-	int ret = -1;
+	int ret = -1, max_bitrate_bps;
 	long err;
 	SSpatialLayerConfig* layer;
 	
@@ -637,16 +635,16 @@ static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self)
 	self->encoder.neg_fps = TMEDIA_CODEC_VIDEO(self)->out.fps;
 	max_bw_kpbs = TSK_CLAMP(
 		0,
-		tmedia_get_video_bandwidth_kbps_2(self->encoder.neg_width, self->encoder.neg_height, self->encoder.neg_fps), 
-		self->encoder.max_bw_kpbs
+		tmedia_get_video_bandwidth_kbps_2(self->encoder.neg_width, self->encoder.neg_height, self->encoder.neg_fps),
+		TMEDIA_CODEC(self)->bandwidth_max_upload
 	);
-	self->encoder.max_bitrate_bps = (max_bw_kpbs * 1024);
+	max_bitrate_bps = (max_bw_kpbs * 1024);
 
 	TSK_DEBUG_INFO("[H.264 OpenH264 Encoder] neg_width=%d, neg_height=%d, neg_fps=%d, max_bitrate_bps=%d",
 		self->encoder.neg_width,
 		self->encoder.neg_height,
 		self->encoder.neg_fps,
-		self->encoder.max_bitrate_bps
+		max_bitrate_bps
 		);
 	
 	self->encoder.sEncParam.iInputCsp = videoFormatI420;
@@ -656,8 +654,8 @@ static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self)
 	self->encoder.sEncParam.iUsageType = CAMERA_VIDEO_REAL_TIME; // TODO: use "SCREEN_CONTENT_REAL_TIME" screencast 
 	self->encoder.sEncParam.iPicWidth = self->encoder.neg_width;
 	self->encoder.sEncParam.iPicHeight = self->encoder.neg_height;
-	self->encoder.sEncParam.iTargetBitrate = self->encoder.max_bitrate_bps;
-	self->encoder.sEncParam.iMaxBitrate = self->encoder.max_bitrate_bps;
+	self->encoder.sEncParam.iTargetBitrate = max_bitrate_bps;
+	self->encoder.sEncParam.iMaxBitrate = max_bitrate_bps;
 	self->encoder.sEncParam.fMaxFrameRate = (float)self->encoder.neg_fps;
 	self->encoder.sEncParam.uiMaxNalSize = H264_RTP_PAYLOAD_SIZE;
 	self->encoder.sEncParam.bEnableSpsPpsIdAddition = true;
@@ -809,7 +807,6 @@ static int tdav_codec_h264_cisco_init(tdav_codec_h264_cisco_t* self, profile_idc
 		goto bail;
 	}
 
-	(self)->encoder.max_bw_kpbs = tmedia_defaults_get_bandwidth_video_upload_max();
 	common->pack_mode_local = H264_PACKETIZATION_MODE;
 	common->profile = profile;
 	common->level = level;
@@ -819,7 +816,7 @@ static int tdav_codec_h264_cisco_init(tdav_codec_h264_cisco_t* self, profile_idc
 	common->profile_iop = 0xe0; // "constraint_set0_flag=1 and constraint_set1_flag=1" -> Constrained Baseline profile
 	TMEDIA_CODEC_VIDEO(self)->in.max_mbps = TMEDIA_CODEC_VIDEO(self)->out.max_mbps = H264_MAX_MBPS*1000;
 	TMEDIA_CODEC_VIDEO(self)->in.max_br = TMEDIA_CODEC_VIDEO(self)->out.max_br = H264_MAX_BR*1000;
-
+	
 	TMEDIA_CODEC_VIDEO(self)->in.chroma = tmedia_chroma_yuv420p;
 	TMEDIA_CODEC_VIDEO(self)->out.chroma = tmedia_chroma_yuv420p;
 	

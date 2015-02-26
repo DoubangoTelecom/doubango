@@ -1064,6 +1064,9 @@ sub DESTROY {
 *setICETurn = *tinyWRAPc::CallSession_setICETurn;
 *setSTUNServer = *tinyWRAPc::CallSession_setSTUNServer;
 *setSTUNCred = *tinyWRAPc::CallSession_setSTUNCred;
+*setVideoFps = *tinyWRAPc::CallSession_setVideoFps;
+*setVideoBandwidthUploadMax = *tinyWRAPc::CallSession_setVideoBandwidthUploadMax;
+*setVideoBandwidthDownloadMax = *tinyWRAPc::CallSession_setVideoBandwidthDownloadMax;
 *setQoS = *tinyWRAPc::CallSession_setQoS;
 *hold = *tinyWRAPc::CallSession_hold;
 *resume = *tinyWRAPc::CallSession_resume;

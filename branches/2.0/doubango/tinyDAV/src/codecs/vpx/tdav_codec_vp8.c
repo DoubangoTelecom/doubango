@@ -85,9 +85,7 @@ typedef struct tdav_codec_vp8_s
 		unsigned pic_id:15;
 		uint64_t frame_count;
 		tsk_bool_t force_idr;
-		uint32_t target_bitrate;
 		int rotation;
-		int32_t max_bw_kpbs;
 
 		struct{
 			uint8_t* ptr;
@@ -618,7 +616,6 @@ static tsk_object_t* tdav_codec_vp8_ctor(tsk_object_t * self, va_list * app)
 	if(vp8){
 		/* init base: called by tmedia_codec_create() */
 		/* init self */
-		vp8->encoder.max_bw_kpbs = tmedia_defaults_get_bandwidth_video_upload_max();
 	}
 	return self;
 }
@@ -706,10 +703,10 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 	}
 	self->encoder.cfg.g_timebase.num = 1;
 	self->encoder.cfg.g_timebase.den = TMEDIA_CODEC_VIDEO(self)->out.fps;
-	self->encoder.cfg.rc_target_bitrate = self->encoder.target_bitrate = TSK_CLAMP(
+	self->encoder.cfg.rc_target_bitrate = TSK_CLAMP(
 		0, 
 		tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(self)->out.width, TMEDIA_CODEC_VIDEO(self)->out.height, TMEDIA_CODEC_VIDEO(self)->out.fps),
-		self->encoder.max_bw_kpbs
+		TMEDIA_CODEC(self)->bandwidth_max_upload
 	);
 	self->encoder.cfg.g_w = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.height : TMEDIA_CODEC_VIDEO(self)->out.width;
 	self->encoder.cfg.g_h = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
@@ -781,7 +778,7 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 #endif
     
 	
-	TSK_DEBUG_INFO("[VP8] target_bitrate=%d kbps", self->encoder.target_bitrate);
+	TSK_DEBUG_INFO("[VP8] target_bitrate=%d kbps", self->encoder.cfg.rc_target_bitrate);
 	
 	return 0;
 }
