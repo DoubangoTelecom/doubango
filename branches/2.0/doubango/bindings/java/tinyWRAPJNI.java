@@ -270,6 +270,9 @@ public class tinyWRAPJNI {
   public final static native boolean CallSession_setICETurn(long jarg1, CallSession jarg1_, boolean jarg2);
   public final static native boolean CallSession_setSTUNServer(long jarg1, CallSession jarg1_, String jarg2, int jarg3);
   public final static native boolean CallSession_setSTUNCred(long jarg1, CallSession jarg1_, String jarg2, String jarg3);
+  public final static native boolean CallSession_setVideoFps(long jarg1, CallSession jarg1_, int jarg2);
+  public final static native boolean CallSession_setVideoBandwidthUploadMax(long jarg1, CallSession jarg1_, int jarg2);
+  public final static native boolean CallSession_setVideoBandwidthDownloadMax(long jarg1, CallSession jarg1_, int jarg2);
   public final static native boolean CallSession_setQoS(long jarg1, CallSession jarg1_, int jarg2, int jarg3);
   public final static native boolean CallSession_hold__SWIG_0(long jarg1, CallSession jarg1_, long jarg2, ActionConfig jarg2_);
   public final static native boolean CallSession_hold__SWIG_1(long jarg1, CallSession jarg1_);

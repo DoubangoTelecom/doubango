@@ -368,6 +368,21 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 									tsk_strupdate(&self->media.stun.password, PASSWORD);
 									break;
 								}
+							case mstype_set_video_fps:
+								{/* (signed)FPS_INT */
+									self->media.video_fps = va_arg(*app, signed);
+									break;
+								}
+							case mstype_set_video_bw_up:
+								{/* (signed)BW_INT */
+									self->media.video_bw_up = va_arg(*app, signed);
+									break;
+								}
+							case mstype_set_video_bw_down:
+								{/* (signed)BW_INT */
+									self->media.video_bw_down = va_arg(*app, signed);
+									break;
+								}
 							default:{
 								/* va_list will be unsafe => exit */
 								TSK_DEBUG_ERROR("%d NOT a valid MEDIA pname", mscurr);
@@ -683,6 +698,9 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		ss->media.codecs = tmedia_codec_id_all;
 		ss->media.bypass_encoding = tmedia_defaults_get_bypass_encoding();
 		ss->media.bypass_decoding = tmedia_defaults_get_bypass_decoding();
+		ss->media.video_fps = tmedia_defaults_get_video_fps();
+		ss->media.video_bw_down = tmedia_defaults_get_bandwidth_video_download_max();
+		ss->media.video_bw_up = tmedia_defaults_get_bandwidth_video_upload_max();
 		{
 			const char *stun_hostname, *stun_username, *stun_password;
 			uint16_t stun_port;

@@ -503,6 +503,36 @@ bool CallSession::setSTUNCred(const char* username, const char* password)
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
+bool CallSession::setVideoFps(int32_t fps)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_MEDIA(
+		TSIP_MSESSION_SET_VIDEO_FPS(fps),
+			TSIP_MSESSION_SET_NULL()
+		),
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
+bool CallSession::setVideoBandwidthUploadMax(int32_t max)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_MEDIA(
+		TSIP_MSESSION_SET_VIDEO_BW_UP(max),
+			TSIP_MSESSION_SET_NULL()
+		),
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
+bool CallSession::setVideoBandwidthDownloadMax(int32_t max)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_MEDIA(
+		TSIP_MSESSION_SET_VIDEO_BW_DOWN(max),
+			TSIP_MSESSION_SET_NULL()
+		),
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
 bool CallSession::setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength)
 {
 	return (tsip_ssession_set(m_pHandle,

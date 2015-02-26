@@ -966,6 +966,15 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setSTUNCred")]
   public static extern bool CallSession_setSTUNCred(HandleRef jarg1, string jarg2, string jarg3);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setVideoFps")]
+  public static extern bool CallSession_setVideoFps(HandleRef jarg1, int jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setVideoBandwidthUploadMax")]
+  public static extern bool CallSession_setVideoBandwidthUploadMax(HandleRef jarg1, int jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setVideoBandwidthDownloadMax")]
+  public static extern bool CallSession_setVideoBandwidthDownloadMax(HandleRef jarg1, int jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setQoS")]
   public static extern bool CallSession_setQoS(HandleRef jarg1, int jarg2, int jarg3);
 

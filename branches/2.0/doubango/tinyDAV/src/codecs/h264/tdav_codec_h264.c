@@ -134,7 +134,7 @@ static int tdav_codec_h264_set(tmedia_codec_t* self, const tmedia_param_t* param
 			return 0;
 		}
 		else if(tsk_striequals(param->key, "bw_kbps")){
-			int32_t max_bw_userdefine = tmedia_defaults_get_bandwidth_video_upload_max();
+			int32_t max_bw_userdefine = self->bandwidth_max_upload;
 			int32_t max_bw_new = *((int32_t*)param->value);
 			if (max_bw_userdefine > 0) {
 				// do not use more than what the user defined in it's configuration
@@ -675,7 +675,6 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 #if HAVE_FFMPEG
 	int ret;
 	tsk_size_t size;
-	int32_t max_bw_kpbs;
 
 	if(self->encoder.context){
 		TSK_DEBUG_ERROR("Encoder already opened");
@@ -706,12 +705,12 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 	self->encoder.context->time_base.den  = TMEDIA_CODEC_VIDEO(self)->out.fps;
 	self->encoder.context->width = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.height : TMEDIA_CODEC_VIDEO(self)->out.width;
 	self->encoder.context->height = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
-	max_bw_kpbs = TSK_CLAMP(
+	self->encoder.max_bw_kpbs = TSK_CLAMP(
 		0,
 		tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(self)->out.width, TMEDIA_CODEC_VIDEO(self)->out.height, TMEDIA_CODEC_VIDEO(self)->out.fps), 
-		self->encoder.max_bw_kpbs
+		TMEDIA_CODEC(self)->bandwidth_max_upload
 	);
-	self->encoder.context->bit_rate = (max_bw_kpbs * 1024);// bps
+	self->encoder.context->bit_rate = (self->encoder.max_bw_kpbs * 1024);// bps
 
 	self->encoder.context->rc_min_rate = (self->encoder.context->bit_rate >> 3);
 	self->encoder.context->rc_max_rate = self->encoder.context->bit_rate;
@@ -914,7 +913,7 @@ int tdav_codec_h264_init(tdav_codec_h264_t* self, profile_idc_t profile)
 		return ret;
 	}
 
-	(self)->encoder.max_bw_kpbs = tmedia_defaults_get_bandwidth_video_upload_max();
+	(self)->encoder.max_bw_kpbs = TMEDIA_CODEC(self)->bandwidth_max_upload;
 	TDAV_CODEC_H264_COMMON(self)->pack_mode_local = H264_PACKETIZATION_MODE;
 	TDAV_CODEC_H264_COMMON(self)->profile = profile;
 	TDAV_CODEC_H264_COMMON(self)->level = level;

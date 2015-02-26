@@ -61,6 +61,7 @@ typedef struct tdav_session_av_s
 
 	int32_t bandwidth_max_upload_kbps;
 	int32_t bandwidth_max_download_kbps;
+	int32_t fps;
 	tsk_bool_t congestion_ctrl_enabled;
 
 	/* sdp capabilities (RFC 5939) */
@@ -127,6 +128,7 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type);
 tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const struct tmedia_param_s* param);
 tsk_bool_t tdav_session_av_get(tdav_session_av_t* self, struct tmedia_param_s* param);
 int tdav_session_av_prepare(tdav_session_av_t* self);
+int tdav_session_av_init_encoder(tdav_session_av_t* self, struct tmedia_codec_s* encoder);
 int tdav_session_av_start(tdav_session_av_t* self, const struct tmedia_codec_s* best_codec);
 int tdav_session_av_stop(tdav_session_av_t* self);
 int tdav_session_av_pause(tdav_session_av_t* self);

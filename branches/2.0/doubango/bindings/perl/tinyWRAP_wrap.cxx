@@ -12418,6 +12418,120 @@ XS(_wrap_CallSession_setSTUNCred) {
 }
 
 
+XS(_wrap_CallSession_setVideoFps) {
+  {
+    CallSession *arg1 = (CallSession *) 0 ;
+    int32_t arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: CallSession_setVideoFps(self,fps);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_setVideoFps" "', argument " "1"" of type '" "CallSession *""'"); 
+    }
+    arg1 = reinterpret_cast< CallSession * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CallSession_setVideoFps" "', argument " "2"" of type '" "int32_t""'");
+    } 
+    arg2 = static_cast< int32_t >(val2);
+    result = (bool)(arg1)->setVideoFps(arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_CallSession_setVideoBandwidthUploadMax) {
+  {
+    CallSession *arg1 = (CallSession *) 0 ;
+    int32_t arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: CallSession_setVideoBandwidthUploadMax(self,max);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_setVideoBandwidthUploadMax" "', argument " "1"" of type '" "CallSession *""'"); 
+    }
+    arg1 = reinterpret_cast< CallSession * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CallSession_setVideoBandwidthUploadMax" "', argument " "2"" of type '" "int32_t""'");
+    } 
+    arg2 = static_cast< int32_t >(val2);
+    result = (bool)(arg1)->setVideoBandwidthUploadMax(arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_CallSession_setVideoBandwidthDownloadMax) {
+  {
+    CallSession *arg1 = (CallSession *) 0 ;
+    int32_t arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: CallSession_setVideoBandwidthDownloadMax(self,max);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_setVideoBandwidthDownloadMax" "', argument " "1"" of type '" "CallSession *""'"); 
+    }
+    arg1 = reinterpret_cast< CallSession * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CallSession_setVideoBandwidthDownloadMax" "', argument " "2"" of type '" "int32_t""'");
+    } 
+    arg2 = static_cast< int32_t >(val2);
+    result = (bool)(arg1)->setVideoBandwidthDownloadMax(arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_CallSession_setQoS) {
   {
     CallSession *arg1 = (CallSession *) 0 ;
@@ -27972,6 +28086,9 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::CallSession_setICETurn", _wrap_CallSession_setICETurn},
 {"tinyWRAPc::CallSession_setSTUNServer", _wrap_CallSession_setSTUNServer},
 {"tinyWRAPc::CallSession_setSTUNCred", _wrap_CallSession_setSTUNCred},
+{"tinyWRAPc::CallSession_setVideoFps", _wrap_CallSession_setVideoFps},
+{"tinyWRAPc::CallSession_setVideoBandwidthUploadMax", _wrap_CallSession_setVideoBandwidthUploadMax},
+{"tinyWRAPc::CallSession_setVideoBandwidthDownloadMax", _wrap_CallSession_setVideoBandwidthDownloadMax},
 {"tinyWRAPc::CallSession_setQoS", _wrap_CallSession_setQoS},
 {"tinyWRAPc::CallSession_hold", _wrap_CallSession_hold},
 {"tinyWRAPc::CallSession_resume", _wrap_CallSession_resume},

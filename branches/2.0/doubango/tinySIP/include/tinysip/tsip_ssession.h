@@ -122,6 +122,10 @@ typedef enum tsip_msession_param_type_e
 	mstype_set_stun_server,
 	mstype_set_stun_cred,
 
+	mstype_set_video_fps,
+	mstype_set_video_bw_up,
+	mstype_set_video_bw_down,
+
 	mstype_set_qos,
 	mstype_unset_qos,
 
@@ -152,6 +156,9 @@ tsip_msession_param_type_t;
 #define TSIP_MSESSION_SET_STUN_CRED(USERNAME, PASSWORD)										mstype_set_stun_cred, (const char*)USERNAME, (const char*)PASSWORD
 #define TSIP_MSESSION_SET_QOS(TYPE_ENUM, STRENGTH_ENUM)										mstype_set_qos, (tmedia_qos_stype_t)TYPE_ENUM, (tmedia_qos_strength_t)STRENGTH_ENUM
 #define TSIP_MSESSION_UNSET_QOS()															mstype_unset_qos
+#define TSIP_MSESSION_SET_VIDEO_FPS(FPS_INT)												mstype_set_video_fps, (int32_t)FPS_INT
+#define TSIP_MSESSION_SET_VIDEO_BW_UP(BW_INT)												mstype_set_video_bw_up, (int32_t)(BW_INT)
+#define TSIP_MSESSION_SET_VIDEO_BW_DOWN(BW_INT)												mstype_set_video_bw_down, (int32_t)(BW_INT)
 #define TSIP_MSESSION_SET_TIMERS(TIMEOUT_UINT, REFRESHER_STR)								mstype_set_timers, (unsigned)TIMEOUT_UINT, (const char*)REFRESHER_STR
 #define TSIP_MSESSION_UNSET_TIMERS()														mstype_unset_timers
 #define TSIP_MSESSION_SET_CODECS(CODECS_INT)												mstype_set_codecs, (signed)CODECS_INT
@@ -215,6 +222,11 @@ typedef struct tsip_ssession_s
 		tmedia_codec_id_t codecs;
 		tsk_bool_t bypass_encoding;
 		tsk_bool_t bypass_decoding;
+
+		/* Video */
+		int32_t video_fps;
+		int32_t video_bw_up;
+		int32_t video_bw_down;
 
 		/* RTP*/
 		struct{

@@ -198,6 +198,9 @@ public: /* Public functions */
 	bool setICETurn(bool enabled);
 	bool setSTUNServer(const char* hostname, uint16_t port);
 	bool setSTUNCred(const char* username, const char* password);
+	bool setVideoFps(int32_t fps);
+	bool setVideoBandwidthUploadMax(int32_t max);
+	bool setVideoBandwidthDownloadMax(int32_t max);
 	bool setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength);
 	bool hold(ActionConfig* config=tsk_null);
 	bool resume(ActionConfig* config=tsk_null);

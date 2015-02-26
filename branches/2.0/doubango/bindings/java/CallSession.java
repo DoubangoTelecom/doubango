@@ -147,6 +147,18 @@ public class CallSession extends InviteSession {
     return tinyWRAPJNI.CallSession_setSTUNCred(swigCPtr, this, username, password);
   }
 
+  public boolean setVideoFps(int fps) {
+    return tinyWRAPJNI.CallSession_setVideoFps(swigCPtr, this, fps);
+  }
+
+  public boolean setVideoBandwidthUploadMax(int max) {
+    return tinyWRAPJNI.CallSession_setVideoBandwidthUploadMax(swigCPtr, this, max);
+  }
+
+  public boolean setVideoBandwidthDownloadMax(int max) {
+    return tinyWRAPJNI.CallSession_setVideoBandwidthDownloadMax(swigCPtr, this, max);
+  }
+
   public boolean setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength) {
     return tinyWRAPJNI.CallSession_setQoS(swigCPtr, this, type.swigValue(), strength.swigValue());
   }

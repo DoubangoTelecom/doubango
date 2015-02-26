@@ -4416,6 +4416,48 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setSTUNCred(void * jarg1,
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setVideoFps(void * jarg1, int jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  int32_t arg2 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (int32_t)jarg2; 
+  result = (bool)(arg1)->setVideoFps(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setVideoBandwidthUploadMax(void * jarg1, int jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  int32_t arg2 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (int32_t)jarg2; 
+  result = (bool)(arg1)->setVideoBandwidthUploadMax(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setVideoBandwidthDownloadMax(void * jarg1, int jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  int32_t arg2 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (int32_t)jarg2; 
+  result = (bool)(arg1)->setVideoBandwidthDownloadMax(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setQoS(void * jarg1, int jarg2, int jarg3) {
   unsigned int jresult ;
   CallSession *arg1 = (CallSession *) 0 ;

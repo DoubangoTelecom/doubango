@@ -13629,6 +13629,99 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_CallSession_setVideoFps(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  int32_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:CallSession_setVideoFps",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_setVideoFps" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CallSession_setVideoFps" "', argument " "2"" of type '" "int32_t""'");
+  } 
+  arg2 = static_cast< int32_t >(val2);
+  result = (bool)(arg1)->setVideoFps(arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_setVideoBandwidthUploadMax(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  int32_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:CallSession_setVideoBandwidthUploadMax",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_setVideoBandwidthUploadMax" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CallSession_setVideoBandwidthUploadMax" "', argument " "2"" of type '" "int32_t""'");
+  } 
+  arg2 = static_cast< int32_t >(val2);
+  result = (bool)(arg1)->setVideoBandwidthUploadMax(arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CallSession_setVideoBandwidthDownloadMax(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CallSession *arg1 = (CallSession *) 0 ;
+  int32_t arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:CallSession_setVideoBandwidthDownloadMax",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_setVideoBandwidthDownloadMax" "', argument " "1"" of type '" "CallSession *""'"); 
+  }
+  arg1 = reinterpret_cast< CallSession * >(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CallSession_setVideoBandwidthDownloadMax" "', argument " "2"" of type '" "int32_t""'");
+  } 
+  arg2 = static_cast< int32_t >(val2);
+  result = (bool)(arg1)->setVideoBandwidthDownloadMax(arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_CallSession_setQoS(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   CallSession *arg1 = (CallSession *) 0 ;
@@ -26381,6 +26474,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"CallSession_setICETurn", _wrap_CallSession_setICETurn, METH_VARARGS, NULL},
 	 { (char *)"CallSession_setSTUNServer", _wrap_CallSession_setSTUNServer, METH_VARARGS, NULL},
 	 { (char *)"CallSession_setSTUNCred", _wrap_CallSession_setSTUNCred, METH_VARARGS, NULL},
+	 { (char *)"CallSession_setVideoFps", _wrap_CallSession_setVideoFps, METH_VARARGS, NULL},
+	 { (char *)"CallSession_setVideoBandwidthUploadMax", _wrap_CallSession_setVideoBandwidthUploadMax, METH_VARARGS, NULL},
+	 { (char *)"CallSession_setVideoBandwidthDownloadMax", _wrap_CallSession_setVideoBandwidthDownloadMax, METH_VARARGS, NULL},
 	 { (char *)"CallSession_setQoS", _wrap_CallSession_setQoS, METH_VARARGS, NULL},
 	 { (char *)"CallSession_hold", _wrap_CallSession_hold, METH_VARARGS, NULL},
 	 { (char *)"CallSession_resume", _wrap_CallSession_resume, METH_VARARGS, NULL},

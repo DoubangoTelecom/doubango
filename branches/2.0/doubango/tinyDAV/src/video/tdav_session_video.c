@@ -732,11 +732,11 @@ int _tdav_session_video_open_decoder(tdav_session_video_t* self, uint8_t payload
 {
 	int ret = 0;
 
-	if((self->decoder.codec_payload_type != payload_type) || !self->decoder.codec){
+	if ((self->decoder.codec_payload_type != payload_type) || !self->decoder.codec) {
 		tsk_istr_t format;
 		TSK_OBJECT_SAFE_FREE(self->decoder.codec);
 		tsk_itoa(payload_type, &format);
-		if(!(self->decoder.codec = tmedia_codec_find_by_format(TMEDIA_SESSION(self)->neg_codecs, format)) || !self->decoder.codec->plugin || !self->decoder.codec->plugin->decode){
+		if (!(self->decoder.codec = tmedia_codec_find_by_format(TMEDIA_SESSION(self)->neg_codecs, format)) || !self->decoder.codec->plugin || !self->decoder.codec->plugin->decode) {
 			TSK_DEBUG_ERROR("%s is not a valid payload for this session", format);
 			ret = -2;
 			goto bail;
@@ -745,8 +745,8 @@ int _tdav_session_video_open_decoder(tdav_session_video_t* self, uint8_t payload
 		self->decoder.codec_decoded_frames_count = 0; // because we switched the codecs
 	}
 	// Open codec if not already done
-	if(!TMEDIA_CODEC(self->decoder.codec)->opened){
-		if((ret = tmedia_codec_open(self->decoder.codec))){
+	if (!TMEDIA_CODEC(self->decoder.codec)->opened){
+		if ((ret = tmedia_codec_open(self->decoder.codec))) {
 			TSK_DEBUG_ERROR("Failed to open [%s] codec", self->decoder.codec->plugin->desc);
 			goto bail;
 		}
@@ -1045,7 +1045,6 @@ static int tdav_session_video_start(tmedia_session_t* self)
 	tdav_session_video_t* video;
 	const tmedia_codec_t* codec;
 	tdav_session_av_t* base;
-	tmedia_param_t* media_param;
 
 	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -1063,10 +1062,10 @@ static int tdav_session_video_start(tmedia_session_t* self)
 	tsk_mutex_lock(video->encoder.h_mutex);
 	TSK_OBJECT_SAFE_FREE(video->encoder.codec);
 	video->encoder.codec = tsk_object_ref((tsk_object_t*)codec);
-	// forward up bandwidth info to the codec
-	if ((media_param = tmedia_param_create(tmedia_pat_set, tmedia_video, tmedia_ppt_codec, tmedia_pvt_int32, "bw_kbps", (void*)&base->bandwidth_max_upload_kbps))) {
-		tmedia_codec_set(TMEDIA_CODEC(video->encoder.codec), media_param);
-		TSK_OBJECT_SAFE_FREE(media_param);
+	// initialize the encoder using user-defined values
+	if ((ret = tdav_session_av_init_encoder(base, video->encoder.codec))) {
+		TSK_DEBUG_ERROR("Failed to initialize the encoder [%s] codec", video->encoder.codec->plugin->desc);
+		return ret;
 	}
 	if (!TMEDIA_CODEC(video->encoder.codec)->opened) {
 		if((ret = tmedia_codec_open(video->encoder.codec))){
