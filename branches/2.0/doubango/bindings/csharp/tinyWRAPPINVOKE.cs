@@ -975,6 +975,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setVideoBandwidthDownloadMax")]
   public static extern bool CallSession_setVideoBandwidthDownloadMax(HandleRef jarg1, int jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setVideoPrefSize")]
+  public static extern bool CallSession_setVideoPrefSize(HandleRef jarg1, int jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_setQoS")]
   public static extern bool CallSession_setQoS(HandleRef jarg1, int jarg2, int jarg3);
 

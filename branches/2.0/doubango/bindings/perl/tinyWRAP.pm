@@ -1067,6 +1067,7 @@ sub DESTROY {
 *setVideoFps = *tinyWRAPc::CallSession_setVideoFps;
 *setVideoBandwidthUploadMax = *tinyWRAPc::CallSession_setVideoBandwidthUploadMax;
 *setVideoBandwidthDownloadMax = *tinyWRAPc::CallSession_setVideoBandwidthDownloadMax;
+*setVideoPrefSize = *tinyWRAPc::CallSession_setVideoPrefSize;
 *setQoS = *tinyWRAPc::CallSession_setQoS;
 *hold = *tinyWRAPc::CallSession_hold;
 *resume = *tinyWRAPc::CallSession_resume;

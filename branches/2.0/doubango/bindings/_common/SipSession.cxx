@@ -533,6 +533,16 @@ bool CallSession::setVideoBandwidthDownloadMax(int32_t max)
 		TSIP_SSESSION_SET_NULL()) == 0);
 }
 
+bool CallSession::setVideoPrefSize(tmedia_pref_video_size_t pref_video_size)
+{
+	return (tsip_ssession_set(m_pHandle,
+		TSIP_SSESSION_SET_MEDIA(
+		TSIP_MSESSION_SET_VIDEO_PREFSIZE(pref_video_size),
+			TSIP_MSESSION_SET_NULL()
+		),
+		TSIP_SSESSION_SET_NULL()) == 0);
+}
+
 bool CallSession::setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength)
 {
 	return (tsip_ssession_set(m_pHandle,

@@ -996,6 +996,7 @@ class CallSession(InviteSession):
     def setVideoFps(self, *args): return _tinyWRAP.CallSession_setVideoFps(self, *args)
     def setVideoBandwidthUploadMax(self, *args): return _tinyWRAP.CallSession_setVideoBandwidthUploadMax(self, *args)
     def setVideoBandwidthDownloadMax(self, *args): return _tinyWRAP.CallSession_setVideoBandwidthDownloadMax(self, *args)
+    def setVideoPrefSize(self, *args): return _tinyWRAP.CallSession_setVideoPrefSize(self, *args)
     def setQoS(self, *args): return _tinyWRAP.CallSession_setQoS(self, *args)
     def hold(self, *args): return _tinyWRAP.CallSession_hold(self, *args)
     def resume(self, *args): return _tinyWRAP.CallSession_resume(self, *args)

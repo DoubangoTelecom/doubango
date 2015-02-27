@@ -226,6 +226,7 @@ int tdav_session_av_init(tdav_session_av_t* self, tmedia_type_t media_type)
 	self->use_rtcpmux = tmedia_defaults_get_rtcpmux_enabled();
 	self->avpf_mode_set = self->avpf_mode_neg = tmedia_defaults_get_avpf_mode();
 	self->fps = -1; // use what is negotiated by the codec unless overrided by the user
+	self->pref_size = tmedia_defaults_get_pref_video_size(); // for the encoder
 	self->bandwidth_max_upload_kbps = ((media_type & tmedia_video || (media_type & tmedia_bfcp_video) == tmedia_bfcp_video) ? tmedia_defaults_get_bandwidth_video_upload_max() : INT_MAX); // INT_MAX or <=0 means undefined
 	self->bandwidth_max_download_kbps = ((media_type & tmedia_video || (media_type & tmedia_bfcp_video) == tmedia_bfcp_video) ? tmedia_defaults_get_bandwidth_video_download_max() : INT_MAX); // INT_MAX or <=0 means undefined
 	self->congestion_ctrl_enabled = tmedia_defaults_get_congestion_ctrl_enabled(); // whether to enable draft-alvestrand-rtcweb-congestion-03 and draft-alvestrand-rmcat-remb-01
@@ -358,6 +359,10 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
 				self->fps = TSK_TO_INT32((uint8_t*)param->value);
 				return tsk_true;
 			}
+			else if (tsk_striequals(param->key, "pref-size")) {
+				self->pref_size = (tmedia_pref_video_size_t)TSK_TO_INT32((uint8_t*)param->value);
+				return tsk_true;
+			}
 		}
 		else if(param->value_type == tmedia_pvt_pobject){
 			if(tsk_striequals(param->key, "natt-ctx")){
@@ -436,9 +441,17 @@ int tdav_session_av_init_encoder(tdav_session_av_t* self, struct tmedia_codec_s*
 	encoder->bandwidth_max_upload = self->bandwidth_max_upload_kbps;
 	encoder->bandwidth_max_download = self->bandwidth_max_download_kbps;
 	if ((encoder->type & tmedia_video) || (encoder->type & tmedia_bfcp_video)) {
+		tmedia_codec_video_t* video = TMEDIA_CODEC_VIDEO(encoder);
 		if (self->fps > 0) {
-			tmedia_codec_video_t* video = TMEDIA_CODEC_VIDEO(encoder);
 			video->out.fps = self->fps;
+		}
+		if (self->pref_size != video->pref_size) {
+			unsigned width, height;
+			if (tmedia_video_get_size(self->pref_size, &width, &height) == 0){
+				video->pref_size = self->pref_size;
+				video->out.width = width;
+				video->out.height = height;
+			}
 		}
 	}
 	return 0;

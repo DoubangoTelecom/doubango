@@ -63,6 +63,7 @@ typedef struct tdav_session_av_s
 	int32_t bandwidth_max_download_kbps;
 	int32_t fps;
 	tsk_bool_t congestion_ctrl_enabled;
+	tmedia_pref_video_size_t pref_size; // output
 
 	/* sdp capabilities (RFC 5939) */
 	struct tdav_sdp_caps_s* sdp_caps;
