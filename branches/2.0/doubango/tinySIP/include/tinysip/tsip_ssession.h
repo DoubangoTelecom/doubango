@@ -125,6 +125,7 @@ typedef enum tsip_msession_param_type_e
 	mstype_set_video_fps,
 	mstype_set_video_bw_up,
 	mstype_set_video_bw_down,
+	mstype_set_video_prefsize,
 
 	mstype_set_qos,
 	mstype_unset_qos,
@@ -159,6 +160,7 @@ tsip_msession_param_type_t;
 #define TSIP_MSESSION_SET_VIDEO_FPS(FPS_INT)												mstype_set_video_fps, (int32_t)FPS_INT
 #define TSIP_MSESSION_SET_VIDEO_BW_UP(BW_INT)												mstype_set_video_bw_up, (int32_t)(BW_INT)
 #define TSIP_MSESSION_SET_VIDEO_BW_DOWN(BW_INT)												mstype_set_video_bw_down, (int32_t)(BW_INT)
+#define TSIP_MSESSION_SET_VIDEO_PREFSIZE(PREFSIZE_ENUM)										mstype_set_video_prefsize, (int32_t)(PREFSIZE_ENUM)
 #define TSIP_MSESSION_SET_TIMERS(TIMEOUT_UINT, REFRESHER_STR)								mstype_set_timers, (unsigned)TIMEOUT_UINT, (const char*)REFRESHER_STR
 #define TSIP_MSESSION_UNSET_TIMERS()														mstype_unset_timers
 #define TSIP_MSESSION_SET_CODECS(CODECS_INT)												mstype_set_codecs, (signed)CODECS_INT
@@ -227,6 +229,7 @@ typedef struct tsip_ssession_s
 		int32_t video_fps;
 		int32_t video_bw_up;
 		int32_t video_bw_down;
+		tmedia_pref_video_size_t video_pref_size;
 
 		/* RTP*/
 		struct{

@@ -193,6 +193,11 @@ public class CallSession : InviteSession {
     return ret;
   }
 
+  public bool setVideoPrefSize(tmedia_pref_video_size_t pref_video_size) {
+    bool ret = tinyWRAPPINVOKE.CallSession_setVideoPrefSize(swigCPtr, (int)pref_video_size);
+    return ret;
+  }
+
   public bool setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength) {
     bool ret = tinyWRAPPINVOKE.CallSession_setQoS(swigCPtr, (int)type, (int)strength);
     return ret;

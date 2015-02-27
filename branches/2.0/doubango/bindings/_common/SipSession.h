@@ -201,6 +201,7 @@ public: /* Public functions */
 	bool setVideoFps(int32_t fps);
 	bool setVideoBandwidthUploadMax(int32_t max);
 	bool setVideoBandwidthDownloadMax(int32_t max);
+	bool setVideoPrefSize(tmedia_pref_video_size_t pref_video_size);
 	bool setQoS(tmedia_qos_stype_t type, tmedia_qos_strength_t strength);
 	bool hold(ActionConfig* config=tsk_null);
 	bool resume(ActionConfig* config=tsk_null);

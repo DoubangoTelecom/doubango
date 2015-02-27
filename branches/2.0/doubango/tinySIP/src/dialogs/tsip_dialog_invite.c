@@ -1106,6 +1106,7 @@ int tsip_dialog_invite_msession_configure(tsip_dialog_invite_t *self)
 			TMEDIA_SESSION_SET_INT32(tmedia_video, "fps", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.video_fps),
 			TMEDIA_SESSION_SET_INT32(tmedia_video, "bandwidth-max-upload", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.video_bw_up),
 			TMEDIA_SESSION_SET_INT32(tmedia_video, "bandwidth-max-download", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.video_bw_down),
+			TMEDIA_SESSION_SET_INT32(tmedia_video, "pref-size", ((tsip_ssession_t*)TSIP_DIALOG(self)->ss)->media.video_pref_size),
 
 			tsk_null);
 }

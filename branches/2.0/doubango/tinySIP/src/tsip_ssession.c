@@ -383,6 +383,11 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 									self->media.video_bw_down = va_arg(*app, signed);
 									break;
 								}
+							case mstype_set_video_prefsize:
+								{/* (tmedia_pref_video_size_t)PREFSIZE_ENUM */
+									self->media.video_pref_size = va_arg(*app, tmedia_pref_video_size_t);
+									break;
+								}
 							default:{
 								/* va_list will be unsafe => exit */
 								TSK_DEBUG_ERROR("%d NOT a valid MEDIA pname", mscurr);
@@ -701,6 +706,7 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		ss->media.video_fps = tmedia_defaults_get_video_fps();
 		ss->media.video_bw_down = tmedia_defaults_get_bandwidth_video_download_max();
 		ss->media.video_bw_up = tmedia_defaults_get_bandwidth_video_upload_max();
+		ss->media.video_pref_size = tmedia_defaults_get_pref_video_size();
 		{
 			const char *stun_hostname, *stun_username, *stun_password;
 			uint16_t stun_port;

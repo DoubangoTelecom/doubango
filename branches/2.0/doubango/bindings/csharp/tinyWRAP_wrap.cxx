@@ -4458,6 +4458,20 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setVideoBandwidthDownload
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setVideoPrefSize(void * jarg1, int jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  tmedia_pref_video_size_t arg2 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (tmedia_pref_video_size_t)jarg2; 
+  result = (bool)(arg1)->setVideoPrefSize(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_setQoS(void * jarg1, int jarg2, int jarg3) {
   unsigned int jresult ;
   CallSession *arg1 = (CallSession *) 0 ;
