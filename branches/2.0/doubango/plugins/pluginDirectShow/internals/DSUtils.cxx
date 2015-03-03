@@ -17,9 +17,11 @@
 */
 #include "internals/DSUtils.h"
 
+#if defined (_WIN32_WCE)
 #include <atlbase.h>
 #include <atlstr.h>
-#if !defined(_WIN32_WCE)
+#else
+#include <atlconv.h>
 #include <d3d9.h>
 #endif
 
@@ -199,26 +201,30 @@ HRESULT DisconnectFilters(IGraphBuilder *graphBuilder, IBaseFilter *source, IBas
 
 bool DisconnectAllFilters(IGraphBuilder *graphBuilder)
 {
-	CComPtr<IEnumFilters> filterEnum = NULL;
-	CComPtr<IBaseFilter> currentFilter = NULL;
+	IEnumFilters* filterEnum = NULL;
+	IBaseFilter* currentFilter = NULL;
 	ULONG fetched;
 	HRESULT hr;
 
 	hr = graphBuilder->EnumFilters(&filterEnum);
-	if (FAILED(hr)) return false;
+	if (FAILED(hr)) {
+		SAFE_RELEASE(filterEnum);
+		return false;
+	}
 
 	while(filterEnum->Next(1, &currentFilter, &fetched) == S_OK){
 		hr = DisconnectFilters(graphBuilder, currentFilter, currentFilter);
+		SAFE_RELEASE(currentFilter);
 	}
-
-	filterEnum.Release();
+	SAFE_RELEASE(filterEnum);
+	SAFE_RELEASE(currentFilter);
 	return true;
 }
 
 bool RemoveAllFilters(IGraphBuilder *graphBuilder)
 {
-	CComPtr<IEnumFilters> filterEnum = NULL;
-	CComPtr<IBaseFilter> currentFilter = NULL;
+	IEnumFilters* filterEnum = NULL;
+	IBaseFilter* currentFilter = NULL;
 	ULONG fetched;
 	HRESULT hr;
 
@@ -228,14 +234,15 @@ bool RemoveAllFilters(IGraphBuilder *graphBuilder)
 	while(filterEnum->Next(1, &currentFilter, &fetched) == S_OK){
 		hr = graphBuilder->RemoveFilter(currentFilter);
 		if (FAILED(hr)){
-			filterEnum.Release();
+			SAFE_RELEASE(filterEnum);
 			return false;
 		}
-		currentFilter.Release();
+		SAFE_RELEASE(currentFilter);
 		filterEnum->Reset();
 	}
 
-	filterEnum.Release();
+	SAFE_RELEASE(filterEnum);
+	SAFE_RELEASE(currentFilter);
 	return true;
 }
 

@@ -137,7 +137,7 @@ static int plugin_screencast_dshow_producer_start(tmedia_producer_t* self)
 	}
 
 	// set parameters
-	producer->grabber->setCaptureParameters(TMEDIA_PRODUCER(producer)->video.width, TMEDIA_PRODUCER(producer)->video.height, TMEDIA_PRODUCER(producer)->video.fps);
+	producer->grabber->setCaptureParameters((int)TMEDIA_PRODUCER(producer)->video.width, (int)TMEDIA_PRODUCER(producer)->video.height, TMEDIA_PRODUCER(producer)->video.fps);
 
 	// set callback function
 	producer->grabber->setCallback(plugin_video_dshow_plugin_cb, producer);
@@ -147,7 +147,7 @@ static int plugin_screencast_dshow_producer_start(tmedia_producer_t* self)
 		if (producer->previewHwnd) {
 			producer->grabber->preview->attach(producer->previewHwnd);
 		}
-		producer->grabber->preview->setSize(TMEDIA_PRODUCER(producer)->video.width, TMEDIA_PRODUCER(producer)->video.height);
+		producer->grabber->preview->setSize((int)TMEDIA_PRODUCER(producer)->video.width, (int)TMEDIA_PRODUCER(producer)->video.height);
 	}
 	
 	// start grabber
