@@ -213,9 +213,9 @@ static int plugin_video_dshow_consumer_prepare(tmedia_consumer_t* self, const tm
 		TMEDIA_CONSUMER(pSelf)->video.display.height = TMEDIA_CONSUMER(pSelf)->video.in.height;
 	}
 	
-	pSelf->nNegFps = TMEDIA_CONSUMER(pSelf)->video.fps;
-	pSelf->nNegWidth = TMEDIA_CONSUMER(pSelf)->video.display.width;
-	pSelf->nNegHeight = TMEDIA_CONSUMER(pSelf)->video.display.height;
+	pSelf->nNegFps = (UINT32)TMEDIA_CONSUMER(pSelf)->video.fps;
+	pSelf->nNegWidth = (UINT32)TMEDIA_CONSUMER(pSelf)->video.display.width;
+	pSelf->nNegHeight = (UINT32)TMEDIA_CONSUMER(pSelf)->video.display.height;
 
 	TSK_DEBUG_INFO("D3D9 video consumer: fps=%d, width=%d, height=%d", 
 		pSelf->nNegFps, 
@@ -326,8 +326,8 @@ static int plugin_video_dshow_consumer_consume(tmedia_consumer_t* self, const vo
 		if(hWnd)
 		{
 			// means HWND was not set but defined now
-			pSelf->nNegWidth = TMEDIA_CONSUMER(pSelf)->video.in.width;
-			pSelf->nNegHeight = TMEDIA_CONSUMER(pSelf)->video.in.height;
+			pSelf->nNegWidth = (UINT32)TMEDIA_CONSUMER(pSelf)->video.in.width;
+			pSelf->nNegHeight = (UINT32)TMEDIA_CONSUMER(pSelf)->video.in.height;
 
 			CHECK_HR(hr = CreateDeviceD3D9(hWnd, &pSelf->pDevice, &pSelf->pD3D, pSelf->d3dpp));
 			CHECK_HR(hr = CreateSwapChain(hWnd, pSelf->nNegWidth, pSelf->nNegHeight, pSelf->pDevice, &pSelf->pSwapChain));
@@ -341,10 +341,10 @@ static int plugin_video_dshow_consumer_consume(tmedia_consumer_t* self, const vo
 		// Update media type
 		
 		SafeRelease(&pSelf->pSwapChain);
-		CHECK_HR(hr = CreateSwapChain(hWnd, TMEDIA_CONSUMER(pSelf)->video.in.width, TMEDIA_CONSUMER(pSelf)->video.in.height, pSelf->pDevice, &pSelf->pSwapChain));
+		CHECK_HR(hr = CreateSwapChain(hWnd, (UINT32)TMEDIA_CONSUMER(pSelf)->video.in.width, (UINT32)TMEDIA_CONSUMER(pSelf)->video.in.height, pSelf->pDevice, &pSelf->pSwapChain));
 
-		pSelf->nNegWidth = TMEDIA_CONSUMER(pSelf)->video.in.width;
-		pSelf->nNegHeight = TMEDIA_CONSUMER(pSelf)->video.in.height;
+		pSelf->nNegWidth = (UINT32)TMEDIA_CONSUMER(pSelf)->video.in.width;
+		pSelf->nNegHeight = (UINT32)TMEDIA_CONSUMER(pSelf)->video.in.height;
 
 		// Update Destination will do noting if the window size haven't changed. 
 		// Force updating the destination rect if negotiated size change

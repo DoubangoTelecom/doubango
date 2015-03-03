@@ -220,7 +220,7 @@ inline HRESULT DSOutputStream::DrawOverLay(void *pBuffer, long lSize)
 #ifdef _WIN32_WCE
 	
 #else
-	if( !TextOut( paintDC, 0, 0, OVERLAY_TEXT, _tcslen( OVERLAY_TEXT ) ) ) return E_FAIL;
+	if( !TextOut( paintDC, 0, 0, OVERLAY_TEXT, (int)_tcslen( OVERLAY_TEXT ) ) ) return E_FAIL;
 #endif
 	
 	CopyMemory(pBuffer, paintBuffer, lSize);

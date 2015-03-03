@@ -55,7 +55,9 @@ static int __pred_find_display_by_hwnd(const tsk_list_item_t *item, const void *
 {
 	if(item && item->data){
 		const tdshow_display_t *display = (const tdshow_display_t *)item->data;
-		return (display->hwnd - *((HWND*)hWnd));
+		int ret = 0;
+		tsk_subsat_int32_ptr(display->hwnd, *((HWND*)hWnd), &ret);
+		return ret;
 	}
 	return -1;
 }
@@ -602,7 +604,9 @@ static int tdshow_display_cmp(const tsk_object_t *_d1, const tsk_object_t *_d2)
 	const tdshow_display_t *d2 = (const tdshow_display_t *)_d2;
 
 	if(d1 && d2){
-		return (d1->hwnd - d2->hwnd);
+		int ret = 0;
+		tsk_subsat_int32_ptr(d1->hwnd, d2->hwnd, &ret);
+		return ret;
 	}
 	else if(!d1 && !d2) return 0;
 	else return -1;

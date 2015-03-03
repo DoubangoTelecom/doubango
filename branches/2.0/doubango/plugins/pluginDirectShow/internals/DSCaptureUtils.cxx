@@ -21,8 +21,12 @@
 #include <uuids.h>
 #include <mtype.h>
 
+#if defined (_WIN32_WCE)
 #include <atlbase.h>
 #include <atlstr.h>
+#else
+#include <atlconv.h>
+#endif
 #include <iostream>
 #include <assert.h>
 
