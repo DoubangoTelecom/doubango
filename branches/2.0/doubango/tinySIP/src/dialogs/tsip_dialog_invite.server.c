@@ -637,9 +637,12 @@ int s0000_Ringing_2_Connected_X_Accept(va_list *app)
 	/* do not start the session until we get the ACK message
 	* http://code.google.com/p/doubango/issues/detail?id=157
 	*/
+    /* do not start the session until we get at least one remote SDP
+     * https://code.google.com/p/doubango/issues/detail?id=438
+     */
 	// FIXME: (chrome) <-RTCWeb Breaker-> (chrome) do not work if media session is not started on i200
 	// http://code.google.com/p/webrtc2sip/issues/detail?id=45
-	/*if(TSIP_DIALOG_GET_STACK(self)->network.mode == tsip_stack_mode_webrtc2sip)*/{
+	if(/*TSIP_DIALOG_GET_STACK(self)->network.mode == tsip_stack_mode_webrtc2sip*/ TSIP_MESSAGE_HAS_CONTENT(self->last_iInvite)){
 		ret = tsip_dialog_invite_msession_start(self);
 	}
 
