@@ -89,8 +89,101 @@ static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *tr
 static int removeSocketAtIndex(int index, transport_context_t *context);
 static int wrapSocket(tnet_transport_t *transport, transport_socket_xt *sock);
 
+static BOOL isTrusted(tnet_transport_t *transport, id cfStream, BOOL bReadStream)
+{
+    BOOL bTrusted = NO;
+    SecTrustRef trust = NULL;
+    OSStatus status = 0;
+    SecTrustResultType result;
+    SecCertificateRef certArray[2] = { NULL, NULL };
+    CFArrayRef refCertArray = NULL;
+    CFIndex certArrayCount = 0;
+    
+    trust = bReadStream
+        ? (SecTrustRef)CFReadStreamCopyProperty((CFReadStreamRef)cfStream, kCFStreamPropertySSLPeerTrust)
+        : (SecTrustRef)CFWriteStreamCopyProperty((CFWriteStreamRef)cfStream, kCFStreamPropertySSLPeerTrust);
+    if (!trust) {
+        TSK_DEBUG_ERROR("Failed to get SecTrustRef object from '%s' stream", bReadStream ? "read" : "write");
+        goto bail;
+    }
+    
+    NSString *caName = NULL, *pbName = NULL;
+    
+    if (!tsk_strnullORempty(transport->tls.ca)) {
+        caName = [[[NSString stringWithCString:transport->tls.ca encoding: NSUTF8StringEncoding] lastPathComponent] stringByDeletingPathExtension];
+    }
+    if (!tsk_strnullORempty(transport->tls.pbk)) {
+        pbName = [[[NSString stringWithCString:transport->tls.pbk encoding: NSUTF8StringEncoding] lastPathComponent] stringByDeletingPathExtension];
+    }
+    TSK_DEBUG_INFO("SSL::isTrusted(ca=%s, pb=%s)", [caName UTF8String], [pbName UTF8String]);
+    
+    if (caName) {
+        NSString *caPath = [[NSBundle mainBundle] pathForResource:caName ofType:@"der"];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:caPath]) {
+            TSK_DEBUG_WARN("Cannot find SSL CA file '%s.der'", [caPath UTF8String]);
+        }
+        else {
+            NSData *certData = [[NSData alloc] initWithContentsOfFile:caPath];
+            CFDataRef certDataRef = (CFDataRef)certData;
+            SecCertificateRef cert = certDataRef ? SecCertificateCreateWithData(NULL, certDataRef) : NULL;
+            [certData release];
+            if (!cert) {
+                TSK_DEBUG_WARN("Cannot create SecCertificateRef object from '%s' file", [caPath UTF8String]);
+            }
+            else {
+                TSK_DEBUG_INFO("Using SecCertificateRef object created from '%s' for SSL validation", [caPath UTF8String]);
+                certArray[certArrayCount++] = cert;
+            }
+        }
+    }
+    if (pbName) {
+        NSString *pbPath = [[NSBundle mainBundle] pathForResource:pbName ofType:@"der"];
+        if (![[NSFileManager defaultManager] fileExistsAtPath:pbPath]) {
+            TSK_DEBUG_WARN("Cannot find SSL PUB file '%s.der'", [pbPath UTF8String]);
+        }
+        else {
+            NSData *certData = [[NSData alloc] initWithContentsOfFile:pbPath];
+            CFDataRef certDataRef = (CFDataRef)certData;
+            SecCertificateRef cert = certDataRef ? SecCertificateCreateWithData(NULL, certDataRef) : NULL;
+            [certData release];
+            if (!cert) {
+                TSK_DEBUG_WARN("Cannot create SecCertificateRef object from '%s' file", [pbPath UTF8String]);
+            }
+            else {
+                TSK_DEBUG_INFO("Using SecCertificateRef object created from '%s' for SSL validation", [pbPath UTF8String]);
+                certArray[certArrayCount++] = cert;
+            }
+        }
+    }
+    if (certArrayCount > 0) {
+        refCertArray = CFArrayCreate(NULL, (void *)certArray, certArrayCount, NULL);
+    }
+    status = SecTrustSetAnchorCertificates(trust, refCertArray);
+    if (status != noErr) {
+        TSK_DEBUG_ERROR("SecTrustSetAnchorCertificates failed with error code = %d", (int)status);
+        goto bail;
+    }
+    status = SecTrustSetAnchorCertificatesOnly(trust, YES);
+    if (status != noErr) {
+        TSK_DEBUG_ERROR("SecTrustSetAnchorCertificatesOnly failed with error code = %d", (int)status);
+        goto bail;
+    }
+    status = SecTrustEvaluate(trust, &result);
+    if (status != noErr) {
+        TSK_DEBUG_ERROR("SecTrustEvaluate failed with error code = %d", (int)status);
+        goto bail;
+    }
+    bTrusted = (result == kSecTrustResultProceed || result == kSecTrustResultUnspecified);
+    TSK_DEBUG_INFO("SecTrustEvaluate result = %d", result);
+    
+bail:
+    CFRelease(trust);
+    CFRelease(refCertArray);
+    return bTrusted;
+}
 
-int recvData(tnet_transport_t *transport, transport_socket_xt* active_socket)
+
+static int recvData(tnet_transport_t *transport, transport_socket_xt* active_socket)
 {
 	transport_context_t *context;
 	int ret;
@@ -143,7 +236,7 @@ int recvData(tnet_transport_t *transport, transport_socket_xt* active_socket)
 	
     if(len && !buffer){
         if(!(buffer = tsk_calloc(len, sizeof(uint8_t)))){
-            TSK_DEBUG_ERROR("calloc(%d) failed", len);
+            TSK_DEBUG_ERROR("calloc(%zu) failed", len);
             goto bail;
         }
         
@@ -665,6 +758,18 @@ void __CFReadStreamClientCallBack(CFReadStreamRef stream, CFStreamEventType even
         case kCFStreamEventOpenCompleted:
         {
             TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> kCFStreamEventOpenCompleted(fd=%d)", sock->fd);
+#if 0
+            // Check SSL certificates
+            if (TNET_SOCKET_TYPE_IS_TLS(sock->type) && transport->tls.verify) {
+                if (!isTrusted(transport, (__bridge id)stream, YES/*YES read stream*/)) {
+                    TSK_DEBUG_ERROR("Remote SSL certs not trusted...closing the write stream");
+                    TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, sock->fd);
+                    removeSocket(sock, context);
+                    break;
+                }
+            }
+#endif
+            // Set "readable" flag
             if (!sock->readable) {
                 sock->readable = tsk_true;
                 if (sock->writable) {
@@ -689,11 +794,9 @@ void __CFReadStreamClientCallBack(CFReadStreamRef stream, CFStreamEventType even
         {
             // Get the error code
             CFErrorRef error = CFReadStreamCopyError(stream);
-            if(error){
-                CFIndex index = CFErrorGetCode(error);
+            if (error) {
+                TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> Error=%lu -> %s, fd=%d", CFErrorGetCode(error), CFStringGetCStringPtr(CFErrorGetDomain(error), kCFStringEncodingUTF8), sock->fd);
                 CFRelease(error);
-                
-                TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> Error=%lu, fd=%d", index, sock->fd);
             }
             
             TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, sock->fd);
@@ -748,6 +851,15 @@ void __CFWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventType ev
         {
             // To avoid blocking, call this function only if CFWriteStreamCanAcceptBytes returns true or after the stream’s client (set with CFWriteStreamSetClient) is notified of a kCFStreamEventCanAcceptBytes event.
             TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> kCFStreamEventCanAcceptBytes(fd=%d)", sock->fd);
+            // Check SSL certificates
+            if (TNET_SOCKET_TYPE_IS_TLS(sock->type) && transport->tls.verify) {
+                if (!isTrusted(transport, (__bridge id)stream, FALSE/*NOT read stream*/)) {
+                    TSK_DEBUG_ERROR("Remote SSL certs not trusted...closing the write stream");
+                    removeSocket(sock, context);
+                    break;
+                }
+            }
+            // Set "writable" flag
             if (!sock->writable) {
                 sock->writable = tsk_true;
                 if (sock->readable) {
@@ -767,11 +879,9 @@ void __CFWriteStreamClientCallBack(CFWriteStreamRef stream, CFStreamEventType ev
         {
             // Get the error code
             CFErrorRef error = CFWriteStreamCopyError(stream);
-            if(error){
-                CFIndex index = CFErrorGetCode(error);
+            if (error) {
+                TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> Error=%lu -> %s, fd=%d", CFErrorGetCode(error), CFStringGetCStringPtr(CFErrorGetDomain(error), kCFStringEncodingUTF8), sock->fd);
                 CFRelease(error);
-                
-                TSK_DEBUG_INFO("__CFWriteStreamClientCallBack --> Error=%lu, fd=%d", index, sock->fd);
             }
             
             TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, sock->fd);
@@ -920,37 +1030,18 @@ int wrapSocket(tnet_transport_t *transport, transport_socket_xt *sock)
             if (TNET_SOCKET_TYPE_IS_TLS(sock->type)) {
                 CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
                 CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamPropertySocketSecurityLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
+                CFWriteStreamSetProperty(sock->cf_write_stream, kCFStreamSSLLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
+                CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamSSLLevel, kCFStreamSocketSecurityLevelNegotiatedSSL);
                 
                 CFMutableDictionaryRef settings = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+#if (__IPHONE_OS_VERSION_MIN_REQUIRED < 40000) // @Deprecated
                 CFDictionaryAddValue(settings, kCFStreamSSLAllowsExpiredCertificates, kCFBooleanTrue);
-                CFDictionaryAddValue(settings, kCFStreamSSLAllowsAnyRoot, kCFBooleanTrue);
-                CFDictionaryAddValue(settings, kCFStreamSSLValidatesCertificateChain, transport->tls.verify ?kCFBooleanTrue : kCFBooleanFalse);
+                CFDictionaryAddValue(settings, kCFStreamSSLAllowsAnyRoot, kCFBooleanTrue); // self-signed? - deprecated
+#endif
+                // Set "kCFStreamSSLValidatesCertificateChain" to false to accept self-signed certs. The validation will be done manually using "isTrusted()" to check cert matching if "verify" option is enabled.
+                CFDictionaryAddValue(settings, kCFStreamSSLValidatesCertificateChain, kCFBooleanFalse);
                 CFDictionaryAddValue(settings, kCFStreamSSLIsServer, sock->is_client ? kCFBooleanFalse : kCFBooleanTrue);
                 CFDictionaryAddValue(settings, kCFStreamSSLPeerName, kCFNull);
-                
-                
-#ifdef __OBJC__
-                // Set certificates (DER format)
-                if(!tsk_strnullORempty(transport->tls.ca)){
-                    NSString *ca = [NSString stringWithCString:transport->tls.ca encoding: NSUTF8StringEncoding];
-                    NSString *certPath = [[NSBundle mainBundle] pathForResource:ca ofType:@"cer"];
-                    NSData *certData = [[NSData alloc] initWithContentsOfFile:certPath];
-                    if(certData){
-                        CFDataRef certDataRef = (CFDataRef)certData;
-                        SecCertificateRef cert = SecCertificateCreateWithData(NULL, certDataRef);
-                        [certData release];
-                        
-                        SecCertificateRef certArray[1] = { cert };
-                        CFArrayRef certs = CFArrayCreate(
-                                                         NULL, (void *)certArray,
-                                                         1, NULL);
-                        if(certs){
-                            CFDictionaryAddValue(settings, kCFStreamSSLCertificates, certs);
-                            CFRelease(certs);
-                        }
-                    }
-                }
-#endif /* __OBJC__ */
                 
                 // Set the SSL settings
                 CFReadStreamSetProperty(sock->cf_read_stream, kCFStreamPropertySSLSettings, settings);
