@@ -163,12 +163,21 @@ static int plugin_win_mf_converter_video_ms_init(tmedia_converter_video_t* self,
 	}
 
 
-#if HAVE_IMFVideoProcessorControl
+
 	if(pSelf->isVideoProcessor)
 	{
+		IMFAttributes* pAttributes = NULL;
+		UINT32 GPU = 0;
+		hr = pSelf->pMFT->GetAttributes(&pAttributes);
+		if (SUCCEEDED(hr)) {
+			hr = pAttributes->GetUINT32(MF_SA_D3D11_AWARE, &GPU);
+		}
+		TSK_DEBUG_INFO("MF_SA_D3D11_AWARE = %d", GPU);
+#if HAVE_IMFVideoProcessorControl
 		CHECK_HR(hr = pSelf->pMFT->QueryInterface(IID_PPV_ARGS(&pSelf->pVPC)));
-	}
 #endif
+	}
+
 
 	CHECK_HR(hr = MFUtils::CreateVideoType(&pSelf->fmtSrc, &pTypeSrc, (UINT32)pSelf->widthSrc, (UINT32)pSelf->heightSrc));
 	CHECK_HR(hr = MFUtils::CreateVideoType(&pSelf->fmtDst, &pTypeDst, (UINT32)pSelf->widthDst, (UINT32)pSelf->heightDst));
