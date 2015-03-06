@@ -172,6 +172,7 @@ static int plugin_win_mf_converter_video_ms_init(tmedia_converter_video_t* self,
 		if (SUCCEEDED(hr)) {
 			hr = pAttributes->GetUINT32(MF_SA_D3D11_AWARE, &GPU);
 		}
+		SafeRelease(&pAttributes);
 		TSK_DEBUG_INFO("MF_SA_D3D11_AWARE = %d", GPU);
 #if HAVE_IMFVideoProcessorControl
 		CHECK_HR(hr = pSelf->pMFT->QueryInterface(IID_PPV_ARGS(&pSelf->pVPC)));
