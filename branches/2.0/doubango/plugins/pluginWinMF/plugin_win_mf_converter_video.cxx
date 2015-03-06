@@ -38,6 +38,7 @@ Video Processor MFT (http://msdn.microsoft.com/en-us/library/windows/desktop/hh1
 #include "tsk_debug.h"
 
 #include <assert.h>
+#include <initguid.h>
 #include <dmo.h>
 #include <wmcodecdsp.h>
 
@@ -47,6 +48,11 @@ Video Processor MFT (http://msdn.microsoft.com/en-us/library/windows/desktop/hh1
 #endif
 
 EXTERN_C const GUID CLSID_VideoProcessorMFT; // defined in mf_utils.cxx
+
+#if (WINVER < _WIN32_WINNT_WIN8) 
+DEFINE_GUID(MF_SA_D3D11_AWARE,
+	0x206b4fc8, 0xfcf9, 0x4c51, 0xaf, 0xe3, 0x97, 0x64, 0x36, 0x9e, 0x33, 0xa0);
+#endif
 
 #if !defined(HAVE_IMFVideoProcessorControl)
 #	if defined(__IMFVideoProcessorControl_INTERFACE_DEFINED__)
