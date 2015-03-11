@@ -22,6 +22,8 @@
  */
 #include "tinydav/bfcp/tdav_session_bfcp.h"
 
+#if !defined(HAVE_TINYBFCP) || HAVE_TINYBFCP
+
 #include "tinybfcp/tbfcp_session.h"
 #include "tinybfcp/tbfcp_pkt.h"
 #include "tinybfcp/tbfcp_utils.h"
@@ -735,3 +737,5 @@ static const tmedia_session_plugin_def_t tdav_session_bfcp_plugin_def_s =
 	_tdav_session_bfcp_set_ro
 };
 const tmedia_session_plugin_def_t *tdav_session_bfcp_plugin_def_t = &tdav_session_bfcp_plugin_def_s;
+
+#endif /* !defined(HAVE_TINYBFCP) || HAVE_TINYBFCP */

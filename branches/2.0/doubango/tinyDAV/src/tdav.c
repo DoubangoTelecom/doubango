@@ -49,7 +49,9 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #include "tinymedia.h"
 
 // IPSec
+#if !defined(HAVE_TINYIPSEC) || HAVE_TINYIPSEC
 #include "tipsec.h"
+#endif
 
 // Converters
 #include "tinymedia/tmedia_converter_video.h"
@@ -224,6 +226,7 @@ int tdav_init()
 			}
 		}
 		/* IPSec implementation using Windows Filtering Platform (WFP) */
+#if !defined(HAVE_TINYIPSEC) || HAVE_TINYIPSEC
 		if (tdav_win32_is_winvista_or_later()) {
 			tsk_sprintf(&full_path, "%s/pluginWinIPSecVista.dll", tdav_get_current_directory_const());
 			if (tsk_plugin_file_exist(full_path) && (tipsec_plugin_register_file(full_path, &__dll_plugin_ipsec_wfp) == 0)) {
@@ -231,6 +234,7 @@ int tdav_init()
 				__b_ipsec_supported = tsk_true;
 			}
 		}
+#endif
 
 		TSK_FREE(full_path);
 		TSK_DEBUG_INFO("Windows stand-alone plugins loaded = %u", plugins_count);
@@ -257,9 +261,13 @@ int tdav_init()
 	tmedia_session_plugin_register(tmedia_session_ghost_plugin_def_t);
 	tmedia_session_plugin_register(tdav_session_audio_plugin_def_t);
 	tmedia_session_plugin_register(tdav_session_video_plugin_def_t);
+#if !defined(HAVE_TINYMSRP) || HAVE_TINYMSRP
 	tmedia_session_plugin_register(tdav_session_msrp_plugin_def_t);
+#endif
 	tmedia_session_plugin_register(tdav_session_t140_plugin_def_t);
+#if !defined(HAVE_TINYBFCP) || HAVE_TINYBFCP
 	tmedia_session_plugin_register(tdav_session_bfcp_plugin_def_t);
+#endif
 	tmedia_session_plugin_register(tdav_session_bfcpaudio_plugin_def_t);
 	tmedia_session_plugin_register(tdav_session_bfcpvideo_plugin_def_t);
 
@@ -602,9 +610,13 @@ int tdav_deinit()
 	tmedia_session_plugin_unregister(tmedia_session_ghost_plugin_def_t);
 	tmedia_session_plugin_unregister(tdav_session_audio_plugin_def_t);
 	tmedia_session_plugin_unregister(tdav_session_video_plugin_def_t);
+#if !defined(HAVE_TINYMSRP) || HAVE_TINYMSRP
 	tmedia_session_plugin_unregister(tdav_session_msrp_plugin_def_t);
+#endif
 	tmedia_session_plugin_unregister(tdav_session_t140_plugin_def_t);
+#if !defined(HAVE_TINYBFCP) || HAVE_TINYBFCP
 	tmedia_session_plugin_unregister(tdav_session_bfcp_plugin_def_t);
+#endif
 	tmedia_session_plugin_unregister(tdav_session_bfcpaudio_plugin_def_t);
 	tmedia_session_plugin_unregister(tdav_session_bfcpvideo_plugin_def_t);
 
