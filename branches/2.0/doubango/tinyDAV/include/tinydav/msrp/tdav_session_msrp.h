@@ -28,6 +28,8 @@
 
 #include "tinydav_config.h"
 
+#if !defined(HAVE_TINYMSRP) || HAVE_TINYMSRP
+
 #include "tinymsrp/session/tmsrp_sender.h"
 #include "tinymsrp/session/tmsrp_receiver.h"
 #include "tmsrp.h"
@@ -104,5 +106,7 @@ tdav_session_msrp_t;
 TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_msrp_plugin_def_t;
 
 TDAV_END_DECLS
+
+#endif /* !defined(HAVE_TINYMSRP) || HAVE_TINYMSRP */
 
 #endif /* TINYDAV_SESSION_MSRP_H */

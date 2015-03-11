@@ -26,6 +26,7 @@
 
 #include "tinydav_config.h"
 
+#if !defined(HAVE_TINYBFCP) || HAVE_TINYBFCP
 #include "tinymedia/tmedia_session.h"
 
 TDAV_BEGIN_DECLS
@@ -33,5 +34,7 @@ TDAV_BEGIN_DECLS
 TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_bfcp_plugin_def_t;
 
 TDAV_END_DECLS
+
+#endif /* !defined(HAVE_TINYBFCP)  || HAVE_TINYBFCP */
 
 #endif /* TINYDAV_SESSION_BFCP_H */

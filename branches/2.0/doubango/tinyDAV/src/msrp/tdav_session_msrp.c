@@ -30,6 +30,8 @@
  */
 #include "tinydav/msrp/tdav_session_msrp.h"
 
+#if !defined(HAVE_TINYMSRP) || HAVE_TINYMSRP
+
 #include "tsk_memory.h" /* TSK_FREE */
 
 #define TDAV_MSRP_CONNECT_TIMEOUT	2000
@@ -979,3 +981,4 @@ static const tmedia_session_plugin_def_t tdav_session_msrp_plugin_def_s =
 };
 const tmedia_session_plugin_def_t *tdav_session_msrp_plugin_def_t = &tdav_session_msrp_plugin_def_s;
 
+#endif /* !defined(HAVE_TINYMSRP) || HAVE_TINYMSRP */
