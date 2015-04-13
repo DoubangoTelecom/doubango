@@ -84,6 +84,7 @@ static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self);
 static int tdav_codec_h264_cisco_close_encoder(tdav_codec_h264_cisco_t* self);
 static int tdav_codec_h264_cisco_open_decoder(tdav_codec_h264_cisco_t* self);
 static int tdav_codec_h264_cisco_close_decoder(tdav_codec_h264_cisco_t* self);
+static ELevelIdc tdav_codec_h264_cisco_convert_level(enum level_idc_e level);
 static void tdav_codec_h264_cisco_debug_cb(void* context, int level, const char* message);
 
 static void (*__tdav_codec_h264_cisco_debug_cb)(void* context, int level, const char* message) = tdav_codec_h264_cisco_debug_cb;
@@ -663,7 +664,11 @@ static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self)
 	
 	layer = &self->encoder.sEncParam.sSpatialLayers[0];
 	layer->uiProfileIdc	= PRO_BASELINE;
+#if BUILD_TYPE_TCH
+	layer->uiLevelIdc = tdav_codec_h264_cisco_convert_level(common->level);
+#else
 	layer->uiLevelIdc = LEVEL_UNKNOWN; // auto-detect
+#endif
 	layer->fFrameRate = self->encoder.sEncParam.fMaxFrameRate;
 	layer->iMaxSpatialBitrate = self->encoder.sEncParam.iMaxBitrate;
 	layer->iSpatialBitrate = self->encoder.sEncParam.iTargetBitrate;
@@ -768,6 +773,30 @@ static int tdav_codec_h264_cisco_close_decoder(tdav_codec_h264_cisco_t* self)
 	}
 
 	return 0;
+}
+
+static ELevelIdc tdav_codec_h264_cisco_convert_level(enum level_idc_e level)
+{
+	switch(level) {
+		case level_idc_1_0: return LEVEL_1_0;
+		case level_idc_1_b: return LEVEL_1_B;
+		case level_idc_1_1: return LEVEL_1_1;
+		case level_idc_1_2: return LEVEL_1_2;
+		case level_idc_1_3: return LEVEL_1_3;
+		case level_idc_2_0: return LEVEL_2_0;
+		case level_idc_2_1: return LEVEL_2_1;
+		case level_idc_2_2: return LEVEL_2_2;
+		case level_idc_3_0: return LEVEL_3_0;
+		case level_idc_3_1: return LEVEL_3_1;
+		case level_idc_3_2: return LEVEL_3_2;
+		case level_idc_4_0: return LEVEL_4_0;
+		case level_idc_4_1: return LEVEL_4_1;
+		case level_idc_4_2: return LEVEL_4_2;
+		case level_idc_5_0: return LEVEL_5_0;
+		case level_idc_5_1: return LEVEL_5_1;
+		case level_idc_5_2: return LEVEL_2_2;
+		default: return LEVEL_UNKNOWN;
+	}
 }
 
 static void tdav_codec_h264_cisco_debug_cb(void* context, int level, const char* message)
