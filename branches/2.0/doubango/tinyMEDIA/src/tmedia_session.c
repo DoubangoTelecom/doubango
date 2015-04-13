@@ -1257,13 +1257,16 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 
 			// media lines
 			if (!is_ro_media_lines_changed){
+				char* M0ProtoF = tsk_null; // old proto with "F" at the end, do nothing if we transit from AVP to AVPF because it means nego. succeeded
+				tsk_strcat_2(&M0ProtoF, "%sF", M0->proto);
 				is_ro_media_lines_changed
 					// (M1 == null) means media lines are not at the same index or new one have been added/removed
 					|= (!M1)
 					// same media (e.g. audio)
 					|| !tsk_striequals(M1->media, M0->media)
 					// same protos (e.g. SRTP)
-					|| !tsk_striequals(M1->proto, M0->proto);
+					|| !(tsk_striequals(M1->proto, M0->proto) || tsk_striequals(M1->proto, M0ProtoF));
+				TSK_FREE(M0ProtoF);
 			}
 
 			// codecs
