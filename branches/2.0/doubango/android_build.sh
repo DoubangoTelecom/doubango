@@ -15,7 +15,7 @@ export SPEEX_DSP=yes
 export SPEEX=yes
 export ILBC=yes
 export LIBGSM=yes
-export G729=yes
+export G729=no
 export SRTP=yes
 export WEBRTC=yes
 export SSL=yes
@@ -70,6 +70,12 @@ fi
 if [ x$OPUS = "xno" ]; then
 	export OPTIONS="${OPTIONS} --without-opus"
 fi
+if [ x$G729 = "xno" ]; then
+	export OPTIONS="${OPTIONS} --without-g729"
+else
+	export ac_cv_lib_g729b_Init_Decod_ld8a=yes
+	export OPENCORE_AMR=no
+fi
 if [ x$OPENCORE_AMR = "xno" ]; then
 	export OPTIONS="${OPTIONS} --without-amr"
 fi
@@ -84,9 +90,6 @@ if [ x$ILBC = "xno" ]; then
 fi
 if [ x$LIBGSM = "xno" ]; then
 	export OPTIONS="${OPTIONS} --without-gsm"
-fi
-if [ x$G729 = "xno" ]; then
-	export OPTIONS="${OPTIONS} --without-g729"
 fi
 if [ x$SRTP = "xno" ]; then
 	export OPTIONS="${OPTIONS} --without-srtp"
