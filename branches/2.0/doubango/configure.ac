@@ -157,8 +157,9 @@ fi
 
 
 ### DEBUG-LEVEL
+debug_level=error
 AC_ARG_WITH(debug-level, 
-[  --with-debug-level[=level] Set debug-level to level [[default=info]]
+[  --with-debug-level[=level] Set debug-level to level [[default=error]]
                        info: informational
                        warn: warnings
                        error [default]: errors
@@ -176,8 +177,26 @@ AC_ARG_WITH(debug-level,
 	AC_DEFINE(DEBUG_LEVEL, DEBUG_LEVEL_FATAL, [fatal debug])
 	AC_MSG_RESULT(fatal)
   fi
+  debug_level=$withval
 ])
 
+### BUILD-TYPE
+build_type=doubango
+AC_ARG_WITH(build-type, 
+[  --with-build-type[=bt] Set build-type to bt [[default=doubango]]
+                       doubango [default]: Doubango Telecom
+		       ge: General Electric
+                       tiscali: Tiscali
+                       tch: Technicolor],
+[ if test "x$withval" = "xtch" ; then
+	AC_DEFINE(BUILD_TYPE_TCH, 1, [Technicolor])
+  elif test "x$withval" = "xge" ; then
+	AC_DEFINE(BUILD_TYPE_GE, 1, [General Electric])
+  elif test "x$withval" = "xtiscali" ; then
+	AC_DEFINE(BUILD_TYPE_TISCALI, 1, [Tiscali])
+  fi
+  build_type="$withval"
+])
 
 ### CFLAGS && LDFLAGS
 if test "$target_os" = "android"; then
@@ -1011,6 +1030,7 @@ Target OS:            ${target_os}
 Host setup:           ${host}
 Install prefix:       ${prefix}
 Compiler:             ${CC}
+Build Type:           ${build_type}
 
 Enable GPL:           $enable_gpl
 Enable Non Free:      $enable_nonfree
@@ -1047,6 +1067,7 @@ OSS (audio):          $have_oss
 V4L2 (video):         $have_v4l2
 
 DEBUG:                $enable_debug
+DEBUG_LEVEL:          $debug_level
 
 Report any issue at https://groups.google.com/group/doubango
 
