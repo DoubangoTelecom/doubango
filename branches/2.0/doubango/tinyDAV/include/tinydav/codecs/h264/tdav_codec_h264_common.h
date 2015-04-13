@@ -131,7 +131,9 @@ tdav_codec_h264_common_level_size_xt;
 static const tdav_codec_h264_common_level_size_xt tdav_codec_h264_common_level_sizes [] =
 {
 	{level_idc_1_0, 128, 96, 99},
+#if 0
     {level_idc_1_b, 128, 96, 99},
+#endif
     {level_idc_1_1, 176, 144, 396},
     {level_idc_1_2, 320, 240, 396},
     {level_idc_1_3, 352, 288, 396},
@@ -303,20 +305,25 @@ static tsk_bool_t tdav_codec_h264_common_sdp_att_match(tdav_codec_h264_common_t*
 		}
 		else{
 			if (h264->level != level) {
-				unsigned width, height;
-				h264->level = TSK_MIN(h264->level, level);
-				if (tdav_codec_h264_common_size_from_level(h264->level, &width, &height) != 0) {
-					return tsk_false;
+				// change the output size only when the remote party request lower level. If it request higher (or same) level then, we send our preferred size.
+				if (h264->level > level) {
+					unsigned width, height;
+					h264->level = TSK_MIN(h264->level, level);				
+					if (tdav_codec_h264_common_size_from_level(h264->level, &width, &height) != 0) {
+						return tsk_false;
+					}
+					// Do not change our size if it match the requested level
+					if (width < TMEDIA_CODEC_VIDEO(h264)->out.width || height < TMEDIA_CODEC_VIDEO(h264)->out.height) {
+						// Set "out" size. We must not send more than "MaxFS".
+						// Default "out" is equal to the preferred sized and initialized in init().
+						// "TANDBERG/4120 (X7.2.2)" will terminate the call if frame size > maxFS
+						TMEDIA_CODEC_VIDEO(h264)->out.width = TSK_MIN(TMEDIA_CODEC_VIDEO(h264)->out.width, width);
+						TMEDIA_CODEC_VIDEO(h264)->out.height = TSK_MIN(TMEDIA_CODEC_VIDEO(h264)->out.height, height);
+					}
+					// Set default "in". Will be updated after receiving the first frame.
+					TMEDIA_CODEC_VIDEO(h264)->in.width = width;
+					TMEDIA_CODEC_VIDEO(h264)->in.height = height;
 				}
-				// Set "out" size. We must not send more than "MaxFS".
-				// Default "out" is equal to the preferred sized and initialized in init().
-				// "TANDBERG/4120 (X7.2.2)" will terminate the call if frame size > maxFS
-				TMEDIA_CODEC_VIDEO(h264)->out.width = TSK_MIN(TMEDIA_CODEC_VIDEO(h264)->out.width, width);
-				TMEDIA_CODEC_VIDEO(h264)->out.height = TSK_MIN(TMEDIA_CODEC_VIDEO(h264)->out.height, height);
-				
-				// Set default "in". Will be updated after receiving the first frame.
-				TMEDIA_CODEC_VIDEO(h264)->in.width = width;
-				TMEDIA_CODEC_VIDEO(h264)->in.height = height;
 			}
 		}
 
@@ -331,11 +338,14 @@ static tsk_bool_t tdav_codec_h264_common_sdp_att_match(tdav_codec_h264_common_t*
 
 			/* === max-fs ===*/
 			if ((val_int = tsk_params_get_param_value_as_int(params, "max-fs")) != -1) {
-				unsigned width_max, height_max, maxFS;
+				unsigned width_max, height_max, maxFS, currFS;
+				currFS = (TMEDIA_CODEC_VIDEO(h264)->out.width * TMEDIA_CODEC_VIDEO(h264)->out.height) >> 8;
 				maxFS = TSK_MIN(h264->maxFS/*preferred*/, (unsigned)val_int/*proposed*/); // make sure we'll never send more than we advertised
-				if (tdav_codec_h264_common_size_from_fs(maxFS, &width_max, &height_max) == 0) {
-					TMEDIA_CODEC_VIDEO(h264)->out.width = TMEDIA_CODEC_VIDEO(h264)->in.width = width_max;
-					TMEDIA_CODEC_VIDEO(h264)->out.height = TMEDIA_CODEC_VIDEO(h264)->in.height = height_max;
+				if (currFS > maxFS) { // do not use default sizes when we already respect the MaxFS
+					if (tdav_codec_h264_common_size_from_fs(maxFS, &width_max, &height_max) == 0) {
+						TMEDIA_CODEC_VIDEO(h264)->out.width = TMEDIA_CODEC_VIDEO(h264)->in.width = width_max;
+						TMEDIA_CODEC_VIDEO(h264)->out.height = TMEDIA_CODEC_VIDEO(h264)->in.height = height_max;
+					}
 				}
 			}
 
