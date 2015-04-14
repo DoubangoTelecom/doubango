@@ -143,6 +143,7 @@ typedef struct tnet_ice_server_s
 	char* str_software;
 	char* str_username;
 	char* str_password;
+	int rto;
 }
 tnet_ice_server_t;
 
@@ -1187,9 +1188,9 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 		*/
 	int ret = 0;
 	tnet_ice_servers_L_t* ice_servers = tsk_null;
-	const tnet_ice_server_t* ice_server;
+	tnet_ice_server_t* ice_server;
 	tnet_ice_ctx_t* self;
-	uint16_t i, k, rto, rc;
+	uint16_t i, k, rc;
 	struct timeval tv;
 	tnet_stun_pkt_resp_t *response = tsk_null;
 	const tsk_list_item_t *item, *item_server;
@@ -1220,7 +1221,6 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 		fds_skipped[i] = TNET_INVALID_FD;
 	}
 
-	rto = self->RTO;
 	rc = self->Rc;
 	tv.tv_sec = tv_sec = 0;
 	tv.tv_usec = tv_usec = 0;
@@ -1249,22 +1249,32 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 		e.g. 0 ms, 500 ms, 1500 ms, 3500 ms, 7500ms, 15500 ms, and 31500 ms
 		*/
 	for (i = 0; (i < rc && self->is_started && ((srflx_addr_count_added + srflx_addr_count_skipped) < host_addr_count)); ++i) {
-		tv_sec += rto / 1000;
-		tv_usec += (rto % 1000) * 1000;
-		if (tv_usec >= 1000000) { // > 1000000 is invalid and produce EINVAL when passed to select(iOS)
-			tv_usec -= 1000000;
-			tv_sec++;
-		}
-		// restore values for new select
-		tv.tv_sec = tv_sec;
-		tv.tv_usec = tv_usec;
-
 		// Try gathering the reflexive candidate for each server
 		tsk_list_foreach(item_server, ice_servers) {
+			if (!self->is_started) {
+				break;
+			}
 			if (!(ice_server = item_server->data)) {
 				continue; // must never happen
 			}
-			TSK_DEBUG_INFO("ICE reflexive candidates gathering ...srv_addr=%s,srv_port=%u,tv_sec=%lu,tv_usec=%lu", ice_server->str_server_addr, ice_server->u_server_port, tv_sec, tv_usec);
+			if (i == 0) {
+				ice_server->rto = 0;
+			}
+			else if (i == 1) {
+				ice_server->rto = self->RTO;
+			}
+			// else // ice_server->rto <<= 1;
+			tv_sec = ice_server->rto / 1000;
+			tv_usec = (ice_server->rto % 1000) * 1000;
+			if (tv_usec >= 1000000) { // > 1000000 is invalid and produce EINVAL when passed to select(iOS)
+				tv_usec -= 1000000;
+				tv_sec++;
+			}
+			// restore values for new select
+			tv.tv_sec = tv_sec;
+			tv.tv_usec = tv_usec;
+
+			TSK_DEBUG_INFO("ICE reflexive candidates gathering ...srv_addr=%s,srv_port=%u,tv_sec=%lu,tv_usec=%lu,rto=%d", ice_server->str_server_addr, ice_server->u_server_port, tv_sec, tv_usec, ice_server->rto);
 
 			FD_ZERO(&set);
 			for (k = 0; k < fds_count; ++k) {
@@ -1287,8 +1297,8 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 			}
 			else if (ret == 0) {
 				// timeout
-				TSK_DEBUG_INFO("STUN request timedout at %d/%d", i, rc - 1);
-				rto <<= 1;
+				TSK_DEBUG_INFO("STUN request timedout at %d, rc = %d, rto=%d", i, rc - 1, ice_server->rto);
+				ice_server->rto <<= 1;
 				continue;
 			}
 			else if (ret > 0) {
