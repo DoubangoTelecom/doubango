@@ -329,6 +329,12 @@ const char* tnet_ice_candidate_tostring(tnet_ice_candidate_t* self)
 	}
 	}
 
+	// To ease debugging
+	if (self->socket) {
+		tsk_strcat_2(&self->tostring, " tr %s", _tnet_ice_candidate_get_transport_str(self->socket->type));
+		tsk_strcat_2(&self->tostring, " fd %d", self->socket->fd);
+	}
+
 	// WebRTC (Chrome) specific
 	if (self->is_ice_jingle){
 		if (!tsk_params_have_param(self->extension_att_list, "name")){
