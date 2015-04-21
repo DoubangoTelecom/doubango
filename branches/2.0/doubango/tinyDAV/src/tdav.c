@@ -72,8 +72,12 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #include "tinydav/codecs/t140/tdav_codec_t140.h"
 #include "tinydav/codecs/fec/tdav_codec_ulpfec.h"
 #include "tinydav/codecs/fec/tdav_codec_red.h"
+#if !defined(HAVE_TINYMSRP) || HAVE_TINYMSRP
 #include "tinydav/codecs/msrp/tdav_codec_msrp.h"
+#endif
+#if !defined(HAVE_TINYBFCP) || HAVE_TINYBFCP
 #include "tinydav/codecs/bfcp/tdav_codec_bfcp.h"
+#endif
 #include "tinydav/codecs/amr/tdav_codec_amr.h"
 #include "tinydav/codecs/bv/tdav_codec_bv16.h"
 #include "tinydav/codecs/g711/tdav_codec_g711.h"
@@ -275,10 +279,13 @@ int tdav_init()
 #if HAVE_FFMPEG
 	avcodec_register_all();
 #endif
-	
+#if !defined(HAVE_TINYMSRP) || HAVE_TINYMSRP
 	tmedia_codec_plugin_register(tdav_codec_msrp_plugin_def_t);
+#endif
 	tmedia_codec_plugin_register(tdav_codec_t140_plugin_def_t);
+#if !defined(HAVE_TINYBFCP) || HAVE_TINYBFCP
 	tmedia_codec_plugin_register(tdav_codec_bfcp_plugin_def_t);
+#endif
 	tmedia_codec_plugin_register(tdav_codec_red_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
