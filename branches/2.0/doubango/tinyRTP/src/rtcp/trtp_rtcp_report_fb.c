@@ -54,8 +54,8 @@ static int _trtp_rtcp_report_fb_deserialize(const void* data, tsk_size_t _size, 
 		return -5;
 	}
 
-	*ssrc_sender = tnet_ntohl_2(&pdata[4]);
-	*ssrc_media_src = tnet_ntohl_2(&pdata[8]);
+	*ssrc_sender = (uint32_t)tnet_ntohl_2(&pdata[4]);
+	*ssrc_media_src = (uint32_t)tnet_ntohl_2(&pdata[8]);
 	return 0;
 }
 
@@ -230,8 +230,8 @@ trtp_rtcp_report_rtpfb_t* trtp_rtcp_report_rtpfb_deserialize(const void* data, t
 							rtpfb->tmmbn.MxTBR_Mantissa = tsk_realloc(rtpfb->tmmbn.MxTBR_Mantissa, (rtpfb->tmmbn.count * sizeof(uint32_t)));
 							rtpfb->tmmbn.MeasuredOverhead = tsk_realloc(rtpfb->tmmbn.MeasuredOverhead, (rtpfb->tmmbn.count * sizeof(uint16_t)));
 							for(i = 0; i < rtpfb->tmmbn.count; ++i){
-								if(rtpfb->tmmbn.ssrc) rtpfb->tmmbn.ssrc[i] = tnet_ntohl_2(&pdata[0]);
-								u32 = tnet_ntohl_2(&pdata[4]);
+								if(rtpfb->tmmbn.ssrc) rtpfb->tmmbn.ssrc[i] = (uint32_t)tnet_ntohl_2(&pdata[0]);
+								u32 = (uint32_t)tnet_ntohl_2(&pdata[4]);
 								if(rtpfb->tmmbn.MxTBR_Exp) rtpfb->tmmbn.MxTBR_Exp[i] = (u32 >> 26);
 								if(rtpfb->tmmbn.MxTBR_Mantissa) rtpfb->tmmbn.MxTBR_Mantissa[i] = ((u32 >> 9) & 0x1FFFF);
 								if(rtpfb->tmmbn.MeasuredOverhead) rtpfb->tmmbn.MeasuredOverhead[i] = (u32 & 0x1FF);
@@ -479,7 +479,7 @@ trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_deserialize(const void* data, tsk
 						psfb->sli.number = tsk_realloc(psfb->sli.number, (sli_count * sizeof(uint16_t)));
 						psfb->sli.pic_id = tsk_realloc(psfb->sli.pic_id, (sli_count * sizeof(uint16_t)));
 						for(i = 0; i < sli_count; ++i){
-							u32 = tnet_ntohl_2(&pdata[i >> 2]);
+							u32 = (uint32_t)tnet_ntohl_2(&pdata[i >> 2]);
 							if(psfb->sli.first) psfb->sli.first[i] = (u32 >> 19);
 							if(psfb->sli.number) psfb->sli.number[i] = (u32 >> 6) & 0x1FFF;
 							if(psfb->sli.pic_id) psfb->sli.pic_id[i] = u32 & 0x3F;
@@ -513,7 +513,7 @@ trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_deserialize(const void* data, tsk
 						psfb->fir.ssrc = tsk_realloc(psfb->fir.seq_num, (fir_count * sizeof(uint32_t)));
 						psfb->fir.seq_num = tsk_realloc(psfb->fir.seq_num, (fir_count * sizeof(uint8_t)));
 						for(i = 0; i < fir_count; ++i){
-							if(psfb->fir.ssrc) psfb->fir.ssrc[i] = tnet_ntohl_2(&pdata[0]);
+							if(psfb->fir.ssrc) psfb->fir.ssrc[i] = (uint32_t)tnet_ntohl_2(&pdata[0]);
 							if(psfb->fir.seq_num) psfb->fir.seq_num[i] = pdata[4];
 							pdata+=8;
 						}
@@ -531,7 +531,7 @@ trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_deserialize(const void* data, tsk
 									goto bail;
 								}
 								psfb->afb.type = trtp_rtcp_psfb_afb_type_remb;
-								_u32 = tnet_ntohl_2(&pdata[4]);
+								_u32 = (uint32_t)tnet_ntohl_2(&pdata[4]);
 								psfb->afb.remb.num_ssrc = ((_u32 >> 24) & 0xFF);
 								if((psfb->afb.remb.num_ssrc << 2) != (size - 8)){
 									TSK_DEBUG_ERROR("Invalid size");
@@ -542,7 +542,7 @@ trtp_rtcp_report_psfb_t* trtp_rtcp_report_psfb_deserialize(const void* data, tsk
 								psfb->afb.remb.mantissa = (_u32 & 0x3FFFF);
 								if((psfb->afb.remb.ssrc_feedbacks = tsk_malloc(psfb->afb.remb.num_ssrc << 2))){
 									for(_u32 = 0; _u32 < psfb->afb.remb.num_ssrc; ++_u32){
-										psfb->afb.remb.ssrc_feedbacks[_u32] = tnet_ntohl_2(&pdata[8 + (_u32 << 2)]);
+										psfb->afb.remb.ssrc_feedbacks[_u32] = (uint32_t)tnet_ntohl_2(&pdata[8 + (_u32 << 2)]);
 									}
 								}
 							}

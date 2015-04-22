@@ -1928,7 +1928,7 @@ static int _tnet_turn_session_transport_layer_process_cb(const tnet_transport_ev
 	tsk_buffer_t* p_stream_buff = tsk_null;
 	const void* pc_data = tsk_null;
 	tsk_size_t u_data_size = 0;
-	tsk_bool_t b_stream, b_stream_appended, b_pkt_is_complete, b_got_msg;
+	tsk_bool_t b_stream = tsk_false, b_stream_appended = tsk_false, b_pkt_is_complete, b_got_msg;
 	tnet_turn_peer_t* pc_peer = tsk_null;
 	switch(e->type){
 		case event_data:

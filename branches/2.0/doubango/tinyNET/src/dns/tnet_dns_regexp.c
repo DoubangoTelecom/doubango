@@ -249,7 +249,7 @@ _match:
 /* #line 51 "./ragel/tnet_dns_regexp.rl" */
 	{
 		if (prefix) {
-			int prefixlen = (tsk_size_t)tsk_strlen(prefix);
+			int prefixlen = (int)tsk_strlen(prefix);
 			tsk_strncat(&ret, e164num + prefixlen, (e164len - prefixlen));
 		}
 	}

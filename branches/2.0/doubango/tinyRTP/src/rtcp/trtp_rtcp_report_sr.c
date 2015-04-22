@@ -106,16 +106,16 @@ trtp_rtcp_report_sr_t* trtp_rtcp_report_sr_deserialize(const void* data, tsk_siz
 		goto bail;
 	}
 
-	sr->ssrc = tnet_ntohl_2(&pdata[4]);
+	sr->ssrc = (uint32_t)tnet_ntohl_2(&pdata[4]);
 	pdata += (TRTP_RTCP_HEADER_SIZE + 4);
 	size -= (TRTP_RTCP_HEADER_SIZE + 4);
 
 	// sender info
-	sr->sender_info.ntp_msw = tnet_ntohl_2(&pdata[0]);
-	sr->sender_info.ntp_lsw = tnet_ntohl_2(&pdata[4]);
-	sr->sender_info.rtp_timestamp = tnet_ntohl_2(&pdata[8]);
-	sr->sender_info.sender_pcount = tnet_ntohl_2(&pdata[12]);
-	sr->sender_info.sender_ocount = tnet_ntohl_2(&pdata[16]);
+	sr->sender_info.ntp_msw = (uint32_t)tnet_ntohl_2(&pdata[0]);
+	sr->sender_info.ntp_lsw = (uint32_t)tnet_ntohl_2(&pdata[4]);
+	sr->sender_info.rtp_timestamp = (uint32_t)tnet_ntohl_2(&pdata[8]);
+	sr->sender_info.sender_pcount = (uint32_t)tnet_ntohl_2(&pdata[12]);
+	sr->sender_info.sender_ocount = (uint32_t)tnet_ntohl_2(&pdata[16]);
 	pdata += 20;
 	size -= 20;
 

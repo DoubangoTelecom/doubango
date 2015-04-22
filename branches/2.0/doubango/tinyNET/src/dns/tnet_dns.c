@@ -883,7 +883,7 @@ static tsk_object_t* tnet_dns_cache_entry_ctor(tsk_object_t * self, va_list * ap
 	tnet_dns_cache_entry_t *entry = self;
 	if (entry){
 		entry->qname = tsk_strdup(va_arg(*app, const char*));
-		entry->qclass = va_arg(*app, tnet_dns_qtype_t);
+		entry->qclass = va_arg(*app, tnet_dns_qclass_t);
 		entry->qtype = va_arg(*app, tnet_dns_qtype_t);
 		entry->response = tsk_object_ref(va_arg(*app, tnet_dns_response_t*));
 

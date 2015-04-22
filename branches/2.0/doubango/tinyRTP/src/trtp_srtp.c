@@ -238,6 +238,7 @@ int trtp_srtp_set_crypto(struct trtp_manager_s* rtp_mgr, const char* crypto_line
 				}
 				break;
 			}
+        default: break;
 	}
 
 	key_bin = (unsigned char*)srtp_ctx->rtp.key_bin;

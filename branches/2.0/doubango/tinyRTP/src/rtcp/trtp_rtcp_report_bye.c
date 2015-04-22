@@ -135,7 +135,7 @@ trtp_rtcp_report_bye_t* trtp_rtcp_report_bye_deserialize(const void* data, tsk_s
 			goto bail;
 		}
 		for(i = 0; i < header->rc; ++i){
-			bye->ssrc_list[i] = tnet_ntohl_2(&pdata[0]);
+			bye->ssrc_list[i] = (uint32_t)tnet_ntohl_2(&pdata[0]);
 			pdata += sizeof(uint32_t);
 			size -= sizeof(uint32_t);
 		}

@@ -1272,7 +1272,11 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 			}
 			// restore values for new select
 			tv.tv_sec = tv_sec;
+#if TNET_UNDER_APPLE
+            tv.tv_usec = (__darwin_suseconds_t)tv_usec;
+#else
 			tv.tv_usec = tv_usec;
+#endif
 
 			TSK_DEBUG_INFO("ICE reflexive candidates gathering ...srv_addr=%s,srv_port=%u,tv_sec=%lu,tv_usec=%lu,rto=%d", ice_server->str_server_addr, ice_server->u_server_port, tv_sec, tv_usec, ice_server->rto);
 
@@ -1370,7 +1374,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 												candidate_curr->stun.srflx_addr,
 												candidate_curr->stun.srflx_port,
 												fd,
-												j, already_skipped ? "yes" : "no");
+												(unsigned)j, already_skipped ? "yes" : "no");
 										}
 										else {
 											char* foundation = tsk_strdup(TNET_ICE_CANDIDATE_TYPE_SRFLX);
@@ -1401,7 +1405,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
 	} // for (i = 0; (i < rc....
 
 bail:
-	TSK_DEBUG_INFO("srflx_addr_count_added=%u, srflx_addr_count_skipped=%u", srflx_addr_count_added, srflx_addr_count_skipped);
+	TSK_DEBUG_INFO("srflx_addr_count_added=%u, srflx_addr_count_skipped=%u", (unsigned)srflx_addr_count_added, (unsigned)srflx_addr_count_skipped);
 	if ((srflx_addr_count_added + srflx_addr_count_skipped) > 0) ret = 0; // Hack the returned value if we have at least one success (happens when timeouts)
 	if (self->is_started) {
 		if (ret == 0) {
@@ -2558,7 +2562,6 @@ exit:
 
 static int _tnet_ice_ctx_servers_clear(struct tnet_ice_ctx_s* self)
 {
-	int ret = -1;
 	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;

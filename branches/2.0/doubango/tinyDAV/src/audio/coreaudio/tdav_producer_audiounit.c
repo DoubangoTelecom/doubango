@@ -67,7 +67,7 @@ static OSStatus __handle_input_buffer(void *inRefCon,
 		speex_buffer_write(producer->ring.buffer, buffers.mBuffers[0].mData, buffers.mBuffers[0].mDataByteSize);
         int avail = speex_buffer_get_available(producer->ring.buffer);
         while (producer->started && avail >= producer->ring.chunck.size) {
-            avail -= speex_buffer_read(producer->ring.buffer, producer->ring.chunck.buffer, producer->ring.chunck.size);
+            avail -= speex_buffer_read(producer->ring.buffer, (int)producer->ring.chunck.buffer, (int)producer->ring.chunck.size);
             TMEDIA_PRODUCER(producer)->enc_cb.callback(TMEDIA_PRODUCER(producer)->enc_cb.callback_data,
                                                        producer->ring.chunck.buffer, producer->ring.chunck.size);
         }
@@ -255,17 +255,17 @@ static int tdav_producer_audiounit_prepare(tmedia_producer_t* self, const tmedia
 				// create ringbuffer
 				producer->ring.size = kRingPacketCount * producer->ring.chunck.size;
 				if(!producer->ring.buffer){
-					producer->ring.buffer = speex_buffer_init(producer->ring.size);
+					producer->ring.buffer = speex_buffer_init((int)producer->ring.size);
 				}
 				else {
 					int ret;
 					if((ret = speex_buffer_resize(producer->ring.buffer, producer->ring.size)) < 0){
-						TSK_DEBUG_ERROR("speex_buffer_resize(%d) failed with error code=%d", producer->ring.size, ret);
+						TSK_DEBUG_ERROR("speex_buffer_resize(%d) failed with error code=%d", (int)producer->ring.size, ret);
 						return ret;
 					}
 				}
 				if(!producer->ring.buffer){
-					TSK_DEBUG_ERROR("Failed to create a new ring buffer with size = %d", producer->ring.size);
+					TSK_DEBUG_ERROR("Failed to create a new ring buffer with size = %d", (int)producer->ring.size);
 					return -9;
 				}
 			}

@@ -225,7 +225,7 @@ static int tdav_session_video_raw_cb(const tmedia_video_encode_result_xt* result
 			s = trtp_manager_send_rtp_packet(base->rtp_manager, packet, tsk_false); // encrypt and send data
 			++base->rtp_manager->rtp.seq_num; // seq_num must be incremented here (before the bail) because already used by SRTP context
 			if(s < TRTP_RTP_HEADER_MIN_SIZE) { 
-				TSK_DEBUG_ERROR("Failed to send packet with seqnum=%u. %u expected but only %u sent", packet->header->seq_num, packet->payload.size, s);
+				TSK_DEBUG_ERROR("Failed to send packet with seqnum=%u. %u expected but only %u sent", (unsigned)packet->header->seq_num, (unsigned)packet->payload.size, (unsigned)s);
 				goto bail;
 			}
 			rtp_hdr_size = TRTP_RTP_HEADER_MIN_SIZE + (packet->header->csrc_count << 2);
@@ -409,7 +409,7 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 				video->conv.producerHeight = base->producer->video.height;
 				video->conv.xProducerSize = size;
 				
-				TSK_DEBUG_INFO("producer size = (%d, %d)", base->producer->video.width, base->producer->video.height);
+				TSK_DEBUG_INFO("producer size = (%d, %d)", (int)base->producer->video.width, (int)base->producer->video.height);
 				if(!(video->conv.toYUV420 = tmedia_converter_video_create(base->producer->video.width, base->producer->video.height, base->producer->video.chroma, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.width, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.height,
 					TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.chroma))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
@@ -652,8 +652,8 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
 												((const trtp_rtp_packet_t*)TSK_LIST_FIRST_DATA(video->avpf.packets))->header->seq_num,
 												((const trtp_rtp_packet_t*)TSK_LIST_LAST_DATA(video->avpf.packets))->header->seq_num,
 												pid, 
-												video->avpf.max,
-												video->avpf.count);
+												(int)video->avpf.max,
+												(int)video->avpf.count);
 												// FIR not really requested but needed
 												/*_tdav_session_video_remote_requested_idr(video, ((const trtp_rtcp_report_fb_t*)rtpfb)->ssrc_media);
 												tsk_list_clear_items(video->avpf.packets);

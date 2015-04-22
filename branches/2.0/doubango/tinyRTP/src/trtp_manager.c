@@ -152,7 +152,7 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 					master_salt_length = (112 >> 3); // cipher_salt_length - rfc5764 4.1.2.  SRTP Protection Profiles
 #endif
 					if(((master_key_length + master_salt_length) << 1) > e->size){
-						TSK_DEBUG_ERROR("%d not a valid size for this profile", e->size);
+						TSK_DEBUG_ERROR("%d not a valid size for this profile", (int)e->size);
 					}
 					else{
 						int ret;
@@ -1300,7 +1300,7 @@ int trtp_manager_start(trtp_manager_t* self)
 		TSK_DEBUG_INFO("Start flushing RTP socket...");
 		// Buffer should be empty ...but who know?
 		// rcv() should never block() as we are always using non-blocking sockets
-		while ((ret = recv(self->transport->master->fd, buff, sizeof(buff), 0)) > 0 && ++guard_count < 0xF0){
+		while ((ret = (int)recv(self->transport->master->fd, buff, sizeof(buff), 0)) > 0 && ++guard_count < 0xF0){
 			TSK_DEBUG_INFO("Flushing RTP Buffer %d", ret);
 		}
 		TSK_DEBUG_INFO("End flushing RTP socket");
@@ -1506,7 +1506,7 @@ tsk_size_t trtp_manager_send_rtp_packet(trtp_manager_t* self, const struct trtp_
 	xsize = (trtp_rtp_packet_guess_serialbuff_size(packet) + rtp_buff_pad_count);
 	if(self->rtp.serial_buffer.size < xsize){
 		if(!(self->rtp.serial_buffer.ptr = tsk_realloc(self->rtp.serial_buffer.ptr, xsize))){
-			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %d", xsize);
+			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %d", (int)xsize);
 			self->rtp.serial_buffer.size = 0;
 			goto bail;
 		}

@@ -78,13 +78,13 @@ trtp_rtcp_rblock_t* trtp_rtcp_rblock_deserialize(const void* data, tsk_size_t si
 		return tsk_null;
 	}
 	if((rblock = trtp_rtcp_rblock_create_null())){
-		rblock->ssrc = tnet_ntohl_2(pdata);
+		rblock->ssrc = (uint32_t)tnet_ntohl_2(pdata);
 		rblock->fraction = pdata[4];
 		rblock->cumulative_no_lost = (tnet_ntohl_2(&pdata[5]) >> 8) & 0xFFFFFF;
-		rblock->last_seq = tnet_ntohl_2(&pdata[8]);
-		rblock->jitter = tnet_ntohl_2(&pdata[12]);
-		rblock->lsr = tnet_ntohl_2(&pdata[16]);
-		rblock->dlsr = tnet_ntohl_2(&pdata[20]);
+		rblock->last_seq = (uint32_t)tnet_ntohl_2(&pdata[8]);
+		rblock->jitter = (uint32_t)tnet_ntohl_2(&pdata[12]);
+		rblock->lsr = (uint32_t)tnet_ntohl_2(&pdata[16]);
+		rblock->dlsr = (uint32_t)tnet_ntohl_2(&pdata[20]);
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create report block object");

@@ -185,7 +185,6 @@ bail:
 
 static int recvData(tnet_transport_t *transport, transport_socket_xt* active_socket)
 {
-	transport_context_t *context;
 	int ret;
 	if(!transport || !transport->context || !active_socket){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -194,7 +193,6 @@ static int recvData(tnet_transport_t *transport, transport_socket_xt* active_soc
     
     void* buffer = tsk_null;
     tsk_size_t len = 0;
-    int isEncrypted = 0;
     struct sockaddr_storage remote_addr = {0};
 	
 	/* check whether the socket is paused or not */
@@ -224,7 +222,8 @@ static int recvData(tnet_transport_t *transport, transport_socket_xt* active_soc
         
         if(is_stream && CFReadStreamHasBytesAvailable(active_socket->cf_read_stream)){
             if((buffer = tsk_calloc(TNET_BUFFER_STREAM_MIN_SIZE, sizeof(uint8_t)))){
-                ret = len = CFReadStreamRead(active_socket->cf_read_stream, buffer, (CFIndex)TNET_BUFFER_STREAM_MIN_SIZE);
+                len = CFReadStreamRead(active_socket->cf_read_stream, buffer, (CFIndex)TNET_BUFFER_STREAM_MIN_SIZE);
+                ret = (int)len;
             }
         }
         
@@ -244,7 +243,7 @@ static int recvData(tnet_transport_t *transport, transport_socket_xt* active_soc
         if(is_stream){
 			ret = tnet_getpeername(active_socket->fd, &remote_addr);
             if(active_socket->cf_read_stream){
-                ret = CFReadStreamRead(active_socket->cf_read_stream, buffer, (CFIndex)len);
+                ret = (int)CFReadStreamRead(active_socket->cf_read_stream, buffer, (CFIndex)len);
             }
             else {
                 ret = tnet_sockfd_recv(active_socket->fd, buffer, len, 0);
@@ -339,7 +338,6 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
-	int ret = -1;
 	tsk_size_t i;
 	tsk_bool_t found = tsk_false;
 	
@@ -357,7 +355,7 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 	
 	for(i=0; i<context->count; ++i) {
 		if (context->sockets[i]->fd == *fd) {
-			removeSocketAtIndex(i, context);
+			removeSocketAtIndex((int)i, context);
 			found = tsk_true;
 			*fd = TNET_INVALID_FD;
 			break;
@@ -392,7 +390,7 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
         // on iOS when TLS is enabled sending more than 1024 bytes could fails
         static const int max_size_to_send = 1024;
         
-        to_send = TSK_MIN(max_size_to_send, size);
+        to_send = (int)TSK_MIN(max_size_to_send, size);
         
         if (CFWriteStreamGetStatus(sock->cf_write_stream) == kCFStreamStatusNotOpen) {
             if(!CFWriteStreamOpen(sock->cf_write_stream)){
@@ -408,7 +406,7 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
         }
         while (to_send > 0 && (sent = (int)CFWriteStreamWrite(sock->cf_write_stream, &buff_ptr[numberOfBytesSent], (CFIndex) to_send)) > 0) {
             numberOfBytesSent += sent;
-            to_send = TSK_MIN(max_size_to_send, (size - numberOfBytesSent));
+            to_send = (int)TSK_MIN(max_size_to_send, (size - numberOfBytesSent));
         }
         if(sent < 0){
             TNET_PRINT_LAST_ERROR("Send have failed");
@@ -440,7 +438,7 @@ tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_
 		goto bail;
 	}
 	
-    if ((numberOfBytesSent = sendto(from, buf, size, 0, to, tnet_get_sockaddr_size(to))) < size) {
+    if ((numberOfBytesSent = (int)sendto(from, buf, size, 0, to, tnet_get_sockaddr_size(to))) < size) {
 		TNET_PRINT_LAST_ERROR("sendto have failed");
 		goto bail;
 	}
@@ -464,7 +462,6 @@ int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t 
 const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transport_handle_t *handle, tnet_fd_t fd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
-	const transport_socket_xt *socket;
 	
 	if(!transport){
 		TSK_DEBUG_ERROR("Invalid parameter");
