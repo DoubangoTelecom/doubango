@@ -144,7 +144,7 @@ static int _tnet_stun_attr_write(const tnet_stun_transac_id_t* pc_transac_id, co
 		return ret;
 	}
 	if (n_min_req_size > n_buff_size) {
-		TSK_DEBUG_ERROR("Buffer too short %u<%u", n_buff_size, n_min_req_size);
+		TSK_DEBUG_ERROR("Buffer too short %u<%u", (unsigned)n_buff_size, (unsigned)n_min_req_size);
 		return -2;
 	}
 
@@ -309,14 +309,14 @@ int tnet_stun_attr_read(const tnet_stun_transac_id_t* pc_transac_id, const uint8
 		return -1;
 	}
 	if (n_buff_size < kStunAttrHdrSizeInOctets) {
-		TSK_DEBUG_ERROR("Buffer too short(%u)", n_buff_size);
+		TSK_DEBUG_ERROR("Buffer too short(%u)", (unsigned)n_buff_size);
 		return -2;
 	}
 
 	Type = tnet_ntohs_2(&pc_buff_ptr[0]);
 	Length = tnet_ntohs_2(&pc_buff_ptr[2]);
 	if (Length > n_buff_size) {
-		TSK_DEBUG_ERROR("Buffer too short(%u). Length=%u", n_buff_size, Length);
+		TSK_DEBUG_ERROR("Buffer too short(%u). Length=%u", (unsigned)n_buff_size, (unsigned)Length);
 		return -3;
 	}
 

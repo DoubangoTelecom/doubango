@@ -134,7 +134,7 @@ static inline enum FourCC _tdav_converter_video_libyuv_get_pixfmt(tmedia_chroma_
 
 static int tdav_converter_video_libyuv_init(tmedia_converter_video_t* self, tsk_size_t srcWidth, tsk_size_t srcHeight, tmedia_chroma_t srcChroma, tsk_size_t dstWidth, tsk_size_t dstHeight, tmedia_chroma_t dstChroma)
 {
-	TSK_DEBUG_INFO("Initializing new LibYUV Video Converter src=(%dx%d@%d) dst=(%dx%d@%d)", srcWidth, srcHeight, srcChroma, dstWidth, dstHeight, dstChroma);
+	TSK_DEBUG_INFO("Initializing new LibYUV Video Converter src=(%dx%d@%d) dst=(%dx%d@%d)", (int)srcWidth, (int)srcHeight, (int)srcChroma, (int)dstWidth, (int)dstHeight, (int)dstChroma);
 
 	if ((TDAV_CONVERTER_VIDEO_LIBYUV(self)->srcFormat = _tdav_converter_video_libyuv_get_pixfmt(srcChroma)) == FOURCC_ANY){
 		TSK_DEBUG_ERROR("Invalid source chroma");
@@ -197,7 +197,7 @@ static tsk_size_t tdav_converter_video_libyuv_process(tmedia_converter_video_t* 
 		// check input size
 		x_in_size = _tdav_converter_video_libyuv_is_chroma_varsize(_self->srcChroma) ? buffer_size : _tdav_converter_video_libyuv_get_size(_self->srcChroma, src_w, src_h);
 		if (x_in_size > buffer_size) { // Ignore any extra data. For example, "CVPixelBufferGetDataSize()" will return size padded with 8 extra bytes for RGB32.
-			TSK_DEBUG_ERROR("Invalid input size: %u>%u", x_in_size, buffer_size);
+			TSK_DEBUG_ERROR("Invalid input size: %u>%u", (unsigned)x_in_size, (unsigned)buffer_size);
 			return 0;
 		}
 

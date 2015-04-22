@@ -113,7 +113,7 @@ trtp_rtcp_report_rr_t* trtp_rtcp_report_rr_deserialize(const void* data, tsk_siz
 		goto bail;
 	}
 
-	rr->ssrc = tnet_ntohl_2(&pdata[4]);
+	rr->ssrc = (uint32_t)tnet_ntohl_2(&pdata[4]);
 
 	pdata += (TRTP_RTCP_HEADER_SIZE + 4);
 	size -= (TRTP_RTCP_HEADER_SIZE + 4);

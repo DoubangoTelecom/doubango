@@ -262,7 +262,7 @@ tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, tsk_size_t size, tsk_si
 	qclass = (tnet_dns_qclass_t)tnet_ntohs_2(dataPtr);
 	dataPtr += 2, *offset += 2;
 	/* == Parse TTL == */
-	ttl = tnet_htonl_2(dataPtr);
+	ttl = (uint32_t)tnet_htonl_2(dataPtr);
 	dataPtr += 4, *offset += 4;
 	/* == Parse RDLENGTH == */
 	rdlength = tnet_ntohs_2(dataPtr);
@@ -377,7 +377,7 @@ int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output)
 
 	/*=== TTL ===*/
 	{
-		uint32_t ttl = tnet_htonl(rr->ttl);
+		uint32_t ttl = (uint32_t)tnet_htonl(rr->ttl);
 		tsk_buffer_append(output, &(ttl), 4);
 	}
 

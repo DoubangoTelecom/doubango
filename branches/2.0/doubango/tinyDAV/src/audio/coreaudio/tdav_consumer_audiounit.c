@@ -88,7 +88,7 @@ static tsk_size_t tdav_consumer_audiounit_get(tdav_consumer_audiounit_t* self, v
 	// IMPORTANT: looks like there is a bug in speex: continously trying to read more than avail
 	// many times can corrupt the buffer. At least on OS X 1.5
 	if(speex_buffer_get_available(self->ring.buffer) >= size){
-		retSize = speex_buffer_read(self->ring.buffer, data, size);
+		retSize = (tsk_ssize_t)speex_buffer_read(self->ring.buffer, data, (int)size);
 	}
 	else{
 		memset(data, 0, size);
@@ -243,17 +243,17 @@ static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia
 		return -7;
 	}
 	if(!consumer->ring.buffer){
-		consumer->ring.buffer = speex_buffer_init(consumer->ring.size);
+		consumer->ring.buffer = speex_buffer_init((int)consumer->ring.size);
 	}
 	else {
 		int ret;
-		if((ret = speex_buffer_resize(consumer->ring.buffer, consumer->ring.size)) < 0){
-			TSK_DEBUG_ERROR("speex_buffer_resize(%d) failed with error code=%d", consumer->ring.size, ret);
+		if((ret = (int)speex_buffer_resize(consumer->ring.buffer, (int)consumer->ring.size)) < 0){
+			TSK_DEBUG_ERROR("speex_buffer_resize(%d) failed with error code=%d", (int)consumer->ring.size, ret);
 			return ret;
 		}
 	}
 	if(!consumer->ring.buffer){
-		TSK_DEBUG_ERROR("Failed to create a new ring buffer with size = %d", consumer->ring.size);
+		TSK_DEBUG_ERROR("Failed to create a new ring buffer with size = %d", (int)consumer->ring.size);
 		return -8;
 	}
 	if(!consumer->ring.mutex && !(consumer->ring.mutex = tsk_mutex_create_2(tsk_false))){

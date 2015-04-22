@@ -237,7 +237,7 @@ stop:
 		id_curr_thread = tsk_thread_get_id();
 		if (tsk_thread_id_equals(&self->id_thread, &id_curr_thread)) {
 			tsk_runnable_t* copy = tsk_object_ref(TSK_OBJECT(self)); // "copy" will be null if this function is called in the "dtor()" because "refCount" is already equal to "zero".
-			TSK_DEBUG_INFO("tsk_thread_join(%s) called inside the thread(%lu) itself...delaying", copy ? "NOT null" : "null", id_curr_thread);			
+			TSK_DEBUG_INFO("tsk_thread_join(%s) called inside the thread(%lu) itself...delaying", copy ? "NOT null" : "null", (unsigned long)id_curr_thread);
 			if (!copy || self->h_thread[1]) {
 				if (self->h_thread[1]) { // must never happen
 					TSK_DEBUG_ERROR("Join already delayed");

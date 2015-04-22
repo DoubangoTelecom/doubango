@@ -517,7 +517,7 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 		socket->handshake_started = (ret == SSL_ERROR_NONE); // TODO: reset for renegotiation
 	}
 
-	if ((len = BIO_get_mem_data(socket->wbio, &out_data)) > 0 && out_data) {
+	if ((len = (int)BIO_get_mem_data(socket->wbio, &out_data)) > 0 && out_data) {
 		if (socket->handshake_storedata) {
 			if ((int)socket->handshake_data.size < len) {
 				if (!(socket->handshake_data.ptr = tsk_realloc(socket->handshake_data.ptr, len))) {
@@ -535,7 +535,7 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 			tnet_port_t port;
 			tnet_ip_t ip;
 			tnet_get_sockip_n_port((const struct sockaddr *)&socket->remote.addr, &ip, &port);
-			TSK_DEBUG_INFO("DTLS data handshake to send with len = %d, ip = %.*s and port = %d", len, sizeof(ip), ip, port);
+			TSK_DEBUG_INFO("DTLS data handshake to send with len = %d, ip = %.*s and port = %d", len, (int)sizeof(ip), ip, port);
 			if (TNET_SOCKET_TYPE_IS_DGRAM(socket->wrapped_sock->type)) { // UDP
 				len = tnet_sockfd_sendto(socket->wrapped_sock->fd, (const struct sockaddr *)&socket->remote.addr, out_data, len);
 			}
@@ -628,7 +628,7 @@ int tnet_dtls_socket_handle_incoming_data(tnet_dtls_socket_handle_t* handle, con
 
 	tsk_safeobj_lock(socket);
 
-	TSK_DEBUG_INFO("Receive DTLS data: %u", size);
+	TSK_DEBUG_INFO("Receive DTLS data: %lu", (unsigned long)size);
 
 	// BIO_reset(socket->rbio);
 	// BIO_reset(socket->wbio);
@@ -645,7 +645,7 @@ int tnet_dtls_socket_handle_incoming_data(tnet_dtls_socket_handle_t* handle, con
 
 	if ((ret = BIO_write(socket->rbio, data, (int)size)) != size) {
 		ret = SSL_get_error(socket->ssl, ret);
-		TSK_DEBUG_ERROR("BIO_write(rbio, %u) failed [%s]", size, ERR_error_string(ERR_get_error(), tsk_null));
+		TSK_DEBUG_ERROR("BIO_write(rbio, %lu) failed [%s]", (unsigned long)size, ERR_error_string(ERR_get_error(), tsk_null));
 		ret = -1;
 		goto bail;
 	}

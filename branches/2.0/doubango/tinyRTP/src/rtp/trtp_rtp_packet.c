@@ -125,7 +125,7 @@ tsk_buffer_t* trtp_rtp_packet_serialize(const trtp_rtp_packet_t *self, tsk_size_
 	if(size & 0x03) size += (4 - (size & 0x03));
 	
 	if(!(buffer = tsk_buffer_create(tsk_null, size))){
-		TSK_DEBUG_ERROR("Failed to create buffer with size = %u", size);
+		TSK_DEBUG_ERROR("Failed to create buffer with size = %u", (unsigned)size);
 		return tsk_null;
 	}
 	// shorten the buffer to hide the padding

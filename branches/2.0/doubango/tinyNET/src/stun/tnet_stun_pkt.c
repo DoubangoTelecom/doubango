@@ -292,7 +292,7 @@ int tnet_stun_pkt_write_with_padding(const tnet_stun_pkt_t* pc_self, uint8_t* p_
 		return ret;
 	}
 	if ((n_buff_size < *p_written)) {
-		TSK_DEBUG_ERROR("Buffer too short: %u<%u", n_buff_size, *p_written);
+		TSK_DEBUG_ERROR("Buffer too short: %u<%u", (unsigned)n_buff_size, (unsigned)*p_written);
 		return -1;
 	}
 
@@ -467,7 +467,7 @@ int tnet_stun_pkt_read(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size, tnet_
 		return ret;
 	}
 	if (!b_is_complete) {
-		TSK_DEBUG_ERROR("Buffer too short(%u)", n_buff_size);
+		TSK_DEBUG_ERROR("Buffer too short(%u)", (unsigned)n_buff_size);
 		return -3;
 	}
 

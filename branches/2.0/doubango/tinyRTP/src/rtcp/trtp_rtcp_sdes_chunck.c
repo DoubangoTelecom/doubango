@@ -99,7 +99,7 @@ trtp_rtcp_sdes_chunck_t* trtp_rtcp_sdes_chunck_deserialize(const void* data, tsk
 		trtp_rtcp_sdes_item_t* item;
 		tsk_bool_t is_last_item = tsk_false;
 		// SSRC/CSRC
-		chunck->ssrc = tnet_ntohl_2(pdata);
+		chunck->ssrc = (uint32_t)tnet_ntohl_2(pdata);
 		pdata += TRTP_RTCP_SDES_CHUNCK_SSRC_OR_CSRC_SIZE;
 		while((pdata < pend) && !is_last_item){
 			if((item = trtp_rtcp_sdes_item_deserialize(pdata, (pend-pdata)))){

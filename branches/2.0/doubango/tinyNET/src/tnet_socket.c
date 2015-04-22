@@ -244,7 +244,7 @@ int tnet_socket_send_stream(tnet_socket_t* self, const void* data, tsk_size_t si
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	if (self->tlshandle && TNET_SOCKET_TYPE_IS_TLS(self->type) || TNET_SOCKET_TYPE_IS_WSS(self->type)) {
+	if (self->tlshandle && (TNET_SOCKET_TYPE_IS_TLS(self->type) || TNET_SOCKET_TYPE_IS_WSS(self->type))) {
 		return tnet_tls_socket_send(self->tlshandle, data, size) == 0 ? (int)size : -1; // returns zero on success
 	}
 
