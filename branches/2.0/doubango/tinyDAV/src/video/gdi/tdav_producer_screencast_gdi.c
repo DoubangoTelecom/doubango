@@ -366,12 +366,17 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self
 #endif
 	
 	// resize
+#if 1 // using "StretchDIB"
 	ResizeRGB(&p_self->bitmapInfoSrc.bmiHeader,
 			(const unsigned char *) p_self->p_buff_src,
 			&p_self->bitmapInfoNeg.bmiHeader,
 			(unsigned char *) p_self->p_buff_neg,
 			p_self->bitmapInfoNeg.bmiHeader.biWidth,
 			p_self->bitmapInfoNeg.bmiHeader.biHeight);
+#else // using libyuv or ...
+	TMEDIA_PRODUCER(p_self)->video.width = p_self->bitmapInfoNeg.bmiHeader.biWidth;
+	TMEDIA_PRODUCER(p_self)->video.height = p_self->bitmapInfoNeg.bmiHeader.biHeight;
+#endif
 	
 	// preview
 	if (p_self->hwnd_preview) {
