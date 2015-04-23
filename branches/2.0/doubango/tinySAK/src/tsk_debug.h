@@ -109,9 +109,9 @@ TSK_BEGIN_DECLS
 #define TSK_DEBUG_INFO(FMT, ...)		\
 	if(tsk_debug_get_level() >= DEBUG_LEVEL_INFO){ \
 		if(tsk_debug_get_info_cb()) \
-			tsk_debug_get_info_cb()(tsk_debug_get_arg_data(), "*INFO: " FMT "\n", ##__VA_ARGS__); \
+			tsk_debug_get_info_cb()(tsk_debug_get_arg_data(), "*[DOUBANGO INFO]: " FMT "\n", ##__VA_ARGS__); \
 		else \
-			fprintf(stderr, "*INFO: " FMT "\n", ##__VA_ARGS__); \
+			fprintf(stderr, "*[DOUBANGO INFO]: " FMT "\n", ##__VA_ARGS__); \
 	}
 
 
@@ -119,18 +119,18 @@ TSK_BEGIN_DECLS
 #define TSK_DEBUG_WARN(FMT, ...)		\
 	if(tsk_debug_get_level() >= DEBUG_LEVEL_WARN){ \
 		if(tsk_debug_get_warn_cb()) \
-			tsk_debug_get_warn_cb()(tsk_debug_get_arg_data(), "**WARN: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__); \
+			tsk_debug_get_warn_cb()(tsk_debug_get_arg_data(), "**[DOUBANGO WARN]: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__); \
 		else \
-			fprintf(stderr, "**WARN: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__); \
+			fprintf(stderr, "**[DOUBANGO WARN]: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__); \
 	}
 
 	/* ERROR */
 #define TSK_DEBUG_ERROR(FMT, ...) 		\
 	if(tsk_debug_get_level() >= DEBUG_LEVEL_ERROR){ \
 		if(tsk_debug_get_error_cb()) \
-			tsk_debug_get_error_cb()(tsk_debug_get_arg_data(), "***ERROR: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__); \
+			tsk_debug_get_error_cb()(tsk_debug_get_arg_data(), "***[DOUBANGO ERROR]: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__); \
 		else \
-			fprintf(stderr, "***ERROR: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__); \
+			fprintf(stderr, "***[DOUBANGO ERROR]: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__); \
 	}
 
 
@@ -138,9 +138,9 @@ TSK_BEGIN_DECLS
 #define TSK_DEBUG_FATAL(FMT, ...) 		\
 	if(tsk_debug_get_level() >= DEBUG_LEVEL_FATAL){ \
 		if(tsk_debug_get_fatal_cb()) \
-			tsk_debug_get_fatal_cb()(tsk_debug_get_arg_data(), "****FATAL: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__); \
+			tsk_debug_get_fatal_cb()(tsk_debug_get_arg_data(), "****[DOUBANGO FATAL]: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__); \
 		else \
-			fprintf(stderr, "****FATAL: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__); \
+			fprintf(stderr, "****[DOUBANGO FATAL]: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__); \
 	}
 
 
