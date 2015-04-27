@@ -241,7 +241,7 @@ static tsk_size_t tdav_codec_vp8_encode(tmedia_codec_t* self, const void* in_dat
 {
 	tdav_codec_vp8_t* vp8 = (tdav_codec_vp8_t*)self;
 	vpx_enc_frame_flags_t flags = 0;
-	vpx_codec_err_t vpx_ret;
+	vpx_codec_err_t vpx_ret = VPX_CODEC_OK;
 	const vpx_codec_cx_pkt_t *pkt;
 	vpx_codec_iter_t iter = tsk_null;
 	vpx_image_t image;

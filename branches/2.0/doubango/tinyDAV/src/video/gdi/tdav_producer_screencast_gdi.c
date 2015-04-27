@@ -24,9 +24,11 @@
 #define RESIZER_DO_NOT_INCLUDE_HEADER
 #include "..\..\..\..\plugins\pluginDirectShow\internals\Resizer.cxx"
 
+#include "tsk_thread.h"
 #include "tsk_memory.h"
 #include "tsk_safeobj.h"
 #include "tsk_timer.h"
+#include "tsk_time.h"
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
@@ -40,6 +42,11 @@ static const BOOL bitmapBuffSrcOwnMemory = TRUE;
 #	define kMaxFrameRate 4 // FIXME
 #endif /* kMaxFrameRate */
 
+// https://social.msdn.microsoft.com/forums/windowsdesktop/en-us/2cbe4674-e744-41d6-bc61-3c8e381aa942/how-to-make-bitblt-faster-for-copying-screen
+#if !defined(HIGH_PRIO_BITBLIT)
+#	define HIGH_PRIO_BITBLIT	0
+#endif /* HIGH_PRIO_BITBLIT */
+
 typedef struct tdav_producer_screencast_gdi_s
 {
 	TMEDIA_DECLARE_PRODUCER;
@@ -47,12 +54,10 @@ typedef struct tdav_producer_screencast_gdi_s
 	HWND hwnd_preview;
 	HWND hwnd_src;
 
-	tsk_timer_manager_handle_t *p_timer_mgr;
-	tsk_timer_id_t id_timer_grab;
-	uint64_t u_timout_grab;
-
 	BITMAPINFO bitmapInfoSrc;
 	BITMAPINFO bitmapInfoNeg;
+
+	tsk_thread_handle_t* tid[1];
 
 	void* p_buff_src; // must use VirtualAlloc()
 	tsk_size_t n_buff_src;
@@ -69,7 +74,7 @@ typedef struct tdav_producer_screencast_gdi_s
 }
 tdav_producer_screencast_gdi_t;
 
-static int _tdav_producer_screencast_timer_cb(const void* arg, tsk_timer_id_t timer_id);
+static void* TSK_STDCALL _tdav_producer_screencast_record_thread(void *arg);
 static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self);
 
 
@@ -112,12 +117,6 @@ static int _tdav_producer_screencast_gdi_prepare(tmedia_producer_t* p_self, cons
 	}
 
 	tsk_safeobj_lock(p_gdi);
-
-	if (!p_gdi->p_timer_mgr && !(p_gdi->p_timer_mgr = tsk_timer_manager_create())) {
-		TSK_DEBUG_ERROR("Failed to create timer manager");
-		ret = -2;
-		goto bail;
-	}
 	
 #if METROPOLIS /*= G2J.COM */
 	TMEDIA_PRODUCER(p_gdi)->video.fps = TSK_MIN(TMEDIA_CODEC_VIDEO(pc_codec)->out.fps, kMaxFrameRate);
@@ -126,6 +125,8 @@ static int _tdav_producer_screencast_gdi_prepare(tmedia_producer_t* p_self, cons
 #endif
 	TMEDIA_PRODUCER(p_gdi)->video.width = TMEDIA_CODEC_VIDEO(pc_codec)->out.width;
 	TMEDIA_PRODUCER(p_gdi)->video.height = TMEDIA_CODEC_VIDEO(pc_codec)->out.height;
+
+	TSK_DEBUG_INFO("[GDI screencast] fps:%d, width:%d; height:%d", TMEDIA_PRODUCER(p_gdi)->video.fps, TMEDIA_PRODUCER(p_gdi)->video.width, TMEDIA_PRODUCER(p_gdi)->video.height);
 
 	p_gdi->bitmapInfoNeg.bmiHeader.biSize = p_gdi->bitmapInfoSrc.bmiHeader.biSize = (DWORD)sizeof(BITMAPINFOHEADER);
 	p_gdi->bitmapInfoNeg.bmiHeader.biWidth = p_gdi->bitmapInfoSrc.bmiHeader.biWidth = (LONG)TMEDIA_PRODUCER(p_gdi)->video.width;
@@ -162,8 +163,6 @@ static int _tdav_producer_screencast_gdi_prepare(tmedia_producer_t* p_self, cons
 		// Release the device context
 		DeleteDC(hDC);
 	}
-
-	p_gdi->u_timout_grab = (1000/TMEDIA_PRODUCER(p_gdi)->video.fps);
 	
 bail:
 	tsk_safeobj_unlock(p_gdi);
@@ -188,26 +187,19 @@ static int _tdav_producer_screencast_gdi_start(tmedia_producer_t* p_self)
 		TSK_DEBUG_INFO("GDI screencast producer already started");
 		goto bail;
 	}
-
-	if ((ret = tsk_timer_manager_start(p_gdi->p_timer_mgr))) {
-		goto bail;
-	}
 	
 	p_gdi->b_started = tsk_true;
-
-	p_gdi->id_timer_grab = tsk_timer_manager_schedule(p_gdi->p_timer_mgr, p_gdi->u_timout_grab, _tdav_producer_screencast_timer_cb, p_gdi);
-	if (!TSK_TIMER_ID_IS_VALID(p_gdi->id_timer_grab)) {
-		TSK_DEBUG_ERROR("Failed to schedule timer with timeout=%llu", p_gdi->u_timout_grab);
-		ret = -2;
-		goto bail;
+	
+	tsk_thread_create(&p_gdi->tid[0], _tdav_producer_screencast_record_thread, p_gdi);
+#if HIGH_PRIO_BITBLIT
+	if (p_gdi->tid[0]) {
+		tsk_thread_set_priority(p_gdi->tid[0], TSK_THREAD_PRIORITY_TIME_CRITICAL);
 	}
+#endif
 
 bail:
 	if (ret) {
 		p_gdi->b_started = tsk_false;
-		if (p_gdi->p_timer_mgr) {
-			tsk_timer_manager_start(p_gdi->p_timer_mgr);
-		}
 	}
 	tsk_safeobj_unlock(p_gdi);
 
@@ -250,12 +242,13 @@ static int _tdav_producer_screencast_gdi_stop(tmedia_producer_t* p_self)
 		goto bail;
 	}
 	
-	if (p_gdi->p_timer_mgr) {
-		tsk_timer_manager_stop(p_gdi->p_timer_mgr);
-	}
-	
 	p_gdi->b_started = tsk_false;
 	p_gdi->b_paused = tsk_false;
+
+	// stop thread
+	if (p_gdi->tid[0]) {
+		tsk_thread_join(&(p_gdi->tid[0]));
+	}
 
 bail:
 	tsk_safeobj_unlock(p_gdi);
@@ -276,7 +269,7 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self
 		return -1;
 	}
 
-	tsk_safeobj_lock(p_self);
+	//--tsk_safeobj_lock(p_self);
 
 	if (!p_self->b_started) {
 		TSK_DEBUG_ERROR("producer not started yet");
@@ -366,17 +359,12 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self
 #endif
 	
 	// resize
-#if 1 // using "StretchDIB"
 	ResizeRGB(&p_self->bitmapInfoSrc.bmiHeader,
 			(const unsigned char *) p_self->p_buff_src,
 			&p_self->bitmapInfoNeg.bmiHeader,
 			(unsigned char *) p_self->p_buff_neg,
 			p_self->bitmapInfoNeg.bmiHeader.biWidth,
 			p_self->bitmapInfoNeg.bmiHeader.biHeight);
-#else // using libyuv or ...
-	TMEDIA_PRODUCER(p_self)->video.width = p_self->bitmapInfoNeg.bmiHeader.biWidth;
-	TMEDIA_PRODUCER(p_self)->video.height = p_self->bitmapInfoNeg.bmiHeader.biHeight;
-#endif
 	
 	// preview
 	if (p_self->hwnd_preview) {
@@ -416,7 +404,7 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_gdi_t* p_self
 	TMEDIA_PRODUCER(p_self)->enc_cb.callback(TMEDIA_PRODUCER(p_self)->enc_cb.callback_data, p_self->p_buff_neg, p_self->bitmapInfoNeg.bmiHeader.biSizeImage);
 
 bail:
-	tsk_safeobj_unlock(p_self);
+	//--tsk_safeobj_unlock(p_self);
 	
 	if (hSrcDC) {
 		ReleaseDC(p_self->hwnd_src, hSrcDC);
@@ -436,30 +424,36 @@ bail:
 	return ret;
 }
 
-static int _tdav_producer_screencast_timer_cb(const void* arg, tsk_timer_id_t timer_id)
+static void* TSK_STDCALL _tdav_producer_screencast_record_thread(void *arg)
 {
 	tdav_producer_screencast_gdi_t* p_gdi = (tdav_producer_screencast_gdi_t*)arg;
 	int ret = 0;
 
-	tsk_safeobj_lock(p_gdi);
+	// FPS manager
+	uint64_t TimeNow, TimeLastFrame = 0;
+	const uint64_t TimeFrameDuration = (1000 / TMEDIA_PRODUCER(p_gdi)->video.fps);
+	
+	TSK_DEBUG_INFO("_tdav_producer_screencast_record_thread -- START");
 
-	if (p_gdi->id_timer_grab == timer_id) {
-		if (ret = _tdav_producer_screencast_grab(p_gdi)) {
-			goto bail;
-		}
-		if (p_gdi->b_started) {
-			p_gdi->id_timer_grab = tsk_timer_manager_schedule(p_gdi->p_timer_mgr, p_gdi->u_timout_grab, _tdav_producer_screencast_timer_cb, p_gdi);
-			if (!TSK_TIMER_ID_IS_VALID(p_gdi->id_timer_grab)) {
-				TSK_DEBUG_ERROR("Failed to schedule timer with timeout=%llu", p_gdi->u_timout_grab);
-				ret = -2;
-				goto bail;
+	while (ret == 0 && p_gdi->b_started) {
+		TimeNow = tsk_time_now();
+		if ((TimeNow - TimeLastFrame) > TimeFrameDuration) {
+			if (ret = _tdav_producer_screencast_grab(p_gdi)) {
+				goto next;
 			}
+			TimeLastFrame = TimeNow;
 		}
+		else {
+			tsk_thread_sleep(1);
+#if 0
+			TSK_DEBUG_INFO("[GDI screencast] Skip frame");
+#endif
+		}
+	next:
+		;
 	}
-
-bail:
-	tsk_safeobj_unlock(p_gdi);
-	return 0;
+	TSK_DEBUG_INFO("_tdav_producer_screencast_record_thread -- STOP");
+	return tsk_null;
 }
 
 //
@@ -495,7 +489,6 @@ static tsk_object_t* _tdav_producer_screencast_gdi_dtor(tsk_object_t * self)
 		/* deinit base */
 		tmedia_producer_deinit(TMEDIA_PRODUCER(p_gdi));
 		/* deinit self */
-		TSK_OBJECT_SAFE_FREE(p_gdi->p_timer_mgr);
 		if (p_gdi->p_buff_neg) {
 			VirtualFree(p_gdi->p_buff_neg, 0, MEM_RELEASE);
 			p_gdi->p_buff_neg = NULL;
