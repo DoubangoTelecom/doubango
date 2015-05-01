@@ -321,7 +321,7 @@ int tdav_video_jb_put(tdav_video_jb_t* self, trtp_rtp_packet_t* rtp_pkt)
 			self->fps = TSK_CLAMP(TDAV_VIDEO_JB_FPS_MIN, fps_new, TDAV_VIDEO_JB_FPS_MAX);
 			self->tail_max = (self->fps << TDAV_VIDEO_JB_TAIL_MAX_LOG2); // maximum delay = 2 seconds
 			self->latency_max = self->fps; // maximum = 1 second
-			TSK_DEBUG_INFO("According to rtp-timestamps ...FPS = %d (clipped to %d) tail_max=%d, latency_max=%u", fps_new, self->fps, self->tail_max, self->latency_max);
+			TSK_DEBUG_INFO("According to rtp-timestamps ...FPS = %d (clipped to %d) tail_max=%d, latency_max=%u", fps_new, self->fps, self->tail_max, (unsigned)self->latency_max);
 			tdav_video_jb_reset_fps_prob(self);
 			if(self->callback && (fps_old != self->fps)){
 				self->cb_data_any.type = tdav_video_jb_cb_data_type_fps_changed;
@@ -454,7 +454,7 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
 				}
 			}
 			else{
-				TSK_DEBUG_INFO("frames_count(%lld)>=latency_max(%u)...decoding video frame even if pkts are missing :(", jb->frames_count, jb->latency_max);
+				TSK_DEBUG_INFO("frames_count(%lld)>=latency_max(%u)...decoding video frame even if pkts are missing :(", jb->frames_count, (unsigned)jb->latency_max);
 				jb->decode_last_seq_num_with_mark = -1; // unset()
 			}
 			if(!postpone){

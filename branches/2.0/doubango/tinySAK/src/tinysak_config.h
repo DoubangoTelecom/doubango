@@ -57,6 +57,7 @@
 // OS X or iOS
 #if defined(__APPLE__)
 #	define TSK_UNDER_APPLE				1
+#   include <TargetConditionals.h>
 #endif
 #if TARGET_OS_MAC
 #	define TSK_UNDER_MAC				1
