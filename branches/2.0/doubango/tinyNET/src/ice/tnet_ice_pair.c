@@ -151,7 +151,7 @@ tnet_ice_pair_t* tnet_ice_pair_prflx_create(tnet_ice_pairs_L_t* pairs, uint16_t 
 	}
 
 	if (!pair_local) {
-		TSK_DEBUG_ERROR("Cannot create prflx candidate with remote ip = %s and remote port = %u", remote_ip, remote_port);
+		TSK_DEBUG_ERROR("Cannot create prflx candidate with remote ip = %s, remote port = %u and local_fd = %u", remote_ip, remote_port, (unsigned)local_fd);
 		return tsk_null;
 	}
 	else {
