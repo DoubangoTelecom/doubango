@@ -362,7 +362,6 @@ int tnet_ice_pair_send_response(tnet_ice_pair_t *self, const tnet_stun_pkt_req_t
 	tnet_stun_pkt_t* message = tsk_null;
 	const char *password, *username;
 	int ret = -1;
-	tnet_stun_attr_t *stun_att = tsk_null;
 	tsk_bool_t is_error = ((code / 100) != 2);
 
 	if(!self || !phrase || !request || !self->candidate_offer || !self->candidate_answer){
@@ -585,7 +584,7 @@ int tnet_ice_pair_auth_conncheck(const tnet_ice_pair_t *self, const tnet_stun_pk
 		tsk_size_t size = (kStunPktHdrSizeInOctets + msg_integrity_start);
 		uint8_t* new_buffer = (uint8_t*)tsk_calloc(size, 1);
 		if (!new_buffer) {
-			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %u", msg_integrity_start);
+			TSK_DEBUG_ERROR("Failed to allocate buffer with size = %u", (unsigned)msg_integrity_start);
 			return -30;
 		}
 		memcpy(new_buffer, request_buff, size);

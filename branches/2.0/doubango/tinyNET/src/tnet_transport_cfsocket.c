@@ -551,6 +551,7 @@ int removeSocketAtIndex(int index, transport_context_t *context)
     
 	if (index < (int)context->count) {
         transport_socket_xt *sock = context->sockets[index];
+        tnet_fd_t fd = sock->fd;
         
         // Remove from runloop
         if (context->cf_run_loop && sock->cf_run_loop_source) {
@@ -599,7 +600,7 @@ int removeSocketAtIndex(int index, transport_context_t *context)
 		context->sockets[context->count-1] = tsk_null;
 		context->count--;
         
-		TSK_DEBUG_INFO("Socket removed");
+		TSK_DEBUG_INFO("Socket removed: %d", fd);
 	}
     
 	tsk_safeobj_unlock(context);
@@ -938,7 +939,8 @@ void __CFSocketCallBack(CFSocketRef s, CFSocketCallBackType callbackType, CFData
                             memcpy(e->data, ptr, len);
                             e->size = len;
                         }
-                        memcpy(&e->remote_addr, (struct sockaddr*)address, tnet_get_sockaddr_size((struct sockaddr*)address));
+                        struct sockaddr* address_ = (struct sockaddr*)CFDataGetBytePtr(address);
+                        memcpy(&e->remote_addr, address_, tnet_get_sockaddr_size(address_));
                         TSK_RUNNABLE_ENQUEUE_OBJECT_SAFE(TSK_RUNNABLE(transport), e);
                     }
                 }
@@ -1105,8 +1107,7 @@ void *tnet_transport_mainthread(void *param)
 	}
 	tsk_safeobj_unlock(context);
     
-	while(TSK_RUNNABLE(transport)->running)
-	{
+	while(TSK_RUNNABLE(transport)->running) {
         // Give some time to process sources
         CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1.0, false);
         

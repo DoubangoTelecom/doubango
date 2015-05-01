@@ -83,10 +83,10 @@
 #endif
 
 // http://code.google.com/p/idoubs/issues/detail?id=111
-#if TARGET_IPHONE_SIMULATOR
-#   undef HAVE_SRTP
-#   define HAVE_SRTP 0
-#endif
+//#if TARGET_IPHONE_SIMULATOR
+//#   undef HAVE_SRTP
+//#   define HAVE_SRTP 0
+//#endif
 
 #if HAVE_CONFIG_H
 	#include <config.h>

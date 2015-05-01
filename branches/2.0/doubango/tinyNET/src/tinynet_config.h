@@ -52,13 +52,10 @@
 #	endif
 #endif
 
-#if defined(__APPLE__)
-#   include <TargetConditionals.h>
-#endif
-
 // OS X or iOS
 #if defined(__APPLE__)
 #	define TNET_UNDER_APPLE				1
+#   include <TargetConditionals.h>
 #endif
 #if TARGET_OS_MAC
 #	define TNET_UNDER_MAC				1
