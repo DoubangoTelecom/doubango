@@ -1019,13 +1019,13 @@ tnet_family_t tnet_get_family(const char* host, tnet_port_t port)
 		hints.ai_socktype = SOCK_DGRAM;
 		hints.ai_protocol = IPPROTO_UDP;
 
-		if ((status = tnet_getaddrinfo(host, srv, &hints, &result))){
-			TNET_PRINT_LAST_ERROR("getaddrinfo failed:");
+		if ((status = tnet_getaddrinfo(host, srv, &hints, &result))) {
+			TNET_PRINT_LAST_ERROR("getaddrinfo(%s:%d) failed", host, port);
 			goto done;
 		}
 
 		/* Get the First result. */
-		if (result){
+		if (result) {
 			ret = result->ai_family;
 			goto done;
 		}

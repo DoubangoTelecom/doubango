@@ -73,7 +73,7 @@ static const tmedia_srtp_type_t __srtp_types[] = { tmedia_srtp_type_sdes, tmedia
 static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* data_ptr, tsk_size_t data_size, tnet_fd_t local_fd, const struct sockaddr_storage* remote_addr);
 #define _trtp_manager_is_rtcpmux_active(self) ( (self) && ( (self)->use_rtcpmux && (!(self)->rtcp.local_socket || ((self)->transport && (self)->transport->master && (self)->transport->master->fd == (self)->rtcp.local_socket->fd)) ) )
 #if HAVE_SRTP
-static int _trtp_manager_srtp_set_enabled(trtp_manager_t* self, tmedia_srtp_type_t srtp_type, tsk_bool_t enabled);
+static int _trtp_manager_srtp_set_enabled(trtp_manager_t* self, tmedia_srtp_type_t srtp_type, struct tnet_socket_s** sockets, tsk_size_t count, tsk_bool_t enabled);
 static int _trtp_manager_srtp_activate(trtp_manager_t* self, tmedia_srtp_type_t srtp_type);
 static int _trtp_manager_srtp_start(trtp_manager_t* self, tmedia_srtp_type_t srtp_type);
 #endif /* HAVE_SRTP */
@@ -480,7 +480,7 @@ Enabling SRTP will allow us to get "crypto" lines for negotiation
 At this stage the sockets are not ready to send DTLS datagrams -> Good for ICE negotiation
 If ICE is enabled DTLS-SRTP will not be enabled as the transport is "null"
 */
-static int _trtp_manager_srtp_set_enabled(trtp_manager_t* self, tmedia_srtp_type_t srtp_type, tsk_bool_t enabled)
+static int _trtp_manager_srtp_set_enabled(trtp_manager_t* self, tmedia_srtp_type_t srtp_type, struct tnet_socket_s** sockets, tsk_size_t count, tsk_bool_t enabled)
 {
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -527,9 +527,8 @@ static int _trtp_manager_srtp_set_enabled(trtp_manager_t* self, tmedia_srtp_type
 		}
 		else{
 			if(srtp_type & tmedia_srtp_type_dtls){
-				if(self->transport){
-					struct tnet_socket_s* sockets[] = { self->transport->master , self->rtcp.local_socket };
-					ret = tnet_transport_dtls_set_enabled(self->transport, tsk_false, sockets, 2);
+				if (self->transport) {
+					ret = tnet_transport_dtls_set_enabled(self->transport, tsk_false, sockets, count);
 				}
 				self->dtls.state = trtp_srtp_state_none;
 				self->dtls.enable_postponed = tsk_false;
@@ -574,7 +573,7 @@ static int _trtp_manager_srtp_activate(trtp_manager_t* self, tmedia_srtp_type_t 
 
 			// check if DTLS-SRTP enabling was postponed because the net transport was not ready (could happen if ICE is ON)
 			if(self->dtls.enable_postponed){
-				if((ret = _trtp_manager_srtp_set_enabled(self, self->srtp_type, tsk_true))){
+				if ((ret = _trtp_manager_srtp_set_enabled(self, self->srtp_type, sockets, sizeof(sockets) / sizeof(sockets[0]), tsk_true))) {
 					return ret;
 				}
 				self->dtls.enable_postponed = tsk_false;
@@ -923,8 +922,9 @@ int trtp_manager_prepare(trtp_manager_t* self)
 #if HAVE_SRTP
 	{		
 		// enable SRTP to allow negotiation
-		if(self->srtp_type != tmedia_srtp_mode_none){
-			_trtp_manager_srtp_set_enabled(self, self->srtp_type, tsk_true);
+		if (self->srtp_type != tmedia_srtp_mode_none) {
+			struct tnet_socket_s* sockets[] = { self->transport ? self->transport->master : tsk_null, self->rtcp.local_socket };
+			_trtp_manager_srtp_set_enabled(self, self->srtp_type, sockets, sizeof(sockets)/sizeof(sockets[0]), tsk_true);
 		}
 	}
 #endif
@@ -1071,14 +1071,15 @@ int trtp_manager_set_srtp_type_remote(trtp_manager_t* self, tmedia_srtp_type_t s
 	tsk_size_t i;
 	int ret;
 
-	if(!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	for(i = 0; i < sizeof(__srtp_types)/sizeof(__srtp_types[i]); ++i){
-		if((self->srtp_type & __srtp_types[i]) && !(srtp_type_remote & __srtp_types[i])){
-			if((ret = _trtp_manager_srtp_set_enabled(self, __srtp_types[i], tsk_false))){
+	for(i = 0; i < sizeof(__srtp_types)/sizeof(__srtp_types[i]); ++i) {
+		if ((self->srtp_type & __srtp_types[i]) && !(srtp_type_remote & __srtp_types[i])) {
+			struct tnet_socket_s* sockets[] = { self->transport ? self->transport->master : tsk_null, self->rtcp.local_socket };
+			if ((ret = _trtp_manager_srtp_set_enabled(self, __srtp_types[i], sockets, sizeof(sockets) / sizeof(sockets[0]), tsk_false))) {
 				return ret;
 			}
 			self->srtp_type &= ~__srtp_types[i];
@@ -1089,12 +1090,13 @@ int trtp_manager_set_srtp_type_remote(trtp_manager_t* self, tmedia_srtp_type_t s
 
 int trtp_manager_set_srtp_type_local(trtp_manager_t* self, enum tmedia_srtp_type_e srtp_type, enum tmedia_srtp_mode_e srtp_mode)
 {
-	if(!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid ICE context");
 		return -1;
 	}
-	if(srtp_mode == tmedia_srtp_mode_none || srtp_type == tmedia_srtp_type_none){
-		_trtp_manager_srtp_set_enabled(self, self->srtp_type, tsk_false);
+	if (srtp_mode == tmedia_srtp_mode_none || srtp_type == tmedia_srtp_type_none) {
+		struct tnet_socket_s* sockets[] = { self->transport ? self->transport->master : tsk_null, self->rtcp.local_socket };
+		_trtp_manager_srtp_set_enabled(self, self->srtp_type, sockets, sizeof(sockets) / sizeof(sockets[0]), tsk_false);
 		self->srtp_type = srtp_type;
 		self->srtp_mode = srtp_mode;
 		return 0;
@@ -1604,7 +1606,7 @@ int trtp_manager_stop(trtp_manager_t* self)
 {
 	int ret = 0;
 
-	if(!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -1632,18 +1634,23 @@ int trtp_manager_stop(trtp_manager_t* self)
 	}
 
 	// Free transport to force next call to start() to create new one with new sockets
-	if(self->transport){
+	if (self->transport) {
+		tnet_socket_t *master_copy = tsk_object_ref(self->transport->master); // "tnet_transport_shutdown" will free the master
 		tnet_transport_shutdown(self->transport);
 #if HAVE_SRTP
-		// cancel DTLS handshaking timer
-		if(self->timer_mgr_global && self->dtls.timer_hanshaking.id != TSK_INVALID_TIMER_ID){
-			tsk_timer_manager_cancel(self->timer_mgr_global, self->dtls.timer_hanshaking.id);
-			self->dtls.timer_hanshaking.id = TSK_INVALID_TIMER_ID; // invalidate timer id
-			self->dtls.timer_hanshaking.timeout = TRTP_DTLS_HANDSHAKING_TIMEOUT; // reset timeout
+		{
+			struct tnet_socket_s* sockets[] = { master_copy, self->rtcp.local_socket };
+			// cancel DTLS handshaking timer
+			if (self->timer_mgr_global && self->dtls.timer_hanshaking.id != TSK_INVALID_TIMER_ID) {
+				tsk_timer_manager_cancel(self->timer_mgr_global, self->dtls.timer_hanshaking.id);
+				self->dtls.timer_hanshaking.id = TSK_INVALID_TIMER_ID; // invalidate timer id
+				self->dtls.timer_hanshaking.timeout = TRTP_DTLS_HANDSHAKING_TIMEOUT; // reset timeout
+			}
+			// destroy all SRTP contexts
+			_trtp_manager_srtp_set_enabled(self, self->srtp_type, sockets, sizeof(sockets) / sizeof(sockets[0]), tsk_false);
 		}
-		// destroy all SRTP contexts
-		_trtp_manager_srtp_set_enabled(self, self->srtp_type, tsk_false);
 #endif /* HAVE_SRTP */
+		TSK_OBJECT_SAFE_FREE(master_copy);
 		TSK_OBJECT_SAFE_FREE(self->transport);
 	}
 	// Free RTCP socket
