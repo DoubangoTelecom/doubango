@@ -727,6 +727,8 @@ static tsk_object_t* tnet_dtls_socket_dtor(tsk_object_t * self)
 		TSK_FREE(socket->handshake_data.ptr);
 		TSK_OBJECT_SAFE_FREE(socket->wrapped_sock);
 		tsk_safeobj_deinit(socket);
+
+		TSK_DEBUG_INFO("*** tnet_dtls_socket_t destroyed ***");
 	}
 	return self;
 }
