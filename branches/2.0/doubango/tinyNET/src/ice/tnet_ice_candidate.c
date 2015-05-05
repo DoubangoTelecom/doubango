@@ -274,7 +274,7 @@ int tnet_ice_candidate_set_local_pref(tnet_ice_candidate_t* self, uint16_t local
 const char* tnet_ice_candidate_tostring(tnet_ice_candidate_t* self)
 {
 	const char* _transport_str;
-	char __str[16]; // always allocated: bad idea :(
+	char __str[255]; // always allocated: bad idea :(
 
 	if (!self){
 		TSK_DEBUG_ERROR("Invalid argument");
@@ -332,11 +332,20 @@ const char* tnet_ice_candidate_tostring(tnet_ice_candidate_t* self)
 	// To ease debugging
 	if (self->socket) {
 		tsk_strcat_2(&self->tostring, " tr %s", _tnet_ice_candidate_get_transport_str(self->socket->type));
-		tsk_strcat_2(&self->tostring, " fd %d", self->socket->fd);
+		if (self->type_e == tnet_ice_cand_type_relay && self->turn.ss) {
+			tnet_socket_t* turn_sock = tsk_null;
+			if (tnet_turn_session_get_socket_local(self->turn.ss, &turn_sock) == 0 && turn_sock) {
+				tsk_strcat_2(&self->tostring, " fd %d", turn_sock->fd);
+			}
+			TSK_OBJECT_SAFE_FREE(turn_sock);
+		}
+		else {
+			tsk_strcat_2(&self->tostring, " fd %d", self->socket->fd);
+		}
 	}
 
 	// WebRTC (Chrome) specific
-	if (self->is_ice_jingle){
+	if (self->is_ice_jingle) {
 		if (!tsk_params_have_param(self->extension_att_list, "name")){
 			tsk_strcat_2(&self->tostring, " name %s", self->is_rtp ? (self->is_video ? "video_rtp" : "rtp") : (self->is_video ? "video_rtcp" : "rtcp"));
 		}
@@ -458,16 +467,16 @@ int tnet_ice_candidate_process_stun_response(tnet_ice_candidate_t* self, const t
 
 const tnet_ice_candidate_t* tnet_ice_candidate_find_by_fd(tnet_ice_candidates_L_t* candidates, tnet_fd_t fd)
 {
-	if (candidates){
+	if (candidates) {
 		const tsk_list_item_t *item;
 		const tnet_ice_candidate_t* candidate;
 
 		tsk_list_lock(candidates);
-		tsk_list_foreach(item, candidates){
-			if (!(candidate = item->data)){
+		tsk_list_foreach(item, candidates) {
+			if (!(candidate = item->data)) {
 				continue;
 			}
-			if (candidate->socket && (candidate->socket->fd == fd)){
+			if (candidate->socket && (candidate->socket->fd == fd)) {
 				tsk_list_unlock(candidates);
 				return candidate;
 			}
@@ -504,7 +513,7 @@ static int _tnet_ice_candidate_tostring(
 	const tsk_params_L_t *extension_att_list,
 	char** output)
 {
-	if (!output){
+	if (!output) {
 		TSK_DEBUG_ERROR("Invalid argument");
 		return -1;
 	}
@@ -517,7 +526,7 @@ static int _tnet_ice_candidate_tostring(
 		port,
 		cand_type_str);
 
-	if (extension_att_list){
+	if (extension_att_list) {
 		const tsk_list_item_t *item;
 		tsk_list_foreach(item, extension_att_list){
 			tsk_strcat_2(output, " %s %s", TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value);

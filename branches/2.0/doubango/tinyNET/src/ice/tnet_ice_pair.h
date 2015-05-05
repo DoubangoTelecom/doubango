@@ -46,6 +46,7 @@ typedef struct tnet_ice_pair_s
 {
 	TSK_DECLARE_OBJECT;
 
+	uint64_t id;
 	uint64_t priority;
 	tnet_ice_pair_state_t state_offer;
 	tnet_ice_pair_state_t state_answer;
