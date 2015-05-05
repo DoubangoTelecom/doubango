@@ -2229,6 +2229,7 @@ static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, 
 	const tnet_ice_candidate_t *cand_local, *cand_remote;
 	tnet_ice_pair_t *pair;
 	enum tnet_turn_transport_e e_req_transport;
+	tnet_family_t addr_family_local, addr_family_remote;
 	if (TSK_LIST_IS_EMPTY(local_candidates) || TSK_LIST_IS_EMPTY(remote_candidates) || !result_pairs) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
@@ -2262,8 +2263,18 @@ static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, 
 				continue;
 			}
 
+			// CompIds(1=RTP, 2=RTCP) must match
 			if ((cand_remote->comp_id != cand_local->comp_id)){
 				continue;
+			}
+			// IP versions must match. Cannot use IPv4 socket to send/recv to IPv6 address.
+			if (cand_local->socket) {
+				addr_family_local = TNET_SOCKET_TYPE_IS_IPV4(cand_local->socket->type) ? AF_INET : AF_INET6;
+				addr_family_remote = tnet_get_family(cand_remote->connection_addr, cand_remote->port);
+				if (addr_family_local != addr_family_remote) {
+					TSK_DEBUG_INFO("Address family mismatch:%d<->%d", addr_family_local, addr_family_remote);
+					continue;
+				}
 			}
 			if (cand_local->turn.ss) {
 				if (tnet_turn_session_get_req_transport(cand_local->turn.ss, &e_req_transport) != 0) {
