@@ -1260,7 +1260,9 @@ int trtp_manager_start(trtp_manager_t* self)
 	int ret = 0;
 	int rcv_buf = (int)tmedia_defaults_get_rtpbuff_size();
 	int snd_buf = (int)tmedia_defaults_get_rtpbuff_size();
+#if !TRTP_UNDER_WINDOWS_CE
     int32_t dscp_rtp;
+#endif
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -1311,17 +1313,17 @@ int trtp_manager_start(trtp_manager_t* self)
 	/* enlarge socket buffer */
 #if !TRTP_UNDER_WINDOWS_CE
 	TSK_DEBUG_INFO("SO_RCVBUF = %d, SO_SNDBUF = %d", rcv_buf, snd_buf);
-	if((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&rcv_buf, sizeof(rcv_buf)))){
+	if ((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_RCVBUF, (char*)&rcv_buf, sizeof(rcv_buf)))) {
 		TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF, %d) has failed with error code %d", rcv_buf, ret);
 	}
-	if((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_SNDBUF, (char*)&snd_buf, sizeof(snd_buf)))){
+	if ((ret = setsockopt(self->transport->master->fd, SOL_SOCKET, SO_SNDBUF, (char*)&snd_buf, sizeof(snd_buf)))) {
 		TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_SNDBUF, %d) has failed with error code %d", snd_buf, ret);
 	}
-#endif /* !TRTP_UNDER_WINDOWS_CE */
-    dscp_rtp = (self->rtp.dscp << 2);
-    if((ret = setsockopt(self->transport->master->fd, IPPROTO_IP, IP_TOS, (char*)&dscp_rtp, sizeof(dscp_rtp)))){
-		TNET_PRINT_LAST_ERROR("setsockopt(SOL_SOCKET, SO_RCVBUF) has failed with error code %d", ret);
+	dscp_rtp = (self->rtp.dscp << 2);
+	if ((ret = setsockopt(self->transport->master->fd, IPPROTO_IP, IP_TOS, (char*)&dscp_rtp, sizeof(dscp_rtp)))) {
+		TNET_PRINT_LAST_ERROR("setsockopt(IPPROTO_IP, IP_TOS) has failed with error code %d", ret);
 	}
+#endif /* !TRTP_UNDER_WINDOWS_CE */
 
 	/* RTP */
 

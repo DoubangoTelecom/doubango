@@ -77,6 +77,8 @@ Rc SHOULD be configurable and SHOULD have a default of 7.
 #define kIceConnCheckMinTriesMin	0
 #define kIceConnCheckMinTriesMax	3
 
+#define kIcePairsBuildingTimeMax	2500 // maximum time to build pairs
+
 typedef tsk_list_t tnet_ice_servers_L_t;
 
 static const char* foundation_default = tsk_null;
@@ -96,7 +98,7 @@ static int _tnet_ice_ctx_cancel(struct tnet_ice_ctx_s* self, tsk_bool_t silent);
 static int _tnet_ice_ctx_restart(struct tnet_ice_ctx_s* self);
 static int _tnet_ice_ctx_recv_stun_message_for_pair(struct tnet_ice_ctx_s* self, const struct tnet_ice_pair_s* pair, const void* data, tsk_size_t size, tnet_fd_t local_fd, const struct sockaddr_storage* remote_addr, tsk_bool_t *role_conflict);
 static int _tnet_ice_ctx_send_turn_raw(struct tnet_ice_ctx_s* self, struct tnet_turn_session_s* turn_ss, tnet_turn_peer_id_t turn_peer_id, const void* data, tsk_size_t size);
-static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, tnet_ice_candidates_L_t* remote_candidates, tnet_ice_pairs_L_t* result_pairs, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle, tsk_bool_t is_rtcpmuxed);
+static int _tnet_ice_ctx_build_pairs(struct tnet_ice_ctx_s* self, tnet_ice_candidates_L_t* local_candidates, tnet_ice_candidates_L_t* remote_candidates, tnet_ice_pairs_L_t* result_pairs, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle, tsk_bool_t is_rtcpmuxed);
 static void* TSK_STDCALL _tnet_ice_ctx_run(void* self);
 
 static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandidates(va_list *app);
@@ -222,6 +224,7 @@ typedef struct tnet_ice_ctx_s
 	tsk_bool_t use_rtcp;
 	tsk_bool_t use_rtcpmux;
 	tsk_bool_t is_video;
+	tsk_bool_t is_building_pairs;
 	tsk_bool_t unicast;
 	tsk_bool_t anycast;
 	tsk_bool_t multicast;
@@ -245,6 +248,7 @@ typedef struct tnet_ice_ctx_s
 
 	tsk_fsm_t* fsm;
 
+	tsk_condwait_handle_t* condwait_pairs;
 	tnet_ice_candidates_L_t* candidates_local;
 	tnet_ice_candidates_L_t* candidates_remote;
 	tnet_ice_pairs_L_t* candidates_pairs;
@@ -372,6 +376,12 @@ static tsk_object_t* tnet_ice_ctx_ctor(tsk_object_t * self, va_list * app)
 			return tsk_null;
 		}
 
+		// Create condwait for pairs
+		if (!(ctx->condwait_pairs = tsk_condwait_create())) {
+			TSK_DEBUG_ERROR("Failed to create condwait for pairs");
+			return tsk_null;
+		}
+
 		// Create list objects to hold the servers
 		if (!(ctx->servers = tsk_list_create())){
 			TSK_DEBUG_ERROR("Failed to create server list");
@@ -417,6 +427,9 @@ static tsk_object_t* tnet_ice_ctx_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(ctx->turn.ss_nominated_rtcp);
 		if (ctx->turn.condwait) {
 			tsk_condwait_destroy(&ctx->turn.condwait);
+		}
+		if (ctx->condwait_pairs) {
+			tsk_condwait_destroy(&ctx->condwait_pairs);
 		}
 		TSK_OBJECT_SAFE_FREE(ctx->servers);
 
@@ -976,13 +989,13 @@ int tnet_ice_ctx_cancel(tnet_ice_ctx_t* self)
 {
 	int ret;
 
-	if (!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
 	tsk_safeobj_lock(self);
-	if (tsk_fsm_get_current_state(self->fsm) == _fsm_state_Started){
+	if (tsk_fsm_get_current_state(self->fsm) == _fsm_state_Started) {
 		// Do nothing if already in the "started" state
 		ret = 0;
 		goto bail;
@@ -992,6 +1005,7 @@ int tnet_ice_ctx_cancel(tnet_ice_ctx_t* self)
 	self->have_nominated_symetric = tsk_false;
 	self->have_nominated_answer = tsk_false;
 	self->have_nominated_offer = tsk_false;
+	tsk_condwait_broadcast(self->condwait_pairs);
 	if (self->turn.condwait) {
 		ret = tsk_condwait_broadcast(self->turn.condwait);
 	}
@@ -1006,18 +1020,19 @@ int tnet_ice_ctx_stop(tnet_ice_ctx_t* self)
 {
 	int ret;
 
-	if (!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
 	tsk_safeobj_lock(self);
-	if (!self->is_started){
+	if (!self->is_started) {
 		ret = 0;
 		goto bail;
 	}
 
 	self->is_started = tsk_false;
+	tsk_condwait_broadcast(self->condwait_pairs);
 	if (self->turn.condwait) {
 		ret = tsk_condwait_broadcast(self->turn.condwait);
 	}
@@ -1782,7 +1797,7 @@ start_conneck:
 	TSK_OBJECT_SAFE_FREE(self->turn.ss_nominated_rtp);
 	TSK_OBJECT_SAFE_FREE(self->turn.ss_nominated_rtcp);
 
-	if ((ret = _tnet_ice_ctx_build_pairs(self->candidates_local, self->candidates_remote, self->candidates_pairs, self->is_controlling, self->tie_breaker, self->is_ice_jingle, self->use_rtcpmux))) {
+	if ((ret = _tnet_ice_ctx_build_pairs(self, self->candidates_local, self->candidates_remote, self->candidates_pairs, self->is_controlling, self->tie_breaker, self->is_ice_jingle, self->use_rtcpmux))) {
 		TSK_DEBUG_ERROR("_tnet_ice_ctx_build_pairs() failed");
 		return ret;
 	}
@@ -2010,17 +2025,26 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_l
 
 	// take a reference to the negotiated TURN sessions
 	ret = tnet_ice_pairs_get_nominated_symetric_pairs(self->candidates_pairs, TNET_ICE_CANDIDATE_COMPID_RTP, &pair_offer, &pair_answer_src, &pair_answer_dest);
-	if (ret == 0 && pair_offer && pair_offer->candidate_offer && pair_offer->candidate_offer->type_e == tnet_ice_cand_type_relay && pair_offer->candidate_offer->turn.ss) {
-		self->turn.ss_nominated_rtp = tsk_object_ref(pair_offer->candidate_offer->turn.ss);
-		self->turn.peer_id_rtp = pair_offer->turn_peer_id;
-		TSK_DEBUG_INFO("ICE: nominated TURN peer id [RTP] = %ld", self->turn.peer_id_rtp);
+	if (ret == 0) {
+		if (pair_offer && pair_offer->candidate_offer && pair_offer->candidate_offer->type_e == tnet_ice_cand_type_relay && pair_offer->candidate_offer->turn.ss) {
+			self->turn.ss_nominated_rtp = tsk_object_ref(pair_offer->candidate_offer->turn.ss);
+			self->turn.peer_id_rtp = pair_offer->turn_peer_id;
+			TSK_DEBUG_INFO("ICE: nominated TURN peer id [RTP] = %ld", self->turn.peer_id_rtp);
+		}
+		TSK_DEBUG_INFO("ICE: nominated symetric RTP pairs: offer:%llu, answer-src:%llu, answser-dest:%llu", 
+			pair_offer ? pair_offer->id : 0, pair_answer_src ? pair_answer_src->id : 0, pair_answer_dest ? pair_answer_dest->id : 0);
 	}
 	if (ret == 0 && pair_offer) ((tnet_ice_pair_t *)pair_offer)->is_nominated = tsk_true;
 	ret = tnet_ice_pairs_get_nominated_symetric_pairs(self->candidates_pairs, TNET_ICE_CANDIDATE_COMPID_RTCP, &pair_offer, &pair_answer_src, &pair_answer_dest);
-	if (ret == 0 && pair_offer && pair_offer->candidate_offer && pair_offer->candidate_offer->type_e == tnet_ice_cand_type_relay && pair_offer->candidate_offer->turn.ss) {
-		self->turn.ss_nominated_rtcp = tsk_object_ref(pair_offer->candidate_offer->turn.ss);
-		self->turn.peer_id_rtcp = pair_offer->turn_peer_id;
-		TSK_DEBUG_INFO("ICE: nominated TURN peer id [RTCP] = %ld", self->turn.peer_id_rtp);
+	if (ret == 0) {
+		if (pair_offer && pair_offer->candidate_offer && pair_offer->candidate_offer->type_e == tnet_ice_cand_type_relay && pair_offer->candidate_offer->turn.ss) {
+			self->turn.ss_nominated_rtcp = tsk_object_ref(pair_offer->candidate_offer->turn.ss);
+			self->turn.peer_id_rtcp = pair_offer->turn_peer_id;
+			TSK_DEBUG_INFO("ICE: nominated TURN peer id [RTCP] = %ld", self->turn.peer_id_rtp);
+		}
+		TSK_DEBUG_INFO("ICE: nominated symetric RTCP(use:%d, mux:%d) pairs: offer:%llu, answer-src:%llu, answser-dest:%llu", 
+			self->use_rtcp ? 1 : 0, self->use_rtcpmux ? 1 : 0,
+			pair_offer ? pair_offer->id : 0, pair_answer_src ? pair_answer_src->id : 0, pair_answer_dest ? pair_answer_dest->id : 0);
 	}
 	if (ret == 0 && pair_offer) ((tnet_ice_pair_t *)pair_offer)->is_nominated = tsk_true;
 
@@ -2083,7 +2107,7 @@ static tsk_bool_t _tnet_ice_ctx_fsm_cond_NotStarted(tnet_ice_ctx_t* self, const 
 static int _tnet_ice_ctx_restart(tnet_ice_ctx_t* self)
 {
 	int ret = 0;
-	if (!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -2121,14 +2145,27 @@ static int _tnet_ice_ctx_recv_stun_message_for_pair(tnet_ice_ctx_t* self, const 
 
 	if ((ret = tnet_stun_pkt_read(data, size, &message)) == 0 && message) {
 		if (message->e_type == tnet_stun_pkt_type_binding_request) {
-			tsk_bool_t is_local_conncheck_started = !TSK_LIST_IS_EMPTY(self->candidates_pairs); // if empty means local conncheck haven't started
+			tsk_bool_t is_local_conncheck_started;
+			if (self->is_building_pairs) {
+				TSK_DEBUG_INFO("Incoming STUN binding request while building new ICE pairs... wait for %d milliseconds max", kIcePairsBuildingTimeMax);
+				tsk_condwait_timedwait(self->condwait_pairs, kIcePairsBuildingTimeMax);
+				if (self->is_building_pairs) {
+					TSK_DEBUG_WARN("%d milliseconds ellapsed and still building pairs", kIcePairsBuildingTimeMax);
+				}
+				if (!self->is_active) {
+					TSK_DEBUG_WARN("ICE context deactivated while waiting for ICE pairs to finish building");
+					TSK_OBJECT_SAFE_FREE(message);
+					return 0;
+				}
+			}
+			is_local_conncheck_started = !TSK_LIST_IS_EMPTY(self->candidates_pairs); // if empty means local conncheck haven't started
 			if (!pair && is_local_conncheck_started) {
 				pair = tnet_ice_pairs_find_by_fd_and_addr(self->candidates_pairs, local_fd, remote_addr);
 			}
 			if (!pair && !self->have_nominated_symetric && is_local_conncheck_started){ // pair not found and we're still negotiating
 				// rfc 5245 - 7.1.3.2.1.  Discovering Peer Reflexive Candidates
 				tnet_ice_pair_t* pair_peer = tnet_ice_pair_prflx_create(self->candidates_pairs, local_fd, remote_addr);
-				if (pair_peer){
+				if (pair_peer) {
 					pair = pair_peer; // copy
 					tsk_list_push_descending_data(self->candidates_pairs, (void**)&pair_peer);
 					TSK_OBJECT_SAFE_FREE(pair_peer);
@@ -2223,17 +2260,21 @@ static int _tnet_ice_ctx_send_turn_raw(struct tnet_ice_ctx_s* self, struct tnet_
 
 
 // build pairs as per RFC 5245 section "5.7.1. Forming Candidate Pairs"
-static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, tnet_ice_candidates_L_t* remote_candidates, tnet_ice_pairs_L_t* result_pairs, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle, tsk_bool_t is_rtcpmuxed)
+static int _tnet_ice_ctx_build_pairs(struct tnet_ice_ctx_s* self, tnet_ice_candidates_L_t* local_candidates, tnet_ice_candidates_L_t* remote_candidates, tnet_ice_pairs_L_t* result_pairs, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle, tsk_bool_t is_rtcpmuxed)
 {
 	const tsk_list_item_t *item_local, *item_remote;
 	const tnet_ice_candidate_t *cand_local, *cand_remote;
 	tnet_ice_pair_t *pair;
 	enum tnet_turn_transport_e e_req_transport;
 	tnet_family_t addr_family_local, addr_family_remote;
-	if (TSK_LIST_IS_EMPTY(local_candidates) || TSK_LIST_IS_EMPTY(remote_candidates) || !result_pairs) {
+	static uint64_t __unique_id = 0;
+	if (!self || TSK_LIST_IS_EMPTY(local_candidates) || TSK_LIST_IS_EMPTY(remote_candidates) || !result_pairs) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+
+	self->is_building_pairs = tsk_true;
+	TSK_DEBUG_INFO("ICE: begin building pairs");
 
 	tsk_list_clear_items(result_pairs);
 
@@ -2293,18 +2334,20 @@ static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, 
 				}
 			}
 
-			TSK_DEBUG_INFO("ICE Pair: [%s %u %s %d] -> [%s %u %s %d]",
-				cand_local->foundation,
-				cand_local->comp_id,
-				cand_local->connection_addr,
-				cand_local->port,
-
-				cand_remote->foundation,
-				cand_remote->comp_id,
-				cand_remote->connection_addr,
-				cand_remote->port);
-
 			if ((pair = tnet_ice_pair_create(cand_local, cand_remote, is_controlling, tie_breaker, is_ice_jingle))) {
+				pair->id = ++__unique_id;
+				TSK_DEBUG_INFO("ICE Pair(%llu): [%s %u %s %d] -> [%s %u %s %d]",
+					pair->id,
+
+					cand_local->foundation,
+					cand_local->comp_id,
+					cand_local->connection_addr,
+					cand_local->port,
+
+					cand_remote->foundation,
+					cand_remote->comp_id,
+					cand_remote->connection_addr,
+					cand_remote->port);
 				tsk_list_push_descending_data(result_pairs, (void**)&pair);
 			}
 		}
@@ -2331,6 +2374,10 @@ static int _tnet_ice_ctx_build_pairs(tnet_ice_candidates_L_t* local_candidates, 
 	tsk_list_unlock(local_candidates);
 	tsk_list_unlock(remote_candidates);
 	tsk_list_unlock(result_pairs);
+
+	self->is_building_pairs = tsk_false;
+	tsk_condwait_broadcast(self->condwait_pairs);
+	TSK_DEBUG_INFO("ICE: end building pairs");
 
 	return 0;
 }
@@ -2494,7 +2541,7 @@ static int _tnet_ice_ctx_turn_callback(const struct tnet_turn_session_event_xs *
 			TSK_OBJECT_SAFE_FREE(ctx->turn.ss_nominated_rtp);
 			TSK_OBJECT_SAFE_FREE(ctx->turn.ss_nominated_rtcp);
 
-			if ((ret = _tnet_ice_ctx_build_pairs(ctx->candidates_local, ctx->candidates_remote, ctx->candidates_pairs, ctx->is_controlling, ctx->tie_breaker, ctx->is_ice_jingle, ctx->use_rtcpmux))) {
+			if ((ret = _tnet_ice_ctx_build_pairs(ctx, ctx->candidates_local, ctx->candidates_remote, ctx->candidates_pairs, ctx->is_controlling, ctx->tie_breaker, ctx->is_ice_jingle, ctx->use_rtcpmux))) {
 				TSK_DEBUG_ERROR("_tnet_ice_ctx_build_pairs() failed");
 				goto bail;
 			}
