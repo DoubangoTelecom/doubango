@@ -2498,9 +2498,10 @@ static int _tnet_ice_ctx_turn_callback(const struct tnet_turn_session_event_xs *
 	case tnet_turn_session_event_type_chanbind_nok:
 	case tnet_turn_session_event_type_connect_nok:
 	{
-		// Do not raise error event if no nominated candidate because.
+		// Do not raise error event if no nominated candidate because
 		// TURN error could be raised by the session when we're in "conncheck" state and this is a normal case.
-		if (ctx->is_active && ctx->is_started && ctx->turn.ss_nominated_rtp && ctx->turn.peer_id_rtp != kTurnPeerIdInvalid) {
+		if (ctx->is_active && ctx->is_started && ctx->turn.ss_nominated_rtp && ctx->turn.peer_id_rtp == e->u_peer_id) {
+			TSK_DEBUG_ERROR("TURN connection broken (peer-id=%ld)", e->u_peer_id);
 			if ((ret = _tnet_ice_ctx_signal_async(ctx, tnet_ice_event_type_turn_connection_broken, "TURN connection is broken"))) {
 				goto bail;
 			}
