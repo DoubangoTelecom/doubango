@@ -2008,6 +2008,7 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_l
 	const tnet_ice_pair_t *pair_offer, *pair_answer_src, *pair_answer_dest;
 	const tsk_list_item_t *item;
 	const tnet_ice_pair_t *pair;
+	const tnet_ice_candidate_t *candidate;
 	tsk_list_t* sessions = tsk_list_create(); // for lock-free TURN sessions destroying
 	int ret;
 
@@ -2048,7 +2049,7 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_l
 	}
 	if (ret == 0 && pair_offer) ((tnet_ice_pair_t *)pair_offer)->is_nominated = tsk_true;
 
-	// collect all useless TURN sessions (lock-free)
+	// collect all useless TURN sessions (pairs)
 	tsk_list_foreach(item, self->candidates_pairs) {
 		if (!(pair = item->data) || !pair->candidate_offer || !pair->candidate_offer->turn.ss) {
 			continue;
@@ -2060,6 +2061,32 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_l
 	}
 
 	tsk_list_unlock(self->candidates_pairs);
+
+	// collect all useless TURN sessions (local candidates)
+	tsk_list_lock(self->candidates_local);
+	tsk_list_foreach(item, self->candidates_local) {
+		if (!(candidate = item->data) || !candidate->turn.ss) {
+			continue;
+		}
+		if (candidate->turn.ss != self->turn.ss_nominated_rtp && candidate->turn.ss != self->turn.ss_nominated_rtcp) {
+			tsk_list_push_back_data(sessions, (void**)&candidate->turn.ss);
+			TSK_OBJECT_SAFE_FREE(((tnet_ice_candidate_t*)candidate)->turn.ss);
+		}
+	}
+	tsk_list_unlock(self->candidates_local);
+
+	// collect all useless TURN sessions (remote candidates)
+	tsk_list_lock(self->candidates_remote);
+	tsk_list_foreach(item, self->candidates_remote) {
+		if (!(candidate = item->data) || !candidate->turn.ss) {
+			continue;
+		}
+		if (candidate->turn.ss != self->turn.ss_nominated_rtp && candidate->turn.ss != self->turn.ss_nominated_rtcp) {
+			tsk_list_push_back_data(sessions, (void**)&candidate->turn.ss);
+			TSK_OBJECT_SAFE_FREE(((tnet_ice_candidate_t*)candidate)->turn.ss);
+		}
+	}
+	tsk_list_unlock(self->candidates_remote);
 
 	// lock-free destruction
 	TSK_OBJECT_SAFE_FREE(sessions);
