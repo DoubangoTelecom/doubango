@@ -1315,6 +1315,15 @@ static int _tnet_turn_session_send_refresh(tnet_turn_session_t* p_self)
 	}
 	// add authentication info
 	tnet_stun_pkt_auth_copy(p_self->p_pkt_refresh, p_self->cred.p_usr_name, p_self->cred.p_pwd, p_self->p_pkt_alloc);
+#if 0
+	if (p_self->u_lifetime_alloc_in_sec == 0) {
+		const tnet_stun_attr_vdata_t *pc_attr_nonce = tsk_null;
+		tnet_stun_pkt_attr_find_first(p_self->p_pkt_refresh, tnet_stun_attr_type_nonce, (const tnet_stun_attr_t**)&pc_attr_nonce);
+		if (pc_attr_nonce) {
+			pc_attr_nonce->p_data_ptr[0] = 'a';
+		}
+	}
+#endif
 	// add attributes
 	ret = tnet_stun_pkt_attrs_add(p_self->p_pkt_refresh,
 		TNET_STUN_PKT_ATTR_ADD_LIFETIME(p_self->u_lifetime_alloc_in_sec),
