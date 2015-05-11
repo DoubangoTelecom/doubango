@@ -1489,6 +1489,7 @@ static int _tnet_ice_ctx_fsm_GatheringReflexiveCandidatesDone_2_GatheringRelayCa
 	enum tnet_stun_state_e e_tunrn_state;
 	tnet_ice_servers_L_t* ice_servers = tsk_null;
 	tnet_ice_server_t* ice_server;
+	tnet_ice_candidates_L_t* candidates_local_copy = tsk_null;;
 
 	// Create TURN condwait handle if not already done
 	if (!self->turn.condwait && !(self->turn.condwait = tsk_condwait_create())) {
@@ -1496,6 +1497,11 @@ static int _tnet_ice_ctx_fsm_GatheringReflexiveCandidatesDone_2_GatheringRelayCa
 		ret = -2;
 		goto bail;
 	}
+
+	// Copy local ICE candidates
+	tsk_list_lock(self->candidates_local);
+	candidates_local_copy = tsk_list_clone(self->candidates_local);
+	tsk_list_unlock(self->candidates_local);
 
 	// Take reference to the TURN servers
 	ice_servers = _tnet_ice_ctx_servers_copy(self, tnet_ice_server_proto_turn);
@@ -1521,7 +1527,7 @@ next_server:
 	ice_server = (tnet_ice_server_t*)item_server->data;
 
 	// Create TURN sessions for each local host candidate
-	tsk_list_foreach(item, self->candidates_local) {
+	tsk_list_foreach(item, candidates_local_copy) {
 		if (!(candidate = item->data)) {
 			continue;
 		}
@@ -1586,7 +1592,7 @@ next_server:
 
 		// count the number of TURN sessions with alloc() = ok/nok and ignore ones without response
 		relay_addr_count_ok = 0;
-		tsk_list_foreach(item, self->candidates_local) {
+		tsk_list_foreach(item, candidates_local_copy) {
 			if (!(candidate = item->data) || !candidate->turn.ss) {
 				continue;
 			}
@@ -1604,7 +1610,7 @@ next_server:
 	}
 
 	// add/delete TURN candidates
-	tsk_list_foreach(item, self->candidates_local) {
+	tsk_list_foreach(item, candidates_local_copy) {
 		if (!(candidate = item->data) || !candidate->turn.ss) {
 			continue;
 		}
@@ -1666,6 +1672,7 @@ bail:
 		}
 	}
 	TSK_OBJECT_SAFE_FREE(ice_servers);
+	TSK_OBJECT_SAFE_FREE(candidates_local_copy);
 	return ret;
 }
 
