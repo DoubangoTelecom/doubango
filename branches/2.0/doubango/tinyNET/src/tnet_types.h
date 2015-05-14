@@ -63,9 +63,9 @@ TNET_BEGIN_DECLS
 
 #define TNET_FINGERPRINT_MAX	256
 
-typedef int32_t tnet_fd_t;
+typedef int tnet_fd_t;
 typedef uint16_t tnet_port_t;
-typedef int32_t tnet_family_t;
+typedef int tnet_family_t;
 typedef char tnet_host_t[NI_MAXHOST];
 typedef char tnet_ip_t[INET6_ADDRSTRLEN];
 typedef unsigned char tnet_fingerprint_t[TNET_FINGERPRINT_MAX + 1];
