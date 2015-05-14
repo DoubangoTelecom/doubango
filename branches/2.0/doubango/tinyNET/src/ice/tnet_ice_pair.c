@@ -124,7 +124,7 @@ tnet_ice_pair_t* tnet_ice_pair_create(const tnet_ice_candidate_t* candidate_offe
 }
 
 // rfc 5245 - 7.1.3.2.1.  Discovering Peer Reflexive Candidates
-tnet_ice_pair_t* tnet_ice_pair_prflx_create(tnet_ice_pairs_L_t* pairs, uint16_t local_fd, const struct sockaddr_storage *remote_addr)
+tnet_ice_pair_t* tnet_ice_pair_prflx_create(tnet_ice_pairs_L_t* pairs, tnet_fd_t local_fd, const struct sockaddr_storage *remote_addr)
 {
 	int ret;
 	const tsk_list_item_t *item;
@@ -151,7 +151,7 @@ tnet_ice_pair_t* tnet_ice_pair_prflx_create(tnet_ice_pairs_L_t* pairs, uint16_t 
 	}
 
 	if (!pair_local) {
-		TSK_DEBUG_ERROR("Cannot create prflx candidate with remote ip = %s, remote port = %u and local_fd = %u", remote_ip, remote_port, (unsigned)local_fd);
+		TSK_DEBUG_ERROR("Cannot create prflx candidate with remote ip = %s, remote port = %u and local_fd = %d", remote_ip, remote_port, local_fd);
 		return tsk_null;
 	}
 	else {
@@ -695,7 +695,7 @@ const tnet_ice_pair_t* tnet_ice_pairs_find_by_response(tnet_ice_pairs_L_t* pairs
 	return tsk_null;
 }
 
-const tnet_ice_pair_t* tnet_ice_pairs_find_by_fd_and_addr(tnet_ice_pairs_L_t* pairs, uint16_t local_fd, const struct sockaddr_storage *remote_addr)
+const tnet_ice_pair_t* tnet_ice_pairs_find_by_fd_and_addr(tnet_ice_pairs_L_t* pairs, tnet_fd_t local_fd, const struct sockaddr_storage *remote_addr)
 {
 	int ret;
 	const tsk_list_item_t *item;
