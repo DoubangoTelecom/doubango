@@ -724,7 +724,7 @@ const tnet_ice_pair_t* tnet_ice_pairs_find_by_fd_and_addr(tnet_ice_pairs_L_t* pa
 		return pair;
 	}
 
-	TSK_DEBUG_INFO("No ICE candidate with remote ip = %s and port = %u could be found...probably symetric NAT", remote_ip, remote_port);
+	TSK_DEBUG_INFO("No ICE candidate with remote ip = %s, port = %u and local_fd = %d could be found...probably symetric NAT", remote_ip, remote_port, local_fd);
 
 	return tsk_null;
 }
