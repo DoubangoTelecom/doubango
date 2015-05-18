@@ -175,7 +175,7 @@ static int tdav_codec_vp8_set(tmedia_codec_t* self, const tmedia_param_t* param)
 		else if (tsk_striequals(param->key, "rotation")) {
 			// IMPORTANT: changing resolution requires at least libvpx v1.1.0 "Eider"
 			int32_t rotation = *((int32_t*)param->value);
-			if(vp8->encoder.rotation != rotation){
+			if (vp8->encoder.rotation != rotation) {
 				vp8->encoder.rotation = rotation;
 				vp8->encoder.cfg.g_w = (rotation == 90 || rotation == 270) ? TMEDIA_CODEC_VIDEO(vp8)->out.height : TMEDIA_CODEC_VIDEO(vp8)->out.width;
 				vp8->encoder.cfg.g_h = (rotation == 90 || rotation == 270) ? TMEDIA_CODEC_VIDEO(vp8)->out.width : TMEDIA_CODEC_VIDEO(vp8)->out.height;
@@ -836,10 +836,11 @@ int tdav_codec_vp8_open_decoder(tdav_codec_vp8_t* self)
 int tdav_codec_vp8_close_encoder(tdav_codec_vp8_t* self)
 {
 	TSK_DEBUG_INFO("tdav_codec_vp8_close_encoder(begin)");
-	if(self->encoder.initialized){
+	if (self->encoder.initialized) {
 		vpx_codec_destroy(&self->encoder.context);
 		self->encoder.initialized = tsk_false;
 	}
+    self->encoder.rotation = 0; // reset rotation
 	TSK_DEBUG_INFO("tdav_codec_vp8_close_encoder(end)");
 	return 0;
 }

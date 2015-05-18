@@ -718,6 +718,7 @@ static int tdav_codec_h264_cisco_close_encoder(tdav_codec_h264_cisco_t* self)
             tsk_mutex_destroy(&self->encoder.mutex);
         }
 		self->encoder.frame_count = 0;
+        self->encoder.rotation = 0; // reset rotation
 	}
 	return 0;
 }
