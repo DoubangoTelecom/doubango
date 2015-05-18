@@ -67,7 +67,7 @@ static OSStatus __handle_input_buffer(void *inRefCon,
 		speex_buffer_write(producer->ring.buffer, buffers.mBuffers[0].mData, buffers.mBuffers[0].mDataByteSize);
         int avail = speex_buffer_get_available(producer->ring.buffer);
         while (producer->started && avail >= producer->ring.chunck.size) {
-            avail -= speex_buffer_read(producer->ring.buffer, (int)producer->ring.chunck.buffer, (int)producer->ring.chunck.size);
+            avail -= speex_buffer_read(producer->ring.buffer, (void*)producer->ring.chunck.buffer, (int)producer->ring.chunck.size);
             TMEDIA_PRODUCER(producer)->enc_cb.callback(TMEDIA_PRODUCER(producer)->enc_cb.callback_data,
                                                        producer->ring.chunck.buffer, producer->ring.chunck.size);
         }
