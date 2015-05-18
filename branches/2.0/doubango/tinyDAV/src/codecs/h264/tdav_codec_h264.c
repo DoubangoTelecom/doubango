@@ -828,6 +828,7 @@ int tdav_codec_h264_close_encoder(tdav_codec_h264_t* self)
 		TSK_FREE(self->encoder.buffer);
 	}
 	self->encoder.frame_count = 0;
+    self->encoder.rotation = 0; // reset rotation
 
 	return 0;
 }
