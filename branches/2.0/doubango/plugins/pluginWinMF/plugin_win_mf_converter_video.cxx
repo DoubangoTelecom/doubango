@@ -49,10 +49,14 @@ Video Processor MFT (http://msdn.microsoft.com/en-us/library/windows/desktop/hh1
 
 EXTERN_C const GUID CLSID_VideoProcessorMFT; // defined in mf_utils.cxx
 
+#if !defined(_WIN32_WINNT_WIN8)
+#define _WIN32_WINNT_WIN8                   0x0602
+#endif /* _WIN32_WINNT_WIN8 */
+
 #if (WINVER < _WIN32_WINNT_WIN8) 
 DEFINE_GUID(MF_SA_D3D11_AWARE,
 	0x206b4fc8, 0xfcf9, 0x4c51, 0xaf, 0xe3, 0x97, 0x64, 0x36, 0x9e, 0x33, 0xa0);
-#endif
+#endif /* MF_SA_D3D11_AWARE */
 
 #if !defined(HAVE_IMFVideoProcessorControl)
 #	if defined(__IMFVideoProcessorControl_INTERFACE_DEFINED__)
@@ -60,10 +64,10 @@ DEFINE_GUID(MF_SA_D3D11_AWARE,
 #	else
 #		define HAVE_IMFVideoProcessorControl 0
 #	endif
-#endif
+#endif /* HAVE_IMFVideoProcessorControl */
 #if !defined(E_BOUNDS)
 #	define E_BOUNDS _HRESULT_TYPEDEF_(0x8000000BL)
-#endif
+#endif /* E_BOUNDS */
 #if !defined(PLUGIN_MF_VC_FPS)
 #define PLUGIN_MF_VC_FPS		120 // Samples requires timestamp
 #endif /* PLUGIN_MF_VC_FPS */
