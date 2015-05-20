@@ -1069,12 +1069,20 @@ int wrapSocket(tnet_transport_t *transport, transport_socket_xt *sock)
             
             // Open streams
             if (!CFReadStreamOpen(sock->cf_read_stream)) {
-                TSK_DEBUG_ERROR("CFReadStreamOpen(fd=%d) failed", sock->fd);
-                return -1;
+                CFStreamStatus status = CFReadStreamGetStatus(sock->cf_read_stream);
+                if (status != kCFStreamStatusOpen && status != kCFStreamStatusOpening && status != kCFStreamStatusReading) {
+                    TSK_DEBUG_ERROR("CFReadStreamOpen(fd=%d) failed with status=%ld", sock->fd, status);
+                    return -1;
+                }
+                TSK_DEBUG_INFO("CFReadStreamOpen(fd=%d) returned with status=%ld", sock->fd, status);
             }
             if (!CFWriteStreamOpen(sock->cf_write_stream)) {
-                TSK_DEBUG_ERROR("CFWriteStreamOpen(fd=%d) failed", sock->fd);
-                return -1;
+                CFStreamStatus status = CFWriteStreamGetStatus(sock->cf_write_stream);
+                if (status != kCFStreamStatusOpen && status != kCFStreamStatusOpening && status != kCFStreamStatusWriting) {
+                    TSK_DEBUG_ERROR("CFWriteStreamOpen(fd=%d) failed with status=%ld", sock->fd, status);
+                    return -1;
+                }
+                TSK_DEBUG_INFO("CFWriteStreamOpen(fd=%d) returned with status=%ld", sock->fd, status);
             }
         }
     }
