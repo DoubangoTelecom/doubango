@@ -1,4 +1,4 @@
-/* Copyright (C) 2014 Mamadou DIOP.
+/* Copyright (C) 2014-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -437,9 +437,11 @@ static void* TSK_STDCALL _tdav_producer_screencast_record_thread(void *arg)
 
 	while (ret == 0 && p_gdi->b_started) {
 		TimeNow = tsk_time_now();
-		if ((TimeNow - TimeLastFrame) > TimeFrameDuration) {
-			if (ret = _tdav_producer_screencast_grab(p_gdi)) {
-				goto next;
+		if ((TimeNow - TimeLastFrame) >= TimeFrameDuration) {
+			if (!p_gdi->b_muted && !p_gdi->b_paused) {
+				if (ret = _tdav_producer_screencast_grab(p_gdi)) {
+					goto next;
+				}
 			}
 			TimeLastFrame = TimeNow;
 		}

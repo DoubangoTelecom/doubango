@@ -114,6 +114,7 @@ static const tsk_size_t __codec_plugins_all_count = sizeof(__codec_plugins_all)/
 #include "tinydav/audio/waveapi/tdav_producer_waveapi.h"
 #include "tinydav/audio/directsound/tdav_producer_dsound.h"
 #include "tinydav/video/gdi/tdav_producer_screencast_gdi.h"
+#include "tinydav/video/directx/tdav_producer_screencast_ddraw.h"
 #include "tinydav/video/v4linux/tdav_producer_video_v4l2.h"
 #include "tinydav/audio/coreaudio/tdav_producer_audioqueue.h"
 #include "tinydav/audio/coreaudio/tdav_producer_audiounit.h"
@@ -411,6 +412,11 @@ int tdav_init()
 #elif HAVE_WASAPI // WASAPI
 	tmedia_producer_plugin_register(tdav_producer_wasapi_plugin_def_t);
 #endif
+#if TDAV_UNDER_WINDOWS && !TDAV_UNDER_WINDOWS_RT // Windows DirectDraw (DirectX)
+	if (tdav_producer_screencast_ddraw_plugin_is_supported()) {
+		tmedia_producer_plugin_register(tdav_producer_screencast_ddraw_plugin_def_t);
+	}
+#endif
 #if TDAV_UNDER_WINDOWS && !TDAV_UNDER_WINDOWS_RT // Windows GDI
 	tmedia_producer_plugin_register(tdav_producer_screencast_gdi_plugin_def_t);
 #endif
@@ -679,6 +685,9 @@ int tdav_deinit()
 #endif
 #if HAVE_WASAPI // WASAPI
 	tmedia_producer_plugin_unregister(tdav_producer_wasapi_plugin_def_t);
+#endif
+#if TDAV_UNDER_WINDOWS && !TDAV_UNDER_WINDOWS_RT // Windows DirectDraw (DirectX)
+	tmedia_producer_plugin_unregister(tdav_producer_screencast_ddraw_plugin_def_t);
 #endif
 #if TDAV_UNDER_WINDOWS && !TDAV_UNDER_WINDOWS_RT // Windows GDI
 	tmedia_producer_plugin_unregister(tdav_producer_screencast_gdi_plugin_def_t);
