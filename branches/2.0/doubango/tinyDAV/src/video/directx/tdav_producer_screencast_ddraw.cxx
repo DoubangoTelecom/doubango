@@ -474,14 +474,12 @@ static tmedia_chroma_t _tdav_producer_screencast_get_chroma(const DDPIXELFORMAT*
 			DDRAW_DEBUG_ERROR("Pixels not aligned");
 		}
 		return pixelFormat->dwRGBBitCount == 24 ? tmedia_chroma_bgr24 : tmedia_chroma_rgb32;
-		break;
 	case 16: // RGB565
 		// pixels must be aligned for fast copy
 		if (pixelFormat->dwRBitMask != 0xF800 || pixelFormat->dwGBitMask != 0x7E0 || pixelFormat->dwBBitMask != 0x1F) {
 			DDRAW_DEBUG_ERROR("Pixels not aligned");
 		}
 		return tmedia_chroma_rgb565le;
-		break;
 	default:
 		DDRAW_DEBUG_ERROR("dwRGBBitCount(%d) != 24 and 32", pixelFormat->dwRGBBitCount);
 		DDRAW_CHECK_HR(hr = DDERR_INVALIDCAPS);
