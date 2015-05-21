@@ -551,6 +551,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="directx"
+					>
+					<File
+						RelativePath=".\include\tinydav\video\directx\tdav_producer_screencast_d3d9.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\tinydav\video\directx\tdav_producer_screencast_ddraw.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="msrp"
@@ -956,6 +968,18 @@
 					</File>
 					<File
 						RelativePath=".\src\video\jb\tdav_video_jb.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="directx"
+					>
+					<File
+						RelativePath=".\src\video\directx\tdav_producer_screencast_d3d9.cxx"
+						>
+					</File>
+					<File
+						RelativePath=".\src\video\directx\tdav_producer_screencast_ddraw.cxx"
 						>
 					</File>
 				</Filter>
