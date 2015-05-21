@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,10 +20,6 @@
 
 /**@file tnet.c
  * @brief Network stack.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #include "tnet.h"
 #include "tnet_utils.h" 
@@ -81,7 +75,7 @@ int tnet_startup()
 	int err = 0;
 	short word = 0x4321;
 
-	if(__tnet_started){
+	if (__tnet_started) {
 		goto bail;
 	}
 
@@ -91,9 +85,17 @@ int tnet_startup()
 	// endianness
 	tnet_isBigEndian = ((*(int8_t *)&word) != 0x21);
 #if TNET_UNDER_WINDOWS
-	if(tnet_isBigEndian){
+	if (tnet_isBigEndian){
 		TSK_DEBUG_ERROR("Big endian on Windows machine. Is it right?");
 	}
+#endif
+	// Print messages regardless the debug level
+#if TDAV_UNDER_WINDOWS_CE && (BUILD_TYPE_GE && SIN_CITY)
+#	define PRINT_INFO TSK_DEBUG_INFO
+#	define PRINT_ERROR TSK_DEBUG_ERROR
+#else
+#	define PRINT_INFO(FMT, ...) fprintf(stdout, FMT "\n", ##__VA_ARGS__)
+#	define PRINT_ERROR(FMT, ...) fprintf(stderr, FMT "\n", ##__VA_ARGS__)
 #endif
 
 #if TNET_UNDER_WINDOWS
@@ -105,31 +107,31 @@ int tnet_startup()
 
 		err = WSAStartup(wVersionRequested, &wsaData);
 		if (err != 0) {
-			fprintf(stderr, "WSAStartup failed with error: %d\n", err);
+			PRINT_ERROR("WSAStartup failed with error: %d", err);
 			return -1;
 		}
 
-		if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2){
-			fprintf(stderr, "Could not find a usable version of Winsock.dll\n");
+		if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2) {
+			PRINT_ERROR("Could not find a usable version of Winsock.dll");
 			tnet_cleanup();
 			return -2;
 		}
-		else{
-			fprintf(stdout, "The Winsock 2.2 dll was found okay\n");
+		else {
+			PRINT_INFO("The Winsock 2.2 dll was found okay");
 		}
 	}
 #endif /* TNET_UNDER_WINDOWS */
 
 #if HAVE_OPENSSL
-	fprintf(stdout, "SSL is enabled :)\n");
+	PRINT_INFO("SSL is enabled :)");
 	SSL_library_init();
 	OpenSSL_add_all_algorithms();
 	SSL_load_error_strings();
 
-	fprintf(stdout, "DTLS supported: %s\n", tnet_dtls_is_supported() ? "yes" : "no");
-	fprintf(stdout, "DTLS-SRTP supported: %s\n", tnet_dtls_is_srtp_supported() ? "yes" : "no");
+	PRINT_INFO("DTLS supported: %s", tnet_dtls_is_supported() ? "yes" : "no");
+	PRINT_INFO("DTLS-SRTP supported: %s", tnet_dtls_is_srtp_supported() ? "yes" : "no");
 #else
-	fprintf(stderr, "SSL is disabled :(\n");
+	PRINT_ERROR("SSL is disabled :(");
 #endif
 	
 	__tnet_started = tsk_true;
@@ -147,7 +149,7 @@ bail:
 **/
 int tnet_cleanup()
 {
-	if(!__tnet_started){
+	if (!__tnet_started){
 		goto bail;
 	}
 
