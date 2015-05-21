@@ -31,10 +31,6 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
-#ifdef _MSC_VER
-#	pragma comment(lib, "Ddraw")
-#endif
-
 #if !defined(DDRAW_HIGH_PRIO_MEMCPY)
 #	define DDRAW_HIGH_PRIO_MEMCPY	0
 #endif /* DDRAW_HIGH_PRIO_MEMCPY */
@@ -55,6 +51,13 @@
 #define DDRAW_SAFE_RELEASE(pp) if ((pp) && *(pp)) (*(pp))->Release(), *(pp) = NULL
 #define DDRAW_CHECK_HR(x) { HRESULT __hr__ = (x); if (FAILED(__hr__)) { DDRAW_DEBUG_ERROR("Operation Failed (%08x)", __hr__); goto bail; } }
 
+typedef struct DDrawModule {
+	LPDIRECTDRAW lpDD;
+	HMODULE hDLL;
+}DDrawModule;
+typedef struct DDrawModule FAR *LPDDrawModule;
+#define DDrawModuleSafeFree(module) DDRAW_SAFE_RELEASE(&module.lpDD); if (module.hDLL) { FreeLibrary(module.hDLL), module.hDLL = NULL; }
+
 typedef struct tdav_producer_screencast_ddraw_s
 {
 	TMEDIA_DECLARE_PRODUCER;
@@ -65,7 +68,7 @@ typedef struct tdav_producer_screencast_ddraw_s
 	BITMAPINFO bi_preview;
 #endif /* DDRAW_PREVIEW */
 	
-	IDirectDraw* p_dd;
+	DDrawModule ddrawModule;
 	IDirectDrawSurface* p_surf_primary;
 
 	tsk_thread_handle_t* tid[1];
@@ -85,6 +88,7 @@ tdav_producer_screencast_ddraw_t;
 static tmedia_chroma_t _tdav_producer_screencast_get_chroma(const DDPIXELFORMAT* pixelFormat);
 static void* TSK_STDCALL _tdav_producer_screencast_record_thread(void *arg);
 static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_self);
+static HRESULT _tdav_producer_screencast_create_module(LPDDrawModule lpModule);
 
 // public function used to check that we can use DDRAW plugin before loading it
 tsk_bool_t tdav_producer_screencast_ddraw_plugin_is_supported()
@@ -96,7 +100,7 @@ tsk_bool_t tdav_producer_screencast_ddraw_plugin_is_supported()
 	DDSURFACEDESC ddsd;
 	DDPIXELFORMAT DDPixelFormat;
 	LPDIRECTDRAWSURFACE lpDDS = NULL;
-	LPDIRECTDRAW lpDD = NULL;
+	DDrawModule ddrawModule = { 0 };
 	
 	if (__checked) {
 		goto bail;
@@ -104,15 +108,15 @@ tsk_bool_t tdav_producer_screencast_ddraw_plugin_is_supported()
 	
 	__checked = tsk_true;
 
-	DDRAW_CHECK_HR(hr = DirectDrawCreate(NULL, &lpDD, NULL));
-	DDRAW_CHECK_HR(hr = lpDD->SetCooperativeLevel(NULL, DDSCL_NORMAL));
+	DDRAW_CHECK_HR(hr = _tdav_producer_screencast_create_module(&ddrawModule));
+	DDRAW_CHECK_HR(hr = ddrawModule.lpDD->SetCooperativeLevel(NULL, DDSCL_NORMAL));
 
 	ZeroMemory(&ddsd, sizeof(ddsd));
 	ddsd.dwSize = sizeof(ddsd);
 	ddsd.dwFlags = DDSD_CAPS;
 	ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
 
-	DDRAW_CHECK_HR(hr = lpDD->CreateSurface(&ddsd, &lpDDS, NULL));
+	DDRAW_CHECK_HR(hr = ddrawModule.lpDD->CreateSurface(&ddsd, &lpDDS, NULL));
 	
 	ZeroMemory(&DDPixelFormat, sizeof(DDPixelFormat));
 	DDPixelFormat.dwSize = sizeof(DDPixelFormat);
@@ -127,7 +131,7 @@ tsk_bool_t tdav_producer_screencast_ddraw_plugin_is_supported()
 
 bail:
 	DDRAW_SAFE_RELEASE(&lpDDS);
-	DDRAW_SAFE_RELEASE(&lpDD);
+	DDrawModuleSafeFree(ddrawModule);
 	return __supported;
 }
 
@@ -192,10 +196,10 @@ static int _tdav_producer_screencast_ddraw_prepare(tmedia_producer_t* p_self, co
 
 	DDRAW_DEBUG_INFO("Prepare with fps:%d, width:%d; height:%d", TMEDIA_PRODUCER(p_ddraw)->video.fps, TMEDIA_PRODUCER(p_ddraw)->video.width, TMEDIA_PRODUCER(p_ddraw)->video.height);
 
-	if (!p_ddraw->p_dd) {
-		DDRAW_CHECK_HR(hr = DirectDrawCreate(NULL, &p_ddraw->p_dd, NULL));
+	if (!p_ddraw->ddrawModule.lpDD || !p_ddraw->ddrawModule.hDLL) {
+		DDRAW_CHECK_HR(hr = _tdav_producer_screencast_create_module(&p_ddraw->ddrawModule));
 	}
-	DDRAW_CHECK_HR(hr = p_ddraw->p_dd->SetCooperativeLevel(NULL, DDSCL_NORMAL));
+	DDRAW_CHECK_HR(hr = p_ddraw->ddrawModule.lpDD->SetCooperativeLevel(NULL, DDSCL_NORMAL));
 	
 	if (!p_ddraw->p_surf_primary) {
 		ZeroMemory(&ddsd, sizeof(ddsd));
@@ -203,7 +207,7 @@ static int _tdav_producer_screencast_ddraw_prepare(tmedia_producer_t* p_self, co
 		ddsd.dwFlags = DDSD_CAPS;
 		ddsd.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
 
-		DDRAW_CHECK_HR(hr = p_ddraw->p_dd->CreateSurface(&ddsd, &p_ddraw->p_surf_primary, NULL));
+		DDRAW_CHECK_HR(hr = p_ddraw->ddrawModule.lpDD->CreateSurface(&ddsd, &p_ddraw->p_surf_primary, NULL));
 	}
 #if 0
 	ZeroMemory(&DDPixelFormat, sizeof(DDPixelFormat));
@@ -490,6 +494,40 @@ bail:
 	return tmedia_chroma_none;
 }
 
+static HRESULT _tdav_producer_screencast_create_module(LPDDrawModule lpModule)
+{
+	typedef HRESULT(*pDirectDrawCreateFunc)(_In_  GUID FAR         *lpGUID,
+		_Out_ LPDIRECTDRAW FAR *lplpDD,
+		_In_  IUnknown FAR     *pUnkOuter);
+	HRESULT hr = S_OK;
+	pDirectDrawCreateFunc DirectDrawCreate_ = NULL;
+
+	if (!lpModule) {
+		DDRAW_CHECK_HR(hr = E_INVALIDARG);
+	}
+
+	if (!lpModule->hDLL && !(lpModule->hDLL = LoadLibrary(TEXT("ddraw.dll")))) {
+		DDRAW_DEBUG_ERROR("Failed to load ddraw.dll: %d", GetLastError());
+		DDRAW_CHECK_HR(hr = E_FAIL);
+	}
+	if (!lpModule->lpDD) {
+		// Hum, "GetProcAddressA" is missing but ""GetProcAddressW" exists on CE
+#if TDAV_UNDER_WINDOWS_CE
+#	define DirectDrawCreateName TEXT("DirectDrawCreate")
+#else
+#	define DirectDrawCreateName "DirectDrawCreate"
+#endif
+		if (!(DirectDrawCreate_ = (pDirectDrawCreateFunc)GetProcAddress(lpModule->hDLL, DirectDrawCreateName))) {
+			DDRAW_DEBUG_ERROR("Failed to find DirectDrawCreate in ddraw.dll: %d", GetLastError());
+			DDRAW_CHECK_HR(hr = E_FAIL);
+		}
+		DDRAW_CHECK_HR(hr = DirectDrawCreate_(NULL, &lpModule->lpDD, NULL));
+	}
+
+bail:
+	return hr;
+}
+
 static void* TSK_STDCALL _tdav_producer_screencast_record_thread(void *arg)
 {
 	tdav_producer_screencast_ddraw_t* p_ddraw = (tdav_producer_screencast_ddraw_t*)arg;
@@ -562,7 +600,7 @@ static tsk_object_t* _tdav_producer_screencast_ddraw_dtor(tsk_object_t * self)
 			p_ddraw->p_buff_neg = NULL;
 		}
 		DDRAW_SAFE_RELEASE(&p_ddraw->p_surf_primary);
-		DDRAW_SAFE_RELEASE(&p_ddraw->p_dd);
+		DDrawModuleSafeFree(p_ddraw->ddrawModule);
 		tsk_safeobj_deinit(p_ddraw);
 
 		DDRAW_DEBUG_INFO("*** destroyed ***");
