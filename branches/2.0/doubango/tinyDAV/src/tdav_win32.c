@@ -1,7 +1,6 @@
 /*
 * Copyright (C) 2010-2015 Mamadou DIOP.
 *
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
@@ -84,7 +83,11 @@ int tdav_win32_init()
 		GetVersionEx(&osvi);
 		dwMajorVersion = osvi.dwMajorVersion;
 		dwMinorVersion = osvi.dwMinorVersion;
+#if TDAV_UNDER_WINDOWS_CE && (BUILD_TYPE_GE && SIN_CITY)
+		TSK_DEBUG_INFO("Windows dwMajorVersion=%ld, dwMinorVersion=%ld\n", dwMajorVersion, dwMinorVersion);
+#else
 		fprintf(stdout, "Windows dwMajorVersion=%ld, dwMinorVersion=%ld\n", dwMajorVersion, dwMinorVersion);
+#endif
 	}
 #endif
 
