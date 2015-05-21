@@ -90,7 +90,7 @@ int tnet_startup()
 	}
 #endif
 	// Print messages regardless the debug level
-#if TDAV_UNDER_WINDOWS_CE && (BUILD_TYPE_GE && SIN_CITY)
+#if TNET_UNDER_WINDOWS_CE && (BUILD_TYPE_GE && SIN_CITY)
 #	define PRINT_INFO TSK_DEBUG_INFO
 #	define PRINT_ERROR TSK_DEBUG_ERROR
 #else
