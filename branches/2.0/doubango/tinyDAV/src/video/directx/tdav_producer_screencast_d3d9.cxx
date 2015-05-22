@@ -22,7 +22,13 @@
 
 #include <windows.h>
 #if TDAV_UNDER_WINDOWS_CE
-#	include <D3dm.h>
+	// Direct3D Mobile (D3DM) was removed from Windows CE in version 7. 
+	// Only include that header if running version 5 or 6. (When this 
+	// class's implementation is complete, we'll need to revisit how 
+	// this entire file is compiled.)
+#	if _WIN32_WCE >= 0x0500 && _WIN32_WCE < 0x0700
+#		include <D3dm.h>
+#	endif
 #else
 #	include <d3d9.h>
 #endif
