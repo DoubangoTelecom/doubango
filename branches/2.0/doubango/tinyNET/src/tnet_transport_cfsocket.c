@@ -793,7 +793,7 @@ void __CFReadStreamClientCallBack(CFReadStreamRef stream, CFStreamEventType even
             // Get the error code
             CFErrorRef error = CFReadStreamCopyError(stream);
             if (error) {
-                TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> Error=%lu -> %s, fd=%d", CFErrorGetCode(error), CFStringGetCStringPtr(CFErrorGetDomain(error), kCFStringEncodingUTF8), sock->fd);
+                TSK_DEBUG_INFO("__CFReadStreamClientCallBack --> Error=%lu -> %s, fd=%d, status=%ld", CFErrorGetCode(error), CFStringGetCStringPtr(CFErrorGetDomain(error), kCFStringEncodingUTF8), sock->fd, CFReadStreamGetStatus(stream));
                 CFRelease(error);
             }
             
