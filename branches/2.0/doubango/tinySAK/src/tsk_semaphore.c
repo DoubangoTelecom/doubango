@@ -36,6 +36,10 @@
 #	define TSK_USE_NAMED_SEM	0
 #endif
 
+#if !defined(NAME_MAX)
+#   define	NAME_MAX		  255
+#endif
+
 #if TSK_UNDER_WINDOWS /* Windows XP/Vista/7/CE */
 
 #	include <windows.h>
