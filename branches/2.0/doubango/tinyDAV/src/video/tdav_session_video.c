@@ -369,10 +369,10 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 
 	// get best negotiated codec if not already done
 	// the encoder codec could be null when session is renegotiated without re-starting (e.g. hold/resume)
-	if(!video->encoder.codec){
+	if (!video->encoder.codec) {
 		const tmedia_codec_t* codec;
 		tsk_safeobj_lock(base);
-		if(!(codec = tdav_session_av_get_best_neg_codec(base))){
+		if (!(codec = tdav_session_av_get_best_neg_codec(base))) {
 			TSK_DEBUG_ERROR("No codec matched");
 			tsk_safeobj_unlock(base);
 			return -2;
@@ -381,25 +381,33 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 		tsk_safeobj_unlock(base);
 	}
 
-	if(base->rtp_manager){
+	if (base->rtp_manager) {
 		//static int __rotation_counter = 0;
 		/* encode */
 		tsk_size_t out_size = 0;
+		tmedia_codec_t* codec_encoder = tsk_null;
 
-		if(!base->rtp_manager->is_started){
+		if (!base->rtp_manager->is_started) {
 			TSK_DEBUG_ERROR("Not started");
-			return 0;
+			goto bail;
+		}
+
+		// take a reference to the encoder to make sure it'll not be destroyed while we're using it
+		codec_encoder = tsk_object_ref(video->encoder.codec);
+		if (!codec_encoder) {
+			TSK_DEBUG_ERROR("The encoder is null");
+			goto bail;
 		}
 
 #define PRODUCER_OUTPUT_FIXSIZE (base->producer->video.chroma != tmedia_chroma_mjpeg) // whether the output data has a fixed size/length
 #define PRODUCER_OUTPUT_RAW (base->producer->encoder.codec_id == tmedia_codec_id_none) // Otherwise, frames from the producer are already encoded
 #define PRODUCER_SIZE_CHANGED ((video->conv.producerWidth && video->conv.producerWidth != base->producer->video.width) || (video->conv.producerHeight && video->conv.producerHeight != base->producer->video.height) \
 || (video->conv.xProducerSize && (video->conv.xProducerSize != size && PRODUCER_OUTPUT_FIXSIZE)))
-#define ENCODED_NEED_FLIP (TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip)
-#define ENCODED_NEED_RESIZE (base->producer->video.width != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.width || base->producer->video.height != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.height)
+#define ENCODED_NEED_FLIP (TMEDIA_CODEC_VIDEO(codec_encoder)->out.flip)
+#define ENCODED_NEED_RESIZE (base->producer->video.width != TMEDIA_CODEC_VIDEO(codec_encoder)->out.width || base->producer->video.height != TMEDIA_CODEC_VIDEO(codec_encoder)->out.height)
 #define PRODUCED_FRAME_NEED_ROTATION (base->producer->video.rotation != 0)
 #define PRODUCED_FRAME_NEED_MIRROR (base->producer->video.mirror != tsk_false)
-#define PRODUCED_FRAME_NEED_CHROMA_CONVERSION (base->producer->video.chroma != TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.chroma)
+#define PRODUCED_FRAME_NEED_CHROMA_CONVERSION (base->producer->video.chroma != TMEDIA_CODEC_VIDEO(codec_encoder)->out.chroma)
 		// Video codecs only accept YUV420P buffers ==> do conversion if needed or producer doesn't have the right size
 		if (PRODUCER_OUTPUT_RAW && (PRODUCED_FRAME_NEED_CHROMA_CONVERSION || PRODUCER_SIZE_CHANGED || ENCODED_NEED_FLIP || ENCODED_NEED_RESIZE ||PRODUCED_FRAME_NEED_ROTATION || PRODUCED_FRAME_NEED_MIRROR)) {
 			// Create video converter if not already done or producer size have changed
@@ -410,8 +418,8 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 				video->conv.xProducerSize = size;
 				
 				TSK_DEBUG_INFO("producer size = (%d, %d)", (int)base->producer->video.width, (int)base->producer->video.height);
-				if(!(video->conv.toYUV420 = tmedia_converter_video_create(base->producer->video.width, base->producer->video.height, base->producer->video.chroma, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.width, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.height,
-					TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.chroma))){
+				if (!(video->conv.toYUV420 = tmedia_converter_video_create(base->producer->video.width, base->producer->video.height, base->producer->video.chroma, TMEDIA_CODEC_VIDEO(codec_encoder)->out.width, TMEDIA_CODEC_VIDEO(codec_encoder)->out.height,
+					TMEDIA_CODEC_VIDEO(codec_encoder)->out.chroma))){
 					TSK_DEBUG_ERROR("Failed to create video converter");
 					ret = -5;
 					goto bail;
@@ -433,22 +441,22 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 												tmedia_pvt_int32,
 												"rotation",
 												(void*)&base->producer->video.rotation);
-				if(!param){
+				if (!param) {
 					TSK_DEBUG_ERROR("Failed to create a media parameter");
 					return -1;
 				}
 				video->encoder.rotation = base->producer->video.rotation; // update rotation to avoid calling the function several times
-				ret = tmedia_codec_set(video->encoder.codec, param);
+				ret = tmedia_codec_set(codec_encoder, param);
 				TSK_OBJECT_SAFE_FREE(param);
 				// (ret != 0) -> not supported by the codec -> to be done by the converter
 				video->encoder.scale_rotated_frames = (ret != 0);
 			}
 
 			// update one-shot parameters
-			tmedia_converter_video_set(video->conv.toYUV420, base->producer->video.rotation, TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.flip, base->producer->video.mirror, video->encoder.scale_rotated_frames);
+			tmedia_converter_video_set(video->conv.toYUV420, base->producer->video.rotation, TMEDIA_CODEC_VIDEO(codec_encoder)->out.flip, base->producer->video.mirror, video->encoder.scale_rotated_frames);
 			
 			yuv420p_size = tmedia_converter_video_process(video->conv.toYUV420, buffer, size, &video->encoder.conv_buffer, &video->encoder.conv_buffer_size);
-			if(!yuv420p_size || !video->encoder.conv_buffer){
+			if (!yuv420p_size || !video->encoder.conv_buffer) {
 				TSK_DEBUG_ERROR("Failed to convert XXX buffer to YUV42P");
 				ret = -6;
 				goto bail;
@@ -457,26 +465,26 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 
 		// Encode data
 		tsk_mutex_lock(video->encoder.h_mutex);
-		if(video->encoder.codec){ // codec is destroyed by stop() which use same mutex
-			if(video->encoder.conv_buffer && yuv420p_size){
+		if (video->started && codec_encoder->opened) { // stop() function locks the encoder mutex before changing "started"
+			if (video->encoder.conv_buffer && yuv420p_size) {
 				/* producer doesn't support yuv42p */
-				out_size = video->encoder.codec->plugin->encode(video->encoder.codec, video->encoder.conv_buffer, yuv420p_size, &video->encoder.buffer, &video->encoder.buffer_size);
+				out_size = codec_encoder->plugin->encode(codec_encoder, video->encoder.conv_buffer, yuv420p_size, &video->encoder.buffer, &video->encoder.buffer_size);
 			}
-			else{
+			else {
 				/* producer supports yuv42p */
-				out_size = video->encoder.codec->plugin->encode(video->encoder.codec, buffer, size,  &video->encoder.buffer, &video->encoder.buffer_size);
+				out_size = codec_encoder->plugin->encode(codec_encoder, buffer, size, &video->encoder.buffer, &video->encoder.buffer_size);
 			}
 		}
 		tsk_mutex_unlock(video->encoder.h_mutex);
 
-
-		if(out_size){
+		if (out_size) {
 			/* Never called, see tdav_session_video_raw_cb() */
 			trtp_manager_send_rtp(base->rtp_manager, video->encoder.buffer, out_size, 6006, tsk_true, tsk_true);
 		}
-bail: ;
+	bail: 
+		TSK_OBJECT_SAFE_FREE(codec_encoder);
 	}
-	else{
+	else {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		ret = -1;
 	}
@@ -1102,8 +1110,11 @@ static int tdav_session_video_stop(tmedia_session_t* self)
 	video = (tdav_session_video_t*)self;
 	base = (tdav_session_av_t*)self;
 
-	// must be here to make sure not other thread will lock the encoder once we have done it
+	// must be here to make sure no other thread will lock the encoder once we have done it
+	tsk_mutex_lock(video->encoder.h_mutex); // encoder thread will check "started" var right after the lock is passed
 	video->started = tsk_false;
+	tsk_mutex_unlock(video->encoder.h_mutex);
+	// at this step we're sure that encode() will no longer be called which means we can safely close the codec
 	
 	if (video->jb) {
 		ret = tdav_video_jb_stop(video->jb);
@@ -1113,9 +1124,12 @@ static int tdav_session_video_stop(tmedia_session_t* self)
 	tsk_list_clear_items(video->avpf.packets);
 	tsk_list_unlock(video->avpf.packets);
 
-	// the encoder must be locked before stopping the session as such action will close all codecs	
-	tsk_mutex_lock(video->encoder.h_mutex);
+	// tdav_session_av_stop() : stop producer and consumer, close encoder and all other codecs, stop rtpManager...
+	// no need to lock the encoder to avoid using a closed codec (see above)
+	// no need to lock the decoder as the rtpManager will be stop before closing the codec
+	// lock-free stop() may avoid deadlock issue (cannot reproduce it myself) on Hovis
 	ret = tdav_session_av_stop(base);
+	tsk_mutex_lock(video->encoder.h_mutex);
 	TSK_OBJECT_SAFE_FREE(video->encoder.codec);
 	tsk_mutex_unlock(video->encoder.h_mutex);
 	TSK_OBJECT_SAFE_FREE(video->decoder.codec);
@@ -1324,12 +1338,12 @@ static int _tdav_session_video_init(tdav_session_video_t *p_self, tmedia_type_t 
 		TSK_DEBUG_ERROR("Failed to create encode mutex");
 		return -4;
 	}
-	if (!(p_self->avpf.packets = tsk_list_create())) {
+	if (!p_self->avpf.packets && !(p_self->avpf.packets = tsk_list_create())) {
 		TSK_DEBUG_ERROR("Failed to create list");
 		return -2;
 	}
 	if (p_self->jb_enabled) {
-		if(!(p_self->jb = tdav_video_jb_create())) {
+		if (!p_self->jb && !(p_self->jb = tdav_video_jb_create())) {
 			TSK_DEBUG_ERROR("Failed to create jitter buffer");
 			return -3;
 		}
