@@ -279,35 +279,24 @@ bail:
 tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, tsk_size_t size)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
-	WSABUF wsaBuffer;
-	DWORD numberOfBytesSent = 0;
-	int ret = -1;
+	int numberOfBytesSent = 0;
 
-	if (!transport){
+	if (!transport) {
 		TSK_DEBUG_ERROR("Invalid server handle.");
-		return ret;
+		goto bail;
 	}
 
-	if (!TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type)){
-		TSK_DEBUG_ERROR("In order to use WSASendTo you must use an udp transport.");
-		return ret;
+	if (!TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type)) {
+		TSK_DEBUG_ERROR("In order to use sendto() you must use an udp transport.");
+		goto bail;
 	}
 
-	wsaBuffer.buf = (CHAR*)buf;
-	wsaBuffer.len = (ULONG)size;
-
-	if ((ret = WSASendTo(from, &wsaBuffer, 1, &numberOfBytesSent, 0, to, tnet_get_sockaddr_size(to), 0, 0)) == SOCKET_ERROR){
-		if ((ret = WSAGetLastError()) == WSA_IO_PENDING){
-			TSK_DEBUG_INFO("WSA_IO_PENDING error for WSASendTo SSESSION");
-			ret = 0;
-		}
-		else{
-			TNET_PRINT_LAST_ERROR("WSASendTo have failed.");
-			return ret;
-		}
+	if ((numberOfBytesSent = tnet_sockfd_sendto(from, to, buf, size)) <= 0) {
+		TNET_PRINT_LAST_ERROR("sendto have failed.");
+		goto bail;
 	}
-	else ret = 0;
 
+bail:
 	return numberOfBytesSent;
 }
 

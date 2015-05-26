@@ -1679,15 +1679,15 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 const tmedia_codec_t* tdav_session_av_get_best_neg_codec(const tdav_session_av_t* self)
 {
 	const tsk_list_item_t* item;
-	if(!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
 	
-	tsk_list_foreach(item, TMEDIA_SESSION(self)->neg_codecs){
+	tsk_list_foreach(item, TMEDIA_SESSION(self)->neg_codecs) {
 		// exclude DTMF, RED and ULPFEC
-		if(!TDAV_IS_DTMF_CODEC(item->data) && !TDAV_IS_ULPFEC_CODEC(item->data) && !TDAV_IS_RED_CODEC(item->data) 
-			&& TMEDIA_CODEC(item->data)->plugin && TMEDIA_CODEC(item->data)->plugin->encode && TMEDIA_CODEC(item->data)->plugin->decode){
+		if (!TDAV_IS_DTMF_CODEC(item->data) && !TDAV_IS_ULPFEC_CODEC(item->data) && !TDAV_IS_RED_CODEC(item->data) 
+			&& TMEDIA_CODEC(item->data)->plugin && TMEDIA_CODEC(item->data)->plugin->encode && TMEDIA_CODEC(item->data)->plugin->decode) {
 			return TMEDIA_CODEC(item->data);
 		}
 	}

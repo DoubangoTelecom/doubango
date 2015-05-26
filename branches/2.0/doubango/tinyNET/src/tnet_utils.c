@@ -1674,17 +1674,17 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 	tsk_size_t sent = 0;
 	int ret = -1;
 
-	if (fd == TNET_INVALID_FD){
+	if (fd == TNET_INVALID_FD) {
 		TSK_DEBUG_ERROR("Using invalid FD to send data.");
 		goto bail;
 	}
-	if (!buf || !size){
+	if (!buf || !size) {
 		TSK_DEBUG_ERROR("Using invalid BUFFER.");
 		ret = -2;
 		goto bail;
 	}
 
-	while (sent < size){
+	while (sent < size) {
 		int try_guard = 10;
 #if TNET_UNDER_WINDOWS
 		WSABUF wsaBuffer;
@@ -1693,31 +1693,30 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 		wsaBuffer.len = (ULONG)(size - sent);
 	try_again:
 		ret = WSASendTo(fd, &wsaBuffer, 1, &numberOfBytesSent, 0, to, tnet_get_sockaddr_size(to), 0, 0); // returns zero if succeed
-		if (ret == 0){
+		if (ret == 0) {
 			ret = numberOfBytesSent;
 		}
 #else
 	try_again:
 		ret = sendto(fd, (((const uint8_t*)buf) + sent), (size - sent), 0, to, tnet_get_sockaddr_size(to)); // returns number of sent bytes if succeed
 #endif
-		if (ret <= 0){
-			if(tnet_geterrno() == TNET_ERROR_WOULDBLOCK){
+		if (ret <= 0) {
+			if (tnet_geterrno() == TNET_ERROR_WOULDBLOCK) {
 				TSK_DEBUG_INFO("SendUdp() - WouldBlock. Retrying...");
-				if(try_guard--){
+				if (try_guard--) {
 					tsk_thread_sleep(10);
 					goto try_again;
-		}
-	}
-			else{
+				}
+			}
+			else {
 				TNET_PRINT_LAST_ERROR("sendto() failed");
-
 			}
 			goto bail;
-}
-		else{
+		}
+		else {
 			sent += ret;
 		}
-}
+	}
 
 bail:
 	return (int)((size == sent) ? sent : ret);
