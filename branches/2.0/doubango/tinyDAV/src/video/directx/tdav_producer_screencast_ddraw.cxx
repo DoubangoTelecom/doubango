@@ -352,7 +352,7 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 	int ret = 0;
 	HRESULT hr = S_OK;
 	DDSURFACEDESC ddsd;
-	DWORD nSizeWithoutPadding, nRowLengthInBytes;
+	DWORD nSizeWithoutPadding, nRowLengthInBytes, lockFlags;
 	tmedia_producer_t* p_base = TMEDIA_PRODUCER(p_self);
 	LPVOID lpBuffToSend;
 
@@ -374,7 +374,14 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 
 	ddsd.dwSize = sizeof(ddsd);
 	ddsd.dwFlags = DDSD_HEIGHT | DDSD_WIDTH | DDSD_PITCH | DDSD_PIXELFORMAT;
-	DDRAW_CHECK_HR(hr = p_self->p_surf_primary->Lock(NULL, &ddsd, DDLOCK_READONLY, NULL));
+	lockFlags = DDLOCK_READONLY |
+#if TDAV_UNDER_WINDOWS_CE
+		// This flag has a slightly different name under Windows CE vs. Desktop, but it's the same behavior.
+		DDLOCK_WAITNOTBUSY;
+#else
+		DDLOCK_WAIT;
+#endif
+	DDRAW_CHECK_HR(hr = p_self->p_surf_primary->Lock(NULL, &ddsd, lockFlags, NULL));
 	// make sure surface size and number of bits per pixel haven't changed
 	if (TMEDIA_PRODUCER(p_self)->video.width != ddsd.dwWidth || TMEDIA_PRODUCER(p_self)->video.height != ddsd.dwHeight || p_self->n_buff_rgb_bitscount != ddsd.ddpfPixelFormat.dwRGBBitCount) {
 		tsk_size_t n_buff_neg_new;
