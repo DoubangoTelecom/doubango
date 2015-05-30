@@ -104,6 +104,11 @@ static int _tnet_transport_ssl_init(tnet_transport_t* transport)
 				TSK_DEBUG_ERROR("SSL_CTX_set_cipher_list failed [%s]", ERR_error_string(ERR_get_error(), tsk_null));
 				return -6;
 			}
+			//!\ This is required even if the local transport is TCP/TLS because the relayed (TURN) transport could be UDP
+			// Up to the DTLS socket to set the default MTU value
+			SSL_CTX_set_options(transport->dtls.ctx, SSL_OP_NO_QUERY_MTU);
+			SSL_CTX_ctrl(transport->dtls.ctx, SSL_CTRL_SET_MTU, TNET_DTLS_MTU - 28, NULL);
+			
 			transport->dtls.activated = tsk_true;
 		}
 #endif /* HAVE_OPENSSL_DTLS */

@@ -49,6 +49,13 @@
 #define TNET_ICE_PAIR_DEBUG_INFO(...) ((void)0)
 #endif
 
+// 8.1.1.1.  Regular Nomination : https://tools.ietf.org/html/rfc5245#section-8.1.1.1
+// 8.1.1.2.  Aggressive Nomination : https://tools.ietf.org/html/rfc5245#section-8.1.1.2
+// Issues with chrome on some restrictive networks (GE-issue)
+#if !defined(TNET_ICE_AGGRESSIVE_NOMINATION)
+#	define TNET_ICE_AGGRESSIVE_NOMINATION 0
+#endif /* TNET_ICE_AGGRESSIVE_NOMINATION */
+
 static int __pred_find_by_pair(const tsk_list_item_t *item, const void *pair)
 {
 	if(item && item->data){
@@ -85,9 +92,15 @@ static int tnet_ice_pair_cmp(const tsk_object_t *_p1, const tsk_object_t *_p2)
 	const tnet_ice_pair_t *p2 = _p2;
 
 	if (p1 && p2) {
+#if 0
+		// This is not correct and most differences (if not all) will be equal to "INT_MIN" or "INT_MAX" and this will produce invalid sorting.
 		static const int64_t __int_min = INT_MIN;
 		static const int64_t __int_max = INT_MAX;
 		return (int)(TSK_CLAMP(__int_min, (int64_t)(p1->priority - p2->priority), __int_max));
+#else
+		// The comparison is used for sorting only which means the below code is correct
+		return (p1->priority == p2->priority) ? 0 : (p1->priority > p2->priority ? 1 : -1);
+#endif
 	}
 	else if (!p1 && !p2) return 0;
 	else return -1;
@@ -102,21 +115,25 @@ static const tsk_object_def_t tnet_ice_pair_def_s =
 
 tnet_ice_pair_t* tnet_ice_pair_create(const tnet_ice_candidate_t* candidate_offer, const tnet_ice_candidate_t* candidate_answer, tsk_bool_t is_controlling, uint64_t tie_breaker, tsk_bool_t is_ice_jingle)
 {
+	static uint64_t __unique_id = 0;
 	tnet_ice_pair_t *pair;
 	if(!candidate_offer || !candidate_answer){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
 	
-	if((pair = tsk_object_new(&tnet_ice_pair_def_s))){
+	if ((pair = tsk_object_new(&tnet_ice_pair_def_s))) {
+		uint64_t G, D;
+		pair->id = ++__unique_id; // not part of the standard, used to ease debugging
 		pair->candidate_offer = tsk_object_ref((tsk_object_t*)candidate_offer);
 		pair->candidate_answer = tsk_object_ref((tsk_object_t*)candidate_answer);
 		pair->is_controlling = is_controlling;
 		pair->tie_breaker = tie_breaker;
 		pair->is_ice_jingle = is_ice_jingle;
-		pair->priority = (((uint64_t)TSK_MIN(candidate_offer->priority, candidate_answer->priority)) << 32) +
-			(TSK_MAX(candidate_offer->priority, candidate_answer->priority) << 1) +
-			((candidate_offer->priority > candidate_answer->priority) ? 1 : 0);
+		// 5.7.2.  Computing Pair Priority and Ordering Pairs: https://tools.ietf.org/html/rfc5245#section-5.7.2
+		G = is_controlling ? candidate_offer->priority : candidate_answer->priority; // the priority for the candidate provided by the controlling agent
+		D = is_controlling ? candidate_answer->priority : candidate_offer->priority; // the priority for the candidate provided by the controlled agent
+		pair->priority = ((TSK_MIN(G, D)) << 32) + (TSK_MAX(G, D) << 1) + ((G > D) ? 1 : 0);
 		pair->turn_peer_id = kTurnPeerIdInvalid;
 	}
 
@@ -166,16 +183,22 @@ tnet_ice_pair_t* tnet_ice_pair_prflx_create(tnet_ice_pairs_L_t* pairs, tnet_fd_t
 			memcpy(cand_remote->connection_addr, remote_ip, sizeof(tnet_ip_t));
 			cand_remote->port = remote_port;
 
-			TSK_DEBUG_INFO("ICE Pair (Peer Reflexive Candidate): [%s %u %s %d] -> [%s %u %s %d]",
+			TSK_DEBUG_INFO("ICE Pair Reflexive Candidate (%llu, %llu): [%s %u %u %s %d] -> [%s %u %u %s %d]",
+				pair->id,
+				pair->priority,
+
 				cand_local->foundation,
+				cand_local->priority,
 				cand_local->comp_id,
 				cand_local->connection_addr,
 				cand_local->port,
 
 				cand_remote->foundation,
+				cand_remote->priority,
 				cand_remote->comp_id,
 				cand_remote->connection_addr,
 				cand_remote->port);
+
 			pair_peer = tnet_ice_pair_create(cand_local, cand_remote, pair_local->is_controlling, pair_local->tie_breaker, pair_local->is_ice_jingle);
 		}
 		TSK_OBJECT_SAFE_FREE(cand_local);
@@ -271,8 +294,15 @@ int tnet_ice_pair_send_conncheck(tnet_ice_pair_t *self)
 				// 7.1.2.2. ICE-CONTROLLING
 				TNET_STUN_PKT_ATTR_ADD_ICE_CONTROLLING(self->tie_breaker),
 				// 7.1.2.1. USE-CANDIDATE - aggressive mode
+#if TNET_ICE_AGGRESSIVE_NOMINATION
 				TNET_STUN_PKT_ATTR_ADD_ICE_USE_CANDIDATE(),
+#endif
 				TNET_STUN_PKT_ATTR_ADD_NULL());
+			if (self->is_nominated) {
+				ret = tnet_stun_pkt_attrs_add(self->last_request,
+					TNET_STUN_PKT_ATTR_ADD_ICE_USE_CANDIDATE(),
+					TNET_STUN_PKT_ATTR_ADD_NULL());
+			}
 			if (ret) {
 				goto bail;
 			}
@@ -300,10 +330,15 @@ int tnet_ice_pair_send_conncheck(tnet_ice_pair_t *self)
 				}
 				b_changed = tsk_true;
 			}
+#if TNET_ICE_AGGRESSIVE_NOMINATION
 			if (!tnet_stun_pkt_attr_exists(self->last_request, tnet_stun_attr_type_ice_use_candidate)) {
+#else
+			if (self->is_nominated && !tnet_stun_pkt_attr_exists(self->last_request, tnet_stun_attr_type_ice_use_candidate)) {
+#endif			
 				ret = tnet_stun_pkt_attrs_add(self->last_request,
 					TNET_STUN_PKT_ATTR_ADD_ICE_USE_CANDIDATE(),
 					TNET_STUN_PKT_ATTR_ADD_NULL());
+				
 				if (ret) {
 					goto bail;
 				}
@@ -369,9 +404,8 @@ int tnet_ice_pair_send_response(tnet_ice_pair_t *self, const tnet_stun_pkt_req_t
 		return -1;
 	}	
 
-	// FIXME: "username" and "password" not used
 	username = tsk_null;
-	password = tnet_ice_candidate_get_pwd(self->candidate_offer);	
+	password = tnet_ice_candidate_get_pwd(self->candidate_offer);
 
 	if ((ret = tnet_stun_pkt_create_empty(is_error ? tnet_stun_pkt_type_binding_error_response : tnet_stun_pkt_type_binding_success_response, &message)) == 0) {
 		tsk_buffer_t *req_buffer = tsk_null;
@@ -614,18 +648,18 @@ int tnet_ice_pair_auth_conncheck(const tnet_ice_pair_t *self, const tnet_stun_pk
 	return 0;
 }
 
-int tnet_ice_pair_recv_response(tnet_ice_pair_t *self, const tnet_stun_pkt_resp_t* response)
+int tnet_ice_pair_recv_response(tnet_ice_pair_t *self, const tnet_stun_pkt_resp_t* response, tsk_bool_t is_4conncheck)
 {
-	if(self && response){
-		if(self->last_request && tnet_stun_utils_transac_id_equals(self->last_request->transac_id, response->transac_id)){
+	if (self && response && is_4conncheck) {
+		if (self->last_request && tnet_stun_utils_transac_id_equals(self->last_request->transac_id, response->transac_id)){
 			// ignore errors (e.g. STALE-CREDENTIALS) which could happen in some special cases before success
-			if(TNET_STUN_PKT_RESP_IS_SUCCESS(response)){
-				self->state_offer = tnet_ice_pair_state_succeed;
-				TNET_ICE_PAIR_DEBUG_INFO("ICE pair-offer changing state to 'succeed', comp-id=%d, found=%s, addr=%s", 
+			if (TNET_STUN_PKT_RESP_IS_SUCCESS(response)){
+				self->state_offer = tnet_ice_pair_state_succeed; // we must not change the state after connection cheking to make sure another pair won't be picked as nominated
+				TNET_ICE_PAIR_DEBUG_INFO("ICE pair-offer changing state to 'succeed', comp-id=%d, found=%s, addr=%s",
 					self->candidate_offer->comp_id,
 					self->candidate_offer->foundation,
 					self->candidate_offer->connection_addr
-				);
+					);
 			}
 		}
 	}
@@ -681,7 +715,7 @@ const tnet_ice_pair_t* tnet_ice_pairs_find_by_response(tnet_ice_pairs_L_t* pairs
 				
 				tnet_stun_utils_inet_ntop((_addr->e_family == tnet_stun_address_family_ipv6), &_addr->address, &mapped_ip);
 				mapped_port = _addr->u_port;
-				if ((mapped_port != pair->candidate_offer->port || !tsk_striequals(mapped_ip, pair->candidate_offer->connection_addr))) {
+				if (pair->candidate_offer->type_e != tnet_ice_cand_type_host && (mapped_port != pair->candidate_offer->port || !tsk_striequals(mapped_ip, pair->candidate_offer->connection_addr))) {
 					TSK_DEBUG_INFO("Mapped address different than local connection address...probably symetric NAT: %s#%s or %u#%u", 
 						pair->candidate_offer->connection_addr, mapped_ip,
 						pair->candidate_offer->port, mapped_port);
