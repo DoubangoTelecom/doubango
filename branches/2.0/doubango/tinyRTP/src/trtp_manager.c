@@ -72,6 +72,9 @@ static const tmedia_srtp_type_t __srtp_types[] = { tmedia_srtp_type_sdes, tmedia
 
 static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* data_ptr, tsk_size_t data_size, tnet_fd_t local_fd, const struct sockaddr_storage* remote_addr);
 #define _trtp_manager_is_rtcpmux_active(self) ( (self) && ( (self)->use_rtcpmux && (!(self)->rtcp.local_socket || ((self)->transport && (self)->transport->master && (self)->transport->master->fd == (self)->rtcp.local_socket->fd)) ) )
+static int _trtp_manager_send_turn_dtls(struct tnet_ice_ctx_s* ice_ctx, const void* handshaking_data_ptr, tsk_size_t handshaking_data_size, tsk_bool_t use_rtcp_channel);
+#define _trtp_manager_send_turn_dtls_rtp(ice_ctx, handshaking_data_ptr, handshaking_data_size) _trtp_manager_send_turn_dtls((ice_ctx), (handshaking_data_ptr), (handshaking_data_size), /*use_rtcp_channel =*/tsk_false)
+#define _trtp_manager_send_turn_dtls_rtcp(ice_ctx, handshaking_data_ptr, handshaking_data_size) _trtp_manager_send_turn_dtls((ice_ctx), (handshaking_data_ptr), (handshaking_data_size), /*use_rtcp_channel =*/tsk_true)
 #if HAVE_SRTP
 static int _trtp_manager_srtp_set_enabled(trtp_manager_t* self, tmedia_srtp_type_t srtp_type, struct tnet_socket_s** sockets, tsk_size_t count, tsk_bool_t enabled);
 static int _trtp_manager_srtp_activate(trtp_manager_t* self, tmedia_srtp_type_t srtp_type);
@@ -250,17 +253,17 @@ static int _trtp_transport_dtls_handshaking_timer_cb(const void* arg, tsk_timer_
 		TSK_DEBUG_INFO("_trtp_transport_dtls_handshaking_timer_cb(timeout=%llu)", manager->dtls.timer_hanshaking.timeout);
 		tnet_transport_dtls_do_handshake(manager->transport, sockets, 2, remote_addrs, 2);
 		if (manager->is_ice_turn_active) {
-			// means TURN is active and handshaking data must be sent using the channel
+			// means TURN is active and handshaking data must be sent using this channel
 			const void* data[] = { tsk_null, tsk_null };
 			tsk_size_t size[] = { 0, 0 };
 			if ((ret = tnet_transport_dtls_get_handshakingdata(manager->transport, (const struct tnet_socket_s**)sockets, 2, data, size))) {
 				return ret;
 			}
 			if (data[0] && size[0]) {
-				ret = tnet_ice_ctx_send_turn_rtp(manager->ice_ctx, data[0], size[0]);
+				ret = _trtp_manager_send_turn_dtls_rtp(manager->ice_ctx, data[0], size[0]);
 			}
 			if (data[1] && size[1]) {
-				ret = tnet_ice_ctx_send_turn_rtcp(manager->ice_ctx, data[1], size[1]);
+				ret = _trtp_manager_send_turn_dtls_rtcp(manager->ice_ctx, data[1], size[1]);
 			}
 		}
 		// increase timeout
@@ -385,11 +388,13 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 				const void* data =  tsk_null;
 				tsk_size_t size = 0;
 				if (tnet_transport_dtls_get_handshakingdata(self->transport, (const struct tnet_socket_s**)&socket, 1, &data, &size) == 0) {
-					if (self->rtcp.local_socket == socket) {
-						/*ret = */tnet_ice_ctx_send_turn_rtcp(self->ice_ctx, data, size);
-					}
-					else {
-						/*ret = */tnet_ice_ctx_send_turn_rtp(self->ice_ctx, data, size);
+					if (data && size > 0){
+						if (self->rtcp.local_socket == socket) {
+							/*ret = */_trtp_manager_send_turn_dtls_rtcp(self->ice_ctx, data, size);
+						}
+						else {
+							/*ret = */_trtp_manager_send_turn_dtls_rtp(self->ice_ctx, data, size);
+						}
 					}
 				}
 			}
@@ -471,6 +476,27 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 
 	TSK_DEBUG_INFO("Received unknown packet type");
 	return 0;
+}
+
+// Sends DTLS handshaking data record by record to avoid UDP IP fragmentation issues (each record length will be < Length(MTU))
+//!\ This is required even if the local transport is TCP/TLS because the relayed (TURN) transport could be UDP
+static int _trtp_manager_send_turn_dtls(struct tnet_ice_ctx_s* ice_ctx, const void* handshaking_data_ptr, tsk_size_t handshaking_data_size, tsk_bool_t use_rtcp_channel)
+{
+	const uint8_t *record_ptr, *records_ptr = handshaking_data_ptr;
+	tsk_size_t record_size;
+	int records_len = (int)handshaking_data_size, sentlen = 0, ret;
+	int(*_ice_ctx_send_turn_data)(struct tnet_ice_ctx_s* self, const void* data, tsk_size_t size) = use_rtcp_channel ? tnet_ice_ctx_send_turn_rtcp : tnet_ice_ctx_send_turn_rtp;
+	if (!ice_ctx || !handshaking_data_ptr || !handshaking_data_size) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	while (records_len > 0 && (ret = tnet_dtls_socket_get_record_first(records_ptr, (tsk_size_t)records_len, &record_ptr, &record_size)) == 0) {
+		ret = _ice_ctx_send_turn_data(ice_ctx, record_ptr, record_size);
+		
+		records_len -= (int)record_size;
+		records_ptr += record_size;
+	}
+	return ret;
 }
 
 #if HAVE_SRTP
@@ -1550,7 +1576,8 @@ bail:
 // send raw data "as is" without adding any RTP header or SRTP encryption
 tsk_size_t trtp_manager_send_rtp_raw(trtp_manager_t* self, const void* data, tsk_size_t size)
 {
-	tsk_size_t ret;
+	tsk_size_t ret = 0;
+	static int aaaaaa = 0;
 
 	if(!self || !self->transport || !self->transport->master || !data || !size){
 		TSK_DEBUG_ERROR("Invalid parameter");

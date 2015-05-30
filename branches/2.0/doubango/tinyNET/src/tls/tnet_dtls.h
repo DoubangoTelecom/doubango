@@ -60,6 +60,7 @@ TINYNET_API int tnet_dtls_socket_set_callback(tnet_dtls_socket_handle_t* handle,
 TINYNET_API int tnet_dtls_socket_set_remote_fingerprint(tnet_dtls_socket_handle_t* handle, const tnet_fingerprint_t* fingerprint, tnet_dtls_hash_type_t hash);
 TINYNET_API int tnet_dtls_socket_set_store_handshakingdata(tnet_dtls_socket_handle_t* handle, tsk_bool_t handshake_storedata);
 TINYNET_API int tnet_dtls_socket_get_handshakingdata(tnet_dtls_socket_handle_t* handle, const void** data, tsk_size_t *size);
+TINYNET_API int tnet_dtls_socket_get_record_first(const void* records, tsk_size_t records_size, const void** record, tsk_size_t* size);
 TINYNET_API int tnet_dtls_socket_use_srtp(tnet_dtls_socket_handle_t* handle);
 TINYNET_API int tnet_dtls_socket_set_setup(tnet_dtls_socket_handle_t* handle, tnet_dtls_setup_t setup);
 TINYNET_API tsk_bool_t tnet_dtls_socket_is_remote_cert_fp_match(tnet_dtls_socket_handle_t* handle);

@@ -67,7 +67,7 @@ tnet_ice_pair_t* tnet_ice_pair_prflx_create(tnet_ice_pairs_L_t* pairs, tnet_fd_t
 int tnet_ice_pair_send_conncheck(tnet_ice_pair_t *self);
 int tnet_ice_pair_send_response(tnet_ice_pair_t *self, const struct tnet_stun_pkt_s* request, const short code, const char* phrase, const struct sockaddr_storage *remote_addr);
 int tnet_ice_pair_auth_conncheck(const tnet_ice_pair_t *self, const struct tnet_stun_pkt_s* request, const void* request_buff, tsk_size_t request_buff_size, short* resp_code, char** resp_phrase);
-int tnet_ice_pair_recv_response(tnet_ice_pair_t *self, const struct tnet_stun_pkt_s* response);
+int tnet_ice_pair_recv_response(tnet_ice_pair_t *self, const struct tnet_stun_pkt_s* response, tsk_bool_t is_4conncheck);
 const tnet_ice_pair_t* tnet_ice_pairs_find_by_response(tnet_ice_pairs_L_t* pairs, const struct tnet_stun_pkt_s* response);
 const tnet_ice_pair_t* tnet_ice_pairs_find_by_fd_and_addr(tnet_ice_pairs_L_t* pairs, tnet_fd_t local_fd, const struct sockaddr_storage *remote_addr);
 tsk_bool_t tnet_ice_pairs_have_nominated_offer(const tnet_ice_pairs_L_t* pairs, tsk_bool_t check_rtcp);

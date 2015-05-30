@@ -61,7 +61,13 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_FINGERPRINT_MAX	256
+#if !defined(TNET_FINGERPRINT_MAX)
+#	define TNET_FINGERPRINT_MAX	256
+#endif /* TNET_FINGERPRINT_MAX */
+
+#if !defined(TNET_DTLS_MTU)
+#	define TNET_DTLS_MTU 900
+#endif /* TNET_DTLS_MTU */
 
 typedef int tnet_fd_t;
 typedef uint16_t tnet_port_t;

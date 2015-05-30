@@ -229,6 +229,7 @@ typedef struct tnet_ice_ctx_s
 	tsk_bool_t anycast;
 	tsk_bool_t multicast;
 
+	tsk_bool_t is_connchecking;
 	tsk_bool_t is_controlling;
 	tsk_bool_t is_ice_jingle;
 	tsk_bool_t is_turn_enabled;
@@ -1787,6 +1788,8 @@ static int _tnet_ice_ctx_fsm_GatheringCompleted_2_ConnChecking_X_ConnCheck(va_li
 
 	self = va_arg(*app, tnet_ice_ctx_t *);
 
+	self->is_connchecking = tsk_true;
+
 	// "tries_count" and "tries_count_min"
 	// The connection checks to to the "relay", "prflx", "srflx" and "host" candidates are sent at the same time.
 	// Because the requests are sent at the same time it's possible to have success check for "relay" (or "srflx") candidates before the "host" candidates.
@@ -1882,7 +1885,7 @@ start_conneck:
 					continue;
 				default: break;
 				}
-
+				
 				ret = tnet_ice_pair_send_conncheck((tnet_ice_pair_t *)pair);
 			}
 		}
@@ -2005,6 +2008,8 @@ bail:
 
 	TSK_FREE(recvfrom_buff_ptr);
 
+	self->is_connchecking = tsk_false;
+
 	return ret;
 }
 
@@ -2042,7 +2047,8 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_l
 		TSK_DEBUG_INFO("ICE: nominated symetric RTP pairs: offer:%llu, answer-src:%llu, answser-dest:%llu", 
 			pair_offer ? pair_offer->id : 0, pair_answer_src ? pair_answer_src->id : 0, pair_answer_dest ? pair_answer_dest->id : 0);
 	}
-	if (ret == 0 && pair_offer) ((tnet_ice_pair_t *)pair_offer)->is_nominated = tsk_true;
+	if (ret == 0 && pair_offer) { ((tnet_ice_pair_t *)pair_offer)->is_nominated = tsk_true; } // "is_nominated" is used do decide whether to include "USE-CANDIDATE" attribute when aggressive mode is disabled
+
 	ret = tnet_ice_pairs_get_nominated_symetric_pairs(self->candidates_pairs, TNET_ICE_CANDIDATE_COMPID_RTCP, &pair_offer, &pair_answer_src, &pair_answer_dest);
 	if (ret == 0) {
 		if (pair_offer && pair_offer->candidate_offer && pair_offer->candidate_offer->type_e == tnet_ice_cand_type_relay && pair_offer->candidate_offer->turn.ss) {
@@ -2054,7 +2060,7 @@ static int _tnet_ice_ctx_fsm_ConnChecking_2_ConnCheckingCompleted_X_Success(va_l
 			self->use_rtcp ? 1 : 0, self->use_rtcpmux ? 1 : 0,
 			pair_offer ? pair_offer->id : 0, pair_answer_src ? pair_answer_src->id : 0, pair_answer_dest ? pair_answer_dest->id : 0);
 	}
-	if (ret == 0 && pair_offer) ((tnet_ice_pair_t *)pair_offer)->is_nominated = tsk_true;
+	if (ret == 0 && pair_offer) { ((tnet_ice_pair_t *)pair_offer)->is_nominated = tsk_true; } // "is_nominated" is used do decide whether to include "USE-CANDIDATE" attribute when aggressive mode is disabled
 
 	// collect all useless TURN sessions (pairs)
 	tsk_list_foreach(item, self->candidates_pairs) {
@@ -2200,7 +2206,7 @@ static int _tnet_ice_ctx_recv_stun_message_for_pair(tnet_ice_ctx_t* self, const 
 				// rfc 5245 - 7.1.3.2.1.  Discovering Peer Reflexive Candidates
 				tnet_ice_pair_t* pair_peer = tnet_ice_pair_prflx_create(self->candidates_pairs, local_fd, remote_addr);
 				if (pair_peer) {
-					pair = pair_peer; // copy
+					pair = pair_peer; // save memory address
 					tsk_list_push_descending_data(self->candidates_pairs, (void**)&pair_peer);
 					TSK_OBJECT_SAFE_FREE(pair_peer);
 				}
@@ -2247,6 +2253,7 @@ static int _tnet_ice_ctx_recv_stun_message_for_pair(tnet_ice_ctx_t* self, const 
 					ret = tnet_ice_pair_send_response((tnet_ice_pair_t *)pair, message, resp_code, resp_phrase, remote_addr);
 					// "keepalive": also send STUN-BINDING if we receive one in the nominated pair and conneck is finished
 					//!\ IMPORTANT: chrome requires this
+					//!\ We also need to continue sending connection checks as we don't really know if the remote party has finished checking
 					if ((self->is_ice_jingle || pair->is_nominated) && self->have_nominated_symetric) {
 						ret = tnet_ice_pair_send_conncheck((tnet_ice_pair_t *)pair); // "keepalive"
 					}
@@ -2264,7 +2271,7 @@ static int _tnet_ice_ctx_recv_stun_message_for_pair(tnet_ice_ctx_t* self, const 
 		}
 		else if (TNET_STUN_PKT_IS_RESP(message)) {
 			if (pair || (pair = tnet_ice_pairs_find_by_response(self->candidates_pairs, message))) {
-				ret = tnet_ice_pair_recv_response(((tnet_ice_pair_t*)pair), message);
+				ret = tnet_ice_pair_recv_response(((tnet_ice_pair_t*)pair), message, self->is_connchecking);
 				if (TNET_STUN_PKT_RESP_IS_ERROR(message)) {
 					uint16_t u_code;
 					if ((ret = tnet_stun_pkt_get_errorcode(message, &u_code)) == 0 && u_code == kStunErrCodeIceConflict) {
@@ -2301,7 +2308,7 @@ static int _tnet_ice_ctx_build_pairs(struct tnet_ice_ctx_s* self, tnet_ice_candi
 	tnet_ice_pair_t *pair;
 	enum tnet_turn_transport_e e_req_transport;
 	tnet_family_t addr_family_local, addr_family_remote;
-	static uint64_t __unique_id = 0;
+	
 	if (!self || TSK_LIST_IS_EMPTY(local_candidates) || TSK_LIST_IS_EMPTY(remote_candidates) || !result_pairs) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
@@ -2328,6 +2335,7 @@ static int _tnet_ice_ctx_build_pairs(struct tnet_ice_ctx_s* self, tnet_ice_candi
 			continue;
 		}
 #endif
+
 		tsk_list_foreach(item_remote, remote_candidates) {
 			if (!(cand_remote = item_remote->data)) {
 				continue;
@@ -2369,16 +2377,18 @@ static int _tnet_ice_ctx_build_pairs(struct tnet_ice_ctx_s* self, tnet_ice_candi
 			}
 
 			if ((pair = tnet_ice_pair_create(cand_local, cand_remote, is_controlling, tie_breaker, is_ice_jingle))) {
-				pair->id = ++__unique_id;
-				TSK_DEBUG_INFO("ICE Pair(%llu): [%s %u %s %d] -> [%s %u %s %d]",
+				TSK_DEBUG_INFO("ICE Pair(%llu, %llu): [%s %u %u %s %d] -> [%s %u %u %s %d]",
 					pair->id,
+					pair->priority,
 
 					cand_local->foundation,
+					cand_local->priority,
 					cand_local->comp_id,
 					cand_local->connection_addr,
 					cand_local->port,
 
 					cand_remote->foundation,
+					cand_remote->priority,
 					cand_remote->comp_id,
 					cand_remote->connection_addr,
 					cand_remote->port);
@@ -2392,7 +2402,10 @@ static int _tnet_ice_ctx_build_pairs(struct tnet_ice_ctx_s* self, tnet_ice_candi
 			continue;
 		}
 
-		TSK_DEBUG_INFO("*****ICE Pair: [%s %u %s %d] -> [%s %u %s %d]",
+		TSK_DEBUG_INFO("ICE Pair(%llu, %llu): [%s %u %s %d] -> [%s %u %s %d]",
+			pair->id,
+			pair->priority,
+
 			pair->candidate_offer->foundation,
 			pair->candidate_offer->comp_id,
 			pair->candidate_offer->connection_addr,

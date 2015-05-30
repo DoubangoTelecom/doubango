@@ -305,12 +305,18 @@ tnet_dtls_socket_handle_t* tnet_dtls_socket_create(struct tnet_socket_s* wrapped
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
-	if ((socket = tsk_object_new(tnet_dtls_socket_def_t))){
+	if ((socket = tsk_object_new(tnet_dtls_socket_def_t))) {
+		const tsk_bool_t set_mtu = TNET_SOCKET_TYPE_IS_DGRAM(wrapped_sock->type) || 1; //!\ This is required even if the local transport is TCP/TLS because the relayed (TURN) transport could be UDP
 		socket->wrapped_sock = tsk_object_ref(wrapped_sock);
-		if (!(socket->ssl = SSL_new(ssl_ctx))){
+		if (!(socket->ssl = SSL_new(ssl_ctx))) {
 			TSK_DEBUG_ERROR("SSL_new(CTX) failed [%s]", ERR_error_string(ERR_get_error(), tsk_null));
 			TSK_OBJECT_SAFE_FREE(socket);
 			return tsk_null;
+		}
+		if (set_mtu) {
+			SSL_set_options(socket->ssl, SSL_OP_NO_QUERY_MTU);
+			SSL_set_mtu(socket->ssl, TNET_DTLS_MTU - 28);
+			socket->ssl->d1->mtu = TNET_DTLS_MTU - 28;
 		}
 		if (!(socket->rbio = BIO_new(BIO_s_mem())) || !(socket->wbio = BIO_new(BIO_s_mem()))){
 			TSK_DEBUG_ERROR("BIO_new_socket(%d) failed [%s]", socket->wrapped_sock->fd, ERR_error_string(ERR_get_error(), tsk_null));
@@ -328,6 +334,9 @@ tnet_dtls_socket_handle_t* tnet_dtls_socket_create(struct tnet_socket_s* wrapped
 		SSL_set_bio(socket->ssl, socket->rbio, socket->wbio);
 		SSL_set_mode(socket->ssl, SSL_MODE_AUTO_RETRY);
 		SSL_set_read_ahead(socket->ssl, 1);
+		if (set_mtu) {
+			BIO_ctrl(SSL_get_wbio(socket->ssl), BIO_CTRL_DGRAM_SET_MTU, TNET_DTLS_MTU - 28, NULL);
+		}
 
 		if ((socket->verify_peer = (SSL_CTX_get_verify_mode(ssl_ctx) != SSL_VERIFY_NONE))){
 			TSK_DEBUG_INFO("SSL cert verify: ON");
@@ -335,8 +344,7 @@ tnet_dtls_socket_handle_t* tnet_dtls_socket_create(struct tnet_socket_s* wrapped
 			SSL_set_verify(socket->ssl, (SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT), _tnet_dtls_verify_cert);
 		}
 		else {
-			// FIXME:
-			TSK_DEBUG_ERROR("????");
+			TSK_DEBUG_ERROR("Verity not enabled");
 		}
 
 		SSL_set_app_data(socket->ssl, socket);
@@ -461,6 +469,41 @@ int tnet_dtls_socket_get_handshakingdata(tnet_dtls_socket_handle_t* handle, cons
 	return 0;
 }
 
+// This function returns first DTLS record. It's useful to send handshaking data by records to avoid IP fragmentation
+int tnet_dtls_socket_get_record_first(const void* records, tsk_size_t records_size, const void** record, tsk_size_t* size)
+{
+	/* https://tools.ietf.org/html/rfc6347#section-3.2.3
+	TLS and DTLS handshake messages can be quite large(in theory up to
+	2 ^ 24 - 1 bytes, in practice many kilobytes).By contrast, UDP
+	datagrams are often limited to <1500 bytes if IP fragmentation is not
+	desired.In order to compensate for this limitation, each DTLS
+	handshake message may be fragmented over several DTLS records, each
+	of which is intended to fit in a single IP datagram.Each DTLS
+	handshake message contains both a fragment offset and a fragment
+	length.Thus, a recipient in possession of all bytes of a handshake
+	message can reassemble the original unfragmented message. */
+	// 4.1.  Record Layer - https://tools.ietf.org/html/rfc6347#section-4.1
+#define kDTLSv1RecordHdrStartIndex		11
+#define kDTLSv1RecordHdrLengthFieldLen	2 // uint16
+#define kDTLSv1RecordHdrLen				(kDTLSv1RecordHdrStartIndex + kDTLSv1RecordHdrLengthFieldLen)
+	
+	const uint8_t* pc_records;
+	tsk_size_t record_length;
+	if (!records || records_size < kDTLSv1RecordHdrLen || !record || !size) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	pc_records = (const uint8_t*)records;
+	record_length = ((pc_records[kDTLSv1RecordHdrStartIndex] << 8) & 0xFF00) | (pc_records[kDTLSv1RecordHdrStartIndex + 1] & 0xFF);
+	if ((record_length + kDTLSv1RecordHdrLen) > TNET_DTLS_MTU) {
+		TSK_DEBUG_WARN("DTLS record length > MTU", (record_length + kDTLSv1RecordHdrLen), TNET_DTLS_MTU);
+	}
+	*record = records;
+	*size = kDTLSv1RecordHdrLen + record_length;
+
+	return 0;
+}
+
 tsk_bool_t tnet_dtls_socket_is_remote_cert_fp_match(tnet_dtls_socket_handle_t* handle)
 {
 #if !HAVE_OPENSSL || !HAVE_OPENSSL_DTLS
@@ -518,7 +561,7 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 	}
 
 	if ((len = (int)BIO_get_mem_data(socket->wbio, &out_data)) > 0 && out_data) {
-		if (socket->handshake_storedata) {
+		if (socket->handshake_storedata) { // e.g. when TURN is enabled we have to query handshaking data and sent it via the negotiated channel
 			if ((int)socket->handshake_data.size < len) {
 				if (!(socket->handshake_data.ptr = tsk_realloc(socket->handshake_data.ptr, len))) {
 					socket->handshake_data.size = 0;
@@ -532,17 +575,29 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 			memcpy(socket->handshake_data.ptr, out_data, len);
 		}
 		else {
+			int sentlen = 0;
 			tnet_port_t port;
 			tnet_ip_t ip;
+			tsk_bool_t is_dgram = TNET_SOCKET_TYPE_IS_DGRAM(socket->wrapped_sock->type);
+			const uint8_t *record_ptr, *records_ptr = out_data;
+			tsk_size_t record_size;
+			int records_len = len;
+
 			tnet_get_sockip_n_port((const struct sockaddr *)&socket->remote.addr, &ip, &port);
-			TSK_DEBUG_INFO("DTLS data handshake to send with len = %d, ip = %.*s and port = %d", len, (int)sizeof(ip), ip, port);
-			if (TNET_SOCKET_TYPE_IS_DGRAM(socket->wrapped_sock->type)) { // UDP
-				len = tnet_sockfd_sendto(socket->wrapped_sock->fd, (const struct sockaddr *)&socket->remote.addr, out_data, len);
+			TSK_DEBUG_INFO("DTLS data handshake to send with len = %d, from(%.*s/%d) to(%.*s/%d)", len, (int)sizeof(socket->wrapped_sock->ip), socket->wrapped_sock->ip, socket->wrapped_sock->port, (int)sizeof(ip), ip, port);
+
+			//!\ IP fragmentation issues must be avoided even if the local transport is TCP/TLS because the relayed (TURN) transport could be UDP
+			while (records_len > 0 && (ret = tnet_dtls_socket_get_record_first(records_ptr, (tsk_size_t)records_len, &record_ptr, &record_size)) == 0) {
+				if (is_dgram) {
+					sentlen += tnet_sockfd_sendto(socket->wrapped_sock->fd, (const struct sockaddr *)&socket->remote.addr, record_ptr, record_size);
+				}
+				else {
+					sentlen = tnet_socket_send_stream(socket->wrapped_sock, record_ptr, record_size);
+				}
+				records_len -= (int)record_size;
+				records_ptr += record_size;
 			}
-			else { // TCP, TLS, WSS...
-				len = tnet_socket_send_stream(socket->wrapped_sock, out_data, len);
-			}
-			TSK_DEBUG_INFO("DTLS data handshake sent len = %d", len);
+			TSK_DEBUG_INFO("DTLS data handshake sent len = %d", sentlen);
 		}
 	}
 
