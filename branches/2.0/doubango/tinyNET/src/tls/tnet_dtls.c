@@ -495,11 +495,11 @@ int tnet_dtls_socket_get_record_first(const void* records, tsk_size_t records_si
 	}
 	pc_records = (const uint8_t*)records;
 	record_length = ((pc_records[kDTLSv1RecordHdrStartIndex] << 8) & 0xFF00) | (pc_records[kDTLSv1RecordHdrStartIndex + 1] & 0xFF);
-	if ((record_length + kDTLSv1RecordHdrLen) > TNET_DTLS_MTU) {
-		TSK_DEBUG_WARN("DTLS record length > MTU", (record_length + kDTLSv1RecordHdrLen), TNET_DTLS_MTU);
-	}
 	*record = records;
 	*size = kDTLSv1RecordHdrLen + record_length;
+	if ((*size) > TNET_DTLS_MTU) {
+		TSK_DEBUG_WARN("DTLS record length(%u) > MTU(%u)", (unsigned)(*size), TNET_DTLS_MTU);
+	}
 
 	return 0;
 }
@@ -592,7 +592,7 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 					sentlen += tnet_sockfd_sendto(socket->wrapped_sock->fd, (const struct sockaddr *)&socket->remote.addr, record_ptr, record_size);
 				}
 				else {
-					sentlen = tnet_socket_send_stream(socket->wrapped_sock, record_ptr, record_size);
+					sentlen += tnet_socket_send_stream(socket->wrapped_sock, record_ptr, record_size);
 				}
 				records_len -= (int)record_size;
 				records_ptr += record_size;
