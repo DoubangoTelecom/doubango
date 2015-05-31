@@ -503,7 +503,7 @@ bail:
 
 static HRESULT _tdav_producer_screencast_create_module(LPDDrawModule lpModule)
 {
-	typedef HRESULT(*pDirectDrawCreateFunc)(_In_  GUID FAR         *lpGUID,
+	typedef HRESULT (WINAPI *pDirectDrawCreateFunc)(_In_  GUID FAR         *lpGUID,
 		_Out_ LPDIRECTDRAW FAR *lplpDD,
 		_In_  IUnknown FAR     *pUnkOuter);
 	HRESULT hr = S_OK;
