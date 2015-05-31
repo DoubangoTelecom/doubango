@@ -1809,7 +1809,7 @@ start_conneck:
 
 	if ((ret = _tnet_ice_ctx_build_pairs(self, self->candidates_local, self->candidates_remote, self->candidates_pairs, self->is_controlling, self->tie_breaker, self->is_ice_jingle, self->use_rtcpmux))) {
 		TSK_DEBUG_ERROR("_tnet_ice_ctx_build_pairs() failed");
-		return ret;
+		goto bail;
 	}
 
 #define _FD_ISSET(_fds, _fds_count, _fd, _isset) { uint16_t __i; *_isset = 0; for (__i = 0; __i < _fds_count; ++__i) { if (_fds[__i] == _fd) { *_isset = 1; break; } } }
