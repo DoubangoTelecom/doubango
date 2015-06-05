@@ -78,10 +78,13 @@ tdav_codec_h264_cisco_t;
 #	define CISCO_H264_GOP_SIZE_IN_SECONDS		25
 #endif
 
+#define kResetRotationTrue tsk_true
+#define kResetRotationFalse tsk_false
+
 static int tdav_codec_h264_cisco_init(tdav_codec_h264_cisco_t* self, profile_idc_t profile);
 static int tdav_codec_h264_cisco_deinit(tdav_codec_h264_cisco_t* self);
 static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self);
-static int tdav_codec_h264_cisco_close_encoder(tdav_codec_h264_cisco_t* self);
+static int tdav_codec_h264_cisco_close_encoder(tdav_codec_h264_cisco_t* self, tsk_bool_t reset_rotation);
 static int tdav_codec_h264_cisco_open_decoder(tdav_codec_h264_cisco_t* self);
 static int tdav_codec_h264_cisco_close_decoder(tdav_codec_h264_cisco_t* self);
 static ELevelIdc tdav_codec_h264_cisco_convert_level(enum level_idc_e level);
@@ -148,10 +151,10 @@ static int tdav_codec_h264_cisco_set(tmedia_codec_t* self, const tmedia_param_t*
 		else if (tsk_striequals(param->key, "rotation")) {
 			int rotation = *((int32_t*)param->value);
 			if (h264->encoder.rotation != rotation) {
+                h264->encoder.rotation = rotation;
 				if (self->opened) {
 					int ret;
-					h264->encoder.rotation = rotation;
-					if ((ret = tdav_codec_h264_cisco_close_encoder(h264))) {
+					if ((ret = tdav_codec_h264_cisco_close_encoder(h264, kResetRotationFalse))) {
 						return ret;
 					}
 					if ((ret = tdav_codec_h264_cisco_open_encoder(h264))) {
@@ -216,10 +219,10 @@ static int tdav_codec_h264_cisco_close(tmedia_codec_t* self)
 		return -1;
 	}
 
-	/* the caller (base class) alreasy checked that the codec is opened */
+	/* the caller (base class) already checked that the codec is opened */
 
 	//	Encoder
-	tdav_codec_h264_cisco_close_encoder(h264);
+	tdav_codec_h264_cisco_close_encoder(h264, kResetRotationTrue);
 
 	//	Decoder
 	tdav_codec_h264_cisco_close_decoder(h264);
@@ -703,7 +706,7 @@ bail:
 	return ret;
 }
 
-static int tdav_codec_h264_cisco_close_encoder(tdav_codec_h264_cisco_t* self)
+static int tdav_codec_h264_cisco_close_encoder(tdav_codec_h264_cisco_t* self, tsk_bool_t reset_rotation)
 {
 	if (self) {
 		if (self->encoder.pInst) {
@@ -717,8 +720,10 @@ static int tdav_codec_h264_cisco_close_encoder(tdav_codec_h264_cisco_t* self)
         if (self->encoder.mutex) {
             tsk_mutex_destroy(&self->encoder.mutex);
         }
-		self->encoder.frame_count = 0;
-        self->encoder.rotation = 0; // reset rotation
+        self->encoder.frame_count = 0;
+        if (reset_rotation) {
+            self->encoder.rotation = 0; // reset rotation
+        }
 	}
 	return 0;
 }

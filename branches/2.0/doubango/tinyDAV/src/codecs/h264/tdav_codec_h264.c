@@ -87,12 +87,17 @@ typedef struct tdav_codec_h264_s
 }
 tdav_codec_h264_t;
 
-#define TDAV_H264_GOP_SIZE_IN_SECONDS		25
+#if !defined(TDAV_H264_GOP_SIZE_IN_SECONDS)
+#   define TDAV_H264_GOP_SIZE_IN_SECONDS		25
+#endif
+
+#define kResetRotationTrue tsk_true
+#define kResetRotationFalse tsk_false
 
 static int tdav_codec_h264_init(tdav_codec_h264_t* self, profile_idc_t profile);
 static int tdav_codec_h264_deinit(tdav_codec_h264_t* self);
 static int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self);
-static int tdav_codec_h264_close_encoder(tdav_codec_h264_t* self);
+static int tdav_codec_h264_close_encoder(tdav_codec_h264_t* self, tsk_bool_t reset_rotation);
 static int tdav_codec_h264_open_decoder(tdav_codec_h264_t* self);
 static int tdav_codec_h264_close_decoder(tdav_codec_h264_t* self);
 
@@ -158,13 +163,13 @@ static int tdav_codec_h264_set(tmedia_codec_t* self, const tmedia_param_t* param
 		else if(tsk_striequals(param->key, "rotation")){
 			int32_t rotation = *((int32_t*)param->value);
 			if(h264->encoder.rotation != rotation){
-				if(self->opened){
+                h264->encoder.rotation = rotation;
+				if (self->opened) {
 					int ret;
-					h264->encoder.rotation = rotation;
-					if((ret = tdav_codec_h264_close_encoder(h264))){
-						return ret;
-					}
-					if((ret = tdav_codec_h264_open_encoder(h264))){
+                    if ((ret = tdav_codec_h264_close_encoder(h264, kResetRotationFalse))) {
+                        return ret;
+                    }
+					if ((ret = tdav_codec_h264_open_encoder(h264))) {
 						return ret;
 					}
 #if 0 // Not working
@@ -226,7 +231,7 @@ static int tdav_codec_h264_close(tmedia_codec_t* self)
 	/* the caller (base class) alreasy checked that the codec is opened */
 
 	//	Encoder
-	tdav_codec_h264_close_encoder(h264);
+	tdav_codec_h264_close_encoder(h264, kResetRotationTrue);
 
 	//	Decoder
 	tdav_codec_h264_close_decoder(h264);
@@ -811,7 +816,7 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 	return -1;
 }
 
-int tdav_codec_h264_close_encoder(tdav_codec_h264_t* self)
+int tdav_codec_h264_close_encoder(tdav_codec_h264_t* self, tsk_bool_t reset_rotation)
 {
 #if HAVE_FFMPEG
 	if(self->encoder.context){
@@ -828,7 +833,9 @@ int tdav_codec_h264_close_encoder(tdav_codec_h264_t* self)
 		TSK_FREE(self->encoder.buffer);
 	}
 	self->encoder.frame_count = 0;
-    self->encoder.rotation = 0; // reset rotation
+    if (reset_rotation) {
+        self->encoder.rotation = 0; // reset rotation
+    }
 
 	return 0;
 }
