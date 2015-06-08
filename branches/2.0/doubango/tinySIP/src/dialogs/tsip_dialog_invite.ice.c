@@ -169,7 +169,7 @@ static int tsip_dialog_invite_ice_create_ctx(tsip_dialog_invite_t * self, tmedia
 			TSK_DEBUG_ERROR("Failed to create ICE video context");
 			return -2;
 		}
-#if 1 // @deprecated
+#if 0 // @deprecated
 		ret = tnet_ice_ctx_set_stun(self->ice.ctx_video, TSIP_DIALOG_GET_SS(self)->media.stun.hostname, TSIP_DIALOG_GET_SS(self)->media.stun.port, kStunSoftware, TSIP_DIALOG_GET_SS(self)->media.stun.username, TSIP_DIALOG_GET_SS(self)->media.stun.password);
 #else
 		ret = tnet_ice_ctx_add_server(
