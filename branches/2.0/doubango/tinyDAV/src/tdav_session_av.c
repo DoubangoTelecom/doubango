@@ -71,6 +71,11 @@ static const tsk_bool_t __have_libsrtp = tsk_false;
 #define TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT		0
 #endif /* TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT */
 
+// rfc5763 - The endpoint MUST NOT use the connection attribute defined in [RFC4145].
+#if !defined(TDAV_DTLS_CONNECTION_ATT)
+#	define TDAV_DTLS_CONNECTION_ATT		0
+#endif
+
 static void* TSK_STDCALL _tdav_session_av_error_async_thread(void* usrdata);
 static int _tdav_session_av_raise_error_async(struct tdav_session_av_s* self, tsk_bool_t is_fatal, const char* reason);
 #if HAVE_SRTP
@@ -401,16 +406,22 @@ tsk_bool_t tdav_session_av_get(tdav_session_av_t* self, tmedia_param_t* param)
 		return tsk_false;
 	}
 
-	// try with the base class to see if this option is supported or not
-	if(tmedia_session_get(TMEDIA_SESSION(self), param)){
-		return tsk_true;
-	}
-
-	if(param->plugin_type == tmedia_ppt_session){
-		if(param->value_type == tmedia_pvt_int32){
-			if(tsk_striequals(param->key, "srtp-enabled")){
+	if (param->plugin_type == tmedia_ppt_session){
+		if (param->value_type == tmedia_pvt_int32) {
+			if (tsk_striequals(param->key, "codecs-negotiated")) { // negotiated codecs
+				tmedia_codecs_L_t* neg_codecs = tsk_object_ref(TMEDIA_SESSION(self)->neg_codecs);
+				if (neg_codecs) {
+					const tsk_list_item_t* item;
+					tsk_list_foreach(item, neg_codecs) {
+						((int32_t*)param->value)[0] |= TMEDIA_CODEC(item->data)->id;
+					}
+					TSK_OBJECT_SAFE_FREE(neg_codecs);
+				}
+				return tsk_true;
+			}
+			else if (tsk_striequals(param->key, "srtp-enabled")) {
 #if HAVE_SRTP
-				if(self->rtp_manager){
+				if (self->rtp_manager) {
 					((int8_t*)param->value)[0] = self->use_srtp ? 1 : 0;
 					return tsk_true;
 				}
@@ -421,8 +432,8 @@ tsk_bool_t tdav_session_av_get(tdav_session_av_t* self, tmedia_param_t* param)
 #endif /* HAVE_SRTP */
 			}
 		}
-		else if (param->value_type == tmedia_pvt_pobject){
-			if (tsk_striequals(param->key, "producer")){
+		else if (param->value_type == tmedia_pvt_pobject) {
+			if (tsk_striequals(param->key, "producer")) {
 				*((tsk_object_t**)param->value) = tsk_object_ref(self->producer); // up to the caller to release the object
 				return tsk_true;
 			}
@@ -475,47 +486,48 @@ int tdav_session_av_prepare(tdav_session_av_t* self)
 #endif
 
 	/* set local port */
-	if(!self->rtp_manager){
+	if (!self->rtp_manager){
 		self->rtp_manager = self->ice_ctx ? trtp_manager_create_2(self->ice_ctx, self->srtp_type, self->srtp_mode)
 			: trtp_manager_create(self->use_rtcp, self->local_ip, self->use_ipv6, self->srtp_type, self->srtp_mode);
-		if(self->rtp_manager){
-			if((ret = trtp_manager_set_port_range(self->rtp_manager, tmedia_defaults_get_rtp_port_range_start(), tmedia_defaults_get_rtp_port_range_stop()))){
-				return ret;
-			}
+	}
+	if (self->rtp_manager) {
+		if((ret = trtp_manager_set_port_range(self->rtp_manager, tmedia_defaults_get_rtp_port_range_start(), tmedia_defaults_get_rtp_port_range_stop()))){
+			return ret;
+		}
 #if HAVE_SRTP
-			if(tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_pbk)){
-				// DTLS-SRTP requires certificates
-				if(self->srtp_type & tmedia_srtp_type_dtls){
-					TSK_DEBUG_WARN("DTLS-SRTP requested but no SSL certificates provided, disabling this option :(");
-					if(!(self->srtp_type &= ~tmedia_srtp_type_dtls)){
-						// only DTLS-SRTP was enabled
-						self->srtp_mode = tmedia_srtp_mode_none;
-						self->use_srtp = tsk_false;
-						// update rtpmanager
-						ret = trtp_manager_set_srtp_type_local(self->rtp_manager, self->srtp_type, self->srtp_mode);
-					}
+		if(tsk_strnullORempty(TMEDIA_SESSION(self)->dtls.file_pbk)){
+			// DTLS-SRTP requires certificates
+			if(self->srtp_type & tmedia_srtp_type_dtls){
+				TSK_DEBUG_WARN("DTLS-SRTP requested but no SSL certificates provided, disabling this option :(");
+				if(!(self->srtp_type &= ~tmedia_srtp_type_dtls)){
+					// only DTLS-SRTP was enabled
+					self->srtp_mode = tmedia_srtp_mode_none;
+					self->use_srtp = tsk_false;
+					// update rtpmanager
+					ret = trtp_manager_set_srtp_type_local(self->rtp_manager, self->srtp_type, self->srtp_mode);
 				}
-			}
-
-			if((self->srtp_type & tmedia_srtp_type_dtls) && (self->srtp_mode == tmedia_srtp_mode_optional || self->srtp_mode == tmedia_srtp_mode_mandatory)){
-				if((ret = trtp_manager_set_dtls_certs(self->rtp_manager, TMEDIA_SESSION(self)->dtls.file_ca, TMEDIA_SESSION(self)->dtls.file_pbk, TMEDIA_SESSION(self)->dtls.file_pvk, TMEDIA_SESSION(self)->dtls.verify))){
-					return ret;
-				}
-			}
-#endif /* HAVE_SRTP */
-			if((ret = trtp_manager_prepare(self->rtp_manager))){
-				return ret;
-			}
-			if(self->natt_ctx){
-				if((ret = trtp_manager_set_natt_ctx(self->rtp_manager, self->natt_ctx))){
-					return ret;
-				}
-			}
-			if(self->rtp_ssrc){
-				self->rtp_manager->rtp.ssrc.local = self->rtp_ssrc;
 			}
 		}
+
+		if ((self->srtp_type & tmedia_srtp_type_dtls) && (self->srtp_mode == tmedia_srtp_mode_optional || self->srtp_mode == tmedia_srtp_mode_mandatory)){
+			if((ret = trtp_manager_set_dtls_certs(self->rtp_manager, TMEDIA_SESSION(self)->dtls.file_ca, TMEDIA_SESSION(self)->dtls.file_pbk, TMEDIA_SESSION(self)->dtls.file_pvk, TMEDIA_SESSION(self)->dtls.verify))){
+				return ret;
+			}
+		}
+#endif /* HAVE_SRTP */
+		if((ret = trtp_manager_prepare(self->rtp_manager))){
+			return ret;
+		}
+		if(self->natt_ctx){
+			if((ret = trtp_manager_set_natt_ctx(self->rtp_manager, self->natt_ctx))){
+				return ret;
+			}
+		}
+		if(self->rtp_ssrc){
+			self->rtp_manager->rtp.ssrc.local = self->rtp_ssrc;
+		}
 	}
+	
 
 	/* SRTP */
 #if HAVE_SRTP
@@ -669,7 +681,7 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
 				
 		return ret;
 	}
-	else{
+	else {
 		TSK_DEBUG_ERROR("Invalid RTP/RTCP manager");
 		return -3;
 	}
@@ -914,12 +926,12 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 			/* DTLS-SRTP default values */
 			if(is_srtp_dtls_enabled){
 				/* "setup" and "connection" */
-				// rfc5763: the caller is server by default
-				//if(self->dtls.local.setup == tnet_dtls_setup_none || self->dtls.local.setup == tnet_dtls_setup_actpass){
+				if (self->dtls.local.setup == tnet_dtls_setup_none || self->dtls.local.setup == tnet_dtls_setup_actpass) { // if setup already negotiated then, use the same
+					// rfc5763: the caller is server by default
 					self->dtls.remote.setup = (!base->M.ro) ? tnet_dtls_setup_active : tnet_dtls_setup_passive;
-				//}
-				_tdav_session_av_dtls_set_remote_setup(self, self->dtls.remote.setup, self->dtls.remote.connection_new, (!base->M.ro));
-				if(self->rtp_manager){
+					_tdav_session_av_dtls_set_remote_setup(self, self->dtls.remote.setup, self->dtls.remote.connection_new, (!base->M.ro));
+				}
+				if (self->rtp_manager) {
 					trtp_manager_set_dtls_local_setup(self->rtp_manager, self->dtls.local.setup, self->dtls.local.connection_new);
 				}
 			}
@@ -985,7 +997,9 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 						acap_tag_setup = 1, acap_tag_connection = 2;
 						_first_media_sprintf(&str, "%d setup:%s", acap_tag_setup, TNET_DTLS_SETUP_NAMES[self->dtls.local.setup]);
 						_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("acap", str), tsk_null);
+#if TDAV_DTLS_CONNECTION_ATT
 						_first_media_sprintf(&str, "%d connection:%s", acap_tag_connection, self->dtls.local.connection_new ? "new" : "existing");
+#endif
 						_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("acap", str), tsk_null);
 						// New Firefox Nightly repspond with SHA-256 when offered SHA-1 -> It's a bug in FF
 						// Just use SHA-256 as first choice						
@@ -1157,16 +1171,20 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
 						tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("fingerprint", str), tsk_null);
 #else
 						_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("fingerprint", str), tsk_null);
-#endif
+#endif /* TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT */
 						TSK_FREE(str);
 					}
 #if TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT
 					tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("setup", TNET_DTLS_SETUP_NAMES[self->dtls.local.setup]), tsk_null);
+#if TDAV_DTLS_CONNECTION_ATT
 					tsdp_header_M_add_headers(base->M.lo, TSDP_HEADER_A_VA_ARGS("connection", self->dtls.local.connection_new ? "new" : "existing"), tsk_null);
+#endif /* TDAV_DTLS_CONNECTION_ATT */
 #else
 					_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("setup", TNET_DTLS_SETUP_NAMES[self->dtls.local.setup]), tsk_null);
+#if TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT
 					_first_media_add_headers(self->local_sdp, TSDP_HEADER_A_VA_ARGS("connection", self->dtls.local.connection_new ? "new" : "existing"), tsk_null);
-#endif
+#endif /* TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT */
+#endif /* TDAV_FIXME_MEDIA_LEVEL_DTLS_ATT */
 
 					is_srtp_dtls_activated = tsk_true;
 				}
@@ -1347,21 +1365,21 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 	is_srtp_dtls_local_enabled = (self->srtp_mode != tmedia_srtp_mode_none) && (self->srtp_type & tmedia_srtp_type_dtls);
 	is_srtp_sdes_local_enabled = (self->srtp_mode != tmedia_srtp_mode_none) && (self->srtp_type & tmedia_srtp_type_sdes); 
 
-	if(base->M.lo){
-		if((neg_codecs = tmedia_session_match_codec(base, m))){
+	if (base->M.lo) {
+		if ((neg_codecs = tmedia_session_match_codec(base, m))) {
 			/* update negociated codecs */
 			TSK_OBJECT_SAFE_FREE(base->neg_codecs);
 			base->neg_codecs = neg_codecs;
 			*updated = tsk_true;
 		}
-		else{
-			TSK_DEBUG_ERROR("None Match");
+		else {
+			TSK_DEBUG_ERROR("Codecs mismatch");
 			return -1;
 		}
 		/* QoS */
-		if(base->qos){
+		if (base->qos) {
 			tmedia_qos_tline_t* ro_tline;
-			if(base->M.ro && (ro_tline = tmedia_qos_tline_from_sdp(base->M.ro))){
+			if (base->M.ro && (ro_tline = tmedia_qos_tline_from_sdp(base->M.ro))) {
 				tmedia_qos_tline_set_ro(base->qos, ro_tline);
 				TSK_OBJECT_SAFE_FREE(ro_tline);
 			}
@@ -1623,14 +1641,17 @@ int tdav_session_av_set_ro(tdav_session_av_t* self, const struct tsdp_header_M_s
 					: (self->dtls.local.setup == tnet_dtls_setup_passive ? "active" : (base->M.lo ? "passive" : "active")));
 			}
 
-			if(connection && setup){
+			if (connection && setup) {
 				// update local setup according to remote setup
-				ret = _tdav_session_av_dtls_set_remote_setup(self, 
-					tnet_dtls_get_setup_from_string(setup),
-					!tsk_striequals(connection, "existing"),
-					(!base->M.ro)
-					);
-				if(ret == 0){
+				// do not update if local setup already negotiated
+				if (tnet_dtls_get_setup_from_string(setup) != tnet_dtls_setup_actpass || (self->dtls.local.setup == tnet_dtls_setup_none || self->dtls.local.setup == tnet_dtls_setup_actpass)) {
+					ret = _tdav_session_av_dtls_set_remote_setup(self,
+						tnet_dtls_get_setup_from_string(setup),
+						!tsk_striequals(connection, "existing"),
+						(!base->M.ro)
+						);
+				}
+				if (ret == 0) {
 					// pass new local values to the RTP manager
 					ret = trtp_manager_set_dtls_local_setup(self->rtp_manager, self->dtls.local.setup, self->dtls.local.connection_new);
 					srtp_dtls_neg_ok = (ret == 0);
@@ -1821,10 +1842,12 @@ int _tdav_session_av_dtls_set_remote_setup(struct tdav_session_av_s* self, tnet_
 				self->dtls.local.connection_new = tsk_true;
 				break;
 			case tnet_dtls_setup_actpass:
-				self->dtls.local.setup = (self->dtls.local.setup == tnet_dtls_setup_actpass || self->dtls.local.setup == tnet_dtls_setup_active) 
-					? tnet_dtls_setup_active
-					: tnet_dtls_setup_passive;
-				self->dtls.local.connection_new = tsk_true;
+				if (self->dtls.local.setup == tnet_dtls_setup_actpass || self->dtls.local.setup == tnet_dtls_setup_none) { // change local setup only if actpass or none
+					self->dtls.local.setup = (self->dtls.local.setup == tnet_dtls_setup_actpass || self->dtls.local.setup == tnet_dtls_setup_active)
+						? tnet_dtls_setup_active
+						: tnet_dtls_setup_passive;
+					self->dtls.local.connection_new = tsk_true;
+				}
 				break;
 		}
 	}

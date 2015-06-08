@@ -98,6 +98,21 @@ typedef struct tsdp_header_M_s
 }
 tsdp_header_M_t;
 
+typedef enum tsdp_header_M_diff_e {
+	tsdp_header_M_diff_none = 0x0000000,
+	tsdp_header_M_diff_hold_resume = (0x0000001 << 0),
+	tsdp_header_M_diff_index = (0x0000001 << 1),
+	tsdp_header_M_diff_codecs = (0x0000001 << 2),
+	tsdp_header_M_diff_network_info = (0x0000001 << 3),
+	tsdp_header_M_diff_ice_enabled = (0x0000001 << 4),
+	tsdp_header_M_diff_ice_restart = (0x0000001 << 5),
+	tsdp_header_M_diff_dtls_fingerprint = (0x0000001 << 6),
+	tsdp_header_M_diff_sdes_crypto = (0x0000001 << 7),
+	tsdp_header_M_diff_media_type = (0x0000001 << 8),
+	tsdp_header_M_diff_all = 0xFFFFFFFF
+}
+tsdp_header_M_diff_t;
+
 typedef tsk_list_t tsdp_headers_M_L_t;
 
 TINYSDP_API tsdp_header_M_t* tsdp_header_M_create(const char* media, uint32_t port, const char* proto);
@@ -110,7 +125,7 @@ TINYSDP_API int tsdp_header_M_add_headers(tsdp_header_M_t* self, ...);
 TINYSDP_API int tsdp_header_M_add_headers_2(tsdp_header_M_t* self, const tsdp_headers_L_t* headers);
 TINYSDP_API int tsdp_header_M_add_fmt(tsdp_header_M_t* self, const char* fmt);
 TINYSDP_API int tsdp_header_M_remove_fmt(tsdp_header_M_t* self, const char* fmt);
-TINYSDP_API tsk_bool_t tsdp_header_M_have_fmt(tsdp_header_M_t* self, const char* fmt);
+TINYSDP_API tsk_bool_t tsdp_header_M_have_fmt(const tsdp_header_M_t* self, const char* fmt);
 TINYSDP_API const tsdp_header_A_t* tsdp_header_M_findA_at(const tsdp_header_M_t* self, const char* field, tsk_size_t index);
 TINYSDP_API const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const char* field);
 TINYSDP_API char* tsdp_header_M_getAValue(const tsdp_header_M_t* self, const char* field, const char* fmt);
@@ -122,6 +137,9 @@ TINYSDP_API tsk_bool_t tsdp_header_M_is_held(const tsdp_header_M_t* self, tsk_bo
 TINYSDP_API int tsdp_header_M_set_holdresume_att(tsdp_header_M_t* self, tsk_bool_t lo_held, tsk_bool_t ro_held);
 TINYSDP_API const char* tsdp_header_M_get_holdresume_att(const tsdp_header_M_t* self);
 TINYSDP_API int tsdp_header_M_resume(tsdp_header_M_t* self, tsk_bool_t local);
+TINYSDP_API tsk_bool_t tsdp_header_M_is_ice_enabled(const tsdp_header_M_t* self);
+TINYSDP_API tsk_bool_t tsdp_header_M_is_ice_restart(const tsdp_header_M_t* self);
+TINYSDP_API int tsdp_header_M_diff(const tsdp_header_M_t* M_old, const tsdp_header_M_t* M_new, tsdp_header_M_diff_t* diff);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_M_def_t;
 

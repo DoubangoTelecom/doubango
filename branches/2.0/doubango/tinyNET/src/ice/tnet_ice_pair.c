@@ -503,9 +503,13 @@ int tnet_ice_pair_send_response(tnet_ice_pair_t *self, const tnet_stun_pkt_req_t
 	
 	if (ret == 0 && !is_error) {
 		tsk_bool_t change_state = 
-			self->is_ice_jingle || // ICE-JINGLE don't have ICE-CONTROLLING/ICE-CONTROLLED attributes
-			(!self->is_controlling && tnet_stun_pkt_attr_exists(request, tnet_stun_attr_type_ice_use_candidate)) || // Sender is controlling and uses "ICE-USE-CANDIDATE" attribute
-			(self->is_controlling) // We always use agressive nomination and final check-list will have high-priority pairs on the top
+			self->is_ice_jingle // ICE-JINGLE don't have ICE-CONTROLLING/ICE-CONTROLLED attributes
+			|| (!self->is_controlling && tnet_stun_pkt_attr_exists(request, tnet_stun_attr_type_ice_use_candidate)) // Sender is controlling and uses "ICE-USE-CANDIDATE" attribute
+#if TNET_ICE_AGGRESSIVE_NOMINATION || 1 // This is not a typo but a *must*. We've to change the answer state regardless the nomination mode otherwise we'll never get a nominee. Only the offer state is controlled based on the mode and depends on "is_nominated".
+			|| (self->is_controlling) // We are controlling and using aggressive mode
+#else
+			|| (self->is_controlling && self->is_nominated) // We're controlling and using regular mode
+#endif
 			;
 		TNET_ICE_PAIR_DEBUG_INFO("ICE pair-answer changing state to 'succeed' ? %s, comp-id=%d, found=%s, addr=%s", 
 				change_state?"yes":"no",
@@ -650,16 +654,29 @@ int tnet_ice_pair_auth_conncheck(const tnet_ice_pair_t *self, const tnet_stun_pk
 
 int tnet_ice_pair_recv_response(tnet_ice_pair_t *self, const tnet_stun_pkt_resp_t* response, tsk_bool_t is_4conncheck)
 {
-	if (self && response && is_4conncheck) {
+	if (self && response && TNET_STUN_PKT_IS_RESP(response)) {
 		if (self->last_request && tnet_stun_utils_transac_id_equals(self->last_request->transac_id, response->transac_id)){
 			// ignore errors (e.g. STALE-CREDENTIALS) which could happen in some special cases before success
-			if (TNET_STUN_PKT_RESP_IS_SUCCESS(response)){
-				self->state_offer = tnet_ice_pair_state_succeed; // we must not change the state after connection cheking to make sure another pair won't be picked as nominated
-				TNET_ICE_PAIR_DEBUG_INFO("ICE pair-offer changing state to 'succeed', comp-id=%d, found=%s, addr=%s",
-					self->candidate_offer->comp_id,
-					self->candidate_offer->foundation,
-					self->candidate_offer->connection_addr
-					);
+			if (TNET_STUN_PKT_RESP_IS_SUCCESS(response)) {
+				if (is_4conncheck) {
+					self->state_offer = tnet_ice_pair_state_succeed; // we must not change the state after connection cheking to make sure another pair won't be picked as nominated
+					TNET_ICE_PAIR_DEBUG_INFO("ICE pair-offer changing state to 'succeed', comp-id=%d, found=%s, addr=%s",
+						self->candidate_offer->comp_id,
+						self->candidate_offer->foundation,
+						self->candidate_offer->connection_addr
+						);
+				}
+			}
+			else {
+				// The response is an error
+				uint16_t u_code;
+				int ret;
+				if ((ret = tnet_stun_pkt_get_errorcode(response, &u_code)) == 0 && u_code == kStunErrCodeIceConflict) {
+					TSK_DEBUG_INFO("ICE Pair %llu received conflict error message", self->id);
+					// If this code is called this means that we have lower tie-breaker and we must toggle our role
+					self->is_controlling = !self->is_controlling;
+					TSK_OBJECT_SAFE_FREE(self->last_request); // delete the "last_request" to make sure a new one will be created with right attributes
+				}
 			}
 		}
 	}

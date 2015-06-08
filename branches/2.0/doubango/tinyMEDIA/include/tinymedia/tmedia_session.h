@@ -198,7 +198,7 @@ TINYMEDIA_API uint64_t tmedia_session_get_unique_id();
 TINYMEDIA_API int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type);
 TINYMEDIA_API int tmedia_session_set(tmedia_session_t* self, ...);
 TINYMEDIA_API tsk_bool_t tmedia_session_set_2(tmedia_session_t* self, const tmedia_param_t* param);
-TINYMEDIA_API tsk_bool_t tmedia_session_get(tmedia_session_t* self, tmedia_param_t* param);
+TINYMEDIA_API int tmedia_session_get(tmedia_session_t* self, tmedia_param_t* param);
 TINYMEDIA_API int tmedia_session_cmp(const tsk_object_t* sess1, const tsk_object_t* sess2);
 TINYMEDIA_API int tmedia_session_plugin_register(const tmedia_session_plugin_def_t* plugin);
 TINYMEDIA_API const tmedia_session_plugin_def_t* tmedia_session_plugin_find_by_media(const char* media);
@@ -568,6 +568,7 @@ TINYMEDIA_API int tmedia_session_mgr_set_msrp_cb(tmedia_session_mgr_t* self, con
 TINYMEDIA_API int tmedia_session_mgr_set_onerror_cbfn(tmedia_session_mgr_t* self, const void* usrdata, tmedia_session_onerror_cb_f fun);
 TINYMEDIA_API int tmedia_session_mgr_set_rfc5168_cbfn(tmedia_session_mgr_t* self, const void* usrdata, tmedia_session_rfc5168_cb_f fun);
 TINYMEDIA_API int tmedia_session_mgr_set_bfcp_cbfn(tmedia_session_mgr_t* self, const void* usrdata, tmedia_session_bfcp_cb_f fun);
+TINYMEDIA_API int tmedia_session_mgr_lo_apply_changes(tmedia_session_mgr_t* self);
 
 
 TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_session_mgr_def_t;

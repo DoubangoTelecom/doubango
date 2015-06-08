@@ -97,6 +97,10 @@ TINYMEDIA_API tmedia_param_t* tmedia_param_create(tmedia_param_access_type_t acc
 									tmedia_param_value_type_t value_type,
 									const char* key,
 									void* value);
+#define tmedia_param_create_get(media_type, plugin_type, value_type, key, value) tmedia_param_create(tmedia_pat_get, (media_type), (plugin_type), (value_type), (key), (value))
+#define tmedia_param_create_get_session(media_type, value_type, key, value) tmedia_param_create_get((media_type), tmedia_ppt_session, (value_type), (key), (value))
+#define tmedia_param_create_get_codec(media_type, value_type, key, value) tmedia_param_create_get((media_type), tmedia_ppt_codec, (value_type), (key), (value))
+#define tmedia_param_create_set(media_type, plugin_type, value_type, key, value) tmedia_param_create(tmedia_pat_set, (media_type), (plugin_type), (value_type), (value))
 
 TINYMEDIA_API tmedia_params_L_t* tmedia_params_create_2(va_list *app);
 
