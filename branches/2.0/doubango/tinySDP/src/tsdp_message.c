@@ -1,8 +1,6 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
@@ -22,10 +20,6 @@
 
 /**@file tsdp_message.c
  * @brief SDP message.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 
 #include "tinysdp/tsdp_message.h"
@@ -206,6 +200,20 @@ const tsdp_header_t *tsdp_message_get_headerByName(const tsdp_message_t *self, c
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
+}
+
+int tsdp_message_get_sess_version(const tsdp_message_t *self, uint32_t *version)
+{
+	const tsdp_header_O_t* O;
+	if (!self || !version) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	if ((O = (const tsdp_header_O_t*)tsdp_message_get_header(self, tsdp_htype_O))) {
+		*version = O->sess_version;
+		return 0;
+	}
+	return -2;
 }
 
 int tsdp_message_serialize(const tsdp_message_t *self, tsk_buffer_t *output)
@@ -395,12 +403,62 @@ int tsdp_message_resume(tsdp_message_t* self, const char* media)
 	return 0;
 }
 
+tsk_bool_t tsdp_message_is_ice_enabled(const tsdp_message_t *self, tsk_size_t media_index)
+{
+	if (self) {
+		const tsdp_header_A_t *A;
+		const tsdp_header_M_t *M;
+		tsk_bool_t have_ufrag = tsk_false, have_pwd = tsk_false, have_candidates = tsk_false;
+		tsk_size_t index0 = 0;
 
+		// session level attributes
+		if ((A = tsdp_message_get_headerA(self, "ice-ufrag"))) {
+			have_ufrag = tsk_true;
+		}
+		if ((A = tsdp_message_get_headerA(self, "ice-pwd"))) {
+			have_pwd = tsk_true;
+		}
+		while ((M = (const tsdp_header_M_t*)tsdp_message_get_headerAt(self, tsdp_htype_M, index0))) {
+			if (index0 == media_index) {
+				if ((A = tsdp_header_M_findA(M, "ice-ufrag"))) {
+					have_ufrag = tsk_true;
+				}
+				if ((A = tsdp_header_M_findA(M, "ice-pwd"))) {
+					have_pwd = tsk_true;
+				}
+				have_candidates = (tsdp_header_M_findA_at(M, "candidate", 0) != tsk_null);
+				return have_ufrag && have_pwd && have_candidates;
+			}
+			++index0;
+		}
+	}
+	return tsk_false;
+}
 
+tsk_bool_t tsdp_message_is_ice_restart(const tsdp_message_t *self, tsk_size_t media_index)
+{
+	// https://tools.ietf.org/html/rfc5245#section-9.1.1.1
+	if (self) {
+		const tsdp_header_C_t *C;
+		const tsdp_header_M_t *M;
+		tsk_size_t index0 = 0;
 
-
-
-
+		// Session level
+		if ((C = (const tsdp_header_C_t*)tsdp_message_get_header(self, tsdp_htype_C)) && C->addr){
+			if (tsk_striequals("0.0.0.0", C->addr)) {
+				return tsk_true;
+			}
+		}
+		// Media level
+		while ((M = (const tsdp_header_M_t*)tsdp_message_get_headerAt(self, tsdp_htype_M, index0))) {
+			if (index0 == media_index) {
+				return (M->C && M->C->addr && tsk_striequals("0.0.0.0", M->C->addr));
+			}
+			++index0;
+		}
+	}
+	return tsk_false;
+}
 
 
 

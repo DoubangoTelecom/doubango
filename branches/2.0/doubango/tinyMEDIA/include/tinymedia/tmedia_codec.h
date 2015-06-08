@@ -249,6 +249,7 @@ typedef struct tmedia_codec_s
 	const struct tmedia_codec_plugin_def_s* plugin;
 }
 tmedia_codec_t;
+#define TMEDIA_CODEC(self)		((tmedia_codec_t*)(self))
 
 /** Virtual table used to define a codec plugin */
 typedef struct tmedia_codec_plugin_def_s

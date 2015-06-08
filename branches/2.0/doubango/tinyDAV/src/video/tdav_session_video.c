@@ -949,7 +949,8 @@ static int tdav_session_video_set(tmedia_session_t* self, const tmedia_param_t* 
 		return -1;
 	}
 
-	if(tdav_session_av_set(TDAV_SESSION_AV(self), param) == tsk_true){
+	// try with the base class to see if this option is supported or not
+	if (tdav_session_av_set(TDAV_SESSION_AV(self), param) == tsk_true) {
 		return 0;
 	}
 
@@ -998,10 +999,10 @@ static int tdav_session_video_set(tmedia_session_t* self, const tmedia_param_t* 
 		ret = tmedia_producer_set(base->producer, param);
 	}
 	else{
-		if(param->value_type == tmedia_pvt_int32){
-			if(tsk_striequals(param->key, "bandwidth-level")){
+		if (param->value_type == tmedia_pvt_int32){
+			if (tsk_striequals(param->key, "bandwidth-level")){
 				tsk_list_item_t* item;
-				self->bl = (tmedia_bandwidth_level_t) TSK_TO_INT32((uint8_t*)param->value);
+				self->bl = (tmedia_bandwidth_level_t)TSK_TO_INT32((uint8_t*)param->value);
 				self->codecs = tsk_object_ref(self->codecs);
 				tsk_list_foreach(item, self->codecs){
 					((tmedia_codec_t*)item->data)->bl = self->bl;
@@ -1016,16 +1017,27 @@ static int tdav_session_video_set(tmedia_session_t* self, const tmedia_param_t* 
 
 static int tdav_session_video_get(tmedia_session_t* self, tmedia_param_t* param)
 {
-	if(!self){
+	if (!self || !param) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	
-	if(tdav_session_av_get(TDAV_SESSION_AV(self), param) == tsk_true){
+	// try with the base class to see if this option is supported or not
+	if (tdav_session_av_get(TDAV_SESSION_AV(self), param) == tsk_true) {
 		return 0;
 	}
+	else {
+		if (param->plugin_type == tmedia_ppt_session) {
+			if (param->value_type == tmedia_pvt_pobject) {
+				if (tsk_striequals(param->key, "codec-encoder")) {
+					*((tsk_object_t**)param->value) = tsk_object_ref(TDAV_SESSION_VIDEO(self)->encoder.codec); // up to the caller to release the object
+					return 0;
+				}
+			}
+		}
+	}
 
-	TSK_DEBUG_ERROR("Not expected");
+	TSK_DEBUG_WARN("This session doesn't support get(%s)", param->key);
 	return -2;
 }
 
@@ -1061,6 +1073,11 @@ static int tdav_session_video_start(tmedia_session_t* self)
 
 	video = (tdav_session_video_t*)self;
 	base = (tdav_session_av_t*)self;
+
+	if (video->started) {
+		TSK_DEBUG_INFO("Video session already started");
+		return 0;
+	}
 
 	// ENCODER codec
 	if (!(codec = tdav_session_av_get_best_neg_codec(base))) {

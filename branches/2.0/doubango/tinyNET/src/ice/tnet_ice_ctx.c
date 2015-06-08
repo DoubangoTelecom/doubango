@@ -2235,7 +2235,7 @@ static int _tnet_ice_ctx_recv_stun_message_for_pair(tnet_ice_ctx_t* self, const 
 							}
 							else;
 						}
-						else{ // I'm ICE-CONTROLLED
+						else { // I'm ICE-CONTROLLED
 							const tnet_stun_attr_vdata_t* stun_att_ice_controlled;
 							if ((ret = tnet_stun_pkt_attr_find_first(message, tnet_stun_attr_type_ice_controlled, (const tnet_stun_attr_t**)&stun_att_ice_controlled)) == 0 && stun_att_ice_controlled) {
 								TSK_DEBUG_WARN("Role conflicts (SEND)");
@@ -2272,6 +2272,7 @@ static int _tnet_ice_ctx_recv_stun_message_for_pair(tnet_ice_ctx_t* self, const 
 		else if (TNET_STUN_PKT_IS_RESP(message)) {
 			if (pair || (pair = tnet_ice_pairs_find_by_response(self->candidates_pairs, message))) {
 				ret = tnet_ice_pair_recv_response(((tnet_ice_pair_t*)pair), message, self->is_connchecking);
+#if 0
 				if (TNET_STUN_PKT_RESP_IS_ERROR(message)) {
 					uint16_t u_code;
 					if ((ret = tnet_stun_pkt_get_errorcode(message, &u_code)) == 0 && u_code == kStunErrCodeIceConflict) {
@@ -2281,6 +2282,7 @@ static int _tnet_ice_ctx_recv_stun_message_for_pair(tnet_ice_ctx_t* self, const 
 						*role_conflict = tsk_true;
 					}
 				}
+#endif
 			}
 		}
 	}
@@ -2693,6 +2695,10 @@ enum tnet_socket_type_e e_transport,
 
 	// TURN requires credentials
 	if ((e_proto & tnet_ice_server_proto_turn) == tnet_ice_server_proto_turn && (tsk_strnullORempty(str_username) || tsk_strnullORempty(str_password))) {
+		/* rfc5766 - 4.  General Behavior
+		The server MUST demand that all requests from the client
+		be authenticated using this mechanism, or that a equally strong or
+		stronger mechanism for client authentication is used.*/
 		TSK_DEBUG_ERROR("TURN requires credentials");
 		return -1;
 	}

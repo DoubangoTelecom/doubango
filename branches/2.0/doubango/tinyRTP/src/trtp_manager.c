@@ -551,8 +551,8 @@ static int _trtp_manager_srtp_set_enabled(trtp_manager_t* self, tmedia_srtp_type
 			}
 			self->srtp_state = trtp_srtp_state_enabled;
 		}
-		else{
-			if(srtp_type & tmedia_srtp_type_dtls){
+		else {
+			if (srtp_type & tmedia_srtp_type_dtls) {
 				if (self->transport) {
 					ret = tnet_transport_dtls_set_enabled(self->transport, tsk_false, sockets, count);
 				}
@@ -569,6 +569,10 @@ static int _trtp_manager_srtp_set_enabled(trtp_manager_t* self, tmedia_srtp_type
 				self->srtp_ctx_neg_local = tsk_null;
 				self->srtp_ctx_neg_remote = tsk_null;
 				self->srtp_state = trtp_srtp_state_none;
+				// Reset SRTP session to the RTCP session manager
+				if (self->rtcp.session) {
+					trtp_rtcp_session_set_srtp_sess(self->rtcp.session, tsk_null);
+				}
 			}
 		}
 	}
@@ -870,6 +874,8 @@ int trtp_manager_prepare(trtp_manager_t* self)
 		TSK_DEBUG_INFO("ICE enabled on RTP manager");
 		// Get Sockets when the transport is started
 		rtp_local_ip = rtcp_local_ip = self->use_ipv6 ? "::1" : "127.0.0.1";
+		rtp_local_port = 2; // ICE default rtp port, do not use zero which is reserved to disabled medias
+		rtcp_local_port = 1; // ICE default rtcp port, do not use zero which is reserved to disabled medias
 	}
 	else{
 		#define __retry_count_max 5

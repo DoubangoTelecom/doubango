@@ -621,9 +621,9 @@ removeAttributes:
 	return 0;
 }
 
-tsk_bool_t tsdp_header_M_have_fmt(tsdp_header_M_t* self, const char* fmt)
+tsk_bool_t tsdp_header_M_have_fmt(const tsdp_header_M_t* self, const char* fmt)
 {
-	if(self &&! tsk_strnullORempty(fmt)){
+	if(self && !tsk_strnullORempty(fmt)){
 		const tsk_list_item_t* item;
 		const tsdp_fmt_t* _fmt;
 		tsk_list_foreach(item, self->FMTs){
@@ -796,7 +796,7 @@ tsk_bool_t tsdp_header_M_is_held(const tsdp_header_M_t* self, tsk_bool_t local)
 int tsdp_header_M_resume(tsdp_header_M_t* self, tsk_bool_t local)
 {
 	const tsdp_header_A_t* a;
-	if(!self){
+	if (!self) {
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
@@ -810,6 +810,168 @@ int tsdp_header_M_resume(tsdp_header_M_t* self, tsk_bool_t local)
 		tsk_strupdate(&(TSDP_HEADER_A(a)->field), "sendrecv");
 	}
 	return 0;
+}
+
+tsk_bool_t tsdp_header_M_is_ice_enabled(const tsdp_header_M_t* self)
+{
+	if (self) {
+		const tsdp_header_A_t *A;
+		tsk_bool_t have_ufrag = tsk_false, have_pwd = tsk_false, have_candidates = tsk_false;
+
+		if ((A = tsdp_header_M_findA(self, "ice-ufrag"))) {
+			have_ufrag = tsk_true;
+		}
+		if ((A = tsdp_header_M_findA(self, "ice-pwd"))) {
+			have_pwd = tsk_true;
+		}
+		have_candidates = (tsdp_header_M_findA_at(self, "candidate", 0) != tsk_null);
+		return have_ufrag && have_pwd && have_candidates;
+	}
+	return tsk_false;
+}
+
+tsk_bool_t tsdp_header_M_is_ice_restart(const tsdp_header_M_t* self)
+{
+	// https://tools.ietf.org/html/rfc5245#section-9.1.1.1
+	if (self) {
+		return (self->C && self->C->addr && tsk_striequals("0.0.0.0", self->C->addr));
+	}
+	return tsk_false;
+}
+
+int tsdp_header_M_diff(const tsdp_header_M_t* M_old, const tsdp_header_M_t* M_new, tsdp_header_M_diff_t* _diff)
+{
+	tsdp_header_M_diff_t diff = tsdp_header_M_diff_none;
+	const tsdp_header_A_t *A0, *A1;
+	int ret = 0;
+	tsk_size_t index;
+	if (!M_old || !_diff) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if (!M_new || !tsk_striequals(M_new->media, M_old->media)) {
+		// media lines must be at the same index
+		// (M1 == null) means media lines are not at the same index or new one have been added/removed
+		diff |= tsdp_header_M_diff_index;
+	}
+
+	// hold/resume
+	if (M_new && !tsk_striequals(tsdp_header_M_get_holdresume_att(M_old), tsdp_header_M_get_holdresume_att(M_new))) {
+		diff |= tsdp_header_M_diff_hold_resume;
+	}
+
+	// dtls fingerprint
+	A0 = tsdp_header_M_findA_at(M_old, "fingerprint", 0);
+	A1 = M_new ? tsdp_header_M_findA_at(M_new, "fingerprint", 0) : tsk_null;
+	if (A0 && A1 && !tsk_striequals(A0->value, A1->value)) {
+		diff |= tsdp_header_M_diff_dtls_fingerprint;
+	}
+
+	// sdes cryptos
+	index = 0;
+	do {
+		A0 = tsdp_header_M_findA_at(M_old, "crypto", index);
+		A1 = M_new ? tsdp_header_M_findA_at(M_new, "crypto", index) : tsk_null;
+		if (A0 && A1 && !tsk_striequals(A0->value, A1->value)) {
+			diff |= tsdp_header_M_diff_dtls_fingerprint;
+		}
+		else if ((A0 && !A1) || (!A0 && A1)) {
+			diff |= tsdp_header_M_diff_dtls_fingerprint;
+		}
+		++index;
+	} while (A0 && A1);
+
+	// media lines
+	if ((diff & tsdp_header_M_diff_index) != tsdp_header_M_diff_index) {
+		char* M0ProtoF = tsk_null; // old proto with "F" at the end, do nothing if we transit from AVP to AVPF because it means nego. succeeded
+		tsk_strcat_2(&M0ProtoF, "%sF", M_old->proto);
+		if (
+			// (M1 == null) means media lines are not at the same index or new one have been added/removed
+			(!M_new)
+			// same media (e.g. audio)
+			|| !tsk_striequals(M_new->media, M_old->media)
+			// same protos (e.g. SRTP)
+			|| !(tsk_striequals(M_new->proto, M_old->proto) || tsk_striequals(M_new->proto, M0ProtoF)))
+		{
+			diff |= tsdp_header_M_diff_index;
+		}
+		TSK_FREE(M0ProtoF);
+	}
+
+	// codecs
+	if (M_new && (diff & tsdp_header_M_diff_index) != tsdp_header_M_diff_index) { // make sure it's same media at same index
+		if (tsk_list_count_all(M_old->FMTs) == tsk_list_count_all(M_new->FMTs)) {
+			if ((diff & tsdp_header_M_diff_index) != tsdp_header_M_diff_index) { // make sure it's same media at same index
+				const tsk_list_item_t* codec_item0;
+				const tsdp_fmt_t* codec_fmt1;
+				tsk_size_t codec_index0 = 0;
+				tsk_list_foreach(codec_item0, M_old->FMTs) {
+					codec_fmt1 = (const tsdp_fmt_t*)tsk_list_find_object_by_pred_at_index(M_new->FMTs, tsk_null, tsk_null, codec_index0++);
+					if (!codec_fmt1 || !tsk_striequals(codec_fmt1->value, ((const tsdp_fmt_t*)codec_item0->data)->value)) {
+						diff |= tsdp_header_M_diff_codecs;
+						break;
+					}
+				}
+			}
+		}
+		else {
+			diff |= tsdp_header_M_diff_codecs;
+		}
+	}
+
+	// network ports
+	if ((M_new ? M_new->port : 0) != (M_old->port)) {
+		diff |= tsdp_header_M_diff_network_info;
+	}
+
+	if (M_new) {
+		if ((diff & tsdp_header_M_diff_network_info) != tsdp_header_M_diff_network_info) {
+			// Connection informations must be both "null" or "not-null"
+			if (!((M_old->C && M_new->C) || (!M_old->C && !M_new->C))) {
+				diff |= tsdp_header_M_diff_network_info;
+			}
+			else if (M_old->C) {
+				if (!tsk_strequals(M_new->C->addr, M_old->C->addr) || !tsk_strequals(M_new->C->nettype, M_old->C->nettype) || !tsk_strequals(M_new->C->addrtype, M_old->C->addrtype)) {
+					diff |= tsdp_header_M_diff_network_info;
+				}
+			}
+		}
+	}
+
+	// media type
+	if (M_new) {
+		if (!tsk_striequals(M_new->media, M_old->media)) {
+			diff |= tsdp_header_M_diff_media_type;
+		}
+		else {
+			if (tsk_striequals(M_new->media, "audio") || tsk_striequals(M_new->media, "video")) {
+				const char *content0, *content1;
+				// check if it's BFCP audio/video session
+				// content attribute described in http://tools.ietf.org/html/rfc4796
+				A0 = tsdp_header_M_findA(M_old, "content");
+				A1 = tsdp_header_M_findA(M_new, "content");
+				content0 = A0 ? A0->value : "main";
+				content1 = A1 ? A1->value : "main";
+				if (!tsk_striequals(content0, content1)) {
+					diff |= tsdp_header_M_diff_media_type;
+				}
+			}
+		}
+	}
+
+	// ice
+	if (M_new) {
+		if (tsdp_header_M_is_ice_enabled(M_new)) {
+			diff |= tsdp_header_M_diff_ice_enabled;
+		}
+		if (tsdp_header_M_is_ice_restart(M_new)) {
+			diff |= tsdp_header_M_diff_ice_restart;
+		}
+	}
+
+	*_diff = diff;
+	return ret;
 }
 
 //

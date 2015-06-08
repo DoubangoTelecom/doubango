@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +21,6 @@
 /**@file tsdp_message.h
  * @brief SDP message.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #ifndef TINYSDP_MESSAGE_H
 #define TINYSDP_MESSAGE_H
@@ -83,6 +78,7 @@ TINYSDP_API const tsdp_header_t *tsdp_message_get_header(const tsdp_message_t *s
 TINYSDP_API const tsdp_header_A_t* tsdp_message_get_headerA_at(const tsdp_message_t* self, const char* field, tsk_size_t index);
 TINYSDP_API const tsdp_header_A_t* tsdp_message_get_headerA(const tsdp_message_t* self, const char* field);
 TINYSDP_API const tsdp_header_t *tsdp_message_get_headerByName(const tsdp_message_t *self, char name);
+TINYSDP_API int tsdp_message_get_sess_version(const tsdp_message_t *self, uint32_t *version);
 
 TINYSDP_API int tsdp_message_serialize(const tsdp_message_t *self, tsk_buffer_t *output);
 TINYSDP_API char* tsdp_message_tostring(const tsdp_message_t *self);
@@ -98,6 +94,9 @@ TINYSDP_API const tsdp_header_M_t* tsdp_message_find_media(const tsdp_message_t 
 // 3GPP TS 24.610 Communication HOLD
 TINYSDP_API int tsdp_message_hold(tsdp_message_t* self, const char* media);
 TINYSDP_API int tsdp_message_resume(tsdp_message_t* self, const char* media);
+
+TINYSDP_API tsk_bool_t tsdp_message_is_ice_enabled(const tsdp_message_t *self, tsk_size_t media_index);
+TINYSDP_API tsk_bool_t tsdp_message_is_ice_restart(const tsdp_message_t *self, tsk_size_t media_index);
 
 TINYSDP_API tsdp_message_t* tsdp_message_create();
 

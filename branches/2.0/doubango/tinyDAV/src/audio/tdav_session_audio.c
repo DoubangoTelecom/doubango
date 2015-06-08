@@ -342,27 +342,37 @@ static int tdav_session_audio_get(tmedia_session_t* self, tmedia_param_t* param)
 		return -1;
 	}
 
+	// try with the base class to see if this option is supported or not
 	if (tdav_session_av_get(TDAV_SESSION_AV(self), param) == tsk_true){
 		return 0;
 	}
-
-	// the codec information is held by the session even if the user is authorized to request it for the consumer/producer
-	if (tsk_striequals("codec", param->key) && param->value_type == tmedia_pvt_pobject){
-		if (param->plugin_type == tmedia_ppt_consumer){
-			TSK_DEBUG_ERROR("Not implemented");
-			return -4;
-		}
-		else if (param->plugin_type == tmedia_ppt_producer){
-			const tmedia_codec_t* codec;
-			if (!(codec = TDAV_SESSION_AUDIO(self)->encoder.codec)){
-				codec = tdav_session_av_get_best_neg_codec((const tdav_session_av_t*)self);
+	else {
+		// the codec information is held by the session even if the user is authorized to request it for the consumer/producer
+		if (param->value_type == tmedia_pvt_pobject){
+			if (param->plugin_type == tmedia_ppt_consumer){
+				TSK_DEBUG_ERROR("Not implemented");
+				return -4;
 			}
-			*((tsk_object_t**)param->value) = tsk_object_ref(TSK_OBJECT(codec));
-			return 0;
+			else if (param->plugin_type == tmedia_ppt_producer){
+				if (tsk_striequals("codec", param->key)) {
+					const tmedia_codec_t* codec;
+					if (!(codec = TDAV_SESSION_AUDIO(self)->encoder.codec)){
+						codec = tdav_session_av_get_best_neg_codec((const tdav_session_av_t*)self); // up to the caller to release the object
+					}
+					*((tsk_object_t**)param->value) = tsk_object_ref(TSK_OBJECT(codec));
+					return 0;
+				}
+			}
+			else if (param->plugin_type == tmedia_ppt_session) {
+				if (tsk_striequals(param->key, "codec-encoder")) {
+					*((tsk_object_t**)param->value) = tsk_object_ref(TDAV_SESSION_AUDIO(self)->encoder.codec); // up to the caller to release the object
+					return 0;
+				}
+			}
 		}
 	}
 
-	TSK_DEBUG_ERROR("(%s) not expected param key for plugin_type=%d", param->key, param->plugin_type);
+	TSK_DEBUG_WARN("This session doesn't support get(%s)", param->key);
 	return -2;
 }
 
@@ -397,6 +407,11 @@ static int tdav_session_audio_start(tmedia_session_t* self)
 
 	audio = (tdav_session_audio_t*)self;
 	base = (tdav_session_av_t*)self;
+
+	if (audio->is_started) {
+		TSK_DEBUG_INFO("Audio session already started");
+		return 0;
+	}
 
 	if (!(codec = tdav_session_av_get_best_neg_codec(base))){
 		TSK_DEBUG_ERROR("No codec matched");
