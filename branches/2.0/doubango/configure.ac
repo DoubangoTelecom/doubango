@@ -1,12 +1,12 @@
 #
-# Copyright (C) 2010-2014 Mamadou DIOP
-# Copyright (C) 2011-2014 Doubango Telecom <http://www.doubango.org>
+# Copyright (C) 2010-2015 Mamadou DIOP
+# Copyright (C) 2011-2015 Doubango Telecom <http://www.doubango.org>
 # License: GPLv3 or commercial
 # This file is part of Doubango VoIP framework <https://code.google.com/p/doubango/>
 #
 
 AC_PREREQ([2.0])
-AC_INIT(libdoubango, 2.0.1200, doubango(at)googlegroups(dot)com)
+AC_INIT(libdoubango, 2.0.1305, doubango(at)googlegroups(dot)com)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE([subdir-objects])
 AC_CONFIG_MACRO_DIR([m4])
