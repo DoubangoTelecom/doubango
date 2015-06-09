@@ -873,14 +873,16 @@ int tsdp_header_M_diff(const tsdp_header_M_t* M_old, const tsdp_header_M_t* M_ne
 	do {
 		A0 = tsdp_header_M_findA_at(M_old, "crypto", index);
 		A1 = M_new ? tsdp_header_M_findA_at(M_new, "crypto", index) : tsk_null;
-		if (A0 && A1 && !tsk_striequals(A0->value, A1->value)) {
-			diff |= tsdp_header_M_diff_dtls_fingerprint;
-		}
-		else if ((A0 && !A1) || (!A0 && A1)) {
-			diff |= tsdp_header_M_diff_dtls_fingerprint;
-		}
+        if (A0 && A1) {
+            if (!tsk_striequals(A0->value, A1->value)) {
+                diff |= tsdp_header_M_diff_sdes_crypto;
+            }
+        }
+        else if (index == 0) { // (A1 && !AO) means "more" crypto lines, otherwise "less". In all cases if the first matched we're ok
+            diff |= tsdp_header_M_diff_sdes_crypto;
+        }
 		++index;
-	} while (A0 && A1);
+	} while ((A0 && A1) && ((diff & tsdp_header_M_diff_sdes_crypto) != tsdp_header_M_diff_sdes_crypto));
 
 	// media lines
 	if ((diff & tsdp_header_M_diff_index) != tsdp_header_M_diff_index) {
