@@ -1107,6 +1107,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	tsk_bool_t is_ice_enabled[TMEDIA_SESSION_MAX_LINES] = { tsk_false };
 	tsk_bool_t is_ice_restart[TMEDIA_SESSION_MAX_LINES] = { tsk_false };
 	tsk_bool_t is_dtls_fingerprint_changed[TMEDIA_SESSION_MAX_LINES] = { tsk_false };
+    tsk_bool_t is_sdes_crypto_changed[TMEDIA_SESSION_MAX_LINES] = { tsk_false };
 	tmedia_type_t media_types[TMEDIA_SESSION_MAX_LINES] = { tmedia_none };
 	tsk_bool_t is_media_type_changed = tsk_false;
 	tsk_bool_t is_ro_media_lines_changed = tsk_false;
@@ -1189,12 +1190,13 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		while ((M0 = (const tsdp_header_M_t*)tsdp_message_get_headerAt(self->sdp.ro, tsdp_htype_M, index))){
 			++m_lines_count;
 			if (m_lines_count >= TMEDIA_SESSION_MAX_LINES) {
-				TSK_DEBUG_ERROR("Too many m-lines %d>%d", m_lines_count, TMEDIA_SESSION_MAX_LINES);
+				TSK_DEBUG_ERROR("Too many m-lines %u>%u", (unsigned)m_lines_count, (unsigned)TMEDIA_SESSION_MAX_LINES);
 				ret = -2;
 				goto bail;
 			}
 			M1 = (const tsdp_header_M_t*)tsdp_message_get_headerAt(sdp, tsdp_htype_M, index);
 			// media-level diffs
+            
 			if ((ret = tsdp_header_M_diff(M0, M1, &med_level_diff)) != 0) {
 				goto bail;
 			}
@@ -1205,8 +1207,8 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 			if (tmedia_defaults_get_ice_enabled() && (med_level_diff & tsdp_header_M_diff_ice_enabled)) is_ice_enabled[index] = tsk_true;
 			if (tmedia_defaults_get_ice_enabled() && (med_level_diff & tsdp_header_M_diff_ice_restart)) is_ice_restart[index] = tsk_true;
 			if (med_level_diff & tsdp_header_M_diff_dtls_fingerprint) is_dtls_fingerprint_changed[index] = tsk_true;
-			if (med_level_diff & tsdp_header_M_diff_sdes_crypto);
-			if (med_level_diff & tsdp_header_M_diff_media_type);
+			if (med_level_diff & tsdp_header_M_diff_sdes_crypto) is_sdes_crypto_changed[index] = tsk_true;
+			if (med_level_diff & tsdp_header_M_diff_media_type); // cannot happen as media must keep same index
 
 			// dtls fingerprint (session-level)
 			if (!is_dtls_fingerprint_changed[index]) {
@@ -1225,6 +1227,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 					}
 				}
 			}
+            // TODO: sdes crypo lines (session-level)
 
 			// media type
 			media_types[index] = tmedia_type_from_sdp_headerM(M1);
@@ -1313,6 +1316,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	TSK_DEBUG_INFO(
 		"m_lines_count=%u,\n"
 		"is_dtls_fingerprint_changed=%u,\n"
+        "is_sdes_crypto_changed=%u,\n"
 		"is_ice_enabled=%u,\n"
 		"is_ice_restart=%u,\n"
 		"is_ro_hold_resume_changed=%u,\n"
@@ -1325,6 +1329,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		"is_local_encoder_still_ok=%u\n",
 		(unsigned)m_lines_count,
 		(unsigned)__flags_sum((const tsk_bool_t*)&is_dtls_fingerprint_changed, m_lines_count),
+        (unsigned)__flags_sum((const tsk_bool_t*)&is_sdes_crypto_changed, m_lines_count),
 		(unsigned)__flags_sum((const tsk_bool_t*)&is_ice_enabled, m_lines_count),
 		(unsigned)__flags_sum((const tsk_bool_t*)&is_ice_restart, m_lines_count),
 		(unsigned)__flags_sum((const tsk_bool_t*)&is_ro_hold_resume_changed, m_lines_count),
@@ -1348,7 +1353,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	  */
 	if (self->started) {
 		for (index = 0; index < m_lines_count; ++index) {
-			if (/* && (!is_ro_loopback_address[index]) && */ ((is_ro_codecs_changed[index] && !is_local_encoder_still_ok[index]) || is_ro_network_info_changed[index] || is_dtls_fingerprint_changed[index])) {
+			if (/* && (!is_ro_loopback_address[index]) && */ ((is_ro_codecs_changed[index] && !is_local_encoder_still_ok[index]) || is_ro_network_info_changed[index] || is_dtls_fingerprint_changed[index] || is_sdes_crypto_changed[index])) {
 				TSK_DEBUG_INFO("Stop media index %d to reconf", (int)index);
 				stopped_to_reconf[index] = tsk_true;
 				tmedia_session_mgr_set(self,
@@ -1518,7 +1523,7 @@ end_of_sessions_update:
 	for (index = 0; index < m_lines_count; ++index) {
 		if (stopped_to_reconf[index] && !is_ice_enabled[index]) {
 			if ((ret = _tmedia_session_mgr_start(self, (int)index))) {
-				TSK_DEBUG_ERROR("Failed to re-start session at index = %d", index);
+				TSK_DEBUG_ERROR("Failed to re-start session at index = %d", (int)index);
 				goto bail;
 			}
 		}
@@ -2365,7 +2370,7 @@ static int _tmedia_session_mgr_start(tmedia_session_mgr_t* self, int session_ind
 			}
 		}
 	}
-	if (session_index) {
+	if (session_index == kSessionIndexAll) {
 		self->started = tsk_true;
 	}
 

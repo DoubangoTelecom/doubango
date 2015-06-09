@@ -91,6 +91,7 @@ typedef struct trtp_srtp_ctx_internal_xs
 	trtp_srtp_crypto_type_t crypto_type;
 	char key_str[SRTP_MAX_KEY_LEN];
 	char key_bin[SRTP_MASTER_KEY_LEN];
+    tsk_bool_t have_valid_key;
 
 	srtp_t session;
 	srtp_policy_t policy;
