@@ -553,7 +553,7 @@ void *tnet_transport_mainthread(void *param)
 {
 	tnet_transport_t *transport = param;
 	transport_context_t *context = transport->context;
-	int ret;
+	int ret, status;
 	tsk_size_t i;
 	tsk_bool_t is_stream;
     tnet_fd_t fd;
@@ -777,9 +777,15 @@ void *tnet_transport_mainthread(void *param)
 				
 				if(ret < 0){
 					TSK_FREE(buffer);
-					
-					removeSocket(i, context);
-					TNET_PRINT_LAST_ERROR("recv/recvfrom have failed.");
+                    status = tnet_geterrno();
+					// do not remove the socket for i/o pending errors
+                    if (status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_INPROGRESS || status == TNET_ERROR_EAGAIN) {
+                        TSK_DEBUG_WARN("recv returned error code:%d", status);
+                    }
+                    else {
+                        TNET_PRINT_LAST_ERROR("recv/recvfrom have failed");
+                        removeSocket(i, context);
+                    }
 					goto TNET_POLLIN_DONE;
 				}
 				
