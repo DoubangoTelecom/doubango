@@ -804,11 +804,14 @@ int tdav_codec_h264_open_encoder(tdav_codec_h264_t* self)
 		TSK_DEBUG_ERROR("Failed to open [%s] codec", TMEDIA_CODEC(self)->plugin->desc);
 		return ret;
 	}
+    
+    self->encoder.frame_count = 0;
 
 	TSK_DEBUG_INFO("[H.264] bitrate=%d bps", self->encoder.context->bit_rate);
 
 	return ret;
 #elif HAVE_H264_PASSTHROUGH
+    self->encoder.frame_count = 0;
 	return 0;
 #endif
 
@@ -870,6 +873,7 @@ int tdav_codec_h264_open_decoder(tdav_codec_h264_t* self)
 		TSK_DEBUG_ERROR("Failed to open [%s] codec", TMEDIA_CODEC(self)->plugin->desc);
 		return ret;
 	}
+    self->decoder.last_seq = 0;
 
 	return ret;
 

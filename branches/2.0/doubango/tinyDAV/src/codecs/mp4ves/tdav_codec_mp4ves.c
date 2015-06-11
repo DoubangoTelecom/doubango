@@ -568,6 +568,8 @@ int tdav_codec_mp4ves_open_decoder(tdav_codec_mp4ves_t* self)
 		TSK_DEBUG_ERROR("Failed to open MP4V-ES decoder");
 		return ret;
 	}
+    
+    self->decoder.last_seq = 0;
 
 	return ret;
 }

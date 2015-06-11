@@ -878,7 +878,7 @@ int tsdp_header_M_diff(const tsdp_header_M_t* M_old, const tsdp_header_M_t* M_ne
                 diff |= tsdp_header_M_diff_sdes_crypto;
             }
         }
-        else if (index == 0) { // (A1 && !AO) means "more" crypto lines, otherwise "less". In all cases if the first matched we're ok
+        else if (index == 0 && (A0 || A1)) { // (A1 && !AO) means "more" crypto lines, otherwise "less". In all cases if the first matched we're ok
             diff |= tsdp_header_M_diff_sdes_crypto;
         }
 		++index;

@@ -95,6 +95,7 @@ static int tdav_codec_opus_open(tmedia_codec_t* self)
 			return -2;
 		}		
 	}
+    opus->decoder.last_seq  = 0;
 
 	// Initialize the encoder
 	if(!opus->encoder.inst){
