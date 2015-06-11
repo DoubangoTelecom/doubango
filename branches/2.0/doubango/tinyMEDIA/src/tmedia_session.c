@@ -1997,6 +1997,7 @@ int tmedia_session_mgr_set_onerror_cbfn(tmedia_session_mgr_t* self, const void* 
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+    // save for sessions created later
 	self->onerror_cb.fun = fun;
 	self->onerror_cb.usrdata = usrdata;
 
@@ -2021,6 +2022,7 @@ int tmedia_session_mgr_set_rfc5168_cbfn(tmedia_session_mgr_t* self, const void* 
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+    // save for functions created later
 	self->rfc5168_cb.fun = fun;
 	self->rfc5168_cb.usrdata = usrdata;
 
@@ -2121,9 +2123,6 @@ static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 
 						/* set other default values */
 
-						// set callback functions
-						tmedia_session_set_onerror_cbfn(session, self->onerror_cb.usrdata, self->onerror_cb.fun);
-
 						/* push session */
 						tsk_list_push_back_data(self->sessions, (void**)(&session));
 					}
@@ -2147,6 +2146,9 @@ static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 			TMEDIA_SESSION_SET_STR(self->type, "local-ipver", self->ipv6 ? "ipv6" : "ipv4"),
 			TMEDIA_SESSION_SET_INT32(self->type, "bandwidth-level", self->bl),
 			TMEDIA_SESSION_SET_NULL());
+        // set callback functions
+        tmedia_session_mgr_set_onerror_cbfn(self, self->onerror_cb.usrdata, self->onerror_cb.fun);
+        tmedia_session_mgr_set_rfc5168_cbfn(self, self->rfc5168_cb.usrdata, self->rfc5168_cb.fun);
 	}
 #undef has_media
 

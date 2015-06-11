@@ -699,6 +699,8 @@ static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self)
         TSK_DEBUG_ERROR("Failed to create mutex for the encoder");
         goto bail;
     }
+    
+    self->encoder.frame_count = 0;
 
 	ret = 0;
 
@@ -755,6 +757,7 @@ int tdav_codec_h264_cisco_open_decoder(tdav_codec_h264_cisco_t* self)
 		TSK_DEBUG_ERROR("Failed to initialize decoder: %ld", err);
 		goto bail;
 	}
+    self->decoder.last_seq = 0;
 	TSK_DEBUG_INFO("[OpenH264 Decoder] neg_width=%d, neg_height=%d, neg_fps=%d",
 		TMEDIA_CODEC_VIDEO(self)->in.width,
 		TMEDIA_CODEC_VIDEO(self)->in.height,

@@ -134,6 +134,8 @@ static const tmedia_codec_action_t __action_encode_bw_down = tmedia_codec_action
 	(__self)->encoder.pkt_loss_prob_bad = TDAV_SESSION_VIDEO_PKT_LOSS_PROB_BAD; \
 	(__self)->encoder.pkt_loss_prob_good = TDAV_SESSION_VIDEO_PKT_LOSS_PROB_GOOD; \
 }
+
+static int _tdav_session_video_set_defaults(tdav_session_video_t* self);
 static int _tdav_session_video_jb_cb(const tdav_video_jb_cb_data_xt* data);
 static int _tdav_session_video_open_decoder(tdav_session_video_t* self, uint8_t payload_type);
 static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp_packet_t* packet);
@@ -681,6 +683,28 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
 	return 0;
 }
 
+static int _tdav_session_video_set_defaults(tdav_session_video_t* self)
+{
+    if (!self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    self->jb_enabled = tmedia_defaults_get_videojb_enabled();
+    self->zero_artifacts = tmedia_defaults_get_video_zeroartifacts_enabled();
+    self->avpf.max = tmedia_defaults_get_avpf_tail_min();
+    self->encoder.pkt_loss_level = tdav_session_video_pkt_loss_level_low;
+    self->encoder.pkt_loss_prob_bad = 0; // honor first report
+    self->encoder.pkt_loss_prob_good = TDAV_SESSION_VIDEO_PKT_LOSS_PROB_GOOD;
+    self->encoder.last_frame_time = 0;
+    
+    // reset rotation info (MUST for reINVITE when mobile device in portrait[90 degrees])
+    self->encoder.rotation = 0;
+    
+    TSK_DEBUG_INFO("Video 'zero-artifacts' option = %s", self->zero_artifacts  ? "yes" : "no");
+    
+    return 0;
+}
+
 // From jitter buffer to codec
 static int _tdav_session_video_jb_cb(const tdav_video_jb_cb_data_xt* data)
 {
@@ -1044,6 +1068,7 @@ static int tdav_session_video_get(tmedia_session_t* self, tmedia_param_t* param)
 static int tdav_session_video_prepare(tmedia_session_t* self)
 {
 	tdav_session_av_t* base = (tdav_session_av_t*)(self);
+    tdav_session_video_t* video = (tdav_session_video_t*)self;
 	int ret;
 
 	if((ret = tdav_session_av_prepare(base))){
@@ -1150,9 +1175,10 @@ static int tdav_session_video_stop(tmedia_session_t* self)
 	TSK_OBJECT_SAFE_FREE(video->encoder.codec);
 	tsk_mutex_unlock(video->encoder.h_mutex);
 	TSK_OBJECT_SAFE_FREE(video->decoder.codec);
-
-	// reset rotation info (MUST for reINVITE when mobile device in portrait[90 degrees])
-	video->encoder.rotation = 0;
+    
+    // reset default values to make sure next start will be called with right defaults
+    // do not call this function in start to avoid overriding values defined between prepare() and start()
+    _tdav_session_video_set_defaults(video);
 
 	return ret;
 }
@@ -1348,10 +1374,8 @@ static int _tdav_session_video_init(tdav_session_video_t *p_self, tmedia_type_t 
 	}
 	
 	/* init() self */
-	p_self->jb_enabled = tmedia_defaults_get_videojb_enabled();
-	p_self->zero_artifacts = tmedia_defaults_get_video_zeroartifacts_enabled();
-	TSK_DEBUG_INFO("Video 'zero-artifacts' option = %s", p_self->zero_artifacts  ? "yes" : "no");
-	if (!(p_self->encoder.h_mutex = tsk_mutex_create())) {
+    _tdav_session_video_set_defaults(p_self);
+	if (!p_self->encoder.h_mutex && !(p_self->encoder.h_mutex = tsk_mutex_create())) {
 		TSK_DEBUG_ERROR("Failed to create encode mutex");
 		return -4;
 	}
@@ -1371,10 +1395,6 @@ static int _tdav_session_video_init(tdav_session_video_t *p_self, tmedia_type_t 
 		tmedia_producer_set_enc_callback(p_base->producer, tdav_session_video_producer_enc_cb, p_self);
 		tmedia_producer_set_raw_callback(p_base->producer, tdav_session_video_raw_cb, p_self);
 	}
-	p_self->avpf.max = tmedia_defaults_get_avpf_tail_min();
-	p_self->encoder.pkt_loss_level = tdav_session_video_pkt_loss_level_low;
-	p_self->encoder.pkt_loss_prob_bad = 0; // honor first report
-	p_self->encoder.pkt_loss_prob_good = TDAV_SESSION_VIDEO_PKT_LOSS_PROB_GOOD;
 
 	return 0;
 }

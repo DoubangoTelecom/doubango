@@ -1688,8 +1688,12 @@ int trtp_manager_stop(trtp_manager_t* self)
 		TSK_OBJECT_SAFE_FREE(master_copy);
 		TSK_OBJECT_SAFE_FREE(self->transport);
 	}
-	// Free RTCP socket
+	// Free RTCP info to make sure these values will be updated in next start()
 	TSK_OBJECT_SAFE_FREE(self->rtcp.local_socket);
+    TSK_OBJECT_SAFE_FREE(self->rtcp.session);
+    self->rtcp.public_port = self->rtcp.remote_port = 0;
+    TSK_FREE(self->rtcp.public_ip);
+    TSK_FREE(self->rtcp.remote_ip);
 
 	// reset default values
 	self->is_symetric_rtp_checked = self->is_symetric_rtcp_checked = tsk_false;

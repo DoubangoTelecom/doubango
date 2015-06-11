@@ -776,6 +776,8 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 		TSK_DEBUG_ERROR("Failed to create mutex");
 		return -4;
 	}
+    
+    self->encoder.frame_count = 0;
 
 	self->encoder.initialized = tsk_true;
 

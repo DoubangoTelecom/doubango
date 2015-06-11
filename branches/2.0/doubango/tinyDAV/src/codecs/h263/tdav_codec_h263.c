@@ -1046,6 +1046,8 @@ int tdav_codec_h263_open_decoder(tdav_codec_h263_t* self)
 		TSK_DEBUG_ERROR("Failed to open [%s] codec", TMEDIA_CODEC(self)->plugin->desc);
 		return ret;
 	}
+    
+    self->decoder.last_seq = 0;
 
 	return ret;
 }
