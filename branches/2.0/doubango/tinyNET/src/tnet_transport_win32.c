@@ -227,50 +227,55 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	int ret = -1;
-	DWORD numberOfBytesSent = 0;
+	tsk_size_t sent = 0;
 
 	if (!transport){
 		TSK_DEBUG_ERROR("Invalid transport handle.");
 		goto bail;
 	}
 
-	if (transport->tls.enabled){
-		transport_socket_xt* socket = getSocket(transport->context, from);
-		if (socket && socket->tlshandle){
-			if (!tnet_tls_socket_send(socket->tlshandle, buf, size)){
-				numberOfBytesSent = (DWORD)size;
-			}
-			else{
-				TSK_DEBUG_ERROR("Tring to use a socket without TLS handle to send data");
-				numberOfBytesSent = 0;
-			}
-			goto bail;
-		}
-	}
-	else{
-		WSABUF wsaBuffer;
-		wsaBuffer.buf = (CHAR*)buf;
-		wsaBuffer.len = (ULONG)size;
-
-		if ((ret = WSASend(from, &wsaBuffer, 1, &numberOfBytesSent, 0, NULL, NULL)) == SOCKET_ERROR){
-			if ((ret = WSAGetLastError()) == WSA_IO_PENDING){
-				TSK_DEBUG_INFO("WSA_IO_PENDING error for WSASend SSESSION");
-				ret = 0;
-			}
-			else{
-				TNET_PRINT_LAST_ERROR("WSASend have failed.");
-
-				//tnet_sockfd_close(&from);
-				goto bail;
+	while (sent < size) {
+		int try_guard = 10;
+		if (transport->tls.enabled){
+			transport_socket_xt* socket = getSocket(transport->context, from);
+			if (socket && socket->tlshandle) {
+				if (tnet_tls_socket_send(socket->tlshandle, buf, size) == 0) {
+					sent = size;
+				}
+				else {
+					TSK_DEBUG_ERROR("Tring to use a socket without TLS handle to send data");
+				}
+				goto bail; // TLS do not retry
 			}
 		}
-		else{
-			ret = 0;
+		else {
+			WSABUF wsaBuffer;
+			DWORD numberOfBytesSent = 0;
+			wsaBuffer.buf = ((CHAR*)buf) + sent;
+			wsaBuffer.len = (ULONG)(size - sent);
+try_again:
+			if ((ret = WSASend(from, &wsaBuffer, 1, &numberOfBytesSent, 0, NULL, NULL)) == SOCKET_ERROR) {
+				ret = WSAGetLastError();
+				if (ret == WSA_IO_PENDING || ret == WSAEWOULDBLOCK) {
+					TSK_DEBUG_INFO("SendTCP() - WouldBlock. Retrying...");
+					if (try_guard--) {
+						tsk_thread_sleep(10);
+						goto try_again;
+					}
+				}
+				else {
+					TNET_PRINT_LAST_ERROR("WSASend have failed.");
+					goto bail;
+				}
+			}
+			else {
+				sent += numberOfBytesSent;
+			}
 		}
 	}
 
 bail:
-	return numberOfBytesSent;
+	return sent;
 }
 
 /*

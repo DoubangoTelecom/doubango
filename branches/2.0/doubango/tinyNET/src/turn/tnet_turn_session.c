@@ -1496,13 +1496,21 @@ static int _tnet_turn_session_send_buff_0(tnet_turn_session_t* p_self, const tne
     }
 
 	if (TNET_SOCKET_TYPE_IS_DGRAM(p_self->p_lcl_sock->type)) {
+#if 0
+		u_sent_bytes = tnet_transport_sendto(p_self->p_transport, p_self->p_lcl_sock->fd, (const struct sockaddr *)&p_self->srv_addr, pc_buff_ptr, u_buff_size);
+#else
 		u_sent_bytes = tnet_sockfd_sendto(p_self->p_lcl_sock->fd, (const struct sockaddr *)&p_self->srv_addr, pc_buff_ptr, u_buff_size);
+#endif
     }
     else {
 		if (pc_peer && pc_peer->b_stream_connected && pc_peer->conn_fd != TNET_INVALID_FD) {
 			// Send using Peer connection if connected
 			// Should never be called because for now requested transport is always equal to UDP
+#if 0
+			u_sent_bytes = tnet_transport_send(p_self->p_transport, pc_peer->conn_fd, pc_buff_ptr, u_buff_size);
+#else
 			u_sent_bytes = tnet_sockfd_send(pc_peer->conn_fd, pc_buff_ptr, u_buff_size, 0);
+#endif
 		}
 		else {
 			// Connect if not already done
@@ -1511,7 +1519,11 @@ static int _tnet_turn_session_send_buff_0(tnet_turn_session_t* p_self, const tne
 				p_self->b_stream_connected = (ret == 0);
 			}
 			if (p_self->b_stream_connected) {
+#if 0
+				u_sent_bytes = tnet_transport_send(p_self->p_transport, p_self->p_lcl_sock->fd, pc_buff_ptr, u_buff_size);
+#else
 				u_sent_bytes = tnet_socket_send_stream(p_self->p_lcl_sock, pc_buff_ptr, u_buff_size);
+#endif
 			}
 		}
     }
