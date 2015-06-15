@@ -324,16 +324,17 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 	}
 
 	{	/* 4.2. VP8 Payload Descriptor */
-		uint8_t X, R, N, I, L, T, K;//FIXME: store
+		uint8_t X, R, N, I, L, T, K;//TODO: store
 
-		X = (*pdata & 0x80) >> 7;
-		R = (*pdata & 0x40) >> 6;
+		X = ((*pdata & 0x80) >> 7);
+		R = ((*pdata & 0x40) >> 6);
 		if (R) {
 			TSK_DEBUG_ERROR("R<>0");
-			return 0;
+			fatal_error = tsk_true;
+			goto bail;
 		}
-		N = (*pdata & 0x20) >> 5;
-		S = (*pdata & 0x10) >> 4;
+		N = ((*pdata & 0x20) >> 5);
+		S = ((*pdata & 0x10) >> 4);
 		PartID = (*pdata & 0x0F);
 		// skip "REQUIRED" header
 		if (++pdata >= pdata_end) {
@@ -419,10 +420,14 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 		// Make sure the header is present
 		if (S != 1 || PartID != 0 || in_size < 3) {
 			TSK_DEBUG_WARN("VP8 payload header is missing");
-			fatal_error = tsk_true;
-			goto bail;
+#if 0
+			if (in_size < 3)
+#endif
+			{
+				fatal_error = tsk_true;
+				goto bail;
+			}
 		}
-
 		{
 			/* SizeN:  The size of the first partition in bytes is calculated from
 			the 19 bits in Size0, Size1, and Size2 as 1stPartitionSize = Size0
@@ -563,7 +568,6 @@ bail:
 		TMEDIA_CODEC_VIDEO(self)->in.result.proto_hdr = proto_hdr;
 		TMEDIA_CODEC_VIDEO(self)->in.callback(&TMEDIA_CODEC_VIDEO(self)->in.result);
 	}
-	fatal_error = tsk_true;
 
 	//	vp8->decoder.last_PartID = PartID;
 	//	vp8->decoder.last_S = S;

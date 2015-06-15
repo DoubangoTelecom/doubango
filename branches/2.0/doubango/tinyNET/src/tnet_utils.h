@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +21,6 @@
 /**@file tnet_utils.h
  * @brief Network utility functions.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #ifndef TNET_UTILS_H
 #define TNET_UTILS_H
@@ -39,7 +34,9 @@ TNET_BEGIN_DECLS
 
 /**@ingroup tnet_utils_group
 */
-#define TNET_CONNECT_TIMEOUT		2000
+#if !defined(TNET_CONNECT_TIMEOUT)
+#	define TNET_CONNECT_TIMEOUT		2000
+#endif /* TNET_CONNECT_TIMEOUT */
 
 /**Interface.
 */
