@@ -88,6 +88,7 @@ TINYNET_API tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, tsk_boo
 #define tnet_get_addresses_all_dnsservers()	tnet_get_addresses(AF_UNSPEC, 0, 0, 0, 1, -1)
 #define tnet_get_addresses_dnsservers4()	tnet_get_addresses(AF_INET, 0, 0, 0, 1, -1)
 #define tnet_get_addresses_dnsservers6()	tnet_get_addresses(AF_INET6, 0, 0, 0, 1, -1)
+TINYNET_API int tnet_get_mac_address(tnet_mac_address* address);
 
 TINYNET_API int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_type_t type, tnet_ip_t *source);
 TINYNET_API int tnet_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints,  struct addrinfo **res);

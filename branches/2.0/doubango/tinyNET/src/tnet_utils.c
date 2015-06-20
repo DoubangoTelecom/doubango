@@ -367,8 +367,8 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, tsk_bool_t unicast,
 {
 	tnet_addresses_L_t *addresses = tsk_list_create();
 
-#if TSK_UNDER_WINDOWS
-#if TSK_UNDER_WINDOWS_RT
+#if TNET_UNDER_WINDOWS
+#if TNET_UNDER_WINDOWS_RT
 	TSK_DEBUG_ERROR("Not implemented on your OS");
 #else /* !TSK_UNDER_WINDOWS_RT */
 
@@ -632,6 +632,51 @@ bail:
 	return addresses;
 }
 
+
+/**@ingroup tnet_utils_group
+*/
+int tnet_get_mac_address(tnet_mac_address* address)
+{
+	static const tsk_size_t __tnet_mac_address_len = sizeof(tnet_mac_address) / sizeof(uint8_t/*tnet_mac_address[0]*/);
+	int ret = -1;
+	if (!address) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+	}
+#if TNET_UNDER_WINDOWS
+#	if TNET_UNDER_WINDOWS_RT
+	TSK_DEBUG_ERROR("Not implemented on your OS");
+#	else /* !TSK_UNDER_WINDOWS_RT */
+	{
+		IP_ADAPTER_INFO *info = NULL, *pos;
+		DWORD size = 0;
+		ULONG _ret;
+
+		if ((_ret = GetAdaptersInfo(info, &size)) == ERROR_SUCCESS || _ret == ERROR_BUFFER_OVERFLOW) {
+			info = (IP_ADAPTER_INFO *)tsk_calloc(size + 1, 1);
+			if (info) {
+				if ((_ret = GetAdaptersInfo(info, &size)) == ERROR_SUCCESS) {
+					for (pos = info; pos != NULL && ret != 0; pos = pos->Next) {
+						if (pos->Type == MIB_IF_TYPE_LOOPBACK && pos->Next) { // skip loopback if we still have items to check
+							continue;
+						}
+						for (UINT i = 0; i < pos->AddressLength && i < __tnet_mac_address_len; ++i) {
+							(*address)[i] = pos->Address[i];
+						}
+						ret = 0;
+					}
+				}
+			}
+			TSK_FREE(info);
+		}
+	}
+#	endif /* TSK_UNDER_WINDOWS_RT */
+#elif HAVE_IFADDRS_H && HAVE_GETIFADDRS
+#elif defined(SIOCGIFHWADDR)
+
+#endif
+
+	return ret;
+}
 
 /**@ingroup tnet_utils_group
 * Retrieves the @a source IP address that has the best route to the specified IPv4 or IPv6 @a destination.

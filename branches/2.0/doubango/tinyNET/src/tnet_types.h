@@ -74,6 +74,7 @@ typedef uint16_t tnet_port_t;
 typedef int tnet_family_t;
 typedef char tnet_host_t[NI_MAXHOST];
 typedef char tnet_ip_t[INET6_ADDRSTRLEN];
+typedef uint8_t tnet_mac_address[6];
 typedef unsigned char tnet_fingerprint_t[TNET_FINGERPRINT_MAX + 1];
 
 typedef tsk_list_t tnet_interfaces_L_t; /**< List of @ref tnet_interface_t elements*/
