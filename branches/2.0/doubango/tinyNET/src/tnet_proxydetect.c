@@ -69,7 +69,7 @@ tnet_proxyinfo_t* tnet_proxyinfo_create()
 
 
 /******** Windows ************/
-#if TNET_UNDER_WINDOWS && !TNET_UNDER_WINDOWS_RT
+#if TNET_UNDER_WINDOWS && !TNET_UNDER_WINDOWS_RT && !TNET_UNDER_WINDOWS_CE
 #   include <Windows.h>
 #   include <winhttp.h>
 
