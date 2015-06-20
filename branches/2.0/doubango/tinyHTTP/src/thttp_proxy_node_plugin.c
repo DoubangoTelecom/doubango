@@ -434,7 +434,6 @@ static int _thttp_proxy_node_plugin_get_handshaking_pending_data(tnet_proxy_node
         node->handshacking.pending_data_len = 0;
     }
     
-bail:
     tsk_safeobj_unlock(node);
     return ret;
 }
