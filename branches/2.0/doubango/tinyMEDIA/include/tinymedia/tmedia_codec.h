@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,8 +20,6 @@
 
 /**@file tmedia_codec.h
  * @brief Base codec object.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  *
  */
 #ifndef TINYMEDIA_CODEC_H
@@ -170,7 +166,9 @@ tmedia_codec_id_t;
 
 
 /**Max number of plugins (codec types) we can create */
-#define TMED_CODEC_MAX_PLUGINS			0xFF
+#if !defined(TMED_CODEC_MAX_PLUGINS)
+#   define TMED_CODEC_MAX_PLUGINS			0xFF
+#endif
 
 /** cast any pointer to @ref tmedia_codec_t* object */
 #define TMEDIA_CODEC(self)		((tmedia_codec_t*)(self))

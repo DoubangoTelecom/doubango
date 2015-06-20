@@ -1,8 +1,6 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
@@ -23,9 +21,6 @@
 /**@file thttp_url.h
  * @brief HTTP/HTTPS URL.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #ifndef TINYHTTP_URL_H
 #define TINYHTTP_URL_H

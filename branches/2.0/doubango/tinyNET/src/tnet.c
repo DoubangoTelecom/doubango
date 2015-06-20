@@ -22,7 +22,9 @@
  * @brief Network stack.
  */
 #include "tnet.h"
-#include "tnet_utils.h" 
+#include "tnet_utils.h"
+#include "tnet_proxy_node_socks_plugin.h"
+#include "tnet_proxy_plugin.h"
 
 #include "tsk_time.h"
 #include "tsk_debug.h"
@@ -78,6 +80,10 @@ int tnet_startup()
 	if (__tnet_started) {
 		goto bail;
 	}
+    
+    if ((err = tnet_proxy_node_plugin_register(tnet_proxy_node_socks_plugin_def_t)) != 0) {
+        goto bail;
+    }
 
 	// rand()
 	srand((unsigned int) tsk_time_epoch());
@@ -152,6 +158,8 @@ int tnet_cleanup()
 	if (!__tnet_started){
 		goto bail;
 	}
+    
+    tnet_proxy_node_plugin_unregister(tnet_proxy_node_socks_plugin_def_t);
 
 #if TNET_UNDER_WINDOWS
 	__tnet_started = tsk_false;

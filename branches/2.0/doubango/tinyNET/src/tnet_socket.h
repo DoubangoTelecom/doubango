@@ -1,8 +1,6 @@
 /*
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
@@ -23,9 +21,6 @@
 /**@file tnet.h
  * @brief Protocol agnostic socket.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #ifndef TNET_SOCKET_H
 #define TNET_SOCKET_H
@@ -132,6 +127,7 @@ tnet_socket_type_t;
 #define TNET_SOCKET_TYPE_IS_SECURE(type)	( TNET_SOCKET_TYPE_IS_IPSEC(type) || TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_DTLS(type) || TNET_SOCKET_TYPE_IS_WSS(type) )
 
 #define TNET_SOCKET_TYPE_UNSET(type, OP)		(type = TNET_SOCKET_TYPE_IS_##OP(type) ? type ^= TNET_SOCKET_TYPE_##OP : type)
+#define TNET_SOCKET_TYPE_SET(type, OP)          (type |= TNET_SOCKET_TYPE_##OP)
 
 #define TNET_SOCKET_TYPE_SET_IPV4(type)		(type |= TNET_SOCKET_TYPE_IPV4)
 #define TNET_SOCKET_TYPE_SET_IPV4Only(type)	(type = TNET_SOCKET_TYPE_IS_IPV6(type) ? (type ^TNET_SOCKET_TYPE_IPV6)|TNET_SOCKET_TYPE_IPV4 : type)

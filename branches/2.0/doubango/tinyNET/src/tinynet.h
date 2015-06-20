@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +21,6 @@
 /**@file tinynet.h
  * @brief API functions.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #ifndef TNET_TINYNET_H
 #define TNET_TINYNET_H
@@ -40,6 +35,7 @@
 #include "tnet_nat.h"
 #include "tnet_socket.h"
 #include "tnet_transport.h"
+#include "tnet_proxy_plugin.h"
 
 #include "stun/tnet_stun.h"
 

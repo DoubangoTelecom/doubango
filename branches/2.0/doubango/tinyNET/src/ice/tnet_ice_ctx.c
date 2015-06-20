@@ -31,6 +31,7 @@
 #include "tnet_utils.h"
 #include "tnet_endianness.h"
 #include "tnet_transport.h"
+#include "tnet_proxydetect.h"
 
 #include "stun/tnet_stun.h"
 #include "stun/tnet_stun_message.h"
@@ -268,6 +269,12 @@ typedef struct tnet_ice_ctx_s
     } ssl;
     
     struct {
+        tsk_bool_t auto_detect;
+        struct tnet_proxyinfo_s* info;
+    }
+    proxy;
+    
+    struct {
         tsk_condwait_handle_t* condwait;
         struct tnet_turn_session_s* ss_nominated_rtp;
         tnet_turn_peer_id_t peer_id_rtp;
@@ -433,6 +440,8 @@ static tsk_object_t* tnet_ice_ctx_dtor(tsk_object_t * self)
             tsk_condwait_destroy(&ctx->condwait_pairs);
         }
         TSK_OBJECT_SAFE_FREE(ctx->servers);
+        
+        TSK_OBJECT_SAFE_FREE(ctx->proxy.info);
         
         TSK_FREE(ctx->ssl.path_priv);
         TSK_FREE(ctx->ssl.path_pub);
@@ -996,6 +1005,33 @@ const char* tnet_ice_ctx_get_ufrag(const struct tnet_ice_ctx_s* self)
 const char* tnet_ice_ctx_get_pwd(const struct tnet_ice_ctx_s* self)
 {
     return (self && self->pwd) ? self->pwd : tsk_null;
+}
+
+int tnet_ice_ctx_set_proxy_auto_detect(struct tnet_ice_ctx_s* self, tsk_bool_t auto_detect)
+{
+    if (!self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    self->proxy.auto_detect = auto_detect;
+    return 0;
+}
+
+int tnet_ice_ctx_set_proxy_info(struct tnet_ice_ctx_s* self, enum tnet_proxy_type_e type, const char* host, tnet_port_t port, const char* login, const char* password)
+{
+    if (!self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    if (!self->proxy.info && !(self->proxy.info = tnet_proxyinfo_create())) {
+        return -2;
+    }
+    self->proxy.info->type = type;
+    self->proxy.info->port = port;
+    tsk_strupdate(&self->proxy.info->hostname, host);
+    tsk_strupdate(&self->proxy.info->username, login);
+    tsk_strupdate(&self->proxy.info->password, password);
+    return 0;
 }
 
 // cancels the ICE processing without stopping the process
@@ -1566,6 +1602,13 @@ next_server:
             if ((ret = tnet_turn_session_set_ssl_certs(candidate->turn.ss, self->ssl.path_priv, self->ssl.path_pub, self->ssl.path_ca, self->ssl.verify))) {
                 continue;
             }
+            // WebProxy
+            if ((ret = tnet_turn_session_set_proxy_auto_detect(candidate->turn.ss, self->proxy.auto_detect))) {
+                continue;
+            }
+            if ((ret = tnet_turn_session_set_proxy_info(candidate->turn.ss, self->proxy.info))) {
+                continue;
+            }
             // set TURN credentials
             if ((ret = tnet_turn_session_set_cred(candidate->turn.ss, ice_server->str_username, ice_server->str_password))) {
                 continue;
@@ -1793,7 +1836,7 @@ static int _tnet_ice_ctx_fsm_GatheringCompleted_2_ConnChecking_X_ConnCheck(va_li
     struct timeval tv;
     static const long rto = 160; // milliseconds
     struct sockaddr_storage remote_addr;
-    uint64_t time_start, time_curr, time_end, concheck_timeout;
+    uint64_t time_start, time_curr = 0, time_end = 0, concheck_timeout = 0;
     tsk_bool_t role_conflict, restart_conneck, check_rtcp, isset, got_hosts;
     void* recvfrom_buff_ptr = tsk_null;
     tsk_size_t recvfrom_buff_size = 0, tries_count = 0, tries_count_min = kIceConnCheckMinTriesMin;

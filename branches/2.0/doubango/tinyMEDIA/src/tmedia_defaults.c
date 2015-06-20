@@ -89,6 +89,12 @@ static char* __ssl_certs_pub_path = tsk_null;
 static char* __ssl_certs_ca_path = tsk_null;
 static tsk_bool_t __ssl_certs_verify = tsk_false;
 static tsk_size_t __max_fds = 0; // Maximum number of FDs this process is allowed to open. Zero to disable.
+static tsk_bool_t __webproxy_auto_detect = tsk_false;
+static char* __webproxy_type = tsk_null;
+static char* __webproxy_host = tsk_null;
+static unsigned short __webproxy_port = 0;
+static char* __webproxy_login = tsk_null;
+static char* __webproxy_password = tsk_null;
 
 int tmedia_defaults_set_profile(tmedia_profile_t profile){
 	__profile = profile;
@@ -584,4 +590,29 @@ int tmedia_defaults_set_max_fds(int32_t max_fds) {
 }
 tsk_size_t tmedia_defaults_get_max_fds() {
 	return __max_fds;
+}
+
+int tmedia_defaults_set_webproxy_auto_detect(tsk_bool_t auto_detect) {
+    __webproxy_auto_detect = auto_detect;
+    return 0;
+}
+tsk_bool_t tmedia_defaults_get_webproxy_auto_detect() {
+    return __webproxy_auto_detect;
+}
+int tmedia_defaults_set_webproxy_info(const char* type, const char* host, unsigned short port, const char* login, const char* password) {
+    tsk_strupdate(&__webproxy_type, type);
+    tsk_strupdate(&__webproxy_host, host);
+    tsk_strupdate(&__webproxy_login, login);
+    tsk_strupdate(&__webproxy_password, password);
+    __webproxy_port = port;
+    return 0;
+}
+
+int tmedia_defaults_get_webproxy_info(const char** type, const char** host, unsigned short* port, const char** login, const char** password) {
+    if (type) *type = __webproxy_type;
+    if (host) *host = __webproxy_host;
+    if (port) *port = __webproxy_port;
+    if (login) *login = __webproxy_login;
+    if (password) *password = __webproxy_password;
+    return 0;
 }

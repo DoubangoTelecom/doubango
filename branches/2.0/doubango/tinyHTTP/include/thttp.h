@@ -160,6 +160,9 @@ typedef struct thttp_stack_s
 }
 thttp_stack_t;
 
+TINYHTTP_API int thttp_startup();
+TINYHTTP_API int thttp_cleanup();
+
 TINYHTTP_API thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback_f callback, ...);
 TINYHTTP_API int thttp_stack_start(thttp_stack_handle_t *self);
 TINYHTTP_API int thttp_stack_set(thttp_stack_handle_t *self, ...);

@@ -78,6 +78,7 @@ typedef struct tnet_transport_event_s
 tnet_transport_event_t;
 
 typedef int (*tnet_transport_cb_f)(const tnet_transport_event_t* e);
+struct tnet_proxyinfo_s;
 
 TINYNET_API int tnet_transport_tls_set_certs(tnet_transport_handle_t *self, const char* ca, const char* pbk, const char* pvk, tsk_bool_t verify);
 TINYNET_API int tnet_transport_start(tnet_transport_handle_t* transport);
@@ -92,6 +93,7 @@ TINYNET_API int tnet_transport_isconnected(const tnet_transport_handle_t *handle
 TINYNET_API int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd);
 TINYNET_API const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transport_handle_t *handle, tnet_fd_t fd);
 TINYNET_API int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient, tnet_tls_socket_handle_t* tlsHandle);
+TINYNET_API int tnet_transport_add_socket_2(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient, tnet_tls_socket_handle_t* tlsHandle, const char* dst_host, tnet_port_t dst_port, struct tnet_proxyinfo_s* proxy_info);
 TINYNET_API int tnet_transport_pause_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tsk_bool_t pause);
 TINYNET_API int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t* fd);
 TINYNET_API tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port, tnet_socket_type_t type);
@@ -101,6 +103,9 @@ TINYNET_API tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle
 TINYNET_API tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, tsk_size_t size);
 
 TINYNET_API int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_transport_cb_f callback, const void* callback_data);
+
+TINYNET_API int tnet_transport_set_proxy_auto_detect(tnet_transport_handle_t *handle, tsk_bool_t auto_detect);
+TINYNET_API int tnet_transport_set_proxy_info(tnet_transport_handle_t *handle, enum tnet_proxy_type_e type, const char* host, tnet_port_t port, const char* login, const char* password);
 
 TINYNET_API const char* tnet_transport_dtls_get_local_fingerprint(const tnet_transport_handle_t *handle, tnet_dtls_hash_type_t hash);
 #define tnet_transport_dtls_set_certs(self, ca, pbk, pvk, verify) tnet_transport_tls_set_certs((self), (ca), (pbk), (pvk), (verify))
@@ -160,6 +165,13 @@ typedef struct tnet_transport_s
 		struct ssl_ctx_st *ctx;
 		tnet_fingerprint_t fingerprints[TNET_DTLS_HASH_TYPE_MAX];
 	}dtls;
+    
+    /* PROXY */
+    struct {
+        tsk_bool_t auto_detect;
+        struct tnet_proxyinfo_s* info; // manually set value
+    }
+    proxy;
 }
 tnet_transport_t;
 

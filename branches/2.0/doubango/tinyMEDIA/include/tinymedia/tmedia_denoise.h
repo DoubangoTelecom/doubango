@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,8 +20,6 @@
 
 /**@file tmedia_denoise.h
  * @brief Denoiser (Noise suppression, AGC, AEC, VAD) Plugin
- *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  */
 #ifndef TINYMEDIA_DENOISE_H
 #define TINYMEDIA_DENOISE_H

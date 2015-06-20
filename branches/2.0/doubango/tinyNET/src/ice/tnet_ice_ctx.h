@@ -103,6 +103,9 @@ TINYNET_API int tnet_ice_ctx_send_turn_rtcp(struct tnet_ice_ctx_s* self, const v
 TINYNET_API const char* tnet_ice_ctx_get_ufrag(const struct tnet_ice_ctx_s* self);
 TINYNET_API const char* tnet_ice_ctx_get_pwd(const struct tnet_ice_ctx_s* self);
 
+TINYNET_API int tnet_ice_ctx_set_proxy_auto_detect(struct tnet_ice_ctx_s* self, tsk_bool_t auto_detect);
+TINYNET_API int tnet_ice_ctx_set_proxy_info(struct tnet_ice_ctx_s* self, enum tnet_proxy_type_e type, const char* host, tnet_port_t port, const char* login, const char* password);
+
 TINYNET_API int tnet_ice_ctx_cancel(struct tnet_ice_ctx_s* self);
 TINYNET_API int tnet_ice_ctx_stop(struct tnet_ice_ctx_s* self);
 

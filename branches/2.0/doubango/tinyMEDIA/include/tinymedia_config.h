@@ -35,6 +35,22 @@
 #	endif
 #endif
 
+// OS X or iOS
+#if defined(__APPLE__)
+#	define TMEDIA_UNDER_APPLE				1
+#   include <TargetConditionals.h>
+#   include <Availability.h>
+#endif
+#if TARGET_OS_MAC
+#	define TMEDIA_UNDER_MAC				1
+#endif
+#if TARGET_OS_IPHONE
+#	define TMEDIA_UNDER_IPHONE			1
+#endif
+#if TARGET_IPHONE_SIMULATOR
+#	define TMEDIA_UNDER_IPHONE_SIMULATOR	1
+#endif
+
 #if (TMEDIA_UNDER_WINDOWS || defined(__SYMBIAN32__)) && defined(TINYMEDIA_EXPORTS)
 # 	define TINYMEDIA_API		__declspec(dllexport)
 # 	define TINYMEDIA_GEXTERN extern __declspec(dllexport)

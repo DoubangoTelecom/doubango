@@ -35,6 +35,22 @@
 #	endif
 #endif
 
+// OS X or iOS
+#if defined(__APPLE__)
+#	define THTTP_UNDER_APPLE				1
+#   include <TargetConditionals.h>
+#   include <Availability.h>
+#endif
+#if TARGET_OS_MAC
+#	define THTTP_UNDER_MAC				1
+#endif
+#if TARGET_OS_IPHONE
+#	define THTTP_UNDER_IPHONE			1
+#endif
+#if TARGET_IPHONE_SIMULATOR
+#	define THTTP_UNDER_IPHONE_SIMULATOR	1
+#endif
+
 #if (THTTP_UNDER_WINDOWS || defined(__SYMBIAN32__)) && defined(TINYHTTP_EXPORTS)
 # 	define TINYHTTP_API		__declspec(dllexport)
 # 	define TINYHTTP_GEXTERN extern __declspec(dllexport)

@@ -32,7 +32,10 @@
 
 #include "tinyhttp/thttp_dialog.h"
 
+#include "tinyhttp/thttp_proxy_node_plugin.h"
+
 #include "tnet.h"
+#include "tnet_proxy_plugin.h"
 
 #include "tsk_runnable.h"
 #include "tsk_time.h"
@@ -265,6 +268,32 @@ int ret = thttp_action_GET(session, "http://ipv6.google.com",
 
 /**@defgroup thttp_stack_group HTTP/HTTPS stack
 */
+
+static tsk_bool_t __thttp_started = tsk_false;
+
+int thttp_startup()
+{
+    int ret = tnet_startup();
+    if (ret != 0) {
+        return ret;
+    }
+    if (!__thttp_started) {
+        if ((ret = tnet_proxy_node_plugin_register(thttp_proxy_node_plugin_def_t)) != 0) {
+            return ret;
+        }
+    }
+    __thttp_started = (ret == 0) ? tsk_true : tsk_false;
+    return ret;
+}
+
+int thttp_cleanup()
+{
+    if (__thttp_started) {
+        tnet_proxy_node_plugin_unregister(thttp_proxy_node_plugin_def_t);
+        __thttp_started = tsk_false;
+    }
+    return 0;
+}
 
 /* min size of a stream chunck to form a valid HTTP message */
 #define THTTP_MIN_STREAM_CHUNCK_SIZE 0x32

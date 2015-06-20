@@ -1,8 +1,6 @@
 /*
 * Copyright (C) 2010-2015 Mamadou DIOP.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
@@ -25,6 +23,9 @@
  *
  */
 #include "tnet_transport.h"
+#include "tnet_proxy_plugin.h"
+#include "tnet_proxydetect.h"
+
 #include "tsk_memory.h"
 #include "tsk_string.h"
 #include "tsk_debug.h"
@@ -115,6 +116,15 @@ const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transpor
 		return socket->tlshandle;
 	}
 	return 0;
+}
+
+int tnet_transport_add_socket_2(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient, tnet_tls_socket_handle_t* tlsHandle, const char* dst_host, tnet_port_t dst_port, struct tnet_proxyinfo_s* proxy_info)
+{
+    // TODO: support for web-proxies not added yet
+    (void)(dst_host);
+    (void)(dst_port);
+    (void)(proxy_info);
+    return tnet_transport_add_socket(handle, fd, type, take_ownership, isClient, tlsHandle);
 }
 
 /*

@@ -16,6 +16,9 @@ libtinyNET_la_SOURCES  = \
 	src/tnet_auth.c\
 	src/tnet_endianness.c\
 	src/tnet_nat.c\
+	src/tnet_proxy_node_socks_plugin.c\
+	src/tnet_proxy_plugin.c\
+	src/tnet_proxydetect.c\
 	src/tnet_poll.c\
 	src/tnet_socket.c\
 	src/tnet_transport.c\

@@ -45,6 +45,7 @@
 #if defined(__APPLE__)
 #	define TDAV_UNDER_APPLE				1
 #   include <TargetConditionals.h>
+#   include <Availability.h>
 #endif
 #if TARGET_OS_MAC
 #	define TDAV_UNDER_MAC				1
