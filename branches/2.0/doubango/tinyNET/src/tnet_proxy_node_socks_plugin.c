@@ -434,7 +434,7 @@ static int _tnet_proxy_node_socks_plugin_set_handshaking_data(tnet_proxy_node_t*
                         if (userlen > 0) {
                             memcpy(&node->handshacking.pending_data_ptr[2], self->login, userlen);
                         }
-                        node->handshacking.pending_data_ptr[2 + userlen] = pwdlen;
+                        node->handshacking.pending_data_ptr[2 + userlen] = (uint8_t)pwdlen;
                         if (pwdlen > 0) {
                             memcpy(&node->handshacking.pending_data_ptr[2 + userlen + 1], self->password, pwdlen);
                         }
@@ -628,7 +628,6 @@ static int _tnet_proxy_node_socks_plugin_get_handshaking_pending_data(tnet_proxy
     }
 #endif
     
-bail:
     tsk_safeobj_unlock(node);
     return ret;
 }
