@@ -24,6 +24,9 @@
  *
  */
 #include "tnet_transport.h"
+#include "tnet_proxy_plugin.h"
+#include "tnet_proxydetect.h"
+
 #include "tsk_memory.h"
 #include "tsk_string.h"
 #include "tsk_debug.h"
@@ -40,7 +43,11 @@
 #endif
 
 #if !defined(TNET_MAX_FDS)
-#	define TNET_MAX_FDS		0xFFFF /* Default "FD_SIZE". WIll be updated using the OS limit when the transport starts. */
+#   if defined(FD_SETSIZE)
+#       define TNET_MAX_FDS     FD_SETSIZE
+#   else
+#       define TNET_MAX_FDS		(0xFFFF - 1)
+#   endif
 #endif
 
 /*== Socket description ==*/
@@ -76,6 +83,15 @@ static transport_socket_xt* getSocket(transport_context_t *context, tnet_fd_t fd
 static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client, tnet_tls_socket_handle_t* tlsHandle);
 static int removeSocket(int index, transport_context_t *context);
 
+
+int tnet_transport_add_socket_2(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient, tnet_tls_socket_handle_t* tlsHandle, const char* dst_host, tnet_port_t dst_port, struct tnet_proxyinfo_s* proxy_info)
+{
+    // TODO: support for web-proxies not added yet
+    (void)(dst_host);
+    (void)(dst_port);
+    (void)(proxy_info);
+    return tnet_transport_add_socket(handle, fd, type, take_ownership, isClient, tlsHandle);
+}
 
 int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient, tnet_tls_socket_handle_t* tlsHandle)
 {

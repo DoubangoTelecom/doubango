@@ -154,7 +154,7 @@ int thttp_auth_digest_HA2(const char* method, const char* url, const tsk_buffer_
 	}
 	else if (tsk_striequals(qop, "auth-int"))
 	{
-		if (entity_body && entity_body->data){
+		if (entity_body && entity_body->data && entity_body->size){
 			tsk_md5string_t hEntity;
 			if ((ret = tsk_md5compute(entity_body->data, entity_body->size, &hEntity))){
 				goto bail;

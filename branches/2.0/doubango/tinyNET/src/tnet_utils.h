@@ -159,6 +159,9 @@ TINYNET_API tnet_fd_t tnet_sockfd_accept(tnet_fd_t fd, struct sockaddr *addr, so
 TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 TINYNET_API int tnet_sockfd_shutdown(tnet_fd_t fd);
 
+TINYNET_API tnet_proxy_type_t tnet_proxy_type_from_string(const char* type);
+TINYNET_API const char* tnet_proxy_type_to_string(tnet_proxy_type_t type);
+
 /**Prints last network error to @b stderr.
 */
 #define TNET_PRINT_LAST_ERROR(FMT, ...) \

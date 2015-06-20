@@ -9,7 +9,8 @@ libtinyHTTP_la_SOURCES = \
 	src/thttp_event.c\
 	src/thttp_message.c\
 	src/thttp_session.c\
-	src/thttp_url.c
+	src/thttp_url.c\
+	src/thttp_proxy_node_plugin.c
 	
 libtinyHTTP_la_SOURCES +=	src/auth/thttp_auth.c\
 	src/auth/thttp_challenge.c

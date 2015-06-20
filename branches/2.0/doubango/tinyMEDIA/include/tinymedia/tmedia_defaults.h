@@ -136,6 +136,10 @@ TINYMEDIA_API int tmedia_defaults_set_ssl_certs(const char* priv_path, const cha
 TINYMEDIA_API int tmedia_defaults_get_ssl_certs(const char** priv_path, const char** pub_path, const char** ca_path, tsk_bool_t *verify);
 TINYMEDIA_API int tmedia_defaults_set_max_fds(int32_t max_fds);
 TINYMEDIA_API tsk_size_t tmedia_defaults_get_max_fds();
+TINYMEDIA_API int tmedia_defaults_set_webproxy_auto_detect(tsk_bool_t auto_detect);
+TINYMEDIA_API tsk_bool_t tmedia_defaults_get_webproxy_auto_detect();
+TINYMEDIA_API int tmedia_defaults_set_webproxy_info(const char* type, const char* host, unsigned short port, const char* login, const char* password);
+TINYMEDIA_API int tmedia_defaults_get_webproxy_info(const char** type, const char** host, unsigned short* port, const char** login, const char** password);
 
 TMEDIA_END_DECLS
 

@@ -587,7 +587,7 @@ int tnet_dtls_socket_do_handshake(tnet_dtls_socket_handle_t* handle, const struc
 			TSK_DEBUG_INFO("DTLS data handshake to send with len = %d, from(%.*s/%d) to(%.*s/%d)", len, (int)sizeof(socket->wrapped_sock->ip), socket->wrapped_sock->ip, socket->wrapped_sock->port, (int)sizeof(ip), ip, port);
 
 			//!\ IP fragmentation issues must be avoided even if the local transport is TCP/TLS because the relayed (TURN) transport could be UDP
-			while (records_len > 0 && (ret = tnet_dtls_socket_get_record_first(records_ptr, (tsk_size_t)records_len, &record_ptr, &record_size)) == 0) {
+			while (records_len > 0 && (ret = tnet_dtls_socket_get_record_first(records_ptr, (tsk_size_t)records_len, (const void**)&record_ptr, &record_size)) == 0) {
 				if (is_dgram) {
 					sentlen += tnet_sockfd_sendto(socket->wrapped_sock->fd, (const struct sockaddr *)&socket->remote.addr, record_ptr, record_size);
 				}

@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2010-2015 Mamadou DIOP.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,9 +21,6 @@
 /**@file thttp_challenge.h
  * @brief HTTP authentication challenge.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *
-
  */
 #ifndef TINYHTTP_AUTHENTICATION_CHALLENGE_H
 #define TINYHTTP_AUTHENTICATION_CHALLENGE_H
@@ -38,6 +33,7 @@
 #include "tinyhttp/auth/thttp_auth.h"
 
 #include "tsk_object.h"
+#include "tsk_buffer.h"
 #include "tsk_list.h"
 #include "tsk_md5.h"
 
@@ -65,8 +61,11 @@ typedef tsk_list_t thttp_challenges_L_t;
 
 int thttp_challenge_update(thttp_challenge_t *self, const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop);
 thttp_header_t *thttp_challenge_create_header_authorization(thttp_challenge_t *self, const char* username, const char* password, const thttp_request_t *request);
+thttp_header_t *thttp_challenge_create_header_authorization_2(thttp_challenge_t *self, const char* username, const char* password, const char* method, const char *uristring, const tsk_buffer_t* entity_body);
+
 
 thttp_challenge_t* thttp_challenge_create(tsk_bool_t isproxy,const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop);
+thttp_challenge_t* thttp_challenge_dup(const thttp_challenge_t* self);
 
 TINYHTTP_GEXTERN const tsk_object_def_t *thttp_challenge_def_t;
 

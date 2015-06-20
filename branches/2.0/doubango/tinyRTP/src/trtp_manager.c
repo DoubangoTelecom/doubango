@@ -28,6 +28,7 @@
 #include "tinyrtp/rtcp/trtp_rtcp_packet.h"
 #include "tinyrtp/rtcp/trtp_rtcp_session.h"
 
+#include "tnet_proxydetect.h"
 #include "turn/tnet_turn_session.h"
 #include "ice/tnet_ice_candidate.h"
 
@@ -484,7 +485,7 @@ static int _trtp_manager_send_turn_dtls(struct tnet_ice_ctx_s* ice_ctx, const vo
 {
 	const uint8_t *record_ptr, *records_ptr = handshaking_data_ptr;
 	tsk_size_t record_size;
-	int records_len = (int)handshaking_data_size, sentlen = 0, ret;
+	int records_len = (int)handshaking_data_size, ret = 0;
 	int(*_ice_ctx_send_turn_data)(struct tnet_ice_ctx_s* self, const void* data, tsk_size_t size) = use_rtcp_channel ? tnet_ice_ctx_send_turn_rtcp : tnet_ice_ctx_send_turn_rtp;
 	if (!ice_ctx || !handshaking_data_ptr || !handshaking_data_size) {
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -1286,6 +1287,33 @@ int trtp_manager_set_rtcweb_type_remote(trtp_manager_t* self, tmedia_rtcweb_type
 	return 0;
 }
 
+int trtp_manager_set_proxy_auto_detect(trtp_manager_t* self, tsk_bool_t auto_detect)
+{
+    if (!self){
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    self->proxy.auto_detect = auto_detect;
+    return 0;
+}
+
+int trtp_manager_set_proxy_info(trtp_manager_t* self, enum tnet_proxy_type_e type, const char* host, tnet_port_t port, const char* login, const char* password)
+{
+    if (!self){
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    if (!self->proxy.info && !(self->proxy.info = tnet_proxyinfo_create())) {
+        return -2;
+    }
+    self->proxy.info->type = type;
+    self->proxy.info->port = port;
+    tsk_strupdate(&self->proxy.info->hostname, host);
+    tsk_strupdate(&self->proxy.info->username, login);
+    tsk_strupdate(&self->proxy.info->password, password);
+    return 0;
+}
+
 /** Starts the RTP/RTCP manager */
 int trtp_manager_start(trtp_manager_t* self)
 {
@@ -1323,6 +1351,19 @@ int trtp_manager_start(trtp_manager_t* self)
 		ret = -2;
 		goto bail;
 	}
+    
+    /* Proxy */
+    // Proxy info
+    if ((ret = tnet_transport_set_proxy_auto_detect(self->transport, self->proxy.auto_detect))) {
+        TSK_DEBUG_ERROR("Failed to set proxy autodetect option");
+        goto bail;
+    }
+    if (self->proxy.info) {
+        if ((ret = tnet_transport_set_proxy_info(self->transport, self->proxy.info->type, self->proxy.info->hostname, self->proxy.info->port, self->proxy.info->username, self->proxy.info->password))) {
+            TSK_DEBUG_ERROR("Failed to set proxy info");
+            goto bail;
+        }
+    }
 
 	/* Flush buffers and re-enable sockets */
 	if(self->transport->master && self->is_socket_disabled){
@@ -1583,7 +1624,6 @@ bail:
 tsk_size_t trtp_manager_send_rtp_raw(trtp_manager_t* self, const void* data, tsk_size_t size)
 {
 	tsk_size_t ret = 0;
-	static int aaaaaa = 0;
 
 	if(!self || !self->transport || !self->transport->master || !data || !size){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -1821,6 +1861,9 @@ static tsk_object_t* trtp_manager_dtor(tsk_object_t * self)
 		if (manager->ice_ctx) {
 			TSK_OBJECT_SAFE_FREE(manager->ice_ctx);
 		}
+        
+        /* Proxy */
+        TSK_OBJECT_SAFE_FREE(manager->proxy.info);
 
 		tsk_safeobj_deinit(manager);
 

@@ -35,6 +35,22 @@
 #	endif
 #endif
 
+// OS X or iOS
+#if defined(__APPLE__)
+#	define TSDP_UNDER_APPLE				1
+#   include <TargetConditionals.h>
+#   include <Availability.h>
+#endif
+#if TARGET_OS_MAC
+#	define TSDP_UNDER_MAC				1
+#endif
+#if TARGET_OS_IPHONE
+#	define TSDP_UNDER_IPHONE			1
+#endif
+#if TARGET_IPHONE_SIMULATOR
+#	define TSDP_UNDER_IPHONE_SIMULATOR	1
+#endif
+
 
 #if (TSDP_UNDER_WINDOWS || defined(__SYMBIAN32__)) && defined(TINYSDP_EXPORTS)
 # 	define TINYSDP_API		__declspec(dllexport)

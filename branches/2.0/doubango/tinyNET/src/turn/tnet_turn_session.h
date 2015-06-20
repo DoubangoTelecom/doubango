@@ -29,6 +29,7 @@ TNET_BEGIN_DECLS
 
 struct tnet_turn_session_s;
 struct tnet_socket_s;
+struct tnet_proxyinfo_s;
 enum tnet_socket_type_e;
 #define kTurnPeerIdInvalid -1
 
@@ -74,6 +75,8 @@ TINYNET_API int tnet_turn_session_create_4(struct tnet_socket_s* p_lcl_sock, enu
 TINYNET_API int tnet_turn_session_set_cred(struct tnet_turn_session_s* p_self, const char* pc_usr_name, const char* pc_pwd);
 TINYNET_API int tnet_turn_session_set_callback(struct tnet_turn_session_s* p_self, tnet_turn_session_callback_f f_fun, const void* pc_usr_data);
 TINYNET_API int tnet_turn_session_set_ssl_certs(struct tnet_turn_session_s* p_self, const char* path_priv, const char* path_pub, const char* path_ca, tsk_bool_t verify);
+TINYNET_API int tnet_turn_session_set_proxy_auto_detect(struct tnet_turn_session_s* p_self, tsk_bool_t auto_detect);
+TINYNET_API int tnet_turn_session_set_proxy_info(struct tnet_turn_session_s* p_self, struct tnet_proxyinfo_s* info);
 TINYNET_API int tnet_turn_session_prepare(struct tnet_turn_session_s* p_self);
 TINYNET_API int tnet_turn_session_start(struct tnet_turn_session_s* p_self);
 TINYNET_API int tnet_turn_session_allocate(struct tnet_turn_session_s* p_self);

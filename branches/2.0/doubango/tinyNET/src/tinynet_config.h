@@ -50,12 +50,14 @@
 #			define TNET_UNDER_WINDOWS_PHONE		1
 #		endif
 #	endif
+#   define TNET_UNDER_WINDOWS_DESKTOP (TNET_UNDER_WINDOWS && !TNET_UNDER_WINDOWS_CE && !TNET_UNDER_WINDOWS_RT && !TNET_UNDER_WINDOWS_PHONE)
 #endif
 
 // OS X or iOS
 #if defined(__APPLE__)
 #	define TNET_UNDER_APPLE				1
 #   include <TargetConditionals.h>
+#   include <Availability.h>
 #endif
 #if TARGET_OS_MAC
 #	define TNET_UNDER_MAC				1
@@ -139,6 +141,9 @@
 #	define HAVE_SYS_PARAM_H		1
 #	define TNET_HAVE_SS_LEN		1
 #	define TNET_HAVE_SA_LEN		0
+#   if (__IPHONE_OS_VERSION_MIN_REQUIRED >= 50000)
+#       define HAVE_GSSAPI_H 1
+#   endif
 #endif
 
 #endif /* _TINYNET_H_ */

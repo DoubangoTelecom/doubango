@@ -91,6 +91,16 @@ typedef enum tnet_dtls_setup_e
 }
 tnet_dtls_setup_t;
 
+typedef enum tnet_proxy_type_e {
+    tnet_proxy_type_none = 0x00,
+    tnet_proxy_type_http = (0x01 << 0), // CONNECT using HTTP then starting SSL handshaking if needed
+    tnet_proxy_type_https = (0x01 << 1), // CONNECT using HTTPS then starting SSL handshaking if needed
+    tnet_proxy_type_socks4 = (0x01 << 2),
+    tnet_proxy_type_socks4a = (0x01 << 3),
+    tnet_proxy_type_socks5 = (0x01 << 4),
+}
+tnet_proxy_type_t;
+
 static const char* TNET_DTLS_SETUP_NAMES[TNET_DTLS_SETUP_MAX] =
 {
 	"UNKNOWN", "actpass", "active", "passive"

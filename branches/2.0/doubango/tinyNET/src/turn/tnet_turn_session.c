@@ -22,6 +22,7 @@
 #include "stun/tnet_stun_utils.h"
 
 #include "tinynet.h"
+#include "tnet_proxydetect.h"
 
 #include "tsk_string.h"
 #include "tsk_timer.h"
@@ -30,8 +31,9 @@
 #include "tsk_debug.h"
 
 #define kTurnTransportFriendlyName		"TURN transport"
-#define kTurnTransportConnectTimeout	1500 // 1.5sec to wait until socket get connected - FIXME: save "alloc" data and delay sending
+#define kTurnTransportConnectTimeout	1500 // 1.5sec to wait until socket get connected
 #define kTurnStreamChunckMaxSize		0xFFFF // max size of a chunck to form a valid STUN message. Used as a guard.
+#define kTurnStreamOutMaxSize           0xFFFF // max pending data size
 
 #define TNET_TURN_SESSION_TIMOUT_GET_BEST_SEC(u_timeout_in_sec) ((u_timeout_in_sec)*950) // add small delay for code execution
 #define TNET_TURN_SESSION_TIMOUT_GET_BEST_MILLIS(u_timeout_in_millis) (((u_timeout_in_millis)*950)/1000) // add small delay for code execution
@@ -58,7 +60,8 @@ typedef struct tnet_turn_peer_s
 	uint16_t u_addr_port;
 	tsk_bool_t b_ipv6;
 	tsk_bool_t b_stream_connected;
-	tsk_buffer_t *p_stream_buff;
+	tsk_buffer_t *p_stream_buff_in;
+    tsk_buffer_t *p_stream_buff_out;
 	
 	tnet_stun_state_t e_createperm_state;
 	tnet_stun_state_t e_chanbind_state;
@@ -127,6 +130,12 @@ typedef struct tnet_turn_session_s
 	char* p_srflx_ip;
 	uint16_t u_srflx_port;
 	tsk_bool_t b_srflx_ipv6;
+    
+    struct {
+        tsk_bool_t auto_detect;
+        struct tnet_proxyinfo_s* info;
+    }
+    proxy;
 
 	struct {
 		char* path_priv;
@@ -164,8 +173,9 @@ typedef struct tnet_turn_session_s
 	char* p_srv_host;
 	uint16_t u_srv_port;
 	tsk_bool_t b_stream_connected;
+    tsk_buffer_t* p_stream_buff_out; // data pending until the socket is connected
 	tsk_bool_t b_stream_error; // Unrecoverable error occured
-	tsk_buffer_t *p_stream_buff;
+	tsk_buffer_t *p_stream_buff_in;
 	struct sockaddr_storage srv_addr;
 	struct tnet_transport_s* p_transport;
 
@@ -327,7 +337,7 @@ int tnet_turn_session_create(struct tnet_socket_s* p_lcl_sock, enum tnet_turn_tr
 		ret = -3;
 		goto bail;
 	}
-	if (TNET_SOCKET_TYPE_IS_STREAM(p_lcl_sock->type) && !(p_self->p_stream_buff = tsk_buffer_create_null())) {
+	if (TNET_SOCKET_TYPE_IS_STREAM(p_lcl_sock->type) && !(p_self->p_stream_buff_in = tsk_buffer_create_null())) {
 		TSK_DEBUG_ERROR("Failed to stream buffer");
 		ret = -4;
 		goto bail;
@@ -424,6 +434,31 @@ int tnet_turn_session_set_ssl_certs(struct tnet_turn_session_s* p_self, const ch
 	return 0;
 }
 
+int tnet_turn_session_set_proxy_auto_detect(struct tnet_turn_session_s* p_self, tsk_bool_t auto_detect)
+{
+    if (!p_self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    tsk_safeobj_lock(p_self);
+    p_self->proxy.auto_detect = auto_detect;
+    tsk_safeobj_unlock(p_self);
+    return 0;
+}
+
+int tnet_turn_session_set_proxy_info(struct tnet_turn_session_s* p_self, struct tnet_proxyinfo_s* info)
+{
+    if (!p_self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    tsk_safeobj_lock(p_self);
+    TSK_OBJECT_SAFE_FREE(p_self->proxy.info);
+    p_self->proxy.info = tsk_object_ref(info);
+    tsk_safeobj_unlock(p_self);
+    return 0;
+}
+
 int tnet_turn_session_prepare(tnet_turn_session_t* p_self)
 {
 	int ret = 0;
@@ -518,6 +553,18 @@ int tnet_turn_session_start(tnet_turn_session_t* p_self)
 			goto bail;
 		}
 	}
+    
+    // Proxy info
+    if ((ret = tnet_transport_set_proxy_auto_detect(p_self->p_transport, p_self->proxy.auto_detect))) {
+        TSK_DEBUG_ERROR("Failed to set proxy autodetect option");
+        goto bail;
+    }
+    if (p_self->proxy.info) {
+        if ((ret = tnet_transport_set_proxy_info(p_self->p_transport, p_self->proxy.info->type, p_self->proxy.info->hostname, p_self->proxy.info->port, p_self->proxy.info->username, p_self->proxy.info->password))) {
+            TSK_DEBUG_ERROR("Failed to set proxy info");
+            goto bail;
+        }
+    }
 
 	// start network transport
 	if ((ret = tnet_transport_start(p_self->p_transport))) {
@@ -759,7 +806,7 @@ int tnet_turn_session_createpermission(struct tnet_turn_session_s* p_self, const
 		goto bail;
 	}
 	if (TNET_SOCKET_TYPE_IS_STREAM(p_self->p_lcl_sock->type)) {
-		if (!p_peer->p_stream_buff && !(p_peer->p_stream_buff = tsk_buffer_create_null())) {
+		if (!p_peer->p_stream_buff_in && !(p_peer->p_stream_buff_in = tsk_buffer_create_null())) {
 			TSK_DEBUG_ERROR("Failed to create stream buffer for peer with id=%ld", p_peer->id);
 			ret = -5;
 			goto bail;
@@ -980,7 +1027,7 @@ int tnet_turn_session_send_data(tnet_turn_session_t* p_self, tnet_turn_peer_id_t
 	}
 
 	/*** ChannelData ***/
-	if ((pc_peer->e_chanbind_state == tnet_stun_state_ok)) {
+	if (pc_peer->e_chanbind_state == tnet_stun_state_ok) {
 		ret = _tnet_turn_session_send_chandata(p_self, pc_peer, pc_data_ptr, u_data_size);
 		goto bail;
 	}
@@ -1496,7 +1543,7 @@ static int _tnet_turn_session_send_buff_0(tnet_turn_session_t* p_self, const tne
     }
 
 	if (TNET_SOCKET_TYPE_IS_DGRAM(p_self->p_lcl_sock->type)) {
-#if 0
+#if 1
 		u_sent_bytes = tnet_transport_sendto(p_self->p_transport, p_self->p_lcl_sock->fd, (const struct sockaddr *)&p_self->srv_addr, pc_buff_ptr, u_buff_size);
 #else
 		u_sent_bytes = tnet_sockfd_sendto(p_self->p_lcl_sock->fd, (const struct sockaddr *)&p_self->srv_addr, pc_buff_ptr, u_buff_size);
@@ -1506,20 +1553,41 @@ static int _tnet_turn_session_send_buff_0(tnet_turn_session_t* p_self, const tne
 		if (pc_peer && pc_peer->b_stream_connected && pc_peer->conn_fd != TNET_INVALID_FD) {
 			// Send using Peer connection if connected
 			// Should never be called because for now requested transport is always equal to UDP
-#if 0
+#if 1
 			u_sent_bytes = tnet_transport_send(p_self->p_transport, pc_peer->conn_fd, pc_buff_ptr, u_buff_size);
 #else
 			u_sent_bytes = tnet_sockfd_send(pc_peer->conn_fd, pc_buff_ptr, u_buff_size, 0);
 #endif
 		}
 		else {
+            tsk_bool_t b_delay_send = tsk_false;
 			// Connect if not already done
 			if (!p_self->b_stream_connected) {
 				ret = tnet_sockfd_waitUntilWritable(p_self->p_lcl_sock->fd, kTurnTransportConnectTimeout);
-				p_self->b_stream_connected = (ret == 0);
+                if (ret == 0) { // socket is valid but not connected (e.g. Proxy handshaking not completed yet)
+                    TSK_DEBUG_INFO("Saving %u TURN bytes and waiting for 'connected' event before sending", (unsigned)u_buff_size);
+                    if (!p_self->p_stream_buff_out && !(p_self->p_stream_buff_out = tsk_buffer_create_null())) {
+                        TSK_DEBUG_ERROR("Failed to create buffer");
+                        ret = -3;
+                        goto bail;
+                    }
+                    if ((p_self->p_stream_buff_out->size + u_buff_size) > kTurnStreamOutMaxSize) {
+                        TSK_DEBUG_ERROR("To much pending data");
+                        ret = -5;
+                        goto bail;
+                    }
+                    tsk_buffer_append(p_self->p_stream_buff_out, pc_buff_ptr, u_buff_size);
+                    b_delay_send = tsk_true;
+                    u_sent_bytes = u_buff_size;
+                }
+                else {
+                    TSK_DEBUG_ERROR("Socket in invalid state");
+                    ret = -6;
+                    goto bail;
+                }
 			}
-			if (p_self->b_stream_connected) {
-#if 0
+			if (!b_delay_send && p_self->b_stream_connected) {
+#if 1
 				u_sent_bytes = tnet_transport_send(p_self->p_transport, p_self->p_lcl_sock->fd, pc_buff_ptr, u_buff_size);
 #else
 				u_sent_bytes = tnet_socket_send_stream(p_self->p_lcl_sock, pc_buff_ptr, u_buff_size);
@@ -1528,7 +1596,7 @@ static int _tnet_turn_session_send_buff_0(tnet_turn_session_t* p_self, const tne
 		}
     }
 	if (u_sent_bytes != u_buff_size) {
-        TSK_DEBUG_ERROR("Failed to send %u bytes. Only %u sent", u_buff_size, u_sent_bytes);
+        TSK_DEBUG_ERROR("Failed to send %u bytes. Only %u sent", (unsigned)u_buff_size, (unsigned)u_sent_bytes);
         ret = -2;
         goto bail;
     }
@@ -1561,7 +1629,7 @@ static int _tnet_turn_session_send_pkt_0(tnet_turn_session_t* p_self, const tnet
     u_min_size += kStunBuffMinPad;
     if (p_self->u_buff_send_size < u_min_size) {
         if (!(p_self->p_buff_send_ptr = tsk_realloc(p_self->p_buff_send_ptr, u_min_size))) {
-            TSK_DEBUG_ERROR("Failed to allocate buffer with size = %u", u_min_size);
+            TSK_DEBUG_ERROR("Failed to allocate buffer with size = %u", (unsigned)u_min_size);
             ret = -3;
             p_self->u_buff_send_size = 0;
             goto bail;
@@ -1660,7 +1728,7 @@ static int _tnet_turn_session_process_incoming_pkt(struct tnet_turn_session_s* p
 		case tnet_stun_pkt_type_connectionbind_success_response:
 		case tnet_stun_pkt_type_connectionbind_error_response:
 			{
-				const tnet_stun_attr_error_code_t* pc_attr_err;
+				const tnet_stun_attr_error_code_t* pc_attr_err = tsk_null;
 				uint16_t u_code = 0;
 				tnet_turn_pkt_t *pc_pkt_req = tsk_null;
 				tnet_turn_peer_t* pc_peer = tsk_null;
@@ -1946,17 +2014,24 @@ static int _tnet_turn_session_transport_layer_process_cb(const tnet_transport_ev
 	tnet_turn_session_t* p_ss = (tnet_turn_session_t*)e->callback_data;
 	int ret = 0;
 	tnet_turn_pkt_t* p_pkt = tsk_null;
-	tsk_buffer_t* p_stream_buff = tsk_null;
+	tsk_buffer_t* p_stream_buff_in = tsk_null;
 	const void* pc_data = tsk_null;
 	tsk_size_t u_data_size = 0;
-	tsk_bool_t b_stream = tsk_false, b_stream_appended = tsk_false, b_pkt_is_complete, b_got_msg;
+	tsk_bool_t b_stream = tsk_false, b_stream_appended = tsk_false, b_pkt_is_complete = tsk_false, b_got_msg= tsk_false;
 	tnet_turn_peer_t* pc_peer = tsk_null;
 	switch(e->type){
 		case event_data:
 			break;
 		case event_connected:
 			if (p_ss->p_lcl_sock && p_ss->p_lcl_sock->fd == e->local_fd) {
-				p_ss->b_stream_connected = tsk_true;
+                tsk_safeobj_lock(p_ss);
+                p_ss->b_stream_connected = tsk_true;
+                if (p_ss->p_stream_buff_out && p_ss->p_stream_buff_out->size > 0) {
+                    TSK_DEBUG_INFO("Sending %u TURN pending bytes", (unsigned)p_ss->p_stream_buff_out->size);
+                    _tnet_turn_session_send_buff(p_ss, p_ss->p_stream_buff_out->data, (uint16_t)p_ss->p_stream_buff_out->size);
+                    TSK_OBJECT_SAFE_FREE(p_ss->p_stream_buff_out);
+                }
+                tsk_safeobj_unlock(p_ss);
 			}
 			else {
 				tsk_safeobj_lock(p_ss);
@@ -1973,10 +2048,14 @@ static int _tnet_turn_session_transport_layer_process_cb(const tnet_transport_ev
 			return 0;
 		case event_error:
 		case event_closed:
+        case event_removed:
 		/* case event_removed: */
-			if (p_ss->p_lcl_sock && p_ss->p_lcl_sock->fd) {
+			if (p_ss->p_lcl_sock && p_ss->p_lcl_sock->fd == e->local_fd) {
+                tsk_safeobj_lock(p_ss);
 				p_ss->b_stream_connected = tsk_false;
 				p_ss->b_stream_error = (e->type == event_error);
+                TSK_OBJECT_SAFE_FREE(p_ss->p_stream_buff_out);
+                tsk_safeobj_unlock(p_ss);
 			}
 			else {
 				tsk_safeobj_lock(p_ss);
@@ -2011,26 +2090,26 @@ handle_data:
 			tsk_safeobj_lock(p_ss);
 			pc_peer = (tnet_turn_peer_t*)tsk_list_find_object_by_pred(p_ss->p_list_peers, __pred_find_peer_by_fd, &e->local_fd);
 			if (pc_peer) {
-				p_stream_buff = tsk_object_ref(pc_peer->p_stream_buff);
+				p_stream_buff_in = tsk_object_ref(pc_peer->p_stream_buff_in);
 			}
 			else {
-				p_stream_buff = tsk_object_ref(p_ss->p_stream_buff);
+				p_stream_buff_in = tsk_object_ref(p_ss->p_stream_buff_in);
 			}
 			tsk_safeobj_unlock(p_ss);
 
-			if ((ret = tsk_buffer_append(p_stream_buff, e->data, e->size))) {
+			if ((ret = tsk_buffer_append(p_stream_buff_in, e->data, e->size))) {
 				goto bail;
 			}
 			b_stream_appended = tsk_true;
 		}
 		// Guard
-		if (p_stream_buff->size > kTurnStreamChunckMaxSize) {
-			TSK_DEBUG_ERROR("Too much data in the stream buffer: %lld", p_stream_buff->size);
-			tsk_buffer_cleanup(p_stream_buff);
+		if (p_stream_buff_in->size > kTurnStreamChunckMaxSize) {
+			TSK_DEBUG_ERROR("Too much data in the stream buffer: %u", (unsigned)p_stream_buff_in->size);
+			tsk_buffer_cleanup(p_stream_buff_in);
 			goto bail;
 		}
-		pc_data = p_stream_buff->data;
-		u_data_size = p_stream_buff->size;
+		pc_data = p_stream_buff_in->data;
+		u_data_size = p_stream_buff_in->size;
 	}
 
 	if (!TNET_STUN_BUFF_IS_STUN2(((const uint8_t*)pc_data), u_data_size)) {
@@ -2048,7 +2127,7 @@ handle_data:
 				if (u_len <= (u_data_size - kChannelDataHdrSize)) {
 					b_got_msg = tsk_true;
 					_tnet_turn_session_raise_event_recv_data(p_ss, pc_peer->id, &_p_data[kChannelDataHdrSize], u_len);
-					if (p_stream_buff) {
+					if (p_stream_buff_in) {
 						/* The padding is not reflected in the length
 						   field of the ChannelData message, so the actual size of a ChannelData
 						   message (including padding) is (4 + Length) rounded up to the nearest
@@ -2056,7 +2135,7 @@ handle_data:
 						   included.
 						*/
 						tsk_size_t u_pad_len = (u_len & 3) ? (4 - (u_len & 3)) : 0;
-						tsk_buffer_remove(p_stream_buff, 0, kChannelDataHdrSize + u_len + u_pad_len);
+						tsk_buffer_remove(p_stream_buff_in, 0, kChannelDataHdrSize + u_len + u_pad_len);
 					}
 				}
 				else {
@@ -2075,8 +2154,8 @@ handle_data:
 			tsk_safeobj_unlock(p_ss);
 		}
 		_tnet_turn_session_raise_event_recv_data(p_ss, pc_peer ? pc_peer->id : kTurnPeerIdInvalid, pc_data, u_data_size);
-		if (p_stream_buff) {
-			tsk_buffer_cleanup(p_stream_buff);
+		if (p_stream_buff_in) {
+			tsk_buffer_cleanup(p_stream_buff_in);
 		}
 		goto bail;
 	} // if (!TNET_STUN_BUFF_IS_STUN2...
@@ -2100,9 +2179,9 @@ handle_data:
 	}
 
 	// Remove the parsed data
-	if (p_stream_buff && p_pkt) {
+	if (p_stream_buff_in && p_pkt) {
 		tsk_size_t u_pad_len = (p_pkt->u_length & 3) ? (4 - (p_pkt->u_length & 3)) : 0;
-		tsk_buffer_remove(p_stream_buff, 0, kStunPktHdrSizeInOctets + p_pkt->u_length + u_pad_len);
+		tsk_buffer_remove(p_stream_buff_in, 0, kStunPktHdrSizeInOctets + p_pkt->u_length + u_pad_len);
 	}
 
 	if (p_pkt) {
@@ -2150,12 +2229,12 @@ handle_data:
 
 bail:
 	// Handle next message in the stream buffer
-	if (ret == 0 && b_got_msg && b_stream && p_stream_buff && p_stream_buff->size > 0) {
+	if (ret == 0 && b_got_msg && b_stream && p_stream_buff_in && p_stream_buff_in->size > 0) {
 		goto handle_data;
 	}
 
 	TSK_OBJECT_SAFE_FREE(p_pkt);
-	TSK_OBJECT_SAFE_FREE(p_stream_buff);
+	TSK_OBJECT_SAFE_FREE(p_stream_buff_in);
 	p_ss->cb.e.pc_enet = tsk_null;
     return ret;
 }
@@ -2318,7 +2397,10 @@ static tsk_object_t* tnet_turn_session_dtor(tsk_object_t * self)
 		}
 
 		TSK_OBJECT_SAFE_FREE(p_ss->p_list_peers);
-		TSK_OBJECT_SAFE_FREE(p_ss->p_stream_buff);
+		TSK_OBJECT_SAFE_FREE(p_ss->p_stream_buff_in);
+        TSK_OBJECT_SAFE_FREE(p_ss->p_stream_buff_out);
+        
+        TSK_OBJECT_SAFE_FREE(p_ss->proxy.info);
 
 		TSK_FREE(p_ss->ssl.path_priv);
 		TSK_FREE(p_ss->ssl.path_pub);
@@ -2363,7 +2445,8 @@ static tsk_object_t* tnet_turn_peer_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(p_peer->p_pkt_sendind);
 		TSK_OBJECT_SAFE_FREE(p_peer->p_pkt_connect);
 		TSK_OBJECT_SAFE_FREE(p_peer->p_pkt_connbind);
-		TSK_OBJECT_SAFE_FREE(p_peer->p_stream_buff);
+		TSK_OBJECT_SAFE_FREE(p_peer->p_stream_buff_in);
+        TSK_OBJECT_SAFE_FREE(p_peer->p_stream_buff_out);
 #if PRINT_DESTROYED_MSG || 1
         TSK_DEBUG_INFO("*** TURN peer destroyed ***");
 #endif

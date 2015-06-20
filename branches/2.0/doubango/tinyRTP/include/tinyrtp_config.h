@@ -71,7 +71,9 @@
 #	define __C99__
 #endif
 
-#define TRTP_RTP_VERSION 2
+#if !defined(TRTP_RTP_VERSION)
+#   define TRTP_RTP_VERSION 2
+#endif /* TRTP_RTP_VERSION */
 
 #include <stdint.h>
 #ifdef __SYMBIAN32__
@@ -80,13 +82,8 @@
 
 #if defined(__APPLE__)
 #   include <TargetConditionals.h>
+#   include <Availability.h>
 #endif
-
-// http://code.google.com/p/idoubs/issues/detail?id=111
-//#if TARGET_IPHONE_SIMULATOR
-//#   undef HAVE_SRTP
-//#   define HAVE_SRTP 0
-//#endif
 
 #if HAVE_CONFIG_H
 	#include <config.h>
