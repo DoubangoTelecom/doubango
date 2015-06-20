@@ -671,7 +671,7 @@ int tnet_get_mac_address(tnet_mac_address* address)
 		}
 	}
 #	endif /* TSK_UNDER_WINDOWS_RT */
-#elif HAVE_IFADDRS_H && HAVE_GETIFADDRS
+#elif HAVE_IFADDRS_H && HAVE_GETIFADDRS && HAVE_STRUCT_SOCKADDR_DL
     struct ifaddrs *ifaddrs, *ifaddr;
     struct sockaddr_dl* sdl;
     if (getifaddrs(&ifaddrs) == 0) {
