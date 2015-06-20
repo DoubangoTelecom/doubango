@@ -655,11 +655,12 @@ int tnet_get_mac_address(tnet_mac_address* address)
 			info = (IP_ADAPTER_INFO *)tsk_calloc(size + 1, 1);
 			if (info) {
 				if ((_ret = GetAdaptersInfo(info, &size)) == ERROR_SUCCESS) {
+					UINT i;
 					for (pos = info; pos != NULL && ret != 0; pos = pos->Next) {
 						if (pos->Type == MIB_IF_TYPE_LOOPBACK && pos->Next) { // skip loopback if we still have items to check
 							continue;
 						}
-						for (UINT i = 0; i < pos->AddressLength && i < __tnet_mac_address_len; ++i) {
+						for (i = 0; i < pos->AddressLength && i < __tnet_mac_address_len; ++i) {
 							(*address)[i] = pos->Address[i];
 						}
 						ret = 0;
