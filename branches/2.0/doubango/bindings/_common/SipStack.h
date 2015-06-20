@@ -29,6 +29,7 @@
 
 #include "tinydav/tdav.h"
 #include "tinysip.h"
+#include "tinyhttp.h"
 
 class DDebugCallback;
 

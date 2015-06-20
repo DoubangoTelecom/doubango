@@ -439,6 +439,10 @@ bool SipStack::initialize()
 			TSK_DEBUG_ERROR("tnet_startup failed with error code=%d", ret);
 			return false;
 		}
+		if((ret = thttp_startup())){
+			TSK_DEBUG_ERROR("thttp_startup failed with error code=%d", ret);
+			return false;
+		}
 		if((ret = tdav_init())){
 			TSK_DEBUG_ERROR("tdav_init failed with error code=%d", ret);
 			return false;
@@ -452,6 +456,7 @@ bool SipStack::deInitialize()
 {
 	if (SipStack::g_bInitialized) {
 		tdav_deinit();
+		thttp_cleanup();
 		tnet_cleanup();
 		SipStack::g_bInitialized = false;
 	}

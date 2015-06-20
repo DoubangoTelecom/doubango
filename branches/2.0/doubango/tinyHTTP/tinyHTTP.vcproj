@@ -198,6 +198,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\thttp_proxy_node_plugin.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\thttp_session.c"
 				>
 			</File>
@@ -307,6 +311,10 @@
 			</File>
 			<File
 				RelativePath=".\include\tinyHTTP\thttp_message.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinyhttp\thttp_proxy_node_plugin.h"
 				>
 			</File>
 			<File
