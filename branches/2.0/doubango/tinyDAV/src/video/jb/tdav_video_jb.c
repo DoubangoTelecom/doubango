@@ -427,11 +427,13 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
     int32_t missing_seq_num_count = 0, prev_lasted_missing_seq_num_count = 0;
     const tdav_video_frame_t* frame;
     tsk_list_item_t* item;
-    uint64_t next_decode_duration = 0, now, _now;
+    uint64_t next_decode_duration = 0, now, _now, latency = 0;
     //uint64_t x_decode_duration = (1000 / jb->fps); // expected
     //uint64_t x_decode_time = tsk_time_now();//expected
     tsk_bool_t postpone, cleaning_delay = tsk_false;
+#if 0
     static const uint64_t __toomuch_delay_to_be_valid = 10000; // guard against systems with buggy "tsk_time_now()" -Won't say Windows ...but :)-
+#endif
     
     jb->decode_last_seq_num_with_mark = -1; // -1 -> unset
     jb->decode_last_time = tsk_time_now();
@@ -453,21 +455,23 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
         
         // TSK_DEBUG_INFO("Frames count = %d", jb->frames_count);
         
-        if(jb->frames_count >= (int64_t)jb->latency_min){
+        // the second condition (jb->frames_count > 0 && latency >= jb->latency_max) is required to make sure we'll process the pending pkts even if the remote party stops sending frames. GE issue: device stops sending frames when it enters in "frame freeze" mode which means #"latency_min" frames won't be displayed.
+        if (jb->frames_count >= (int64_t)jb->latency_min || (jb->frames_count > 0 && latency >= jb->latency_max)) {
             item = tsk_null;
             postpone = tsk_false;
+            latency = 0;
             
             tsk_safeobj_lock(jb); // against get_frame()
             tsk_list_lock(jb->frames); // against put()
             
             // is it still acceptable to wait for missing packets?
-            if (jb->frames_count < (int64_t)jb->latency_max){
+            if (jb->frames_count < (int64_t)jb->latency_max) {
                 frame = (const tdav_video_frame_t*)jb->frames->head->data;
-                if(!tdav_video_frame_is_complete(frame, jb->decode_last_seq_num_with_mark, &missing_seq_num_start, &missing_seq_num_count)){
+                if (!tdav_video_frame_is_complete(frame, jb->decode_last_seq_num_with_mark, &missing_seq_num_start, &missing_seq_num_count)) {
                     TSK_DEBUG_INFO("Time to decode frame...but some RTP packets are missing (missing_seq_num_start=%d, missing_seq_num_count=%d, last_seq_num_with_mark=%d). Postpone :(", missing_seq_num_start, missing_seq_num_count, jb->decode_last_seq_num_with_mark);
                     // signal to the session that a sequence number is missing (will send a NACK)
                     // the missing seqnum has been already requested in jb_put() and here we request it again only ONE time
-                    if(jb->callback){
+                    if (jb->callback) {
                         if(prev_missing_seq_num_start != missing_seq_num_start || prev_lasted_missing_seq_num_count != missing_seq_num_count){ // guard to request it only once
                             jb->cb_data_any.type = tdav_video_jb_cb_data_type_fl;
                             jb->cb_data_any.ssrc = frame->ssrc;
@@ -479,18 +483,19 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
                     }
                 }
             }
-            else{
+            else {
                 TSK_DEBUG_INFO("frames_count(%lld)>=latency_max(%u)...decoding video frame even if pkts are missing :(", jb->frames_count, (unsigned)jb->latency_max);
                 jb->decode_last_seq_num_with_mark = -1; // unset()
+                // postpone is equal to "tsk_false" which means the pending frame will be displayed in all cases
             }
-            if(!postpone){
+            if (!postpone) {
                 item = tsk_list_pop_first_item(jb->frames);
                 --jb->frames_count;
             }
             tsk_list_unlock(jb->frames);
             tsk_safeobj_unlock(jb);
             
-            if(item){
+            if (item) {
                 jb->decode_last_timestamp = ((const tdav_video_frame_t*)item->data)->timestamp;
                 if(jb->callback){
                     trtp_rtp_packet_t* pkt;
@@ -501,7 +506,7 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
                         if(!(pkt = _item->data) || !pkt->payload.size || !pkt->header || pkt->header->seq_num == last_seq_num || !jb->started){
                             TSK_DEBUG_ERROR("Skipping invalid rtp packet (do not decode!)");
                             continue;
-                        }					
+                        }
                         jb->cb_data_rtp.rtp.pkt = pkt;
                         jb->callback(&jb->cb_data_rtp);
                         if(pkt->header->marker){
@@ -511,6 +516,11 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
                 }
                 
                 TSK_OBJECT_SAFE_FREE(item);
+            }
+        }
+        else {
+            if (jb->frames_count > 0) { // there are pending frames but we cannot display them yet -> increase latency
+                latency++;
             }
         }
         
