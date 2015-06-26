@@ -471,7 +471,7 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
                     TSK_DEBUG_INFO("Time to decode frame...but some RTP packets are missing (missing_seq_num_start=%d, missing_seq_num_count=%d, last_seq_num_with_mark=%d). Postpone :(", missing_seq_num_start, missing_seq_num_count, jb->decode_last_seq_num_with_mark);
                     // signal to the session that a sequence number is missing (will send a NACK)
                     // the missing seqnum has been already requested in jb_put() and here we request it again only ONE time
-                    if (jb->callback) {
+                    if (jb->callback && frame) {
                         if(prev_missing_seq_num_start != missing_seq_num_start || prev_lasted_missing_seq_num_count != missing_seq_num_count){ // guard to request it only once
                             jb->cb_data_any.type = tdav_video_jb_cb_data_type_fl;
                             jb->cb_data_any.ssrc = frame->ssrc;

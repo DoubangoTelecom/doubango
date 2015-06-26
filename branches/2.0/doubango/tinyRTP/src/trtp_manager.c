@@ -425,8 +425,15 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 			if(self->srtp_ctx_neg_remote){
 				srtp_t session = self->srtp_ctx_neg_remote->rtcp.initialized ? self->srtp_ctx_neg_remote->rtcp.session : self->srtp_ctx_neg_remote->rtp.session;
 				if((status = srtp_unprotect_rtcp(session, (void*)data_ptr, (int*)&data_size)) != err_status_ok){
-					TSK_DEBUG_ERROR("srtp_unprotect(RTCP) failed with error code=%d", (int)status);
-					return -1;
+                    if (status == err_status_replay_fail) {
+                        // replay (because of RTCP-NACK nothing to worry about)
+                        TSK_DEBUG_INFO("srtp_unprotect(RTCP) returned 'err_status_replay_fail'");
+                        return 0;
+                    }
+                    else {
+                        TSK_DEBUG_ERROR("srtp_unprotect(RTCP) failed with error code=%d", (int)status);
+                        return -1;
+                    }
 				}
 			}
 			#endif
