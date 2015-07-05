@@ -147,7 +147,7 @@ static int tdav_consumer_video_gdi_consume(tmedia_consumer_t* self, const void* 
 	tdav_consumer_video_gdi_t* p_gdi = (tdav_consumer_video_gdi_t*)self;
 	int ret = 0;
 	HWND* p_Window;
-	BOOL* p_bWindowHooked;
+	BOOL *p_bWindowHooked, bImputSizeChanged;
 
 	if (!p_gdi) {
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -161,7 +161,11 @@ static int tdav_consumer_video_gdi_consume(tmedia_consumer_t* self, const void* 
 		goto bail;
 	}
 
-	if (p_gdi->bitmapInfo.bmiHeader.biSizeImage != size) {
+	bImputSizeChanged = (size != p_gdi->bitmapInfo.bmiHeader.biSizeImage) 
+		|| (TMEDIA_CONSUMER(p_gdi)->video.in.width != p_gdi->bitmapInfo.bmiHeader.biWidth)
+		|| (TMEDIA_CONSUMER(p_gdi)->video.in.height != TSK_ABS(p_gdi->bitmapInfo.bmiHeader.biHeight));
+
+	if (bImputSizeChanged) {
 		tsk_size_t xNewSize = TMEDIA_CONSUMER(p_gdi)->video.in.width * TMEDIA_CONSUMER(p_gdi)->video.in.height * (p_gdi->bitmapInfo.bmiHeader.biBitCount >> 3);
 		TSK_DEBUG_INFO("GDI input size changed: %u->%u", p_gdi->bitmapInfo.bmiHeader.biSizeImage, size);
 		if (xNewSize != size) {
