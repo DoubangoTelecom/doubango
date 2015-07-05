@@ -54,6 +54,7 @@ typedef struct tsip_dialog_invite
     tsk_bool_t is_cancelling; // whether we're cancelling the outgoing INVITE
 	uint32_t rseq;
 	uint32_t cseq_out_media_update; // CSeq for the last media update request (INVITE or UPDATE).
+	uint64_t last_out_fastupdate_time;
 	
 	tsip_timer_t timershutdown;
 	tsip_timer_t timer100rel;

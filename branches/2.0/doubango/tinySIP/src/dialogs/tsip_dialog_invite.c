@@ -53,6 +53,12 @@
 
 #include "tsk_debug.h"
 
+#if METROPOLIS
+#	define TSIP_INFO_FASTUPDATE_OUT_INTERVAL_MIN		0 // millis
+#else
+#	define TSIP_INFO_FASTUPDATE_OUT_INTERVAL_MIN		1500 // millis
+#endif
+
 #if HAVE_LIBXML2
 #include <libxml/tree.h>
 #include <libxml/parser.h>
@@ -1799,22 +1805,30 @@ static int tsip_dialog_invite_msession_rfc5168_cb(const void* usrdata, const str
 
 	if (self) {
 		if (command == tmedia_session_rfc5168_cmd_picture_fast_update) {
-			char* content_ptr = tsk_null;
-			static const char* __content_type = "application/media_control+xml";
-			static const void* __content_format = 
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n"
-				" <media_control>\r\n"
-				"   <vc_primitive>\r\n"
-				"     <to_encoder>\r\n"
-				"       <picture_fast_update>\r\n"
-				"       </picture_fast_update>\r\n"
-				"     </to_encoder>\r\n"
-				"     <stream_id>%llu</stream_id>\r\n"
-				"   </vc_primitive>\r\n"
-				" </media_control>\r\n";
-			TSK_DEBUG_INFO("Media session is asking the sigaling layer to send SIP INFO('picture_fast_update')");
-			tsk_sprintf(&content_ptr, __content_format, session->id);
-			return send_INFO(self, __content_type, content_ptr, tsk_strlen(content_ptr));
+			uint64_t now = tsk_time_now();
+			if ((now - self->last_out_fastupdate_time) > TSIP_INFO_FASTUPDATE_OUT_INTERVAL_MIN) {
+				char* content_ptr = tsk_null;
+				static const char* __content_type = "application/media_control+xml";
+				static const void* __content_format = 
+					"<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n"
+					" <media_control>\r\n"
+					"   <vc_primitive>\r\n"
+					"     <to_encoder>\r\n"
+					"       <picture_fast_update>\r\n"
+					"       </picture_fast_update>\r\n"
+					"     </to_encoder>\r\n"
+					"     <stream_id>%llu</stream_id>\r\n"
+					"   </vc_primitive>\r\n"
+					" </media_control>\r\n";
+				TSK_DEBUG_INFO("Media session is asking the sigaling layer to send SIP INFO('picture_fast_update')");
+				tsk_sprintf(&content_ptr, __content_format, session->id);
+				self->last_out_fastupdate_time = now;
+				return send_INFO(self, __content_type, content_ptr, tsk_strlen(content_ptr));
+			}
+			else {
+				/* if too close don't update "last_fir_time" to "now" to be sure interval will increase */
+				TSK_DEBUG_INFO("Outgoing SIP INFO ('picture_fast_update') requested but delay too close");
+			}
 		}
 	}
 	return 0;

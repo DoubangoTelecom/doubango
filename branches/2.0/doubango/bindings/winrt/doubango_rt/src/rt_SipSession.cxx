@@ -161,6 +161,26 @@ bool rtCallSession::setQoS(rt_tmedia_qos_stype_t type, rt_tmedia_qos_strength_t 
 	return m_pSipSession->setQoS((tmedia_qos_stype_t) type, (tmedia_qos_strength_t) strength);
 }
 
+bool rtCallSession::setVideoFps(int32_t fps)
+{
+	return m_pSipSession->setVideoFps(fps);
+}
+
+bool rtCallSession::setVideoBandwidthUploadMax(int32_t max)
+{
+	return m_pSipSession->setVideoBandwidthUploadMax(max);
+}
+
+bool rtCallSession::setVideoBandwidthDownloadMax(int32_t max)
+{
+	return m_pSipSession->setVideoBandwidthDownloadMax(max);
+}
+
+bool rtCallSession::setVideoPrefSize(rt_tmedia_pref_video_size_t pref_video_size)
+{
+	return m_pSipSession->setVideoPrefSize((tmedia_pref_video_size_t)pref_video_size);
+}
+
 bool rtCallSession::hold(rtActionConfig^ config)
 {
 	return m_pSipSession->hold(config ? config->getWrappedActionConfig() : tsk_null);
