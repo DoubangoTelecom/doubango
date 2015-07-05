@@ -590,6 +590,33 @@ int tdav_session_av_start(tdav_session_av_t* self, const tmedia_codec_t* best_co
             }
         }
     }
+
+	// Check if "RTCP-NACK", "RTC-FIR", "RTCP-GOOG-REMB".... are supported by the selected encoder
+	self->is_fb_fir_neg = self->is_fb_nack_neg = self->is_fb_googremb_neg = tsk_false;
+	if (TMEDIA_SESSION(self)->M.ro) {
+		// a=rtcp-fb:* ccm fir
+		// a=rtcp-fb:* nack
+		// a=rtcp-fb:* goog-remb
+		char attr_fir[256], attr_nack[256], attr_goog_remb[256];
+		int index = 0;
+		const tsdp_header_A_t* A;
+
+		sprintf(attr_fir, "%s ccm fir", best_codec->neg_format);
+		sprintf(attr_nack, "%s nack", best_codec->neg_format);
+		sprintf(attr_goog_remb, "%s goog-remb", best_codec->neg_format);
+
+		while ((A = tsdp_header_M_findA_at(TMEDIA_SESSION(self)->M.ro, "rtcp-fb", index++))) {
+			if (!self->is_fb_fir_neg) {
+				self->is_fb_fir_neg = (tsk_striequals(A->value, "* ccm fir") || tsk_striequals(A->value, attr_fir));
+			}
+			if (!self->is_fb_nack_neg) {
+				self->is_fb_nack_neg = (tsk_striequals(A->value, "* nack") || tsk_striequals(A->value, attr_nack));
+			}
+			if (!self->is_fb_googremb_neg) {
+				self->is_fb_googremb_neg = (tsk_striequals(A->value, "* goog-remb") || tsk_striequals(A->value, attr_goog_remb));
+			}
+		}			
+	}
     
     if (self->rtp_manager) {
         int ret;

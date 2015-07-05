@@ -79,7 +79,7 @@ namespace doubango_rt
 		};
 
 		public enum class rt_tmedia_pref_video_size_t
-		{
+		{/* must be sorted like this */
 			tmedia_pref_video_size_sqcif = tmedia_pref_video_size_sqcif, // 128 x 98
 			tmedia_pref_video_size_qcif = tmedia_pref_video_size_qcif, // 176 x 144
 			tmedia_pref_video_size_qvga = tmedia_pref_video_size_qvga, // 320 x 240
@@ -87,8 +87,10 @@ namespace doubango_rt
 			tmedia_pref_video_size_hvga = tmedia_pref_video_size_hvga, // 480 x 320
 			tmedia_pref_video_size_vga = tmedia_pref_video_size_vga, // 640 x 480
 			tmedia_pref_video_size_4cif = tmedia_pref_video_size_4cif, // 704 x 576
+			tmedia_pref_video_size_wvga = tmedia_pref_video_size_wvga, // 800 x 480
 			tmedia_pref_video_size_svga = tmedia_pref_video_size_svga, // 800 x 600
 			tmedia_pref_video_size_480p = tmedia_pref_video_size_480p, // 852 x 480
+			tmedia_pref_video_size_xga = tmedia_pref_video_size_xga, // 1024 x 768
 			tmedia_pref_video_size_720p = tmedia_pref_video_size_720p, // 1280 x 720
 			tmedia_pref_video_size_16cif = tmedia_pref_video_size_16cif, // 1408 x 1152
 			tmedia_pref_video_size_1080p = tmedia_pref_video_size_1080p, // 1920 x 1080

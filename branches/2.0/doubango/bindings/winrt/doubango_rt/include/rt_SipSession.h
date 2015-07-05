@@ -285,6 +285,10 @@ namespace doubango_rt
 			bool setRtcpMux(bool enabled);
 			bool setICE(bool enabled);
 			bool setQoS(rt_tmedia_qos_stype_t type, rt_tmedia_qos_strength_t strength);
+			bool setVideoFps(int32_t fps);
+			bool setVideoBandwidthUploadMax(int32_t max);
+			bool setVideoBandwidthDownloadMax(int32_t max);
+			bool setVideoPrefSize(rt_tmedia_pref_video_size_t pref_video_size);
 			bool hold(rtActionConfig^ config);
 			bool hold();
 			bool resume(rtActionConfig^ config);
