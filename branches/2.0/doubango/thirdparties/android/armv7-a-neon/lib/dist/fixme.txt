@@ -1,0 +1,2 @@
+https://code.google.com/p/doubango/issues/detail?id=453
+libssl-fixme.a and libcrypto-fixme.a crash on zenfone 6. Using ARMv5 code.
