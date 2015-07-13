@@ -576,6 +576,7 @@ typedef struct tsip_stack_s
 
 		char *local_ip[TSIP_TRANSPORT_IDX_MAX];
 		tnet_port_t local_port[TSIP_TRANSPORT_IDX_MAX];
+        tsk_bool_t local_ip_is_set_by_user[TSIP_TRANSPORT_IDX_MAX]; // whether the address (ip and port) is set by the user or retrieved
 
 		char *proxy_cscf[TSIP_TRANSPORT_IDX_MAX];
 		tnet_port_t proxy_cscf_port[TSIP_TRANSPORT_IDX_MAX];
