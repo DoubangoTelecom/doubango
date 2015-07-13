@@ -44,6 +44,8 @@ extern "C" {
 #include <wels/codec_app_def.h>
 }
 
+#include <limits.h> /* INT_MAX */
+
 typedef struct tdav_codec_h264_cisco_s
 {
 	TDAV_DECLARE_CODEC_H264_COMMON;
@@ -111,12 +113,13 @@ static int tdav_codec_h264_cisco_set(tmedia_codec_t* self, const tmedia_param_t*
 				case tmedia_codec_action_bw_up:
 				case tmedia_codec_action_bw_down:
 					{
-						int rc_target_bitrate;
+						int32_t rc_target_bitrate;
+                        int32_t bandwidth_max_upload_bps = TMEDIA_CODEC(h264)->bandwidth_max_upload == INT_MAX ? TMEDIA_CODEC(h264)->bandwidth_max_upload : (TMEDIA_CODEC(h264)->bandwidth_max_upload * 1024); // kbps -> bps
 						if (action == tmedia_codec_action_bw_up) {
-							rc_target_bitrate = TSK_CLAMP(0, (int32_t)((h264->encoder.sEncParam.iTargetBitrate * 3) >> 1), TMEDIA_CODEC(h264)->bandwidth_max_upload);
+							rc_target_bitrate = TSK_CLAMP(0, (int32_t)((h264->encoder.sEncParam.iTargetBitrate * 3) >> 1), bandwidth_max_upload_bps);
 						}
 						else {
-							rc_target_bitrate = TSK_CLAMP(0, (int32_t)((h264->encoder.sEncParam.iTargetBitrate << 1) / 3), TMEDIA_CODEC(h264)->bandwidth_max_upload);
+							rc_target_bitrate = TSK_CLAMP(0, (int32_t)((h264->encoder.sEncParam.iTargetBitrate << 1) / 3), bandwidth_max_upload_bps);
 						}
 						h264->encoder.sEncParam.iTargetBitrate = rc_target_bitrate;
 						h264->encoder.sEncParam.iMaxBitrate = rc_target_bitrate;						
@@ -124,28 +127,28 @@ static int tdav_codec_h264_cisco_set(tmedia_codec_t* self, const tmedia_param_t*
 						layer->iMaxSpatialBitrate = h264->encoder.sEncParam.iMaxBitrate;
 						layer->iSpatialBitrate = h264->encoder.sEncParam.iTargetBitrate;
 						reconf = tsk_true;
-						TSK_DEBUG_INFO("OpenH264  new target bitrate = %d kbps", rc_target_bitrate);
+						TSK_DEBUG_INFO("OpenH264  new target bitrate = %d bps", rc_target_bitrate);
 						break;
 					}
 			}
 		}
 		else if (tsk_striequals(param->key, "bw_kbps")) { // both up and down (from the SDP)
-			int32_t max_bw_userdefine = tmedia_defaults_get_bandwidth_video_upload_max();
-			int32_t max_bw_new = *((int32_t*)param->value);
-			if (max_bw_userdefine > 0) {
+			int32_t max_bw_userdefine_kbps = tmedia_defaults_get_bandwidth_video_upload_max();
+			int32_t max_bw_new_kbps = *((int32_t*)param->value);
+			if (max_bw_userdefine_kbps > 0) {
 				// do not use more than what the user defined in it's configuration
-				TMEDIA_CODEC(h264)->bandwidth_max_upload = TSK_MIN(max_bw_new, max_bw_userdefine);
+				TMEDIA_CODEC(h264)->bandwidth_max_upload = TSK_MIN(max_bw_new_kbps, max_bw_userdefine_kbps);
 			}
 			else {
-				TMEDIA_CODEC(h264)->bandwidth_max_upload = max_bw_new;
+				TMEDIA_CODEC(h264)->bandwidth_max_upload = max_bw_new_kbps;
 			}
-			TSK_DEBUG_INFO("OpenH264 codec: bandwidth-max-upload=%d", TMEDIA_CODEC(h264)->bandwidth_max_upload);
+			TSK_DEBUG_INFO("OpenH264 codec: bandwidth-max-upload= %d kbps", TMEDIA_CODEC(h264)->bandwidth_max_upload);
 			reconf = tsk_true;
 		}
 		else if (tsk_striequals(param->key, "bandwidth-max-upload")) {
-			int32_t bw_max_upload = *((int32_t*)param->value);
-			TSK_DEBUG_INFO("OpenH264 codec: bandwidth-max-upload=%d", bw_max_upload);
-			TMEDIA_CODEC(h264)->bandwidth_max_upload = bw_max_upload;
+			int32_t bw_max_upload_kbps = *((int32_t*)param->value);
+			TSK_DEBUG_INFO("OpenH264 codec: bandwidth-max-upload= %d kbps", bw_max_upload_kbps);
+			TMEDIA_CODEC(h264)->bandwidth_max_upload = bw_max_upload_kbps;
 			reconf = tsk_true;
 		}
 		else if (tsk_striequals(param->key, "rotation")) {
