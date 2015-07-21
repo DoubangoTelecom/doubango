@@ -35,6 +35,14 @@
 #	define DDRAW_HIGH_PRIO_MEMCPY	0
 #endif /* DDRAW_HIGH_PRIO_MEMCPY */
 
+#if !defined(DDRAW_CPU_MONITOR)
+#	define DDRAW_CPU_MONITOR	0
+#endif /* DDRAW_CPU_MONITOR */
+
+#if DDRAW_CPU_MONITOR && !defined(DDRAW_CPU_MONITOR_TIME_OUT)
+#	define DDRAW_CPU_MONITOR_TIME_OUT	1000
+#endif /* DDRAW_CPU_MONITOR */
+
 #if !defined(DDRAW_PREVIEW)
 #	if TDAV_UNDER_WINDOWS_CE && (BUILD_TYPE_GE || SIN_CITY)
 #		define DDRAW_PREVIEW 0 // Do not waste time displaying the preview on "WEC7 + (GE | SINCITY)"
@@ -67,7 +75,12 @@ typedef struct tdav_producer_screencast_ddraw_s
 #if DDRAW_PREVIEW
 	BITMAPINFO bi_preview;
 #endif /* DDRAW_PREVIEW */
-	
+
+#if DDRAW_CPU_MONITOR
+	tsk_timer_manager_handle_t *p_timer_mgr;
+	tsk_timer_id_t id_timer_cpu;
+#endif /* DDRAW_CPU_MONITOR */
+
 	DDrawModule ddrawModule;
 	IDirectDrawSurface* p_surf_primary;
 
@@ -87,6 +100,7 @@ tdav_producer_screencast_ddraw_t;
 
 static tmedia_chroma_t _tdav_producer_screencast_get_chroma(const DDPIXELFORMAT* pixelFormat);
 static void* TSK_STDCALL _tdav_producer_screencast_record_thread(void *arg);
+static int _tdav_producer_screencast_timer_cb(const void* arg, tsk_timer_id_t timer_id);
 static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_self);
 static HRESULT _tdav_producer_screencast_create_module(LPDDrawModule lpModule);
 
@@ -255,6 +269,12 @@ static int _tdav_producer_screencast_ddraw_prepare(tmedia_producer_t* p_self, co
 	p_ddraw->bi_preview.bmiHeader.biSizeImage = (p_ddraw->bi_preview.bmiHeader.biWidth * p_ddraw->bi_preview.bmiHeader.biHeight * (p_ddraw->bi_preview.bmiHeader.biBitCount >> 3));
 #endif /* DDRAW_PREVIEW */
 
+#if DDRAW_CPU_MONITOR
+	if (!p_ddraw->p_timer_mgr) {
+		p_ddraw->p_timer_mgr = tsk_timer_manager_create();
+	}
+#endif /* DDRAW_CPU_MONITOR */
+
 bail:
 	tsk_safeobj_unlock(p_ddraw);
 	return SUCCEEDED(hr) ? 0 : -1;
@@ -270,7 +290,7 @@ static int _tdav_producer_screencast_ddraw_start(tmedia_producer_t* p_self)
 		return -1;
 	}
 
-	tsk_safeobj_lock(p_ddraw);
+	ret = tsk_safeobj_lock(p_ddraw);
 
 	p_ddraw->b_paused = tsk_false;
 
@@ -281,18 +301,24 @@ static int _tdav_producer_screencast_ddraw_start(tmedia_producer_t* p_self)
 
 	p_ddraw->b_started = tsk_true;
 
-	tsk_thread_create(&p_ddraw->tid[0], _tdav_producer_screencast_record_thread, p_ddraw);
+	ret = tsk_thread_create(&p_ddraw->tid[0], _tdav_producer_screencast_record_thread, p_ddraw);
 #if DDRAW_HIGH_PRIO_MEMCPY
 	if (p_ddraw->tid[0]) {
 		tsk_thread_set_priority(p_ddraw->tid[0], TSK_THREAD_PRIORITY_TIME_CRITICAL);
 	}
 #endif
+#if DDRAW_CPU_MONITOR
+	ret = tsk_timer_manager_start(p_ddraw->p_timer_mgr);
+	if (ret == 0) {
+		p_ddraw->id_timer_cpu = tsk_timer_manager_schedule(p_ddraw->p_timer_mgr, DDRAW_CPU_MONITOR_TIME_OUT, _tdav_producer_screencast_timer_cb, p_ddraw);
+	}
+#endif /* DDRAW_CPU_MONITOR */
 
 bail:
 	if (ret) {
 		p_ddraw->b_started = tsk_false;
 	}
-	tsk_safeobj_unlock(p_ddraw);
+	ret = tsk_safeobj_unlock(p_ddraw);
 
 	return ret;
 }
@@ -336,6 +362,12 @@ static int _tdav_producer_screencast_ddraw_stop(tmedia_producer_t* p_self)
 	p_ddraw->b_started = tsk_false;
 	p_ddraw->b_paused = tsk_false;
 
+#if DDRAW_CPU_MONITOR
+	if (p_ddraw->p_timer_mgr) {
+		tsk_timer_manager_stop(p_ddraw->p_timer_mgr);
+	}
+#endif /* DDRAW_CPU_MONITOR */
+
 	// stop thread
 	if (p_ddraw->tid[0]) {
 		tsk_thread_join(&(p_ddraw->tid[0]));
@@ -355,6 +387,8 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 	DWORD nSizeWithoutPadding, nRowLengthInBytes, lockFlags;
 	tmedia_producer_t* p_base = TMEDIA_PRODUCER(p_self);
 	LPVOID lpBuffToSend;
+	//--uint64_t timeStart, timeEnd;
+	tsk_bool_t b_using_locked_buffer;
 
 	if (!p_self) {
 		DDRAW_CHECK_HR(hr = E_INVALIDARG);
@@ -422,15 +456,24 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 	if (ddsd.lPitch == nRowLengthInBytes) {
 		// no padding
 		lpBuffToSend = ddsd.lpSurface;
+		b_using_locked_buffer = tsk_true;
 	}
 	else {
-		// with padding
+		// with padding or copy requested
 		UINT8 *pSurfBuff = (UINT8 *)ddsd.lpSurface, *pNegBuff = (UINT8 *)p_self->p_buff_neg;
 		DWORD y;
-		for (y = 0; y < ddsd.dwHeight; ++y) {
-			CopyMemory(pNegBuff, pSurfBuff, nRowLengthInBytes);
-			pSurfBuff += ddsd.lPitch;
-			pNegBuff += nRowLengthInBytes;
+		b_using_locked_buffer = tsk_false;
+		if (ddsd.lPitch == nRowLengthInBytes) {
+			// copy with padding padding
+			for (y = 0; y < ddsd.dwHeight; ++y) {
+				CopyMemory(pNegBuff, pSurfBuff, nRowLengthInBytes);
+				pSurfBuff += ddsd.lPitch;
+				pNegBuff += nRowLengthInBytes;
+			}
+		}
+		else {
+			// copy without padding padding
+			CopyMemory(p_self->p_buff_neg, pSurfBuff, nSizeWithoutPadding);
 		}
 		lpBuffToSend = p_self->p_buff_neg;
 	}
@@ -457,10 +500,19 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 		}
 	}
 #endif /* DDRAW_PREVIEW */
-	// Encode, encrypt and send data
+	if (!b_using_locked_buffer) {
+		// Unlock the buffer before the encode callback
+		DDRAW_CHECK_HR(hr = p_self->p_surf_primary->Unlock(NULL));
+	}
+	//--timeStart = tsk_time_now();
 	p_base->enc_cb.callback(p_base->enc_cb.callback_data, lpBuffToSend, nSizeWithoutPadding);
-
-	DDRAW_CHECK_HR(hr = p_self->p_surf_primary->Unlock(NULL));
+	//--timeEnd = tsk_time_now();
+	//--DDRAW_DEBUG_INFO("Encode callback: start=%llu, end=%llu, duration=%llu", timeStart, timeEnd, (timeEnd - timeStart));
+	
+	if (b_using_locked_buffer) {
+		// Unlock the buffer after the encode callback
+		DDRAW_CHECK_HR(hr = p_self->p_surf_primary->Unlock(NULL));
+	}
 
 bail:
 	if (hr == DDERR_SURFACELOST) {
@@ -569,6 +621,58 @@ static void* TSK_STDCALL _tdav_producer_screencast_record_thread(void *arg)
 	return tsk_null;
 }
 
+#if DDRAW_CPU_MONITOR
+static unsigned long long FileTimeToInt64(const FILETIME & ft) {
+	return (((unsigned long long)(ft.dwHighDateTime))<<32) | ((unsigned long long)ft.dwLowDateTime);
+}
+
+static int _tdav_producer_screencast_timer_cb(const void* arg, tsk_timer_id_t timer_id)
+{
+    tdav_producer_screencast_ddraw_t* p_ddraw = (tdav_producer_screencast_ddraw_t*)arg;
+    int ret = 0;
+
+	if (!p_ddraw->b_started) {
+		return 0;
+	}
+
+    if (p_ddraw->id_timer_cpu == timer_id) {
+		static unsigned long long _prevTicks = 0;
+		static unsigned long long _prevIdleTime = 0;
+		unsigned long long ticks, idleTime, PercentIdle, PercentUsage;
+		BOOL bSaveValues = FALSE;
+#if TDAV_UNDER_WINDOWS_CE
+		bSaveValues = TRUE;
+		ticks = GetTickCount();
+		idleTime = GetIdleTime();
+#else
+		{
+			FILETIME _idleTime, _kernelTime, _userTime;
+			if (GetSystemTimes(&_idleTime, &_kernelTime, &_userTime)) {
+				idleTime = FileTimeToInt64(_idleTime);
+				ticks = FileTimeToInt64(_kernelTime) + FileTimeToInt64(_userTime);
+				bSaveValues = TRUE;
+			}
+		}
+#endif
+		if (_prevTicks > 0) {
+			PercentIdle = ((100 * (idleTime - _prevIdleTime)) / (ticks - _prevTicks));
+			PercentUsage = 100 - PercentIdle;
+			TSK_DEBUG_INFO("\n\n****\n\nCPU Usage = %lld\n\n***", PercentUsage);
+		}
+		if (bSaveValues) {
+			_prevTicks = ticks;
+			_prevIdleTime = idleTime;
+		}
+
+		if (p_ddraw->b_started) {
+			p_ddraw->id_timer_cpu = tsk_timer_manager_schedule(p_ddraw->p_timer_mgr, DDRAW_CPU_MONITOR_TIME_OUT, _tdav_producer_screencast_timer_cb, p_ddraw);
+		}
+    }
+    return 0;
+}
+
+#endif /* DDRAW_CPU_MONITOR */
+
 //
 //	ddraw screencast producer object definition
 //
@@ -602,6 +706,11 @@ static tsk_object_t* _tdav_producer_screencast_ddraw_dtor(tsk_object_t * self)
 		/* deinit base */
 		tmedia_producer_deinit(TMEDIA_PRODUCER(p_ddraw));
 		/* deinit self */
+#if DDRAW_CPU_MONITOR
+		if (p_ddraw->p_timer_mgr) {
+			tsk_timer_manager_destroy(&p_ddraw->p_timer_mgr);
+		}
+#endif /* DDRAW_CPU_MONITOR */
 		if (p_ddraw->p_buff_neg) {
 			VirtualFree(p_ddraw->p_buff_neg, 0, MEM_RELEASE);
 			p_ddraw->p_buff_neg = NULL;
