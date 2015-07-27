@@ -124,3 +124,50 @@ void* tsk_calloc(tsk_size_t num, tsk_size_t size)
 
 	return ret;
 }
+
+void* tsk_malloc_aligned(tsk_size_t size, tsk_size_t alignment)
+{
+#if TSK_UNDER_WINDOWS && !TSK_UNDER_WINDOWS_CE && !TSK_UNDER_WINDOWS_RT
+	return _aligned_malloc(size, alignment);
+#else
+	void* ret = malloc(size + alignment);
+    if (ret) {
+        long pad = ((~(long)ret) % alignment) + 1;
+        ret = ((uint8_t*)ret) + pad; // pad
+        ((uint8_t*)ret)[-1] = (uint8_t)pad; // store the pad for later use
+    }
+	return ret;
+#endif
+}
+
+void* tsk_realloc_aligned(void * ptr, tsk_size_t size, tsk_size_t alignment)
+{
+#if TSK_UNDER_WINDOWS && !TSK_UNDER_WINDOWS_CE && !TSK_UNDER_WINDOWS_RT
+	return _aligned_realloc(ptr, size, alignment);
+#else
+	tsk_free_aligned(ptr);
+	return tsk_malloc_aligned(size, alignment);
+#endif
+}
+
+void tsk_free_aligned(void** ptr)
+{
+	if (ptr && *ptr) {
+		void* ptr_ = *ptr;
+#if TSK_UNDER_WINDOWS && !TSK_UNDER_WINDOWS_CE && !TSK_UNDER_WINDOWS_RT
+		_aligned_free(ptr_);
+#else
+		free((((uint8_t*)ptr_) - ((uint8_t*)ptr_)[-1]));
+#endif
+	*ptr = tsk_null;
+	}
+}
+
+void* tsk_calloc_aligned(tsk_size_t num, tsk_size_t size, tsk_size_t alignment)
+{
+	void* ptr = tsk_malloc_aligned((size * num), alignment);
+	if (ptr) {
+		memset(ptr, 0, (size * num));
+	}
+	return ptr;
+}

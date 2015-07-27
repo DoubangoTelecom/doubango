@@ -31,6 +31,25 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
+#if defined(_MSC_VER)
+#	define DDRAW_HAVE_RGB32_TO_I420					1
+#	if !TDAV_UNDER_WINDOWS_CE
+#		define DDRAW_HAVE_RGB32_TO_I420_INTRIN		1
+#		include <intrin.h>
+#	endif /* TDAV_UNDER_WINDOWS_CE */
+#	if !defined(_M_X64) /*|| _MSC_VER <= 1500*/  // https://msdn.microsoft.com/en-us/library/4ks26t93.aspx: Inline assembly is not supported on the ARM and x64 processors (1500 = VS2008)
+#		define DDRAW_HAVE_RGB32_TO_I420_ASM			1
+#	endif
+#endif /* _MSC_VER */
+
+#if !defined(DDRAW_MEM_ALIGNMENT)
+#	define DDRAW_MEM_ALIGNMENT	16 // SSE = 16, AVX = 32. Should be 16.
+#endif /* DDRAW_MEM_ALIGNMENT */
+
+#if !defined(DDRAW_IS_ALIGNED)
+#	define DDRAW_IS_ALIGNED(p, a) (!((uintptr_t)(p) & ((a) - 1)))
+#endif /* DDRAW_IS_ALIGNED */
+
 #if !defined(DDRAW_HIGH_PRIO_MEMCPY)
 #	define DDRAW_HIGH_PRIO_MEMCPY	0
 #endif /* DDRAW_HIGH_PRIO_MEMCPY */
@@ -38,6 +57,10 @@
 #if !defined(DDRAW_CPU_MONITOR)
 #	define DDRAW_CPU_MONITOR	0
 #endif /* DDRAW_CPU_MONITOR */
+
+#if !defined(DDRAW_MEM_SURFACE_DIRECT_ACCESS)
+#	define DDRAW_MEM_SURFACE_DIRECT_ACCESS	0 // direct access to "ddsd.lpSurface" is very slow even if the memory is correctly aligned: to be investigated
+#endif /* DDRAW_MEM_SURFACE_DIRECT_ACCESS */
 
 #if DDRAW_CPU_MONITOR && !defined(DDRAW_CPU_MONITOR_TIME_OUT)
 #	define DDRAW_CPU_MONITOR_TIME_OUT	1000
@@ -86,9 +109,14 @@ typedef struct tdav_producer_screencast_ddraw_s
 
 	tsk_thread_handle_t* tid[1];
 
-	void* p_buff_neg; // must use VirtualAlloc()
-	tsk_size_t n_buff_neg;
+	void* p_buff_rgb_aligned;
+	tsk_size_t n_buff_rgb;
 	tsk_size_t n_buff_rgb_bitscount;
+
+	void* p_buff_yuv_aligned;
+	tsk_size_t n_buff_yuv;
+
+	BOOL b_have_rgb32_conv; // support for RGB32 -> I420 and primary screen format is RGB32
 
 	tsk_bool_t b_started;
 	tsk_bool_t b_paused;
@@ -98,11 +126,42 @@ typedef struct tdav_producer_screencast_ddraw_s
 }
 tdav_producer_screencast_ddraw_t;
 
+static BOOL _tdav_producer_screencast_have_ssse3();
 static tmedia_chroma_t _tdav_producer_screencast_get_chroma(const DDPIXELFORMAT* pixelFormat);
 static void* TSK_STDCALL _tdav_producer_screencast_record_thread(void *arg);
 static int _tdav_producer_screencast_timer_cb(const void* arg, tsk_timer_id_t timer_id);
 static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_self);
 static HRESULT _tdav_producer_screencast_create_module(LPDDrawModule lpModule);
+
+#if DDRAW_HAVE_RGB32_TO_I420_INTRIN || DDRAW_HAVE_RGB32_TO_I420_ASM
+static __declspec(align(DDRAW_MEM_ALIGNMENT)) const int8_t kYCoeffs[16] = {
+		13, 65, 33, 0,
+		13, 65, 33, 0,
+		13, 65, 33, 0,
+		13, 65, 33, 0,
+	};
+	static __declspec(align(DDRAW_MEM_ALIGNMENT)) const int8_t kUCoeffs[16] = {
+		112, -74, -38, 0,
+		112, -74, -38, 0,
+		112, -74, -38, 0,
+		112, -74, -38, 0,
+	};
+	static __declspec(align(DDRAW_MEM_ALIGNMENT)) const int8_t kVCoeffs[16] = {
+		-18, -94, 112, 0,
+		-18, -94, 112, 0,
+		-18, -94, 112, 0,
+		-18, -94, 112, 0,
+	};
+	static __declspec(align(DDRAW_MEM_ALIGNMENT)) const  int32_t kRGBAShuffleDuplicate[4] = { 0x03020100, 0x0b0a0908, 0x03020100, 0x0b0a0908 }; // RGBA(X) || RGBA(X + 2) || RGBA(X) || RGBA(X + 2) = 2U || 2V
+	static __declspec(align(DDRAW_MEM_ALIGNMENT)) const uint16_t kY16[8] = {
+		16, 16, 16, 16,
+		16, 16, 16, 16
+	};
+	static __declspec(align(DDRAW_MEM_ALIGNMENT)) const uint16_t kUV128[8] = {
+		128, 128, 128, 128,
+		128, 128, 128, 128
+	};
+#endif /* DDRAW_HAVE_RGB32_TO_I420_INTRIN || DDRAW_HAVE_RGB32_TO_I420_ASM */
 
 // public function used to check that we can use DDRAW plugin before loading it
 tsk_bool_t tdav_producer_screencast_ddraw_plugin_is_supported()
@@ -149,6 +208,382 @@ bail:
 	return __supported;
 }
 
+static BOOL _tdav_producer_screencast_have_ssse3()
+{
+	static BOOL __checked = FALSE; // static guard to avoid checking more than once
+	static BOOL __supported = FALSE;
+
+	if (__checked) {
+		return __supported;
+	}
+	__checked = TRUE;
+
+#ifndef BIT
+#	define BIT(n) (1<<n)
+#endif /*BIT*/
+#if DDRAW_HAVE_RGB32_TO_I420_ASM
+	#define cpuid(func, func2, a, b, c, d)\
+	__asm mov eax, func\
+	__asm mov ecx, func2\
+	__asm cpuid\
+	__asm mov a, eax\
+	__asm mov b, ebx\
+	__asm mov c, ecx\
+	__asm mov d, edx
+
+#define HAS_MMX     0x01
+#define HAS_SSE     0x02
+#define HAS_SSE2    0x04
+#define HAS_SSE3    0x08
+#define HAS_SSSE3   0x10
+#define HAS_SSE4_1  0x20
+#define HAS_AVX     0x40
+#define HAS_AVX2    0x80
+
+	unsigned int reg_eax, reg_ebx, reg_ecx, reg_edx;
+	cpuid(0, 0, reg_eax, reg_ebx, reg_ecx, reg_edx);
+	if (reg_eax < 1) {
+		DDRAW_DEBUG_ERROR("reg_eax < 1");
+		return FALSE;
+	}
+	cpuid(1, 0, reg_eax, reg_ebx, reg_ecx, reg_edx);
+	__supported = (reg_ecx & BIT(9)) ? TRUE : FALSE;
+#elif DDRAW_HAVE_RGB32_TO_I420_INTRIN
+	int cpu_info[4] = { 0 }, num_ids;
+	__cpuid(cpu_info, 0);
+	num_ids = cpu_info[0];
+	__cpuid(cpu_info, 0x80000000);
+	if (num_ids > 0) {
+		__cpuid(cpu_info, 0x00000001);
+		__supported = (cpu_info[2] & BIT(9)) ? TRUE : FALSE;
+	}
+#endif /* DDRAW_HAVE_RGB32_TO_I420_ASM */
+
+	DDRAW_DEBUG_INFO("SSSE3 supported = %s", __supported ? "YES" : "NO");
+
+	return __supported;
+}
+
+#if DDRAW_HAVE_RGB32_TO_I420_INTRIN
+
+#define DDRAW_COPY16_INTRIN(dst, src) \
+	_mm_store_si128((__m128i*)dst, _mm_load_si128((__m128i*)src))
+#define DDRAW_COPY64_INTRIN(dst, src) \
+	_mm_store_si128((__m128i*)dst, _mm_load_si128((__m128i*)src)); \
+	_mm_store_si128((__m128i*)&dst[16], _mm_load_si128((__m128i*)&src[16])); \
+	_mm_store_si128((__m128i*)&dst[32], _mm_load_si128((__m128i*)&src[32])); \
+	_mm_store_si128((__m128i*)&dst[48], _mm_load_si128((__m128i*)&src[48]))
+#define DDRAW_COPY128_INTRIN(dst, src) \
+	DDRAW_COPY64_INTRIN(dst, src); \
+	_mm_store_si128((__m128i*)&dst[64], _mm_load_si128((__m128i*)&src[64])); \
+	_mm_store_si128((__m128i*)&dst[80], _mm_load_si128((__m128i*)&src[80])); \
+	_mm_store_si128((__m128i*)&dst[96], _mm_load_si128((__m128i*)&src[96])); \
+	_mm_store_si128((__m128i*)&dst[112], _mm_load_si128((__m128i*)&src[112]))
+
+static void _tdav_producer_screencast_rgb32_to_yuv420_intrin_ssse3(uint8_t *yuvPtr, const uint8_t *rgbPtr, int width, int height)
+{
+	// rgbPtr contains (samplesCount * 16) bytes
+	// yPtr contains samplesCount bytes
+	const int samplesCount = (width * height); // "width" and "height" are in samples
+	const uint8_t *rgbPtr_;
+	uint8_t* yPtr_ = yuvPtr, *uPtr_ = (yPtr_ + samplesCount), *vPtr_ = uPtr_ + (samplesCount >> 2);
+	__m128i mmRgb0, mmRgb1, mmRgb2, mmRgb3, mmY0, mmY1, mmY;
+	__m128i mmRgbU0, mmRgbU1, mmRgbV0, mmRgbV1;
+
+	// Convert 16 RGBA samples to 16 Y samples
+	rgbPtr_ = rgbPtr;
+	/* const */__m128i yCoeffs = _mm_load_si128((__m128i*)kYCoeffs);
+	/* const */__m128i y16 = _mm_load_si128((__m128i*)kY16);
+	for(int i = 0; i < samplesCount; i += 16)
+	{
+		// load 16 RGBA samples
+		_mm_store_si128(&mmRgb0, _mm_load_si128((__m128i*)rgbPtr_)); // 4 RGBA samples
+		_mm_store_si128(&mmRgb1, _mm_load_si128((__m128i*)&rgbPtr_[16])); // 4 RGBA samples
+		_mm_store_si128(&mmRgb2, _mm_load_si128((__m128i*)&rgbPtr_[32])); // 4 RGBA samples
+		_mm_store_si128(&mmRgb3, _mm_load_si128((__m128i*)&rgbPtr_[48])); // 4 RGBA samples
+		
+		_mm_store_si128(&mmRgb0, _mm_maddubs_epi16(mmRgb0/*unsigned*/, yCoeffs/*signed*/)); // mmRgb0 = ((yCoeffs[j] * mmRgb0[j]) +  (yCoeffs[j + 1] * mmRgb0[j + 1]))
+		_mm_store_si128(&mmRgb1, _mm_maddubs_epi16(mmRgb1/*unsigned*/, yCoeffs/*signed*/));
+		_mm_store_si128(&mmRgb2, _mm_maddubs_epi16(mmRgb2/*unsigned*/, yCoeffs/*signed*/));
+		_mm_store_si128(&mmRgb3, _mm_maddubs_epi16(mmRgb3/*unsigned*/, yCoeffs/*signed*/));
+
+		_mm_store_si128(&mmY0, _mm_hadd_epi16(mmRgb0, mmRgb1)); // horizontal add
+		_mm_store_si128(&mmY1, _mm_hadd_epi16(mmRgb2, mmRgb3));
+		
+		_mm_store_si128(&mmY0, _mm_srai_epi16(mmY0, 7)); // >> 7
+		_mm_store_si128(&mmY1, _mm_srai_epi16(mmY1, 7));
+
+		_mm_store_si128(&mmY0, _mm_add_epi16(mmY0, y16)); // + 16
+		_mm_store_si128(&mmY1, _mm_add_epi16(mmY1, y16));
+
+		_mm_store_si128(&mmY, _mm_packus_epi16(mmY0, mmY1)); // Saturate(I16 -> U8)
+
+		_mm_store_si128((__m128i*)yPtr_, mmY);
+
+		rgbPtr_ += 64; // 16samples * 4bytes
+		yPtr_ += 16; // 16samples * 1byte
+	}
+
+	// U+V planes
+	/* const */__m128i uCoeffs = _mm_load_si128((__m128i*)kUCoeffs);
+	/* const */__m128i vCoeffs = _mm_load_si128((__m128i*)kVCoeffs);
+	/* const */__m128i rgbaShuffleDuplicate = _mm_load_si128((__m128i*)kRGBAShuffleDuplicate);
+	/* const */__m128i uv128 = _mm_load_si128((__m128i*)kUV128);
+	rgbPtr_ = rgbPtr;
+	for(int i = 0; i < samplesCount; )
+	{
+		// load 16 RGBA samples
+		_mm_store_si128(&mmRgb0, _mm_load_si128((__m128i*)rgbPtr_)); // 4 RGBA samples
+		_mm_store_si128(&mmRgb1, _mm_load_si128((__m128i*)&rgbPtr_[16])); // 4 RGBA samples
+		_mm_store_si128(&mmRgb2, _mm_load_si128((__m128i*)&rgbPtr_[32])); // 4 RGBA samples
+		_mm_store_si128(&mmRgb3, _mm_load_si128((__m128i*)&rgbPtr_[48])); // 4 RGBA samples
+
+		_mm_store_si128(&mmRgb0, _mm_shuffle_epi8(mmRgb0, rgbaShuffleDuplicate));
+		_mm_store_si128(&mmRgb1, _mm_shuffle_epi8(mmRgb1, rgbaShuffleDuplicate));
+		_mm_store_si128(&mmRgb2, _mm_shuffle_epi8(mmRgb2, rgbaShuffleDuplicate));
+		_mm_store_si128(&mmRgb3, _mm_shuffle_epi8(mmRgb3, rgbaShuffleDuplicate));
+
+		_mm_store_si128(&mmRgbU0, _mm_unpacklo_epi64(mmRgb0, mmRgb1));
+		_mm_store_si128(&mmRgbV0, _mm_unpackhi_epi64(mmRgb0, mmRgb1)); // same as mmRgbU0: Use _mm_store_si128??
+		_mm_store_si128(&mmRgbU1, _mm_unpacklo_epi64(mmRgb2, mmRgb3));
+		_mm_store_si128(&mmRgbV1, _mm_unpackhi_epi64(mmRgb2, mmRgb3)); // same as mmRgbU0: Use _mm_store_si128??
+
+		_mm_store_si128(&mmRgbU0, _mm_maddubs_epi16(mmRgbU0/*unsigned*/, uCoeffs/*signed*/));
+		_mm_store_si128(&mmRgbV0, _mm_maddubs_epi16(mmRgbV0/*unsigned*/, vCoeffs/*signed*/));
+		_mm_store_si128(&mmRgbU1, _mm_maddubs_epi16(mmRgbU1/*unsigned*/, uCoeffs/*signed*/));
+		_mm_store_si128(&mmRgbV1, _mm_maddubs_epi16(mmRgbV1/*unsigned*/, vCoeffs/*signed*/));
+
+		_mm_store_si128(&mmY0, _mm_hadd_epi16(mmRgbU0, mmRgbU1)); // horizontal add
+		_mm_store_si128(&mmY1, _mm_hadd_epi16(mmRgbV0, mmRgbV1));
+
+		_mm_store_si128(&mmY0, _mm_srai_epi16(mmY0, 8)); // >> 8
+		_mm_store_si128(&mmY1, _mm_srai_epi16(mmY1, 8));
+
+		_mm_store_si128(&mmY0, _mm_add_epi16(mmY0, uv128)); // + 128
+		_mm_store_si128(&mmY1, _mm_add_epi16(mmY1, uv128));
+
+		// Y contains 8 samples for U then 8 samples for V
+		_mm_store_si128(&mmY, _mm_packus_epi16(mmY0, mmY1)); // Saturate(I16 -> U8)
+		_mm_storel_pi((__m64*)uPtr_, _mm_load_ps((float*)&mmY));
+		_mm_storeh_pi((__m64*)vPtr_, _mm_load_ps((float*)&mmY));
+		
+		uPtr_ += 8; // 8samples * 1byte
+		vPtr_ += 8; // 8samples * 1byte
+		
+		// move to next 16 samples
+		i += 16;
+		rgbPtr_ += 64; // 16samples * 4bytes
+		
+		if (/*i % width == 0*/ !(i & (width - 1)))
+		{
+			// skip next line
+			i += width;
+			rgbPtr_ += (width * 4);
+		}
+	}
+}
+#endif /* DDRAW_HAVE_RGB32_TO_I420_INTRIN */
+
+#if DDRAW_HAVE_RGB32_TO_I420_ASM
+
+// __asm keyword must be duplicated in macro: https://msdn.microsoft.com/en-us/library/aa293825(v=vs.60).aspx
+#define DDRAW_COPY16_ASM(dst, src) \
+	__asm { \
+	__asm mov eax, dword ptr [src] \
+	__asm mov ecx, dword ptr [dst] \
+	\
+	__asm movdqa xmm0, xmmword ptr [eax] \
+	__asm movdqa xmmword ptr [ecx], xmm0 \
+	}
+#define DDRAW_COPY64_ASM(dst, src) \
+	__asm { \
+	__asm mov eax, dword ptr [src] \
+	__asm mov ecx, dword ptr [dst] \
+	\
+	__asm movdqa xmm0, xmmword ptr [eax] \
+	__asm add eax, dword ptr 16 \
+	__asm movdqa xmm1, xmmword ptr [eax] \
+	__asm add eax, dword ptr 16 \
+	__asm movdqa xmm2, xmmword ptr [eax] \
+	__asm add eax, dword ptr 16 \
+	__asm movdqa xmm3, xmmword ptr [eax] \
+	 \
+	__asm movdqa xmmword ptr [ecx], xmm0 \
+	__asm add ecx, dword ptr 16 \
+	__asm movdqa xmmword ptr [ecx], xmm1 \
+	__asm add ecx, dword ptr 16 \
+	__asm movdqa xmmword ptr [ecx], xmm2 \
+	__asm add ecx, dword ptr 16 \
+	__asm movdqa xmmword ptr [ecx], xmm3 \
+	}
+#define DDRAW_COPY128_ASM(dst, src) \
+	__asm { \
+	__asm mov eax, dword ptr [src] \
+	__asm mov ecx, dword ptr [dst] \
+	\
+	__asm movdqa xmm0, xmmword ptr [eax] \
+	__asm add eax, dword ptr 16 \
+	__asm movdqa xmm1, xmmword ptr [eax] \
+	__asm add eax, dword ptr 16 \
+	__asm movdqa xmm2, xmmword ptr [eax] \
+	__asm add eax, dword ptr 16 \
+	__asm movdqa xmm3, xmmword ptr [eax] \
+	__asm add eax, dword ptr 16 \
+	__asm movdqa xmm4, xmmword ptr [eax] \
+	__asm add eax, dword ptr 16 \
+	__asm movdqa xmm5, xmmword ptr [eax] \
+	__asm add eax, dword ptr 16 \
+	__asm movdqa xmm6, xmmword ptr [eax] \
+	__asm add eax, dword ptr 16 \
+	__asm movdqa xmm7, xmmword ptr [eax] \
+	 \
+	__asm movdqa xmmword ptr [ecx], xmm0 \
+	__asm add ecx, dword ptr 16 \
+	__asm movdqa xmmword ptr [ecx], xmm1 \
+	__asm add ecx, dword ptr 16 \
+	__asm movdqa xmmword ptr [ecx], xmm2 \
+	__asm add ecx, dword ptr 16 \
+	__asm movdqa xmmword ptr [ecx], xmm3 \
+	__asm add ecx, dword ptr 16 \
+	__asm movdqa xmmword ptr [ecx], xmm4 \
+	__asm add ecx, dword ptr 16 \
+	__asm movdqa xmmword ptr [ecx], xmm5 \
+	__asm add ecx, dword ptr 16 \
+	__asm movdqa xmmword ptr [ecx], xmm6 \
+	__asm add ecx, dword ptr 16 \
+	__asm movdqa xmmword ptr [ecx], xmm7 \
+	}
+
+__declspec(naked) __declspec(align(DDRAW_MEM_ALIGNMENT))
+static void _tdav_producer_screencast_rgb32_to_yuv420_asm_ssse3(uint8_t *yuvPtr, const uint8_t *rgbPtr, int width, int height)
+{
+	__asm {
+	push esi
+    push edi
+	push ebx
+	/*** Y Samples ***/
+	mov edx, [esp + 12 + 4]   // yuvPtr
+    mov eax, [esp + 12 + 8]   // rgbPtr
+	mov ecx, [esp + 12 + 12] // width
+	imul ecx, [esp + 12 + 16] // (width * height) = samplesCount
+
+	movdqa xmm7, kYCoeffs // yCoeffs
+	movdqa xmm6, kY16 // y16
+	/* loopY start */
+loopY:
+	// load 16 RGBA samples
+	movdqa xmm0, [eax] // mmRgb0
+	movdqa xmm1, [eax + 16] // mmRgb1
+	movdqa xmm2, [eax + 32] // mmRgb2
+	movdqa xmm3, [eax + 48] // mmRgb3
+	lea eax, [eax + 64] // rgbPtr_ += 64
+	// (yCoeffs[0] * mmRgbX[0]) + (yCoeffs[1] * mmRgbX[1])
+	pmaddubsw xmm0, xmm7
+	pmaddubsw xmm1, xmm7
+	pmaddubsw xmm2, xmm7
+	pmaddubsw xmm3, xmm7
+	// horizontal add
+	phaddw xmm0, xmm1
+	phaddw xmm2, xmm3
+	// >> 7
+	psraw xmm0, 7
+	psraw xmm2, 7
+	// + 16
+	paddw xmm0, xmm6
+	paddw xmm2, xmm6
+	// Saturate(I16 -> U8) - Packs
+	packuswb xmm0, xmm2
+	// Copy to yuvPtr
+	movdqa [edx], xmm0
+	lea edx, [edx + 16] // yPtr_ += 16
+	sub ecx, 16 // samplesCount -= 16
+	jnz loopY // goto loop if (samplesCount != 0)
+
+	//==================================//
+	//=========== UV Samples ===========//
+	//==================================//
+	mov esi, [esp + 12 + 4]   // yuvPtr
+    mov eax, [esp + 12 + 8]   // rgbPtr
+	mov ecx, [esp + 12 + 12] // width
+	imul ecx, [esp + 12 + 16] // (width * height) = samplesCount
+	mov edx, ecx
+	shr edx, 2 // edx = samplesCount / 4
+	add esi,  ecx // [[esi = uPtr_]]
+	mov edi, esi // edi = uPtr_
+	add edi, edx // [[edi = uPtr_ + edx = uPtr_ + (samplesCount / 4) = vPtr_]]
+	xor edx, edx // edx = 0 = i
+	mov ebx, [esp + 12 + 12] // ebx = width
+	sub ebx, 1 // ebx = (width - 1)
+
+	movdqa xmm7, kUCoeffs // uCoeffs
+	movdqa xmm6, kVCoeffs // vCoeffs
+	movdqa xmm5, kRGBAShuffleDuplicate // rgbaShuffleDuplicate
+	movdqa xmm4, kUV128 // uv128
+
+	/* loopUV start */
+loopUV:
+	// load 16 RGBA samples
+	movdqa xmm0, [eax] // mmRgb0
+	movdqa xmm1, [eax + 16] // mmRgb1
+	movdqa xmm2, [eax + 32] // mmRgb2
+	movdqa xmm3, [eax + 48] // mmRgb3
+	lea eax, [eax + 64] // rgbPtr_ += 64
+
+	pshufb xmm0, xmm5
+	pshufb xmm1, xmm5
+	pshufb xmm2, xmm5
+	pshufb xmm3, xmm5
+
+	punpcklqdq xmm0, xmm1 // mmRgbU0
+	punpcklqdq xmm2, xmm3 // mmRgbU1
+	movdqa xmm1, xmm0 // mmRgbV0
+	movdqa xmm3, xmm2 // mmRgbV1
+
+	pmaddubsw xmm0, xmm7 // mmRgbU0
+	pmaddubsw xmm1, xmm6 // mmRgbV0
+	pmaddubsw xmm2, xmm7 // mmRgbU1
+	pmaddubsw xmm3, xmm6 // mmRgbV1
+
+	phaddw xmm0, xmm2 // mmY0
+	phaddw xmm1, xmm3 // mmY1
+
+	psraw xmm0, 8
+	psraw xmm1, 8
+
+	paddw xmm0, xmm4
+	paddw xmm1, xmm4
+
+	packuswb xmm0, xmm1
+	movlps [esi], xmm0
+	movhps [edi], xmm0
+
+	lea esi, [esi + 8]
+	lea edi, [edi + 8]
+
+	add edx, 16 // i += 16;
+	push edx // save edx
+	and edx, ebx // edx = (ebx & ebx) = (ebx & (width - 1)) = (ebx % width)
+	cmp edx, 0 // (ebx % width) == 0 ?
+	pop edx // restore edx
+	jne loopUV_NextLine
+	
+	// loopUV_EndOfLine: ((ebx % width) == 0)
+	add ebx, 1// change ebx value from width-1 to width
+	add edx, ebx // i += width
+	lea eax, [eax + 4 * ebx]// rgbPtr_ += (width * 4);
+	sub ebx, 1// change back ebx value to width - 1
+loopUV_NextLine:
+	cmp edx, ecx
+	jl loopUV
+
+	pop ebx
+	pop edi
+    pop esi
+    ret
+	}
+}
+#endif /* DDRAW_HAVE_RGB32_TO_I420_ASM */
+
 /* ============ Media Producer Interface ================= */
 static int _tdav_producer_screencast_ddraw_set(tmedia_producer_t *p_self, const tmedia_param_t* pc_param)
 {
@@ -183,7 +618,7 @@ static int _tdav_producer_screencast_ddraw_prepare(tmedia_producer_t* p_self, co
 	tdav_producer_screencast_ddraw_t* p_ddraw = (tdav_producer_screencast_ddraw_t*)p_self;
 	int ret = 0;
 	HRESULT hr = DD_OK;
-	tsk_size_t n_buff_neg_new;
+	tsk_size_t n_buff_rgb_new;
 #if 0
 	DDPIXELFORMAT DDPixelFormat;
 #endif
@@ -247,14 +682,38 @@ static int _tdav_producer_screencast_ddraw_prepare(tmedia_producer_t* p_self, co
 		DDRAW_CHECK_HR(hr = DDERR_INVALIDCAPS);
 	}
 #endif
-	n_buff_neg_new = (ddsd.dwWidth * ddsd.dwHeight * (ddsd.ddpfPixelFormat.dwRGBBitCount >> 3));
-	if (p_ddraw->n_buff_neg < n_buff_neg_new) {
-		if (p_ddraw->p_buff_neg) VirtualFree(p_ddraw->p_buff_neg, 0, MEM_RELEASE);
-		if (!(p_ddraw->p_buff_neg = VirtualAlloc(NULL, n_buff_neg_new, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE))) {
-			p_ddraw->n_buff_neg = 0;
+	// allocate RGB buffer
+	n_buff_rgb_new = (ddsd.dwWidth * ddsd.dwHeight * (ddsd.ddpfPixelFormat.dwRGBBitCount >> 3));
+	if (p_ddraw->n_buff_rgb < n_buff_rgb_new) {
+		p_ddraw->p_buff_rgb_aligned = tsk_realloc_aligned(p_ddraw->p_buff_rgb_aligned, n_buff_rgb_new, DDRAW_MEM_ALIGNMENT);
+		if (!p_ddraw->p_buff_rgb_aligned) {
+			p_ddraw->n_buff_rgb = 0;
 			DDRAW_CHECK_HR(hr = DDERR_OUTOFMEMORY);
 		}
-		p_ddraw->n_buff_neg = n_buff_neg_new;
+		p_ddraw->n_buff_rgb = n_buff_rgb_new;
+	}
+
+	// Check if we can use built-in chroma conversion
+#if DDRAW_HAVE_RGB32_TO_I420_INTRIN || DDRAW_HAVE_RGB32_TO_I420_ASM
+	p_ddraw->b_have_rgb32_conv = 
+		_tdav_producer_screencast_have_ssse3() // SSSE3 supported
+		&& DDRAW_IS_ALIGNED(TMEDIA_PRODUCER(p_ddraw)->video.width, DDRAW_MEM_ALIGNMENT) // width multiple of 16
+		/* && DDRAW_IS_ALIGNED(TMEDIA_PRODUCER(p_ddraw)->video.height, DDRAW_MEM_ALIGNMENT) // height multiple of 16 */
+		&& TMEDIA_PRODUCER(p_ddraw)->video.chroma == tmedia_chroma_rgb32; // Primary screen RGB32
+	if (p_ddraw->b_have_rgb32_conv) {
+		TMEDIA_PRODUCER(p_ddraw)->video.chroma = tmedia_chroma_yuv420p;
+	}
+#endif
+	DDRAW_DEBUG_INFO("RGB32 -> I420 conversion supported: %s", p_ddraw->b_have_rgb32_conv ? "YES" : "NO");
+
+	// allocate YUV buffer
+	if (p_ddraw->b_have_rgb32_conv) {
+		p_ddraw->n_buff_yuv = (TMEDIA_PRODUCER(p_ddraw)->video.width * TMEDIA_PRODUCER(p_ddraw)->video.height * 3) >> 1;
+		p_ddraw->p_buff_yuv_aligned = tsk_realloc_aligned(p_ddraw->p_buff_yuv_aligned, p_ddraw->n_buff_yuv, DDRAW_MEM_ALIGNMENT);
+		if (!p_ddraw->p_buff_yuv_aligned) {
+			p_ddraw->n_buff_yuv = 0;
+			DDRAW_CHECK_HR(hr = DDERR_OUTOFMEMORY);
+		}
 	}
 
 	// BitmapInfo for preview
@@ -387,8 +846,10 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 	DWORD nSizeWithoutPadding, nRowLengthInBytes, lockFlags;
 	tmedia_producer_t* p_base = TMEDIA_PRODUCER(p_self);
 	LPVOID lpBuffToSend;
+	BOOL bDirectMemSurfAccess = DDRAW_MEM_SURFACE_DIRECT_ACCESS;
 	//--uint64_t timeStart, timeEnd;
-	tsk_bool_t b_using_locked_buffer;
+
+	//--timeStart = tsk_time_now();
 
 	if (!p_self) {
 		DDRAW_CHECK_HR(hr = E_INVALIDARG);
@@ -418,7 +879,7 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 	DDRAW_CHECK_HR(hr = p_self->p_surf_primary->Lock(NULL, &ddsd, lockFlags, NULL));
 	// make sure surface size and number of bits per pixel haven't changed
 	if (TMEDIA_PRODUCER(p_self)->video.width != ddsd.dwWidth || TMEDIA_PRODUCER(p_self)->video.height != ddsd.dwHeight || p_self->n_buff_rgb_bitscount != ddsd.ddpfPixelFormat.dwRGBBitCount) {
-		tsk_size_t n_buff_neg_new;
+		tsk_size_t n_buff_rgb_new;
 		tmedia_chroma_t chroma_new;
 		DDRAW_DEBUG_WARN("surface has changed: width %d<>%d or height %d<>%d or rgb_bits_count %d<>%d", 
 			p_base->video.width, ddsd.dwWidth,
@@ -427,20 +888,43 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 		if ((chroma_new = _tdav_producer_screencast_get_chroma(&ddsd.ddpfPixelFormat)) == tmedia_chroma_none) {
 			DDRAW_CHECK_HR(hr = DDERR_INVALIDCAPS);
 		}
-		n_buff_neg_new = (ddsd.dwWidth * ddsd.dwHeight * (ddsd.ddpfPixelFormat.dwRGBBitCount >> 3));
-		if (p_self->n_buff_neg < n_buff_neg_new) {
-			if (p_self->p_buff_neg) VirtualFree(p_self->p_buff_neg, 0, MEM_RELEASE);
-			if (!(p_self->p_buff_neg = VirtualAlloc(NULL, n_buff_neg_new, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE))) {
-				p_self->n_buff_neg = 0;
+		// allocate RGB buffer
+		n_buff_rgb_new = (ddsd.dwWidth * ddsd.dwHeight * (ddsd.ddpfPixelFormat.dwRGBBitCount >> 3));
+		if (p_self->n_buff_rgb < n_buff_rgb_new) {
+			p_self->p_buff_rgb_aligned = tsk_realloc_aligned(p_self->p_buff_rgb_aligned, n_buff_rgb_new, DDRAW_MEM_ALIGNMENT);
+			if (!p_self->p_buff_rgb_aligned) {
+				p_self->n_buff_rgb = 0;
 				p_self->p_surf_primary->Unlock(NULL); // unlock before going to bail
 				DDRAW_CHECK_HR(hr = DDERR_OUTOFMEMORY);
 			}
-			p_self->n_buff_neg = n_buff_neg_new;
+			p_self->n_buff_rgb = n_buff_rgb_new;
 		}
 		p_base->video.width = ddsd.dwWidth;
 		p_base->video.height = ddsd.dwHeight;
 		p_base->video.chroma = chroma_new;
 		p_self->n_buff_rgb_bitscount = ddsd.ddpfPixelFormat.dwRGBBitCount;
+		// Check if we can use built-in chroma conversion
+#if DDRAW_HAVE_RGB32_TO_I420_INTRIN || DDRAW_HAVE_RGB32_TO_I420_ASM
+		p_self->b_have_rgb32_conv = 
+			_tdav_producer_screencast_have_ssse3() // SSSE3 supported
+			&& DDRAW_IS_ALIGNED(p_base->video.width, DDRAW_MEM_ALIGNMENT) // width multiple of 16
+			/* && DDRAW_IS_ALIGNED(p_base->video.height, DDRAW_MEM_ALIGNMENT) // height multiple of 16 */
+			&& p_base->video.chroma == tmedia_chroma_rgb32; // Primary screen RGB32
+		if (p_self->b_have_rgb32_conv) {
+			p_base->video.chroma = tmedia_chroma_yuv420p;
+		}
+#endif
+	DDRAW_DEBUG_INFO("RGB32 -> I420 conversion supported: %s", p_self->b_have_rgb32_conv ? "YES" : "NO");
+	// allocate YUV buffer
+	if (p_self->b_have_rgb32_conv) {
+		p_self->n_buff_yuv = (p_base->video.width * p_base->video.height * 3) >> 1;
+		p_self->p_buff_yuv_aligned = tsk_realloc_aligned(p_self->p_buff_yuv_aligned, p_self->n_buff_yuv, DDRAW_MEM_ALIGNMENT);
+		if (!p_self->p_buff_yuv_aligned) {
+			p_self->n_buff_yuv = 0;
+			p_self->p_surf_primary->Unlock(NULL); // unlock before going to bail
+			DDRAW_CHECK_HR(hr = DDERR_OUTOFMEMORY);
+		}
+	}
 		// preview
 #if DDRAW_PREVIEW
 		p_self->bi_preview.bmiHeader.biWidth = ddsd.dwWidth;
@@ -453,17 +937,59 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 	nSizeWithoutPadding = ddsd.dwHeight * nRowLengthInBytes;
 	
 	// init lpBuffToSend
-	if (ddsd.lPitch == nRowLengthInBytes) {
+	if (DDRAW_MEM_SURFACE_DIRECT_ACCESS && ddsd.lPitch == nRowLengthInBytes && (!p_self->b_have_rgb32_conv || DDRAW_IS_ALIGNED(ddsd.lpSurface, DDRAW_MEM_ALIGNMENT))) {
 		// no padding
 		lpBuffToSend = ddsd.lpSurface;
-		b_using_locked_buffer = tsk_true;
+		bDirectMemSurfAccess = TRUE;
 	}
 	else {
 		// with padding or copy requested
-		UINT8 *pSurfBuff = (UINT8 *)ddsd.lpSurface, *pNegBuff = (UINT8 *)p_self->p_buff_neg;
+		UINT8 *pSurfBuff = (UINT8 *)ddsd.lpSurface, *pNegBuff = (UINT8 *)p_self->p_buff_rgb_aligned;
 		DWORD y;
-		b_using_locked_buffer = tsk_false;
+		bDirectMemSurfAccess = FALSE;
+		//--timeStart = tsk_time_now();
 		if (ddsd.lPitch == nRowLengthInBytes) {
+			// copy without padding padding
+			const UINT8* src = pSurfBuff;
+			UINT8* dst = (UINT8*)p_self->p_buff_rgb_aligned;
+			if (DDRAW_IS_ALIGNED(src, 16) && (nSizeWithoutPadding & 15) == 0) {
+#if DDRAW_HAVE_RGB32_TO_I420_INTRIN || DDRAW_HAVE_RGB32_TO_I420_ASM
+				if ((nSizeWithoutPadding & 127) == 0) {
+					for (DWORD i = 0; i < nSizeWithoutPadding; i += 128, src += 128, dst += 128) {
+#if defined(DDRAW_COPY128_ASM)
+						DDRAW_COPY128_ASM(dst, src);
+#else
+						DDRAW_COPY128_INTRIN(dst, src);
+#endif /* DDRAW_COPY128_ASM */
+					}
+				}
+				else if((nSizeWithoutPadding & 63) == 0) {
+					for (DWORD i = 0; i < nSizeWithoutPadding; i += 64, src += 64, dst += 64) {
+#if defined(DDRAW_COPY64_ASM)
+						DDRAW_COPY64_ASM(dst, src);
+#else
+						DDRAW_COPY64_INTRIN(dst, src);
+#endif /* DDRAW_COPY64_ASM */
+					}
+				}
+				else { // (nSizeWithoutPadding & 15) == 0
+					for (DWORD i = 0; i < nSizeWithoutPadding; i += 16, src += 16, dst += 16) {
+#if defined(DDRAW_COPY16_ASM)
+						DDRAW_COPY16_ASM(dst, src);
+#else
+						DDRAW_COPY16_INTRIN(dst, src);
+#endif /* DDRAW_COPY16_ASM */
+					}
+				}
+#else // neither ASM nor INTRINSIC support
+				CopyMemory(dst, src, nSizeWithoutPadding);
+#endif /* DDRAW_HAVE_RGB32_TO_I420_INTRIN || DDRAW_HAVE_RGB32_TO_I420_ASM */
+			}
+			else { // not 16bytes aligned
+				CopyMemory(dst, src, nSizeWithoutPadding);
+			}
+		}
+		else {
 			// copy with padding padding
 			for (y = 0; y < ddsd.dwHeight; ++y) {
 				CopyMemory(pNegBuff, pSurfBuff, nRowLengthInBytes);
@@ -471,11 +997,13 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 				pNegBuff += nRowLengthInBytes;
 			}
 		}
-		else {
-			// copy without padding padding
-			CopyMemory(p_self->p_buff_neg, pSurfBuff, nSizeWithoutPadding);
-		}
-		lpBuffToSend = p_self->p_buff_neg;
+		lpBuffToSend = p_self->p_buff_rgb_aligned;
+		//--timeEnd = tsk_time_now();
+		//--DDRAW_DEBUG_INFO("Mem copy: start=%llu, end=%llu, duration=%llu", timeStart, timeEnd, (timeEnd - timeStart));
+	}
+	if (!bDirectMemSurfAccess) {
+		// surface buffer no longer needed, unlock
+		DDRAW_CHECK_HR(hr = p_self->p_surf_primary->Unlock(NULL));
 	}
 	// display preview
 #if DDRAW_PREVIEW
@@ -500,17 +1028,28 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 		}
 	}
 #endif /* DDRAW_PREVIEW */
-	if (!b_using_locked_buffer) {
-		// Unlock the buffer before the encode callback
-		DDRAW_CHECK_HR(hr = p_self->p_surf_primary->Unlock(NULL));
-	}
+
 	//--timeStart = tsk_time_now();
-	p_base->enc_cb.callback(p_base->enc_cb.callback_data, lpBuffToSend, nSizeWithoutPadding);
+	if (p_self->b_have_rgb32_conv) {
+		// Convert from RGB32 to I420
+#if DDRAW_HAVE_RGB32_TO_I420_ASM
+		_tdav_producer_screencast_rgb32_to_yuv420_asm_ssse3((uint8_t*)p_self->p_buff_yuv_aligned, (const uint8_t*)lpBuffToSend, (int)p_base->video.width, (int)p_base->video.height);
+#elif DDRAW_HAVE_RGB32_TO_I420_INTRIN
+		_tdav_producer_screencast_rgb32_to_yuv420_intrin_ssse3((uint8_t*)p_self->p_buff_yuv_aligned, (const uint8_t*)lpBuffToSend, (int)p_base->video.width, (int)p_base->video.height);
+#else
+		DDRAW_CHECK_HR(hr = E_NOTIMPL); // never called
+#endif
+		p_base->enc_cb.callback(p_base->enc_cb.callback_data, p_self->p_buff_yuv_aligned, p_self->n_buff_yuv);
+	}
+	else {
+		// Send RGB32 buffer to the encode callback and let conversion be done by libyuv
+		p_base->enc_cb.callback(p_base->enc_cb.callback_data, lpBuffToSend, nSizeWithoutPadding);
+	}
 	//--timeEnd = tsk_time_now();
 	//--DDRAW_DEBUG_INFO("Encode callback: start=%llu, end=%llu, duration=%llu", timeStart, timeEnd, (timeEnd - timeStart));
 	
-	if (b_using_locked_buffer) {
-		// Unlock the buffer after the encode callback
+	if (bDirectMemSurfAccess) {
+		// surface buffer was used in preview and encode callback, unlock now
 		DDRAW_CHECK_HR(hr = p_self->p_surf_primary->Unlock(NULL));
 	}
 
@@ -519,6 +1058,10 @@ bail:
 		/*hr = */p_self->p_surf_primary->Restore();
 		hr = S_OK;
 	}
+
+	//--timeEnd = tsk_time_now();
+	//--DDRAW_DEBUG_INFO("Grab and encode duration=%llu", (timeEnd - timeStart));
+
 	return SUCCEEDED(hr) ? 0 : -1;
 }
 
@@ -711,10 +1254,8 @@ static tsk_object_t* _tdav_producer_screencast_ddraw_dtor(tsk_object_t * self)
 			tsk_timer_manager_destroy(&p_ddraw->p_timer_mgr);
 		}
 #endif /* DDRAW_CPU_MONITOR */
-		if (p_ddraw->p_buff_neg) {
-			VirtualFree(p_ddraw->p_buff_neg, 0, MEM_RELEASE);
-			p_ddraw->p_buff_neg = NULL;
-		}
+		TSK_FREE_ALIGNED(p_ddraw->p_buff_rgb_aligned);
+		TSK_FREE_ALIGNED(p_ddraw->p_buff_yuv_aligned);
 		DDRAW_SAFE_RELEASE(&p_ddraw->p_surf_primary);
 		DDrawModuleSafeFree(p_ddraw->ddrawModule);
 		tsk_safeobj_deinit(p_ddraw);
