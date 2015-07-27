@@ -45,8 +45,10 @@
 
 TSK_BEGIN_DECLS
 
-#define TSK_SAFE_FREE(ptr) (void)tsk_free((void**)(&ptr));
+#define TSK_SAFE_FREE(ptr) (void)tsk_free((void**)(&ptr))
+#define TSK_SAFE_FREE_ALIGNED(ptr) (void)tsk_free_aligned((void**)(&ptr))
 #define TSK_FREE(ptr) TSK_SAFE_FREE((ptr))
+#define TSK_FREE_ALIGNED(ptr) TSK_SAFE_FREE_ALIGNED((ptr))
 #define TSK_SAFE_FREE_ARRAY(pptr, count){ \
 	int __i; \
 	for(__i = 0; __i < (count); ++__i) \
@@ -60,6 +62,11 @@ TINYSAK_API void* tsk_malloc(tsk_size_t size);
 TINYSAK_API void* tsk_realloc (void * ptr, tsk_size_t size);
 TINYSAK_API void tsk_free(void** ptr);
 TINYSAK_API void* tsk_calloc(tsk_size_t num, tsk_size_t size);
+
+TINYSAK_API void* tsk_malloc_aligned(tsk_size_t size, tsk_size_t alignment);
+TINYSAK_API void* tsk_realloc_aligned(void * ptr, tsk_size_t size, tsk_size_t alignment);
+TINYSAK_API void tsk_free_aligned(void** ptr);
+TINYSAK_API void* tsk_calloc_aligned(tsk_size_t num, tsk_size_t size, tsk_size_t alignment);
 
 TSK_END_DECLS
 
