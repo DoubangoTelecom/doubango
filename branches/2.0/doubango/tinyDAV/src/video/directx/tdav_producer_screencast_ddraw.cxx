@@ -66,6 +66,18 @@
 #	define DDRAW_CPU_MONITOR_TIME_OUT	1000
 #endif /* DDRAW_CPU_MONITOR */
 
+#if !defined(DDRAW_MT)
+#	define DDRAW_MT	0 // Multi-threading
+#endif /* DDRAW_MT */
+
+#if defined (DDRAW_MT) && !defined(DDRAW_MT_COUNT)
+#	define DDRAW_MT_COUNT 4 // Number of buffers to use
+#endif /* DDRAW_MT_COUNT */
+
+#if defined(DDRAW_MT_COUNT)
+#	define DDRAW_MT_EVENT_SHUTDOWN_INDEX	DDRAW_MT_COUNT
+#endif
+
 #if !defined(DDRAW_PREVIEW)
 #	if TDAV_UNDER_WINDOWS_CE && (BUILD_TYPE_GE || SIN_CITY)
 #		define DDRAW_PREVIEW 0 // Do not waste time displaying the preview on "WEC7 + (GE | SINCITY)"
@@ -104,6 +116,15 @@ typedef struct tdav_producer_screencast_ddraw_s
 	tsk_timer_id_t id_timer_cpu;
 #endif /* DDRAW_CPU_MONITOR */
 
+#if DDRAW_MT
+	struct{
+		tsk_thread_handle_t* tid[1];
+		void* p_buff_yuv_aligned_array[DDRAW_MT_COUNT];
+		BOOL b_flags_array[DDRAW_MT_COUNT];
+		HANDLE h_events[DDRAW_MT_COUNT + 1]; // #DDRAW_MT_COUNT events for each buffer plus #1 for the shutdown/stop
+	} mt;
+#endif /* DDRAW_MT */
+
 	DDrawModule ddrawModule;
 	IDirectDrawSurface* p_surf_primary;
 
@@ -128,10 +149,15 @@ tdav_producer_screencast_ddraw_t;
 
 static BOOL _tdav_producer_screencast_have_ssse3();
 static tmedia_chroma_t _tdav_producer_screencast_get_chroma(const DDPIXELFORMAT* pixelFormat);
-static void* TSK_STDCALL _tdav_producer_screencast_record_thread(void *arg);
+static void* TSK_STDCALL _tdav_producer_screencast_grap_thread(void *arg);
+#if DDRAW_MT
+static void* TSK_STDCALL _tdav_producer_screencast_mt_encode_thread(void *arg);
+#endif /* DDRAW_MT */
 static int _tdav_producer_screencast_timer_cb(const void* arg, tsk_timer_id_t timer_id);
 static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_self);
 static HRESULT _tdav_producer_screencast_create_module(LPDDrawModule lpModule);
+static HRESULT _tdav_producer_screencast_alloc_rgb_buff(tdav_producer_screencast_ddraw_t* p_self, DWORD w, DWORD h, DWORD bitsCount);
+static HRESULT _tdav_producer_screencast_alloc_yuv_buff(tdav_producer_screencast_ddraw_t* p_self, DWORD w, DWORD h);
 
 #if DDRAW_HAVE_RGB32_TO_I420_INTRIN || DDRAW_HAVE_RGB32_TO_I420_ASM
 static __declspec(align(DDRAW_MEM_ALIGNMENT)) const int8_t kYCoeffs[16] = {
@@ -618,7 +644,6 @@ static int _tdav_producer_screencast_ddraw_prepare(tmedia_producer_t* p_self, co
 	tdav_producer_screencast_ddraw_t* p_ddraw = (tdav_producer_screencast_ddraw_t*)p_self;
 	int ret = 0;
 	HRESULT hr = DD_OK;
-	tsk_size_t n_buff_rgb_new;
 #if 0
 	DDPIXELFORMAT DDPixelFormat;
 #endif
@@ -683,15 +708,7 @@ static int _tdav_producer_screencast_ddraw_prepare(tmedia_producer_t* p_self, co
 	}
 #endif
 	// allocate RGB buffer
-	n_buff_rgb_new = (ddsd.dwWidth * ddsd.dwHeight * (ddsd.ddpfPixelFormat.dwRGBBitCount >> 3));
-	if (p_ddraw->n_buff_rgb < n_buff_rgb_new) {
-		p_ddraw->p_buff_rgb_aligned = tsk_realloc_aligned(p_ddraw->p_buff_rgb_aligned, n_buff_rgb_new, DDRAW_MEM_ALIGNMENT);
-		if (!p_ddraw->p_buff_rgb_aligned) {
-			p_ddraw->n_buff_rgb = 0;
-			DDRAW_CHECK_HR(hr = DDERR_OUTOFMEMORY);
-		}
-		p_ddraw->n_buff_rgb = n_buff_rgb_new;
-	}
+	DDRAW_CHECK_HR(hr = _tdav_producer_screencast_alloc_rgb_buff(p_ddraw, ddsd.dwWidth, ddsd.dwHeight, ddsd.ddpfPixelFormat.dwRGBBitCount));
 
 	// Check if we can use built-in chroma conversion
 #if DDRAW_HAVE_RGB32_TO_I420_INTRIN || DDRAW_HAVE_RGB32_TO_I420_ASM
@@ -708,12 +725,7 @@ static int _tdav_producer_screencast_ddraw_prepare(tmedia_producer_t* p_self, co
 
 	// allocate YUV buffer
 	if (p_ddraw->b_have_rgb32_conv) {
-		p_ddraw->n_buff_yuv = (TMEDIA_PRODUCER(p_ddraw)->video.width * TMEDIA_PRODUCER(p_ddraw)->video.height * 3) >> 1;
-		p_ddraw->p_buff_yuv_aligned = tsk_realloc_aligned(p_ddraw->p_buff_yuv_aligned, p_ddraw->n_buff_yuv, DDRAW_MEM_ALIGNMENT);
-		if (!p_ddraw->p_buff_yuv_aligned) {
-			p_ddraw->n_buff_yuv = 0;
-			DDRAW_CHECK_HR(hr = DDERR_OUTOFMEMORY);
-		}
+		DDRAW_CHECK_HR(hr = _tdav_producer_screencast_alloc_yuv_buff(p_ddraw, (DWORD)TMEDIA_PRODUCER(p_ddraw)->video.width, (DWORD)TMEDIA_PRODUCER(p_ddraw)->video.height));
 	}
 
 	// BitmapInfo for preview
@@ -760,22 +772,61 @@ static int _tdav_producer_screencast_ddraw_start(tmedia_producer_t* p_self)
 
 	p_ddraw->b_started = tsk_true;
 
-	ret = tsk_thread_create(&p_ddraw->tid[0], _tdav_producer_screencast_record_thread, p_ddraw);
+	// Create notify events (must be done here before starting the grabber thread)
+#if DDRAW_MT
+	for (int i = 0; i < sizeof(p_ddraw->mt.h_events) / sizeof(p_ddraw->mt.h_events[0]); ++i) {
+		if (!p_ddraw->mt.h_events[i] && !(p_ddraw->mt.h_events[i] = CreateEvent(NULL, FALSE, FALSE, NULL))) {
+			DDRAW_DEBUG_ERROR("Failed to create event at %d", i);
+			ret = -1;
+			goto bail;
+		}
+	}
+#endif /* DDRAW_MT */
+
+	ret = tsk_thread_create(&p_ddraw->tid[0], _tdav_producer_screencast_grap_thread, p_ddraw);
+	if (ret != 0) {
+		DDRAW_DEBUG_ERROR("Failed to create thread");
+		goto bail;
+	}
+#if DDRAW_MT
+	ret = tsk_thread_create(&p_ddraw->mt.tid[0], _tdav_producer_screencast_mt_encode_thread, p_ddraw);
+	if (ret != 0) {
+		DDRAW_DEBUG_ERROR("Failed to create thread");
+		goto bail;
+	}
+#endif /* DDRAW_MT */
 #if DDRAW_HIGH_PRIO_MEMCPY
 	if (p_ddraw->tid[0]) {
 		tsk_thread_set_priority(p_ddraw->tid[0], TSK_THREAD_PRIORITY_TIME_CRITICAL);
 	}
-#endif
+#if DDRAW_MT
+	if (p_ddraw->mt.tid[0]) {
+		tsk_thread_set_priority(p_ddraw->mt.tid[0], TSK_THREAD_PRIORITY_TIME_CRITICAL);
+	}
+#endif /* DDRAW_MT */
+#endif /* DDRAW_HIGH_PRIO_MEMCPY */
 #if DDRAW_CPU_MONITOR
 	ret = tsk_timer_manager_start(p_ddraw->p_timer_mgr);
 	if (ret == 0) {
 		p_ddraw->id_timer_cpu = tsk_timer_manager_schedule(p_ddraw->p_timer_mgr, DDRAW_CPU_MONITOR_TIME_OUT, _tdav_producer_screencast_timer_cb, p_ddraw);
+	}
+	else {
+		ret = 0; // not fatal error
+		DDRAW_DEBUG_WARN("Failed to start CPU timer");
 	}
 #endif /* DDRAW_CPU_MONITOR */
 
 bail:
 	if (ret) {
 		p_ddraw->b_started = tsk_false;
+		if (p_ddraw->tid[0]) {
+			tsk_thread_join(&(p_ddraw->tid[0]));
+		}
+#if DDRAW_MT
+		if (p_ddraw->mt.tid[0]) {
+			tsk_thread_join(&(p_ddraw->mt.tid[0]));
+		}
+#endif /* DDRAW_MT */
 	}
 	ret = tsk_safeobj_unlock(p_ddraw);
 
@@ -827,10 +878,25 @@ static int _tdav_producer_screencast_ddraw_stop(tmedia_producer_t* p_self)
 	}
 #endif /* DDRAW_CPU_MONITOR */
 
-	// stop thread
+	// stop grabber thread
 	if (p_ddraw->tid[0]) {
 		tsk_thread_join(&(p_ddraw->tid[0]));
 	}
+
+#if DDRAW_MT
+	if (p_ddraw->mt.h_events[DDRAW_MT_EVENT_SHUTDOWN_INDEX]){
+		SetEvent(p_ddraw->mt.h_events[DDRAW_MT_EVENT_SHUTDOWN_INDEX]);
+	}
+	if (p_ddraw->mt.tid[0]) {
+		tsk_thread_join(&(p_ddraw->mt.tid[0]));
+	}
+	for (int i = 0; i < sizeof(p_ddraw->mt.h_events) / sizeof(p_ddraw->mt.h_events[0]); ++i) {
+		if (p_ddraw->mt.h_events[i]) {
+			CloseHandle(p_ddraw->mt.h_events[i]);
+			p_ddraw->mt.h_events[i] = NULL;
+		}
+	}
+#endif
 
 bail:
 	tsk_safeobj_unlock(p_ddraw);
@@ -845,8 +911,11 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 	DDSURFACEDESC ddsd;
 	DWORD nSizeWithoutPadding, nRowLengthInBytes, lockFlags;
 	tmedia_producer_t* p_base = TMEDIA_PRODUCER(p_self);
-	LPVOID lpBuffToSend;
+	LPVOID lpBuffToSend, lpBuffYUV;
 	BOOL bDirectMemSurfAccess = DDRAW_MEM_SURFACE_DIRECT_ACCESS;
+#if DDRAW_MT
+	WORD wMtFreeBuffIndex = -1;
+#endif
 	//--uint64_t timeStart, timeEnd;
 
 	//--timeStart = tsk_time_now();
@@ -891,13 +960,11 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 		// allocate RGB buffer
 		n_buff_rgb_new = (ddsd.dwWidth * ddsd.dwHeight * (ddsd.ddpfPixelFormat.dwRGBBitCount >> 3));
 		if (p_self->n_buff_rgb < n_buff_rgb_new) {
-			p_self->p_buff_rgb_aligned = tsk_realloc_aligned(p_self->p_buff_rgb_aligned, n_buff_rgb_new, DDRAW_MEM_ALIGNMENT);
-			if (!p_self->p_buff_rgb_aligned) {
-				p_self->n_buff_rgb = 0;
+			hr = _tdav_producer_screencast_alloc_rgb_buff(p_self, ddsd.dwWidth, ddsd.dwHeight, ddsd.ddpfPixelFormat.dwRGBBitCount);
+			if (FAILED(hr)) {
 				p_self->p_surf_primary->Unlock(NULL); // unlock before going to bail
-				DDRAW_CHECK_HR(hr = DDERR_OUTOFMEMORY);
+				DDRAW_CHECK_HR(hr);
 			}
-			p_self->n_buff_rgb = n_buff_rgb_new;
 		}
 		p_base->video.width = ddsd.dwWidth;
 		p_base->video.height = ddsd.dwHeight;
@@ -917,12 +984,10 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 	DDRAW_DEBUG_INFO("RGB32 -> I420 conversion supported: %s", p_self->b_have_rgb32_conv ? "YES" : "NO");
 	// allocate YUV buffer
 	if (p_self->b_have_rgb32_conv) {
-		p_self->n_buff_yuv = (p_base->video.width * p_base->video.height * 3) >> 1;
-		p_self->p_buff_yuv_aligned = tsk_realloc_aligned(p_self->p_buff_yuv_aligned, p_self->n_buff_yuv, DDRAW_MEM_ALIGNMENT);
-		if (!p_self->p_buff_yuv_aligned) {
-			p_self->n_buff_yuv = 0;
+		hr = _tdav_producer_screencast_alloc_yuv_buff(p_self, (DWORD)p_base->video.width, (DWORD)p_base->video.height);
+		if (FAILED(hr)) {
 			p_self->p_surf_primary->Unlock(NULL); // unlock before going to bail
-			DDRAW_CHECK_HR(hr = DDERR_OUTOFMEMORY);
+			DDRAW_CHECK_HR(hr);
 		}
 	}
 		// preview
@@ -1029,21 +1094,50 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 	}
 #endif /* DDRAW_PREVIEW */
 
-	//--timeStart = tsk_time_now();
-	if (p_self->b_have_rgb32_conv) {
-		// Convert from RGB32 to I420
-#if DDRAW_HAVE_RGB32_TO_I420_ASM
-		_tdav_producer_screencast_rgb32_to_yuv420_asm_ssse3((uint8_t*)p_self->p_buff_yuv_aligned, (const uint8_t*)lpBuffToSend, (int)p_base->video.width, (int)p_base->video.height);
-#elif DDRAW_HAVE_RGB32_TO_I420_INTRIN
-		_tdav_producer_screencast_rgb32_to_yuv420_intrin_ssse3((uint8_t*)p_self->p_buff_yuv_aligned, (const uint8_t*)lpBuffToSend, (int)p_base->video.width, (int)p_base->video.height);
-#else
-		DDRAW_CHECK_HR(hr = E_NOTIMPL); // never called
-#endif
-		p_base->enc_cb.callback(p_base->enc_cb.callback_data, p_self->p_buff_yuv_aligned, p_self->n_buff_yuv);
+	// check we have a free buffer
+#if DDRAW_MT
+	{
+		for (WORD wIndex = 0; wIndex < DDRAW_MT_COUNT; ++wIndex) {
+			if (p_self->mt.b_flags_array[wIndex] != TRUE) {
+				wMtFreeBuffIndex = wIndex;
+				lpBuffYUV = p_self->mt.p_buff_yuv_aligned_array[wIndex];
+				break;
+			}
+		}
+		if (wMtFreeBuffIndex < 0) {
+			lpBuffToSend = NULL; // do not waste time converting or encoding
+			lpBuffYUV = NULL;
+		}
 	}
-	else {
-		// Send RGB32 buffer to the encode callback and let conversion be done by libyuv
-		p_base->enc_cb.callback(p_base->enc_cb.callback_data, lpBuffToSend, nSizeWithoutPadding);
+#else
+	lpBuffYUV = p_self->p_buff_yuv_aligned;
+#endif /* DDRAW_MT */
+
+	//--timeStart = tsk_time_now();
+	if (lpBuffToSend && (lpBuffYUV || !p_self->b_have_rgb32_conv)) {
+		if (p_self->b_have_rgb32_conv) {
+			// Convert from RGB32 to I420
+#if DDRAW_HAVE_RGB32_TO_I420_ASM
+			_tdav_producer_screencast_rgb32_to_yuv420_asm_ssse3((uint8_t*)lpBuffYUV, (const uint8_t*)lpBuffToSend, (int)p_base->video.width, (int)p_base->video.height);
+#elif DDRAW_HAVE_RGB32_TO_I420_INTRIN
+			_tdav_producer_screencast_rgb32_to_yuv420_intrin_ssse3((uint8_t*)lpBuffYUV, (const uint8_t*)lpBuffToSend, (int)p_base->video.width, (int)p_base->video.height);
+#else
+			DDRAW_CHECK_HR(hr = E_NOTIMPL); // never called
+#endif
+#if DDRAW_MT
+			p_self->mt.b_flags_array[wMtFreeBuffIndex] = TRUE;
+			if (!SetEvent(p_self->mt.h_events[wMtFreeBuffIndex])) {
+				DDRAW_CHECK_HR(hr = E_FAIL);
+			}
+#else
+			p_base->enc_cb.callback(p_base->enc_cb.callback_data, lpBuffYUV, p_self->n_buff_yuv);
+#endif
+		}
+		else {
+			// Send RGB32 buffer to the encode callback and let conversion be done by libyuv
+			// do not multi-thread as we cannot perform chroma conversion and encoding in parallel
+			p_base->enc_cb.callback(p_base->enc_cb.callback_data, lpBuffToSend, nSizeWithoutPadding);
+		}
 	}
 	//--timeEnd = tsk_time_now();
 	//--DDRAW_DEBUG_INFO("Encode callback: start=%llu, end=%llu, duration=%llu", timeStart, timeEnd, (timeEnd - timeStart));
@@ -1130,7 +1224,52 @@ bail:
 	return hr;
 }
 
-static void* TSK_STDCALL _tdav_producer_screencast_record_thread(void *arg)
+static HRESULT _tdav_producer_screencast_alloc_rgb_buff(tdav_producer_screencast_ddraw_t* p_ddraw, DWORD w, DWORD h, DWORD bitsCount)
+{
+	HRESULT hr = S_OK;
+	DWORD n_buff_rgb_new = (w * h * (bitsCount >> 3));
+
+	if (p_ddraw->n_buff_rgb < n_buff_rgb_new) {
+		p_ddraw->p_buff_rgb_aligned = tsk_realloc_aligned(p_ddraw->p_buff_rgb_aligned, n_buff_rgb_new, DDRAW_MEM_ALIGNMENT);
+		if (!p_ddraw->p_buff_rgb_aligned) {
+			p_ddraw->n_buff_rgb = 0;
+			DDRAW_CHECK_HR(hr = DDERR_OUTOFMEMORY);
+		}
+		p_ddraw->n_buff_rgb = n_buff_rgb_new;
+	}
+
+bail:
+	return hr;
+}
+
+static HRESULT _tdav_producer_screencast_alloc_yuv_buff(tdav_producer_screencast_ddraw_t* p_ddraw, DWORD w, DWORD h)
+{
+	HRESULT hr = S_OK;
+	void** pp_buff_yuv_aligned;
+	int n_buff_yuv_aligned_count;
+
+#if DDRAW_MT
+	pp_buff_yuv_aligned = p_ddraw->mt.p_buff_yuv_aligned_array;
+	n_buff_yuv_aligned_count = sizeof(p_ddraw->mt.p_buff_yuv_aligned_array)/sizeof(p_ddraw->mt.p_buff_yuv_aligned_array[0]);
+#else
+	pp_buff_yuv_aligned = &p_ddraw->p_buff_yuv_aligned;
+	n_buff_yuv_aligned_count = 1;
+#endif /* DDRAW_MT */
+
+	p_ddraw->n_buff_yuv = (w * h * 3) >> 1;
+	for (int i = 0; i < n_buff_yuv_aligned_count; ++i) {
+		pp_buff_yuv_aligned[i] = tsk_realloc_aligned(pp_buff_yuv_aligned[i], p_ddraw->n_buff_yuv, DDRAW_MEM_ALIGNMENT);
+		if (!pp_buff_yuv_aligned[i]) {
+			p_ddraw->n_buff_yuv = 0;
+			DDRAW_CHECK_HR(hr = DDERR_OUTOFMEMORY);
+		}
+	}
+
+bail:
+	return hr;
+}
+
+static void* TSK_STDCALL _tdav_producer_screencast_grap_thread(void *arg)
 {
 	tdav_producer_screencast_ddraw_t* p_ddraw = (tdav_producer_screencast_ddraw_t*)arg;
 	int ret = 0;
@@ -1139,7 +1278,7 @@ static void* TSK_STDCALL _tdav_producer_screencast_record_thread(void *arg)
 	uint64_t TimeNow, TimeLastFrame = 0;
 	const uint64_t TimeFrameDuration = (1000 / TMEDIA_PRODUCER(p_ddraw)->video.fps);
 
-	DDRAW_DEBUG_INFO("Recorder thread -- START");
+	DDRAW_DEBUG_INFO("Grab thread -- START");
 
 	while (ret == 0 && p_ddraw->b_started) {
 		TimeNow = tsk_time_now();
@@ -1160,9 +1299,43 @@ static void* TSK_STDCALL _tdav_producer_screencast_record_thread(void *arg)
 	next:
 		;
 	}
-	DDRAW_DEBUG_INFO("Recorder thread -- STOP");
+	DDRAW_DEBUG_INFO("Grab thread -- STOP");
 	return tsk_null;
 }
+
+#if DDRAW_MT
+static void* TSK_STDCALL _tdav_producer_screencast_mt_encode_thread(void *arg)
+{
+	tdav_producer_screencast_ddraw_t* p_ddraw = (tdav_producer_screencast_ddraw_t*)arg;
+	tmedia_producer_t* p_base = TMEDIA_PRODUCER(arg);
+	DWORD dwEvent, dwIndex;
+	int ret = 0;
+	DWORD events_count = sizeof(p_ddraw->mt.h_events) / sizeof(p_ddraw->mt.h_events[0]);
+
+	DDRAW_DEBUG_INFO("Encode MT thread -- START");
+
+	while (ret == 0 && p_ddraw->b_started) {
+		dwEvent = WaitForMultipleObjects(events_count, p_ddraw->mt.h_events, FALSE, INFINITE);
+		if (!p_ddraw->b_started) {
+			break;
+		}
+		if (dwEvent < WAIT_OBJECT_0 || dwEvent >(WAIT_OBJECT_0 + events_count)) {
+			DDRAW_DEBUG_ERROR("Invalid dwEvent(%d)", dwEvent);
+			break;
+		}
+		dwIndex = (dwEvent - WAIT_OBJECT_0);
+		if (p_ddraw->mt.b_flags_array[dwIndex] != TRUE) {
+			// must never happen
+			DDRAW_DEBUG_ERROR("Invalid b_flags_array(%d)", dwIndex);
+			break;
+		}
+		p_base->enc_cb.callback(p_base->enc_cb.callback_data, p_ddraw->mt.p_buff_yuv_aligned_array[dwIndex], p_ddraw->n_buff_yuv);
+		p_ddraw->mt.b_flags_array[dwIndex] = FALSE;
+	}
+	DDRAW_DEBUG_INFO("Encode MT -- STOP");
+	return tsk_null;
+}
+#endif /* DDRAW_MT */
 
 #if DDRAW_CPU_MONITOR
 static unsigned long long FileTimeToInt64(const FILETIME & ft) {
@@ -1254,6 +1427,17 @@ static tsk_object_t* _tdav_producer_screencast_ddraw_dtor(tsk_object_t * self)
 			tsk_timer_manager_destroy(&p_ddraw->p_timer_mgr);
 		}
 #endif /* DDRAW_CPU_MONITOR */
+#if DDRAW_MT
+		for (int i = 0; i < sizeof(p_ddraw->mt.p_buff_yuv_aligned_array) / sizeof(p_ddraw->mt.p_buff_yuv_aligned_array[0]); ++i) {
+			TSK_FREE_ALIGNED(p_ddraw->mt.p_buff_yuv_aligned_array[i]);
+		}
+		for (int i = 0; i < sizeof(p_ddraw->mt.h_events) / sizeof(p_ddraw->mt.h_events[0]); ++i) {
+			if (p_ddraw->mt.h_events[i]) {
+				CloseHandle(p_ddraw->mt.h_events[i]);
+				p_ddraw->mt.h_events[i] = NULL;
+			}
+		}
+#endif /* DDRAW_MT */
 		TSK_FREE_ALIGNED(p_ddraw->p_buff_rgb_aligned);
 		TSK_FREE_ALIGNED(p_ddraw->p_buff_yuv_aligned);
 		DDRAW_SAFE_RELEASE(&p_ddraw->p_surf_primary);
