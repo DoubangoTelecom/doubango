@@ -788,12 +788,14 @@ static int _tdav_producer_screencast_ddraw_start(tmedia_producer_t* p_self)
 		DDRAW_DEBUG_ERROR("Failed to create thread");
 		goto bail;
 	}
+	//BOOL okSetTA = CeSetThreadAffinity((HANDLE)p_ddraw->tid[0], 0x01);
 #if DDRAW_MT
 	ret = tsk_thread_create(&p_ddraw->mt.tid[0], _tdav_producer_screencast_mt_encode_thread, p_ddraw);
 	if (ret != 0) {
 		DDRAW_DEBUG_ERROR("Failed to create thread");
 		goto bail;
 	}
+	//okSetTA = CeSetThreadAffinity((HANDLE)p_ddraw->mt.tid[0], 0x02);
 #endif /* DDRAW_MT */
 #if DDRAW_HIGH_PRIO_MEMCPY
 	if (p_ddraw->tid[0]) {
@@ -914,7 +916,7 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 	LPVOID lpBuffToSend, lpBuffYUV;
 	BOOL bDirectMemSurfAccess = DDRAW_MEM_SURFACE_DIRECT_ACCESS;
 #if DDRAW_MT
-	WORD wMtFreeBuffIndex = -1;
+	INT iMtFreeBuffIndex = -1;
 #endif
 	//--uint64_t timeStart, timeEnd;
 
@@ -1097,14 +1099,14 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 	// check we have a free buffer
 #if DDRAW_MT
 	{
-		for (WORD wIndex = 0; wIndex < DDRAW_MT_COUNT; ++wIndex) {
-			if (p_self->mt.b_flags_array[wIndex] != TRUE) {
-				wMtFreeBuffIndex = wIndex;
-				lpBuffYUV = p_self->mt.p_buff_yuv_aligned_array[wIndex];
+		for (INT iIndex = 0; iIndex < DDRAW_MT_COUNT; ++iIndex) {
+			if (p_self->mt.b_flags_array[iIndex] != TRUE) {
+				iMtFreeBuffIndex = iIndex;
+				lpBuffYUV = p_self->mt.p_buff_yuv_aligned_array[iIndex];
 				break;
 			}
 		}
-		if (wMtFreeBuffIndex < 0) {
+		if (iMtFreeBuffIndex < 0) {
 			lpBuffToSend = NULL; // do not waste time converting or encoding
 			lpBuffYUV = NULL;
 		}
@@ -1125,8 +1127,8 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 			DDRAW_CHECK_HR(hr = E_NOTIMPL); // never called
 #endif
 #if DDRAW_MT
-			p_self->mt.b_flags_array[wMtFreeBuffIndex] = TRUE;
-			if (!SetEvent(p_self->mt.h_events[wMtFreeBuffIndex])) {
+			p_self->mt.b_flags_array[iMtFreeBuffIndex] = TRUE;
+			if (!SetEvent(p_self->mt.h_events[iMtFreeBuffIndex])) {
 				DDRAW_CHECK_HR(hr = E_FAIL);
 			}
 #else
