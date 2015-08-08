@@ -19,13 +19,13 @@
 */
 
 /**@file tdav_codec_vp8.c
- * @brief VP8 codec
- * The RTP packetizer/depacketizer follows draft-ietf-payload-vp8 and draft-bankoski-vp8-bitstream-05
- * Google's VP8 (http://www.webmproject.org/) encoder/decoder
- *
- * We require v1.3.0 (2013-12-02 10:37:51) or later. For iOS, because of issue 423 (https://code.google.com/p/doubango/issues/detail?id=423) we require a version after "Mon, 28 Apr 2014 22:42:23 +0100 (14:42 -0700)" integrating fix in http://git.chromium.org/gitweb/?p=webm/libvpx.git;a=commit;h=33df6d1fc1d268b4901b74b4141f83594266f041
- *
- */
+* @brief VP8 codec
+* The RTP packetizer/depacketizer follows draft-ietf-payload-vp8 and draft-bankoski-vp8-bitstream-05
+* Google's VP8 (http://www.webmproject.org/) encoder/decoder
+*
+* We require v1.3.0 (2013-12-02 10:37:51) or later. For iOS, because of issue 423 (https://code.google.com/p/doubango/issues/detail?id=423) we require a version after "Mon, 28 Apr 2014 22:42:23 +0100 (14:42 -0700)" integrating fix in http://git.chromium.org/gitweb/?p=webm/libvpx.git;a=commit;h=33df6d1fc1d268b4901b74b4141f83594266f041
+*
+*/
 #include "tinydav/codecs/vpx/tdav_codec_vp8.h"
 
 #if HAVE_LIBVPX
@@ -134,24 +134,24 @@ static int tdav_codec_vp8_set(tmedia_codec_t* self, const tmedia_param_t* param)
 			tmedia_codec_action_t action = (tmedia_codec_action_t)TSK_TO_INT32((uint8_t*)param->value);
 			switch (action) {
 			case tmedia_codec_action_encode_idr:
-			{
-				vp8->encoder.force_idr = tsk_true;
-				return 0;
-			}
+				{
+					vp8->encoder.force_idr = tsk_true;
+					return 0;
+				}
 			case tmedia_codec_action_bw_down:
-			{
-				vp8->encoder.cfg.rc_target_bitrate = TSK_CLAMP(0, (int32_t)((vp8->encoder.cfg.rc_target_bitrate << 1) / 3), TMEDIA_CODEC(vp8)->bandwidth_max_upload);
-				TSK_DEBUG_INFO("New target bitrate = %d kbps", vp8->encoder.cfg.rc_target_bitrate);
-				reconf = tsk_true;
-				break;
-			}
+				{
+					vp8->encoder.cfg.rc_target_bitrate = TSK_CLAMP(0, (int32_t)((vp8->encoder.cfg.rc_target_bitrate << 1) / 3), TMEDIA_CODEC(vp8)->bandwidth_max_upload);
+					TSK_DEBUG_INFO("New target bitrate = %d kbps", vp8->encoder.cfg.rc_target_bitrate);
+					reconf = tsk_true;
+					break;
+				}
 			case tmedia_codec_action_bw_up:
-			{
-				vp8->encoder.cfg.rc_target_bitrate = TSK_CLAMP(0, (int32_t)((vp8->encoder.cfg.rc_target_bitrate * 3) >> 1), TMEDIA_CODEC(vp8)->bandwidth_max_upload);
-				TSK_DEBUG_INFO("New target bitrate = %d kbps", vp8->encoder.cfg.rc_target_bitrate);
-				reconf = tsk_true;
-				break;
-			}
+				{
+					vp8->encoder.cfg.rc_target_bitrate = TSK_CLAMP(0, (int32_t)((vp8->encoder.cfg.rc_target_bitrate * 3) >> 1), TMEDIA_CODEC(vp8)->bandwidth_max_upload);
+					TSK_DEBUG_INFO("New target bitrate = %d kbps", vp8->encoder.cfg.rc_target_bitrate);
+					reconf = tsk_true;
+					break;
+				}
 			}
 		}
 		else if (tsk_striequals(param->key, "bw_kbps")) { // both up and down (from the SDP)
@@ -287,18 +287,18 @@ static tsk_size_t tdav_codec_vp8_encode(tmedia_codec_t* self, const void* in_dat
 	while ((pkt = vpx_codec_get_cx_data(&vp8->encoder.context, &iter))) {
 		switch (pkt->kind) {
 		case VPX_CODEC_CX_FRAME_PKT:
-		{
-			tdav_codec_vp8_encap(vp8, pkt);
-			break;
-		}
+			{
+				tdav_codec_vp8_encap(vp8, pkt);
+				break;
+			}
 		default:
 		case VPX_CODEC_STATS_PKT:       /**< Two-pass statistics for this frame */
 		case VPX_CODEC_PSNR_PKT:        /**< PSNR statistics for this frame */
 		case VPX_CODEC_CUSTOM_PKT: /**< Algorithm extensions  */
-		{
-			TSK_DEBUG_INFO("pkt->kind=%d not supported", (int)pkt->kind);
-			break;
-		}
+			{
+				TSK_DEBUG_INFO("pkt->kind=%d not supported", (int)pkt->kind);
+				break;
+			}
 		}
 	}
 
@@ -389,30 +389,30 @@ static tsk_size_t tdav_codec_vp8_decode(tmedia_codec_t* self, const void* in_dat
 	// New frame ?
 	if (vp8->decoder.last_timestamp != rtp_hdr->timestamp) {
 		/* 4.3.  VP8 Payload Header
-			Note that the header is present only in packets
-			which have the S bit equal to one and the PartID equal to zero in the
-			payload descriptor.  Subsequent packets for the same frame do not
-			carry the payload header.
-			0 1 2 3 4 5 6 7
-			+-+-+-+-+-+-+-+-+
-			|Size0|H| VER |P|
-			+-+-+-+-+-+-+-+-+
-			|     Size1     |
-			+-+-+-+-+-+-+-+-+
-			|     Size2     |
-			+-+-+-+-+-+-+-+-+
-			| Bytes 4..N of |
-			| VP8 payload   |
-			:               :
-			+-+-+-+-+-+-+-+-+
-			| OPTIONAL RTP  |
-			| padding       |
-			:               :
-			+-+-+-+-+-+-+-+-+
-			P: Inverse key frame flag.  When set to 0 the current frame is a key
-			frame.  When set to 1 the current frame is an interframe.  Defined
-			in [RFC6386]
-			*/
+		Note that the header is present only in packets
+		which have the S bit equal to one and the PartID equal to zero in the
+		payload descriptor.  Subsequent packets for the same frame do not
+		carry the payload header.
+		0 1 2 3 4 5 6 7
+		+-+-+-+-+-+-+-+-+
+		|Size0|H| VER |P|
+		+-+-+-+-+-+-+-+-+
+		|     Size1     |
+		+-+-+-+-+-+-+-+-+
+		|     Size2     |
+		+-+-+-+-+-+-+-+-+
+		| Bytes 4..N of |
+		| VP8 payload   |
+		:               :
+		+-+-+-+-+-+-+-+-+
+		| OPTIONAL RTP  |
+		| padding       |
+		:               :
+		+-+-+-+-+-+-+-+-+
+		P: Inverse key frame flag.  When set to 0 the current frame is a key
+		frame.  When set to 1 the current frame is an interframe.  Defined
+		in [RFC6386]
+		*/
 
 		// Reset accumulator position
 		vp8->decoder.accumulator_pos = 0;
@@ -601,7 +601,7 @@ static tsk_bool_t tdav_codec_vp8_sdp_att_match(const tmedia_codec_t* codec, cons
 			TMEDIA_CODEC_VIDEO(codec)->out.height = out_height;
 		}
 
-	return tsk_true;
+		return tsk_true;
 }
 
 static char* tdav_codec_vp8_sdp_att_get(const tmedia_codec_t* codec, const char* att_name)
@@ -616,7 +616,7 @@ static char* tdav_codec_vp8_sdp_att_get(const tmedia_codec_t* codec, const char*
 			return tmedia_get_video_imageattr(TMEDIA_CODEC_VIDEO(codec)->pref_size,
 				TMEDIA_CODEC_VIDEO(codec)->in.width, TMEDIA_CODEC_VIDEO(codec)->in.height, TMEDIA_CODEC_VIDEO(codec)->out.width, TMEDIA_CODEC_VIDEO(codec)->out.height);
 		}
-	return tsk_null;
+		return tsk_null;
 }
 
 /* ============ VP8 object definition ================= */
@@ -752,8 +752,12 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 	/* vpx_codec_control(&self->encoder.context, VP8E_SET_STATIC_THRESHOLD, 800); */
 #if !TDAV_UNDER_MOBILE /* must not remove: crash on Android for sure and probably on iOS also (all ARM devices ?) */
 	vpx_codec_control(&self->encoder.context, VP8E_SET_NOISE_SENSITIVITY, 2);
+#elif TDAV_UNDER_WINDOWS_CE
+	vpx_codec_control(&self->encoder.context, VP8E_SET_NOISE_SENSITIVITY, 16);
+	vpx_codec_control(&self->encoder.context, VP8E_SET_CPUUSED, 16);
+	vpx_codec_control(&self->encoder.context, VP8E_SET_STATIC_THRESHOLD, 16);
+	vpx_codec_control(&self->encoder.context, VP8E_SET_SHARPNESS, 16);
 #endif
-	/* vpx_codec_control(&self->encoder.context, VP8E_SET_CPUUSED, 0); */
 
 	// Set number of partitions
 #if defined(VPX_CODEC_USE_OUTPUT_PARTITION)
@@ -780,8 +784,8 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
 		TSK_DEBUG_ERROR("Failed to create mutex");
 		return -4;
 	}
-    
-    self->encoder.frame_count = 0;
+
+	self->encoder.frame_count = 0;
 
 	self->encoder.initialized = tsk_true;
 
@@ -936,9 +940,9 @@ static void tdav_codec_vp8_encap(tdav_codec_vp8_t* self, const vpx_codec_cx_pkt_
 	while (index<pkt_size) {
 		if (part_start) {
 			/* PartID SHOULD be incremented for each subsequent partition,
-			  but MAY be kept at 0 for all packets.  PartID MUST NOT be larger
-			  than 8.
-			  */
+			but MAY be kept at 0 for all packets.  PartID MUST NOT be larger
+			than 8.
+			*/
 			part_ID++;
 		}
 		part_size = TSK_MIN(TDAV_VP8_RTP_PAYLOAD_MAX_SIZE, (pkt_size - index));
@@ -960,42 +964,42 @@ static void tdav_codec_vp8_rtp_callback(tdav_codec_vp8_t *self, const void *data
 	tsk_size_t paydesc_and_hdr_size = TDAV_VP8_PAY_DESC_SIZE;
 	tsk_bool_t has_hdr;
 	/* draft-ietf-payload-vp8-04 - 4.2. VP8 Payload Descriptor
-			 0 1 2 3 4 5 6 7
-			 +-+-+-+-+-+-+-+-+
-			 |X|R|N|S|PartID | (REQUIRED)
-			 +-+-+-+-+-+-+-+-+
-			 X:   |I|L|T|K| RSV   | (OPTIONAL)
-			 +-+-+-+-+-+-+-+-+
-			 I:   |M| PictureID   | (OPTIONAL)
-			 +-+-+-+-+-+-+-+-+
-			 L:   |   TL0PICIDX   | (OPTIONAL)
-			 +-+-+-+-+-+-+-+-+
-			 T/K: |TID|Y| KEYIDX  | (OPTIONAL)
-			 +-+-+-+-+-+-+-+-+
+	0 1 2 3 4 5 6 7
+	+-+-+-+-+-+-+-+-+
+	|X|R|N|S|PartID | (REQUIRED)
+	+-+-+-+-+-+-+-+-+
+	X:   |I|L|T|K| RSV   | (OPTIONAL)
+	+-+-+-+-+-+-+-+-+
+	I:   |M| PictureID   | (OPTIONAL)
+	+-+-+-+-+-+-+-+-+
+	L:   |   TL0PICIDX   | (OPTIONAL)
+	+-+-+-+-+-+-+-+-+
+	T/K: |TID|Y| KEYIDX  | (OPTIONAL)
+	+-+-+-+-+-+-+-+-+
 
-			 draft-ietf-payload-vp8-04 - 4.3. VP8 Payload Header
-			 0 1 2 3 4 5 6 7
-			 +-+-+-+-+-+-+-+-+
-			 |Size0|H| VER |P|
-			 +-+-+-+-+-+-+-+-+
-			 |     Size1     |
-			 +-+-+-+-+-+-+-+-+
-			 |     Size2     |
-			 +-+-+-+-+-+-+-+-+
-			 | Bytes 4..N of |
-			 | VP8 payload   |
-			 :               :
-			 +-+-+-+-+-+-+-+-+
-			 | OPTIONAL RTP  |
-			 | padding       |
-			 :               :
-			 +-+-+-+-+-+-+-+-+
-			 */
+	draft-ietf-payload-vp8-04 - 4.3. VP8 Payload Header
+	0 1 2 3 4 5 6 7
+	+-+-+-+-+-+-+-+-+
+	|Size0|H| VER |P|
+	+-+-+-+-+-+-+-+-+
+	|     Size1     |
+	+-+-+-+-+-+-+-+-+
+	|     Size2     |
+	+-+-+-+-+-+-+-+-+
+	| Bytes 4..N of |
+	| VP8 payload   |
+	:               :
+	+-+-+-+-+-+-+-+-+
+	| OPTIONAL RTP  |
+	| padding       |
+	:               :
+	+-+-+-+-+-+-+-+-+
+	*/
 
 	/*
-		Note that the header is present only in packets which have the S bit equal to one and the
-		PartID equal to zero in the payload descriptor.
-		*/
+	Note that the header is present only in packets which have the S bit equal to one and the
+	PartID equal to zero in the payload descriptor.
+	*/
 	if ((has_hdr = (part_start && partID == 0))) {
 		has_hdr = tsk_true;
 		paydesc_and_hdr_size += 0; // encoded data already contains payload header?

@@ -51,32 +51,48 @@
 #endif /* DDRAW_IS_ALIGNED */
 
 #if !defined(DDRAW_HIGH_PRIO_MEMCPY)
-#	define DDRAW_HIGH_PRIO_MEMCPY	0
+#	define DDRAW_HIGH_PRIO_MEMCPY	0 // BOOL
 #endif /* DDRAW_HIGH_PRIO_MEMCPY */
 
 #if !defined(DDRAW_CPU_MONITOR)
-#	define DDRAW_CPU_MONITOR	0
+#	define DDRAW_CPU_MONITOR	0 // BOOL
 #endif /* DDRAW_CPU_MONITOR */
 
-#if !defined(DDRAW_MEM_SURFACE_DIRECT_ACCESS)
-#	define DDRAW_MEM_SURFACE_DIRECT_ACCESS	0 // direct access to "ddsd.lpSurface" is very slow even if the memory is correctly aligned: to be investigated
-#endif /* DDRAW_MEM_SURFACE_DIRECT_ACCESS */
+#if !defined(DDRAW_CPU_THROTTLING)
+#	define DDRAW_CPU_THROTTLING		0 // BOOL
+#endif /* DDRAW_CPU_THROTTLING */
 
-#if DDRAW_CPU_MONITOR && !defined(DDRAW_CPU_MONITOR_TIME_OUT)
-#	define DDRAW_CPU_MONITOR_TIME_OUT	1000
+#if (DDRAW_CPU_MONITOR || DDRAW_CPU_THROTTLING) && !defined(DDRAW_CPU_SCHEDULE_TIMEOUT)
+#	define DDRAW_CPU_SCHEDULE_TIMEOUT	800 // millis
 #endif /* DDRAW_CPU_MONITOR */
+
+#if defined(DDRAW_CPU_THROTTLING) && !defined(DDRAW_CPU_THROTTLING_FPS_MIN)
+#	define DDRAW_CPU_THROTTLING_FPS_MIN	1 // frames per second
+#endif /* DDRAW_CPU_THROTTLING_FPS_MIN */
+
+#if defined(DDRAW_CPU_THROTTLING) && !defined(DDRAW_CPU_THROTTLING_THRESHOLD)
+#	define DDRAW_CPU_THROTTLING_THRESHOLD	70 // percent
+#endif /* DDRAW_CPU_THROTTLING_THRESHOLD */
+
+#if defined(DDRAW_CPU_THROTTLING) && !defined(DDRAW_CPU_THROTTLING_THRESHOLD_MARGIN)
+#	define DDRAW_CPU_THROTTLING_THRESHOLD_MARGIN	5 // percent
+#endif /* DDRAW_CPU_THROTTLING_THRESHOLD_MARGIN */
 
 #if !defined(DDRAW_MT)
-#	define DDRAW_MT	0 // Multi-threading
+#	define DDRAW_MT	1 // BOOL: Multi-threading
 #endif /* DDRAW_MT */
 
 #if defined (DDRAW_MT) && !defined(DDRAW_MT_COUNT)
-#	define DDRAW_MT_COUNT 4 // Number of buffers to use
+#	define DDRAW_MT_COUNT 3 // Number of buffers to use
 #endif /* DDRAW_MT_COUNT */
 
 #if defined(DDRAW_MT_COUNT)
 #	define DDRAW_MT_EVENT_SHUTDOWN_INDEX	DDRAW_MT_COUNT
 #endif
+
+#if !defined(DDRAW_MEM_SURFACE_DIRECT_ACCESS)
+#	define DDRAW_MEM_SURFACE_DIRECT_ACCESS	0 // direct access to "ddsd.lpSurface" is very slow even if the memory is correctly aligned: to be investigated
+#endif /* DDRAW_MEM_SURFACE_DIRECT_ACCESS */
 
 #if !defined(DDRAW_PREVIEW)
 #	if TDAV_UNDER_WINDOWS_CE && (BUILD_TYPE_GE || SIN_CITY)
@@ -111,10 +127,13 @@ typedef struct tdav_producer_screencast_ddraw_s
 	BITMAPINFO bi_preview;
 #endif /* DDRAW_PREVIEW */
 
-#if DDRAW_CPU_MONITOR
+#if DDRAW_CPU_MONITOR || DDRAW_CPU_THROTTLING
 	tsk_timer_manager_handle_t *p_timer_mgr;
-	tsk_timer_id_t id_timer_cpu;
-#endif /* DDRAW_CPU_MONITOR */
+	struct {
+		tsk_timer_id_t id_timer;
+		int fps_target;
+	} cpu;
+#endif /* DDRAW_CPU_MONITOR || DDRAW_CPU_THROTTLING */
 
 #if DDRAW_MT
 	struct{
@@ -740,11 +759,15 @@ static int _tdav_producer_screencast_ddraw_prepare(tmedia_producer_t* p_self, co
 	p_ddraw->bi_preview.bmiHeader.biSizeImage = (p_ddraw->bi_preview.bmiHeader.biWidth * p_ddraw->bi_preview.bmiHeader.biHeight * (p_ddraw->bi_preview.bmiHeader.biBitCount >> 3));
 #endif /* DDRAW_PREVIEW */
 
-#if DDRAW_CPU_MONITOR
+#if DDRAW_CPU_MONITOR || DDRAW_CPU_THROTTLING
 	if (!p_ddraw->p_timer_mgr) {
 		p_ddraw->p_timer_mgr = tsk_timer_manager_create();
 	}
-#endif /* DDRAW_CPU_MONITOR */
+#endif /* DDRAW_CPU_MONITOR ||DDRAW_CPU_THROTTLING */
+
+#if DDRAW_CPU_THROTTLING
+	p_ddraw->cpu.fps_target = (TMEDIA_PRODUCER(p_ddraw)->video.fps + DDRAW_CPU_THROTTLING_FPS_MIN) >> 1; // start with minimum fps and increase the value based on the fps
+#endif /* DDRAW_CPU_THROTTLING */
 
 bail:
 	tsk_safeobj_unlock(p_ddraw);
@@ -807,16 +830,16 @@ static int _tdav_producer_screencast_ddraw_start(tmedia_producer_t* p_self)
 	}
 #endif /* DDRAW_MT */
 #endif /* DDRAW_HIGH_PRIO_MEMCPY */
-#if DDRAW_CPU_MONITOR
+#if DDRAW_CPU_MONITOR || DDRAW_CPU_THROTTLING
 	ret = tsk_timer_manager_start(p_ddraw->p_timer_mgr);
 	if (ret == 0) {
-		p_ddraw->id_timer_cpu = tsk_timer_manager_schedule(p_ddraw->p_timer_mgr, DDRAW_CPU_MONITOR_TIME_OUT, _tdav_producer_screencast_timer_cb, p_ddraw);
+		p_ddraw->cpu.id_timer = tsk_timer_manager_schedule(p_ddraw->p_timer_mgr, DDRAW_CPU_SCHEDULE_TIMEOUT, _tdav_producer_screencast_timer_cb, p_ddraw);
 	}
 	else {
 		ret = 0; // not fatal error
 		DDRAW_DEBUG_WARN("Failed to start CPU timer");
 	}
-#endif /* DDRAW_CPU_MONITOR */
+#endif /* DDRAW_CPU_MONITOR || DDRAW_CPU_THROTTLING */
 
 bail:
 	if (ret) {
@@ -874,11 +897,11 @@ static int _tdav_producer_screencast_ddraw_stop(tmedia_producer_t* p_self)
 	p_ddraw->b_started = tsk_false;
 	p_ddraw->b_paused = tsk_false;
 
-#if DDRAW_CPU_MONITOR
+#if DDRAW_CPU_MONITOR || DDRAW_CPU_THROTTLING
 	if (p_ddraw->p_timer_mgr) {
 		tsk_timer_manager_stop(p_ddraw->p_timer_mgr);
 	}
-#endif /* DDRAW_CPU_MONITOR */
+#endif /* DDRAW_CPU_MONITOR ||DDRAW_CPU_THROTTLING */
 
 	// stop grabber thread
 	if (p_ddraw->tid[0]) {
@@ -933,6 +956,16 @@ static int _tdav_producer_screencast_grab(tdav_producer_screencast_ddraw_t* p_se
 		DDRAW_CHECK_HR(hr = E_FAIL);
 #endif
 	}
+
+#if DDRAW_MT
+	{
+		INT iIndex = 0;
+		for (; (iIndex < DDRAW_MT_COUNT) && (p_self->mt.b_flags_array[iIndex] == TRUE); ++iIndex);
+		if (iIndex == DDRAW_MT_COUNT) {
+			goto bail;
+		}
+	}
+#endif /* DDRAW_MT */
 
 	if (p_self->p_surf_primary->IsLost() == DDERR_SURFACELOST) {
 		DDRAW_CHECK_HR(hr = p_self->p_surf_primary->Restore());
@@ -1274,15 +1307,19 @@ bail:
 static void* TSK_STDCALL _tdav_producer_screencast_grap_thread(void *arg)
 {
 	tdav_producer_screencast_ddraw_t* p_ddraw = (tdav_producer_screencast_ddraw_t*)arg;
+	tmedia_producer_t* p_base = TMEDIA_PRODUCER(arg);
 	int ret = 0;
 
 	// FPS manager
 	uint64_t TimeNow, TimeLastFrame = 0;
-	const uint64_t TimeFrameDuration = (1000 / TMEDIA_PRODUCER(p_ddraw)->video.fps);
+	uint64_t TimeFrameDuration = (1000 / p_base->video.fps);
 
 	DDRAW_DEBUG_INFO("Grab thread -- START");
 
 	while (ret == 0 && p_ddraw->b_started) {
+#if DDRAW_CPU_THROTTLING
+		TimeFrameDuration = (1000 / p_ddraw->cpu.fps_target);
+#endif /* DDRAW_CPU_THROTTLING */
 		TimeNow = tsk_time_now();
 		if ((TimeNow - TimeLastFrame) > TimeFrameDuration) {
 			if (!p_ddraw->b_muted && !p_ddraw->b_paused) {
@@ -1331,6 +1368,7 @@ static void* TSK_STDCALL _tdav_producer_screencast_mt_encode_thread(void *arg)
 			DDRAW_DEBUG_ERROR("Invalid b_flags_array(%d)", dwIndex);
 			break;
 		}
+
 		p_base->enc_cb.callback(p_base->enc_cb.callback_data, p_ddraw->mt.p_buff_yuv_aligned_array[dwIndex], p_ddraw->n_buff_yuv);
 		p_ddraw->mt.b_flags_array[dwIndex] = FALSE;
 	}
@@ -1339,9 +1377,42 @@ static void* TSK_STDCALL _tdav_producer_screencast_mt_encode_thread(void *arg)
 }
 #endif /* DDRAW_MT */
 
-#if DDRAW_CPU_MONITOR
-static unsigned long long FileTimeToInt64(const FILETIME & ft) {
+#if DDRAW_CPU_MONITOR || DDRAW_CPU_THROTTLING
+static unsigned long long FileTimeToInt64(const FILETIME & ft)
+{
 	return (((unsigned long long)(ft.dwHighDateTime))<<32) | ((unsigned long long)ft.dwLowDateTime);
+}
+static BOOL GetCpuPercents(unsigned long long* PercentIdle, unsigned long long* PercentUsage)
+{
+	static unsigned long long _prevTicks = 0;
+	static unsigned long long _prevIdleTime = 0;
+	unsigned long long ticks, idleTime;
+	BOOL bSaveValues = FALSE, bSet = FALSE;
+#if TDAV_UNDER_WINDOWS_CE
+	bSaveValues = TRUE;
+	ticks = GetTickCount();
+	idleTime = GetIdleTime();
+#else
+	{
+		FILETIME _idleTime, _kernelTime, _userTime;
+		if (GetSystemTimes(&_idleTime, &_kernelTime, &_userTime)) {
+			idleTime = FileTimeToInt64(_idleTime);
+			ticks = FileTimeToInt64(_kernelTime) + FileTimeToInt64(_userTime);
+			bSaveValues = TRUE;
+		}
+	}
+#endif
+	if (_prevTicks > 0) {
+		*PercentIdle = ((100 * (idleTime - _prevIdleTime)) / (ticks - _prevTicks));
+		*PercentUsage = 100 - *PercentIdle;
+		bSet = TRUE;
+	}
+	if (bSaveValues) {
+		_prevTicks = ticks;
+		_prevIdleTime = idleTime;
+	}
+
+	return bSet;
 }
 
 static int _tdav_producer_screencast_timer_cb(const void* arg, tsk_timer_id_t timer_id)
@@ -1353,43 +1424,37 @@ static int _tdav_producer_screencast_timer_cb(const void* arg, tsk_timer_id_t ti
 		return 0;
 	}
 
-    if (p_ddraw->id_timer_cpu == timer_id) {
-		static unsigned long long _prevTicks = 0;
-		static unsigned long long _prevIdleTime = 0;
-		unsigned long long ticks, idleTime, PercentIdle, PercentUsage;
-		BOOL bSaveValues = FALSE;
-#if TDAV_UNDER_WINDOWS_CE
-		bSaveValues = TRUE;
-		ticks = GetTickCount();
-		idleTime = GetIdleTime();
-#else
-		{
-			FILETIME _idleTime, _kernelTime, _userTime;
-			if (GetSystemTimes(&_idleTime, &_kernelTime, &_userTime)) {
-				idleTime = FileTimeToInt64(_idleTime);
-				ticks = FileTimeToInt64(_kernelTime) + FileTimeToInt64(_userTime);
-				bSaveValues = TRUE;
-			}
-		}
-#endif
-		if (_prevTicks > 0) {
-			PercentIdle = ((100 * (idleTime - _prevIdleTime)) / (ticks - _prevTicks));
-			PercentUsage = 100 - PercentIdle;
+    if (p_ddraw->cpu.id_timer == timer_id) {
+		unsigned long long PercentIdle, PercentUsage;
+		if (GetCpuPercents(&PercentIdle, &PercentUsage) == TRUE) {
 			TSK_DEBUG_INFO("\n\n****\n\nCPU Usage = %lld\n\n***", PercentUsage);
-		}
-		if (bSaveValues) {
-			_prevTicks = ticks;
-			_prevIdleTime = idleTime;
+#if DDRAW_CPU_THROTTLING
+			{
+				if ((PercentUsage + DDRAW_CPU_THROTTLING_THRESHOLD_MARGIN) > DDRAW_CPU_THROTTLING_THRESHOLD) {
+					unsigned long long NewTargetPercentUsage = TSK_CLAMP(DDRAW_CPU_THROTTLING_THRESHOLD_MARGIN, DDRAW_CPU_THROTTLING_THRESHOLD - DDRAW_CPU_THROTTLING_THRESHOLD_MARGIN, INT_MAX);
+					int NewTargetFps = (int)((NewTargetPercentUsage * p_ddraw->cpu.fps_target) / PercentUsage);
+					NewTargetFps = TSK_CLAMP(DDRAW_CPU_THROTTLING_FPS_MIN, NewTargetFps, TMEDIA_PRODUCER(p_ddraw)->video.fps);
+					TSK_DEBUG_INFO("\n\n****\n\nCPU throttling = (%lld+%d)>%d, NewTargetPercentUsage=%lld, NewTargetFps=%d\n\n***", 
+						PercentUsage, DDRAW_CPU_THROTTLING_THRESHOLD_MARGIN, DDRAW_CPU_THROTTLING_THRESHOLD, NewTargetPercentUsage, NewTargetFps);
+					p_ddraw->cpu.fps_target = NewTargetFps;
+				}
+				else if (PercentUsage < DDRAW_CPU_THROTTLING_THRESHOLD) {
+					if ((p_ddraw->cpu.fps_target + DDRAW_CPU_THROTTLING_THRESHOLD_MARGIN) < TMEDIA_PRODUCER(p_ddraw)->video.fps) { // not honoring the negotiated fps yet?
+						p_ddraw->cpu.fps_target += 1; // TODO: this is ok only if the timer timeout is set to 1s or less
+					}
+				}
+			}
+#endif /* DDRAW_CPU_THROTTLING */
 		}
 
 		if (p_ddraw->b_started) {
-			p_ddraw->id_timer_cpu = tsk_timer_manager_schedule(p_ddraw->p_timer_mgr, DDRAW_CPU_MONITOR_TIME_OUT, _tdav_producer_screencast_timer_cb, p_ddraw);
+			p_ddraw->cpu.id_timer = tsk_timer_manager_schedule(p_ddraw->p_timer_mgr, DDRAW_CPU_SCHEDULE_TIMEOUT, _tdav_producer_screencast_timer_cb, p_ddraw);
 		}
     }
     return 0;
 }
 
-#endif /* DDRAW_CPU_MONITOR */
+#endif /* DDRAW_CPU_MONITOR || DDRAW_CPU_THROTTLING */
 
 //
 //	ddraw screencast producer object definition
@@ -1424,11 +1489,11 @@ static tsk_object_t* _tdav_producer_screencast_ddraw_dtor(tsk_object_t * self)
 		/* deinit base */
 		tmedia_producer_deinit(TMEDIA_PRODUCER(p_ddraw));
 		/* deinit self */
-#if DDRAW_CPU_MONITOR
+#if DDRAW_CPU_MONITOR || DDRAW_CPU_THROTTLING
 		if (p_ddraw->p_timer_mgr) {
 			tsk_timer_manager_destroy(&p_ddraw->p_timer_mgr);
 		}
-#endif /* DDRAW_CPU_MONITOR */
+#endif /* DDRAW_CPU_MONITOR || DDRAW_CPU_THROTTLING */
 #if DDRAW_MT
 		for (int i = 0; i < sizeof(p_ddraw->mt.p_buff_yuv_aligned_array) / sizeof(p_ddraw->mt.p_buff_yuv_aligned_array[0]); ++i) {
 			TSK_FREE_ALIGNED(p_ddraw->mt.p_buff_yuv_aligned_array[i]);
