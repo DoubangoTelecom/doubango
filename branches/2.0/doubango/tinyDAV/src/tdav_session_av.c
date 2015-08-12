@@ -765,6 +765,9 @@ int tdav_session_av_stop(tdav_session_av_t* self)
         }
     }
     
+    self->bytes_in.count_last_time = self->bytes_out.count_last_time = 0;
+    self->bytes_in.count = self->bytes_out.count = 0;
+    
     return ret;
 }
 

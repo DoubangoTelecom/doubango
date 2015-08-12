@@ -490,7 +490,7 @@ bail:
 tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, tsk_size_t size)
 {
     tnet_transport_t *transport = (tnet_transport_t*)handle;
-    int numberOfBytesSent = 0;
+    int numberOfBytesSent = 0, ret;
     
     if (!transport) {
         TSK_DEBUG_ERROR("Invalid server handle");
@@ -502,9 +502,17 @@ tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_
         goto bail;
     }
     
-    if ((numberOfBytesSent = (int)sendto(from, buf, size, 0, to, tnet_get_sockaddr_size(to))) < size) {
-        TNET_PRINT_LAST_ERROR("sendto have failed");
-        goto bail;
+    while (numberOfBytesSent < size && (ret = (int)sendto(from, buf, size, 0, to, tnet_get_sockaddr_size(to))) >= 0) {
+        numberOfBytesSent += ret;
+    }
+    if (numberOfBytesSent < size) {
+        if (tnet_geterrno() == TNET_ERROR_BROKENPIPE) {
+            TSK_DEBUG_INFO("UDP socket with fd=%d returned EPIPE...alerting the sender with 'event_brokenpipe' event", from);
+            TSK_RUNNABLE_ENQUEUE(transport, event_brokenpipe, transport->callback_data, from);
+        }
+        else {
+            TNET_PRINT_LAST_ERROR("sendto(fd=%d) have failed", from);
+        }
     }
     
 bail:

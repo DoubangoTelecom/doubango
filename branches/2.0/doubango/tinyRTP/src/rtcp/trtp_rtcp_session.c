@@ -38,6 +38,7 @@
 
 #include "ice/tnet_ice_ctx.h"
 #include "turn/tnet_turn_session.h"
+#include "tnet_transport.h"
 
 #include "tnet_utils.h"
 
@@ -268,8 +269,9 @@ typedef struct trtp_rtcp_session_s
 	
 	tsk_bool_t is_started;
 	tnet_fd_t local_fd;
+    struct tnet_transport_s* transport; // not starter -> do not stop
 	const struct sockaddr * remote_addr;
-	struct tnet_ice_ctx_s* ice_ctx;
+	struct tnet_ice_ctx_s* ice_ctx; // not starter -> do not stop
 	tsk_bool_t is_ice_turn_active;
 
 	const void* callback_data;
@@ -355,8 +357,9 @@ static tsk_object_t* trtp_rtcp_session_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(session->sources);
 		TSK_OBJECT_SAFE_FREE(session->source_local);
 		TSK_OBJECT_SAFE_FREE(session->sdes);
-		TSK_OBJECT_SAFE_FREE(session->ice_ctx);
+		TSK_OBJECT_SAFE_FREE(session->ice_ctx); // not starter -> do not stop
 		TSK_FREE(session->cname);
+        TSK_OBJECT_SAFE_FREE(session->transport); // not starter -> do not stop
 		// release the handle for the global timer manager
 		tsk_timer_mgr_global_unref(&session->timer.handle_global);
 
@@ -765,6 +768,36 @@ int trtp_rtcp_session_signal_jb_error(struct trtp_rtcp_session_s* self, uint32_t
 	return trtp_rtcp_session_signal_frame_corrupted(self, ssrc_media);
 }
 
+tnet_fd_t trtp_rtcp_session_get_local_fd(const struct trtp_rtcp_session_s* self)
+{
+    if (!self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return TNET_INVALID_FD;
+    }
+    return self->local_fd;
+}
+
+int trtp_rtcp_session_set_local_fd(struct trtp_rtcp_session_s* self, tnet_fd_t local_fd)
+{
+    if (!self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    self->local_fd = local_fd;
+    return 0;
+}
+
+int trtp_rtcp_session_set_net_transport(struct trtp_rtcp_session_s* self, struct tnet_transport_s* transport)
+{
+    if (!self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    TSK_OBJECT_SAFE_FREE(self->transport);
+    self->transport = tsk_object_ref(transport);
+    return 0;
+}
+
 static tsk_bool_t _trtp_rtcp_session_have_source(trtp_rtcp_session_t* self, uint32_t ssrc)
 {
 	tsk_list_item_t* item;
@@ -925,9 +958,9 @@ static tsk_size_t _trtp_rtcp_session_send_raw(trtp_rtcp_session_t* self, const v
 		ret = (tnet_ice_ctx_send_turn_rtcp(self->ice_ctx, data, size) == 0) ? size : 0; // returns #0 if ok
 	}
 	else {
-		if (tnet_sockfd_sendto(self->local_fd, self->remote_addr, data, size) == size){ // returns number of sent bytes
-			ret = size;
-		}
+        ret = self->transport
+        ? tnet_transport_sendto(self->transport, self->local_fd, self->remote_addr, data, size)
+        : tnet_sockfd_sendto(self->local_fd, self->remote_addr, data, size);
 	}
 	return ret;
 }

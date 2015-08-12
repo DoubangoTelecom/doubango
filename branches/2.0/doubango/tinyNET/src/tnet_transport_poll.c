@@ -237,6 +237,7 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
 	}
 
 bail:
+    transport->bytes_out += numberOfBytesSent;
 	return numberOfBytesSent;
 }
 
@@ -261,6 +262,7 @@ tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_
 	}
 		
 bail:
+    transport->bytes_out += numberOfBytesSent;
 	return numberOfBytesSent;
 }
 
@@ -811,6 +813,7 @@ void *tnet_transport_mainthread(void *param)
 				}
 					
 				if(len > 0){
+                    transport->bytes_in += len;
 					e = tnet_transport_event_create(event_data, transport->callback_data, active_socket->fd);
 					e->data = buffer, buffer = tsk_null;
 					e->size = len;

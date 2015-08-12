@@ -77,6 +77,8 @@ typedef char tnet_ip_t[INET6_ADDRSTRLEN];
 typedef uint8_t tnet_mac_address[6];
 typedef unsigned char tnet_fingerprint_t[TNET_FINGERPRINT_MAX + 1];
 
+typedef void tnet_transport_handle_t;
+
 typedef tsk_list_t tnet_interfaces_L_t; /**< List of @ref tnet_interface_t elements*/
 typedef tsk_list_t tnet_addresses_L_t; /**< List of @ref tnet_address_t elements*/
 
@@ -132,6 +134,7 @@ static const char* TNET_DTLS_HASH_NAMES[TNET_DTLS_HASH_TYPE_MAX] =
 #	define TNET_ERROR_INTR					WSAEINTR
 #	define TNET_ERROR_ISCONN				WSAEISCONN
 #	define TNET_ERROR_EAGAIN				TNET_ERROR_WOULDBLOCK /* WinSock FIX */
+#	define TNET_ERROR_BROKENPIPE            WSAECONNABORTED
 #	if (TNET_UNDER_WINDOWS_RT || TNET_UNDER_WINDOWS_CE) /* gai_strerrorA() links against FormatMessageA which is not allowed on the store */
 #		if !defined (WC_ERR_INVALID_CHARS)
 #			define WC_ERR_INVALID_CHARS 0
@@ -163,6 +166,7 @@ static const char* TNET_DTLS_HASH_NAMES[TNET_DTLS_HASH_TYPE_MAX] =
 #	define TNET_ERROR_INTR					EINTR
 #	define TNET_ERROR_ISCONN				EISCONN
 #	define TNET_ERROR_EAGAIN				EAGAIN
+#	define TNET_ERROR_BROKENPIPE            EPIPE
 #	define tnet_gai_strerror				gai_strerror
 #endif
 #define TNET_INVALID_FD				TNET_INVALID_SOCKET

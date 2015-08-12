@@ -723,6 +723,17 @@ tnet_fd_t tnet_transport_get_master_fd(const tnet_transport_handle_t *handle)
     return ((const tnet_transport_t *)handle)->master ? ((const tnet_transport_t *)handle)->master->fd : TNET_INVALID_FD;
 }
 
+int tnet_transport_get_bytes_count(const tnet_transport_handle_t *handle, uint64_t* bytes_in, uint64_t* bytes_out)
+{
+    if (!handle){
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    if (bytes_in) *bytes_in = ((const tnet_transport_t *)handle)->bytes_in;
+    if (bytes_out) *bytes_out = ((const tnet_transport_t *)handle)->bytes_out;
+    return 0;
+}
+
 /**
  * Connects a socket.
  * @param handle The transport to use to connect() the socket. The new socket will be managed by this transport.

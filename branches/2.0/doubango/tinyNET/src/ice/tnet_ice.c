@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2010-2011 Mamadou Diop.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Copyright (C) 2010-2015 Mamadou DIOP
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,8 +23,5 @@
  *			http://tools.ietf.org/html/draft-ietf-mmusic-ice-19
  *			http://tools.ietf.org/html/draft-ietf-mmusic-ice-tcp-08
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
-
  */
 #include "tnet_ice.h"

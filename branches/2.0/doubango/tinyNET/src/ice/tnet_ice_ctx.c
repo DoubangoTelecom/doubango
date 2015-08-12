@@ -997,6 +997,26 @@ int tnet_ice_ctx_send_turn_rtcp(struct tnet_ice_ctx_s* self, const void* data, t
     : _tnet_ice_ctx_send_turn_raw(self, self->turn.ss_nominated_rtcp, self->turn.peer_id_rtcp, data, size);
 }
 
+int tnet_ice_ctx_turn_get_bytes_count(const struct tnet_ice_ctx_s* self, uint64_t* bytes_in, uint64_t* bytes_out)
+{
+    int ret;
+    
+    if (!self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    ret = tnet_turn_session_get_bytes_count(self->turn.ss_nominated_rtp, bytes_in, bytes_out);
+    if (ret == 0 && !self->use_rtcpmux) {
+        uint64_t _bytes_in, _bytes_out;
+        ret = tnet_turn_session_get_bytes_count(self->turn.ss_nominated_rtcp, &_bytes_in, &_bytes_out);
+        if (ret == 0) {
+            if (bytes_in) *bytes_in += _bytes_in;
+            if (bytes_out) *bytes_out += _bytes_out;
+        }
+    }
+    return ret;
+}
+
 const char* tnet_ice_ctx_get_ufrag(const struct tnet_ice_ctx_s* self)
 {
     return (self && self->ufrag) ? self->ufrag : tsk_null;
