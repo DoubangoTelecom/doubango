@@ -41,8 +41,6 @@ TNET_BEGIN_DECLS
 
 #define TNET_TRANSPORT_CB_F(callback)							((tnet_transport_cb_f)callback)
 
-typedef void tnet_transport_handle_t;
-
 typedef enum tnet_transport_event_type_e
 {
 	event_data,
@@ -51,6 +49,7 @@ typedef enum tnet_transport_event_type_e
 	event_removed,
 	event_connected,
 	event_accepted,
+    event_brokenpipe, // iOS: UDP sockets closed, to be restored now that the app is on foreground
 
 	event_dtls_handshake_started,
 	event_dtls_handshake_succeed,
@@ -121,6 +120,7 @@ TINYNET_API int tnet_transport_dtls_get_handshakingdata(tnet_transport_handle_t*
 
 TINYNET_API tnet_socket_type_t tnet_transport_get_type(const tnet_transport_handle_t *handle);
 TINYNET_API tnet_fd_t tnet_transport_get_master_fd(const tnet_transport_handle_t *handle);
+TINYNET_API int tnet_transport_get_bytes_count(const tnet_transport_handle_t *handle, uint64_t* bytes_in, uint64_t* bytes_out);
 TINYNET_API int tnet_transport_shutdown(tnet_transport_handle_t* handle);
 
 typedef struct tnet_transport_s
@@ -137,6 +137,9 @@ typedef struct tnet_transport_s
 
 	tsk_object_t *context;
 	tsk_bool_t prepared;
+    
+    uint64_t bytes_out;
+    uint64_t bytes_in;
 
 	//unsigned connected:1;
 	void* mainThreadId[1];

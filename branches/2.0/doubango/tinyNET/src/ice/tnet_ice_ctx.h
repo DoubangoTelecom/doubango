@@ -1,7 +1,5 @@
 /*
-* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>.
-*
-* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
+* Copyright (C) 2012-2015 Doubango Telecom <http://www.doubango.org>.
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,7 +20,6 @@
 
 /**@file tnet_ice_ctx.h
  * @brief Interactive Connectivity Establishment (ICE) implementation as per RFC 5245.
- * @author Mamadou Diop <diopmamadou(at)doubango[dot]org>
  */
 
 #ifndef TNET_ICE_CTX_H
@@ -100,6 +97,7 @@ TINYNET_API int tnet_ice_ctx_recv_stun_message(struct tnet_ice_ctx_s* self, cons
 TINYNET_API int tnet_ice_ctx_send_turn_rtp(struct tnet_ice_ctx_s* self, const void* data, tsk_size_t size);
 TINYNET_API int tnet_ice_ctx_send_turn_rtcp(struct tnet_ice_ctx_s* self, const void* data, tsk_size_t size);
 
+TINYNET_API int tnet_ice_ctx_turn_get_bytes_count(const struct tnet_ice_ctx_s* self, uint64_t* bytes_in, uint64_t* bytes_out);
 TINYNET_API const char* tnet_ice_ctx_get_ufrag(const struct tnet_ice_ctx_s* self);
 TINYNET_API const char* tnet_ice_ctx_get_pwd(const struct tnet_ice_ctx_s* self);
 

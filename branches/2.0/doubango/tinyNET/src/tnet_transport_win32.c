@@ -285,6 +285,7 @@ try_again:
 	}
 
 bail:
+    transport->bytes_out += sent;
 	return sent;
 }
 
@@ -312,6 +313,7 @@ tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_
 	}
 
 bail:
+    transport->bytes_out += numberOfBytesSent;
 	return numberOfBytesSent;
 }
 
@@ -739,6 +741,7 @@ void* TSK_STDCALL tnet_transport_mainthread(void *param)
 			else
 			{
 				tnet_transport_event_t* e = tnet_transport_event_create(event_data, transport->callback_data, active_socket->fd);
+                transport->bytes_in += wsaBuffer.len;
 				e->data = wsaBuffer.buf;
 				e->size = wsaBuffer.len;
 				e->remote_addr = remote_addr;

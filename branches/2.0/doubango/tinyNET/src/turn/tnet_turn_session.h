@@ -87,6 +87,7 @@ TINYNET_API int tnet_turn_session_get_socket_local(struct tnet_turn_session_s* p
 TINYNET_API int tnet_turn_session_get_state_createperm(const struct tnet_turn_session_s* pc_self, tnet_turn_peer_id_t u_peer_id, enum tnet_stun_state_e *pe_state);
 TINYNET_API int tnet_turn_session_get_state_connbind(const struct tnet_turn_session_s* pc_self, tnet_turn_peer_id_t u_peer_id, enum tnet_stun_state_e *pe_state);
 TINYNET_API int tnet_turn_session_get_req_transport(const struct tnet_turn_session_s* pc_self, enum tnet_turn_transport_e *pe_transport);
+TINYNET_API int tnet_turn_session_get_bytes_count(const struct tnet_turn_session_s* pc_self, uint64_t* bytes_in, uint64_t* bytes_out);
 TINYNET_API int tnet_turn_session_createpermission(struct tnet_turn_session_s* p_self, const char* pc_peer_addr, uint16_t u_peer_port, tnet_turn_peer_id_t* pu_peer_id);
 TINYNET_API int tnet_turn_session_deletepermission(struct tnet_turn_session_s* p_self, tnet_turn_peer_id_t u_peer_id);
 TINYNET_API int tnet_turn_session_chanbind(struct tnet_turn_session_s* p_self, tnet_turn_peer_id_t u_peer_id);

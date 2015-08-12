@@ -780,6 +780,15 @@ int tnet_turn_session_get_req_transport(const struct tnet_turn_session_s* pc_sel
 	return 0;
 }
 
+int tnet_turn_session_get_bytes_count(const struct tnet_turn_session_s* pc_self, uint64_t* bytes_in, uint64_t* bytes_out)
+{
+    if (!pc_self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    return tnet_transport_get_bytes_count(pc_self->p_transport, bytes_in, bytes_out);
+}
+
 int tnet_turn_session_createpermission(struct tnet_turn_session_s* p_self, const char* pc_peer_addr, uint16_t u_peer_port, tnet_turn_peer_id_t* pu_id)
 {
 	int ret = 0;
@@ -2022,6 +2031,22 @@ static int _tnet_turn_session_transport_layer_process_cb(const tnet_transport_ev
 	switch(e->type){
 		case event_data:
 			break;
+        case event_brokenpipe:
+            tsk_safeobj_lock(p_ss);
+            if (p_ss->p_lcl_sock && e->local_fd == p_ss->p_lcl_sock->fd) {
+                tnet_fd_t broken_fd = e->local_fd;
+                tsk_bool_t registered_fd = !!tnet_transport_have_socket(p_ss->p_transport, broken_fd);
+                if (registered_fd) {
+                    tnet_transport_remove_socket(p_ss->p_transport, &broken_fd);
+                }
+                if (tnet_socket_handle_brokenpipe(p_ss->p_lcl_sock) == 0) {
+                    if (registered_fd) {
+                        tnet_transport_add_socket(p_ss->p_transport, p_ss->p_lcl_sock->fd, p_ss->p_lcl_sock->type, tsk_false/* do not take ownership */, tsk_true/* only Meaningful for tls*/, tsk_null);
+                    }
+                }
+            }
+            tsk_safeobj_unlock(p_ss);
+            return 0;
 		case event_connected:
 			if (p_ss->p_lcl_sock && p_ss->p_lcl_sock->fd == e->local_fd) {
                 tsk_safeobj_lock(p_ss);

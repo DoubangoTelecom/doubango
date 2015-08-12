@@ -41,6 +41,7 @@ TRTP_BEGIN_DECLS
 struct trtp_rtcp_packet_s;
 struct trtp_rtp_packet_s;
 struct tnet_ice_ctx_s;
+struct tnet_transport_s;
 
 typedef int (*trtp_rtcp_cb_f)(const void* callback_data, const struct trtp_rtcp_packet_s* packet);
 
@@ -59,6 +60,10 @@ int trtp_rtcp_session_process_rtcp_in(struct trtp_rtcp_session_s* self, const vo
 int trtp_rtcp_session_signal_pkt_loss(struct trtp_rtcp_session_s* self, uint32_t ssrc_media, const uint16_t* seq_nums, tsk_size_t count);
 int trtp_rtcp_session_signal_frame_corrupted(struct trtp_rtcp_session_s* self, uint32_t ssrc_media);
 int trtp_rtcp_session_signal_jb_error(struct trtp_rtcp_session_s* self, uint32_t ssrc_media);
+
+tnet_fd_t trtp_rtcp_session_get_local_fd(const struct trtp_rtcp_session_s* self);
+int trtp_rtcp_session_set_local_fd(struct trtp_rtcp_session_s* self, tnet_fd_t local_fd);
+int trtp_rtcp_session_set_net_transport(struct trtp_rtcp_session_s* self, struct tnet_transport_s* transport);
 
 TRTP_END_DECLS
 

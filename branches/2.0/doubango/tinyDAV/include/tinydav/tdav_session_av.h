@@ -58,7 +58,15 @@ typedef struct tdav_session_av_s
 
 	tmedia_srtp_type_t srtp_type;
 	tmedia_srtp_mode_t srtp_mode;
-
+    struct {
+        uint64_t count_last_time;
+        uint64_t count;
+    } bytes_in;
+    struct {
+        uint64_t count_last_time;
+        uint64_t count;
+    } bytes_out;
+    uint64_t time_last_frame_loss_report; // from jb
 	int32_t bandwidth_max_upload_kbps;
 	int32_t bandwidth_max_download_kbps;
 	int32_t fps;

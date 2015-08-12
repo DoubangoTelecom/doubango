@@ -1804,14 +1804,14 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 #endif
         if (ret <= 0) {
             if (tnet_geterrno() == TNET_ERROR_WOULDBLOCK) {
-                TSK_DEBUG_INFO("SendUdp() - WouldBlock. Retrying...");
+                TSK_DEBUG_INFO("SendUdp(fd=%d) - WouldBlock. Retrying...", fd);
                 if (try_guard--) {
                     tsk_thread_sleep(10);
                     goto try_again;
                 }
             }
             else {
-                TNET_PRINT_LAST_ERROR("sendto() failed");
+                TNET_PRINT_LAST_ERROR("sendto(fd=%d) failed", fd);
             }
             goto bail;
         }

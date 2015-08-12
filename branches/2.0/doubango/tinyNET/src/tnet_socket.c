@@ -252,6 +252,42 @@ int tnet_socket_send_stream(tnet_socket_t* self, const void* data, tsk_size_t si
 }
 
 /**@ingroup tnet_socket_group
+ * @retval	Zero if succeed and nonzero error code otherwise.
+ */
+int tnet_socket_handle_brokenpipe(tnet_socket_t* self)
+{
+    int ret;
+    tnet_fd_t fd_old, fd_new;
+    if (!self || !TNET_SOCKET_TYPE_IS_DGRAM(self->type)) { // Must be UDP
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    fd_old = self->fd;
+    fd_new = TNET_INVALID_FD;
+    
+    // close old fd
+    ret = tnet_sockfd_close(&self->fd);
+    // try to create an fd binding to the same address
+    if ((ret = tnet_sockfd_init(self->ip, self->port, self->type, &fd_new)) != 0) {
+        TNET_PRINT_LAST_ERROR("Find to bind to %s:%d", self->ip, self->port);
+        // TODO: Create completly new socket?
+        return ret;
+    }
+#if TNET_UNDER_IPHONE || TNET_UNDER_IPHONE_SIMULATOR
+    /* disable SIGPIPE signal */
+    {
+        int yes = 1;
+        if (setsockopt(fd_new, SOL_SOCKET, SO_NOSIGPIPE, (char*)&yes, sizeof(int))){
+            TNET_PRINT_LAST_ERROR("setsockopt(%d, SO_NOSIGPIPE) have failed", fd_new);
+        }
+    }
+#endif /* TNET_UNDER_IPHONE || TNET_UNDER_IPHONE_SIMULATOR */
+    TSK_DEBUG_INFO("Broken pipe result for {%s:%d}: %d -> %d", self->ip, self->port, fd_old, fd_new);
+    self->fd = fd_new;
+    return 0;
+}
+
+/**@ingroup tnet_socket_group
  * 	Closes a socket.
  * @param sock The socket to close.
  * @retval	Zero if succeed and nonzero error code otherwise.

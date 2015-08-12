@@ -93,6 +93,38 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 			{
 				return _trtp_manager_recv_data(manager, e->data, e->size, e->local_fd, &e->remote_addr);
 			}
+        case event_brokenpipe:
+            {
+                tsk_safeobj_lock(manager);
+                tnet_fd_t broken_fd = e->local_fd;
+                tnet_socket_t* socket = tsk_null;
+                tsk_bool_t is_rtcp_socket = tsk_false;
+                
+                if (manager->transport && manager->transport->master &&  manager->transport->master->fd == broken_fd) {
+                    socket = manager->transport->master;
+                }
+                else if (manager->rtcp.local_socket && manager->rtcp.local_socket->fd == broken_fd) {
+                    socket = manager->rtcp.local_socket;
+                    is_rtcp_socket = tsk_true;
+                }
+                if (socket) {
+                    tsk_bool_t registered_fd = !!tnet_transport_have_socket(manager->transport, broken_fd);
+                    if (registered_fd) {
+                        tnet_transport_remove_socket(manager->transport, &broken_fd); // broken_fd=-1
+                        broken_fd = e->local_fd; // restore
+                    }
+                    if (tnet_socket_handle_brokenpipe(socket) == 0) {
+                        if (registered_fd) {
+                            tnet_transport_add_socket(manager->transport, socket->fd, socket->type, tsk_false/* do not take ownership */, tsk_true/* only Meaningful for tls*/, tsk_null);
+                        }
+                        if (manager->rtcp.session && trtp_rtcp_session_get_local_fd(manager->rtcp.session) == broken_fd) {
+                            trtp_rtcp_session_set_local_fd(manager->rtcp.session, socket->fd);
+                        }
+                    }
+                }
+                tsk_safeobj_unlock(manager);
+                return 0;
+            }
 #if HAVE_SRTP
 			/* DTLS - SRTP events */
 		case event_dtls_handshake_succeed:
@@ -457,8 +489,15 @@ static int _trtp_manager_recv_data(const trtp_manager_t* self, const uint8_t* da
 			err_status_t status;
 			if(self->srtp_ctx_neg_remote){
 				if((status = srtp_unprotect(self->srtp_ctx_neg_remote->rtp.session, (void*)data_ptr, (int*)&data_size)) != err_status_ok){
-					TSK_DEBUG_ERROR("srtp_unprotect(RTP) failed with error code=%d, seq_num=%u", (int)status,  (data_size > 4 ? tnet_ntohs_2(&data_ptr[2]) : 0x0000));
-					return -1;
+                    if (status == err_status_replay_fail) {
+                        // replay (because of RTCP-NACK nothing to worry about)
+                        TSK_DEBUG_INFO("srtp_unprotect(RTP) returned 'err_status_replay_fail'");
+                        return 0;
+                    }
+                    else {
+                        TSK_DEBUG_ERROR("srtp_unprotect(RTP) failed with error code=%d, seq_num=%u", (int)status,  (data_size > 4 ? tnet_ntohs_2(&data_ptr[2]) : 0x0000));
+                        return -1;
+                    }
 				}
 			}
 			#endif
@@ -1463,6 +1502,7 @@ int trtp_manager_start(trtp_manager_t* self)
 		if(self->rtcp.session){
 			ret = trtp_rtcp_session_set_callback(self->rtcp.session, self->rtcp.cb.fun, self->rtcp.cb.usrdata);
 			ret = trtp_rtcp_session_set_app_bandwidth_max(self->rtcp.session, self->app_bw_max_upload, self->app_bw_max_download);
+            ret = trtp_rtcp_session_set_net_transport(self->rtcp.session, self->transport);
 			if((ret = trtp_rtcp_session_start(self->rtcp.session, local_rtcp_fd, (const struct sockaddr *)&self->rtcp.remote_addr))){
 				TSK_DEBUG_ERROR("Failed to start RTCP session");
 				goto bail;
@@ -1568,6 +1608,9 @@ tsk_size_t trtp_manager_send_rtp_packet(trtp_manager_t* self, const struct trtp_
 	}
 
 	tsk_safeobj_lock(self);
+    
+    // reset index
+    self->rtp.serial_buffer.index = 0;
 
 	/* check if transport is started */
 	if(!self->is_started || !self->transport || !self->transport->master){
@@ -1598,7 +1641,7 @@ tsk_size_t trtp_manager_send_rtp_packet(trtp_manager_t* self, const struct trtp_
 	}
 
 	/* serialize and send over the network */
-	if((ret = (int)trtp_rtp_packet_serialize_to(packet, self->rtp.serial_buffer.ptr, xsize))){
+	if ((ret = (int)trtp_rtp_packet_serialize_to(packet, self->rtp.serial_buffer.ptr, xsize))) {
 		void* data_ptr = self->rtp.serial_buffer.ptr;
 		int data_size = ret;
 #if HAVE_SRTP
@@ -1610,6 +1653,7 @@ tsk_size_t trtp_manager_send_rtp_packet(trtp_manager_t* self, const struct trtp_
 			}
 		}
 #endif
+        self->rtp.serial_buffer.index = data_size; // update index
 		if (/* number of bytes sent */(ret = (int)trtp_manager_send_rtp_raw(self, data_ptr, data_size)) > 0) {
 			// forward packet to the RTCP session
 			if (self->rtcp.session) {
@@ -1642,10 +1686,33 @@ tsk_size_t trtp_manager_send_rtp_raw(trtp_manager_t* self, const void* data, tsk
 		ret = (tnet_ice_ctx_send_turn_rtp(self->ice_ctx, data, size) == 0) ? size : 0; // returns #0 if ok
 	}
 	else {
+#if 1
+        ret = tnet_transport_sendto(self->transport, self->transport->master->fd, (const struct sockaddr *)&self->rtp.remote_addr, data, size); // returns number of sent bytes
+#else
 		ret = tnet_sockfd_sendto(self->transport->master->fd, (const struct sockaddr *)&self->rtp.remote_addr, data, size); // returns number of sent bytes
+#endif
 	}
 	tsk_safeobj_unlock(self);
 	return ret;
+}
+
+int trtp_manager_get_bytes_count(trtp_manager_t* self, uint64_t* bytes_in, uint64_t* bytes_out)
+{
+    if (!self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    if (!self->is_started) {
+        TSK_DEBUG_INFO("trtp_manager_get_bytes_count() called before starting RTP manager... returning zeros");
+        if (bytes_in) *bytes_in = 0;
+        if (bytes_out) *bytes_out = 0;
+        return 0;
+    }
+    
+    if (self->is_ice_turn_active) {
+        return tnet_ice_ctx_turn_get_bytes_count(self->ice_ctx, bytes_in, bytes_out);
+    }
+    return tnet_transport_get_bytes_count(self->transport, bytes_in, bytes_out);
 }
 
 int trtp_manager_set_app_bandwidth_max(trtp_manager_t* self, int32_t bw_upload_kbps, int32_t bw_download_kbps)
@@ -1660,6 +1727,7 @@ int trtp_manager_set_app_bandwidth_max(trtp_manager_t* self, int32_t bw_upload_k
 	}
 	return -1;
 }
+
 int trtp_manager_signal_pkt_loss(trtp_manager_t* self, uint32_t ssrc_media, const uint16_t* seq_nums, tsk_size_t count)
 {
 	if(self && self->rtcp.session){
@@ -1667,6 +1735,7 @@ int trtp_manager_signal_pkt_loss(trtp_manager_t* self, uint32_t ssrc_media, cons
 	}
 	return -1;
 }
+
 int trtp_manager_signal_frame_corrupted(trtp_manager_t* self, uint32_t ssrc_media)
 {
 	if(self && self->rtcp.session){
@@ -1713,6 +1782,7 @@ int trtp_manager_stop(trtp_manager_t* self)
 	// Stop the RTCP session first (will send BYE)
 	if(self->rtcp.session){
 		ret = trtp_rtcp_session_stop(self->rtcp.session);
+        ret = trtp_rtcp_session_set_net_transport(self->rtcp.session, tsk_null);
 	}
 
 	// Free transport to force next call to start() to create new one with new sockets
