@@ -1,1 +1,0 @@
-//http://www.quintillion.co.jp/3GPP/Specs/24147-900.pdf

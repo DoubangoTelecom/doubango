@@ -1,0 +1,934 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{b853bf68-174e-4f09-99ab-4ea6ed7e4b56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{1cab826e-35a2-48d3-ba58-87278974416e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinysip">
+      <UniqueIdentifier>{5a09c00a-01e5-4931-a925-c55c6e12e23a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinysip\api">
+      <UniqueIdentifier>{531afae2-fc26-498a-b7e5-6bdecebaebe8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinysip\authentication">
+      <UniqueIdentifier>{a38c634b-3ae1-4a9f-859d-d20daba0c2fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinysip\dialogs">
+      <UniqueIdentifier>{bb7effe6-dca5-47b1-b563-b95d668e4d7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinysip\headers">
+      <UniqueIdentifier>{58044e0c-c572-4285-8866-5fd48d9bbfb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinysip\parsers">
+      <UniqueIdentifier>{4fcd7f67-95a2-400f-9aca-c1ac33ea91bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinysip\sigcomp">
+      <UniqueIdentifier>{a53c41bf-a96a-4268-968c-98a3e08ad7d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinysip\transactions">
+      <UniqueIdentifier>{f0b8b691-41fa-4a7b-98ee-fe08cdc50df6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinysip\transports">
+      <UniqueIdentifier>{b78e099f-c1b3-43cf-912b-72d5b7321d41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\api">
+      <UniqueIdentifier>{7dd6984a-b065-4ae4-ac32-721469046c40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\authentication">
+      <UniqueIdentifier>{a929bed2-4fbe-4f6a-b32e-2725628e2e0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\dialogs">
+      <UniqueIdentifier>{c8bc4063-3a8c-4ce8-8259-85f41d67a61c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\headers">
+      <UniqueIdentifier>{58c81bf8-de54-4316-8bc3-03e858010daf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\parsers">
+      <UniqueIdentifier>{d10a2d2f-41b9-4686-9377-b2808f0f97d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\sigcomp">
+      <UniqueIdentifier>{5c9fa014-d3e7-4f07-9658-0e26153859e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\transactions">
+      <UniqueIdentifier>{7e1756b3-a18a-487c-8f64-365d65399848}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\transports">
+      <UniqueIdentifier>{9a0c86d3-8bec-4263-a723-c36f0e49d487}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\tinysip.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip_config.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tsip.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\tsip_action.h">
+      <Filter>include\tinysip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\tsip_event.h">
+      <Filter>include\tinysip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\tsip_message.h">
+      <Filter>include\tinysip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\tsip_message_common.h">
+      <Filter>include\tinysip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\tsip_ssession.h">
+      <Filter>include\tinysip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\tsip_timers.h">
+      <Filter>include\tinysip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\tsip_uri.h">
+      <Filter>include\tinysip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\api\tsip_api_common.h">
+      <Filter>include\tinysip\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\api\tsip_api_info.h">
+      <Filter>include\tinysip\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\api\tsip_api_invite.h">
+      <Filter>include\tinysip\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\api\tsip_api_message.h">
+      <Filter>include\tinysip\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\api\tsip_api_options.h">
+      <Filter>include\tinysip\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\api\tsip_api_publish.h">
+      <Filter>include\tinysip\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\api\tsip_api_register.h">
+      <Filter>include\tinysip\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\api\tsip_api_subscribe.h">
+      <Filter>include\tinysip\api</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\authentication\tsip_challenge.h">
+      <Filter>include\tinysip\authentication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\authentication\tsip_milenage.h">
+      <Filter>include\tinysip\authentication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\authentication\tsip_rijndael.h">
+      <Filter>include\tinysip\authentication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog.h">
+      <Filter>include\tinysip\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_info.h">
+      <Filter>include\tinysip\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_invite.common.h">
+      <Filter>include\tinysip\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_invite.h">
+      <Filter>include\tinysip\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_layer.h">
+      <Filter>include\tinysip\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_message.h">
+      <Filter>include\tinysip\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_options.h">
+      <Filter>include\tinysip\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_publish.h">
+      <Filter>include\tinysip\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_register.common.h">
+      <Filter>include\tinysip\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_register.h">
+      <Filter>include\tinysip\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_subscribe.h">
+      <Filter>include\tinysip\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_accept.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Accept_Contact.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Accept_Encoding.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Accept_Language.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Accept_Resource_Priority.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Alert_Info.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Allow.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Allow_Events.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Authentication_Info.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Authorization.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Call_ID.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Call_Info.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Contact.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Content_Disposition.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Content_Encoding.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Content_Language.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Content_Length.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Content_Type.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_CSeq.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Date.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Dummy.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Error_Info.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Event.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Expires.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_From.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_History_Info.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Identity.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Identity_Info.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_In_Reply_To.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Join.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Max_Forwards.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_MIME_Version.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Min_Expires.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Min_SE.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Organization.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Access_Network_Info.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Answer_State.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Asserted_Identity.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Associated_URI.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Called_Party_ID.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Charging_Function_Addresses.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Charging_Vector.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_DCS_Billing_Info.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_DCS_LAES.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_DCS_OSPS.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_DCS_Redirect.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_DCS_Trace_Party_ID.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Early_Media.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Media_Authorization.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Preferred_Identity.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Profile_Key.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_User_Database.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Visited_Network_ID.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Path.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Priority.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Privacy.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Proxy_Authenticate.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Proxy_Authorization.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Proxy_Require.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_RAck.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Reason.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Record_Route.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Refer_Sub.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Refer_To.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Referred_By.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Reject_Contact.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Replaces.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Reply_To.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Request_Disposition.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Require.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Resource_Priority.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Retry_After.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Route.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_RSeq.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Security_Client.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Security_Server.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Security_Verify.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Server.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Service_Route.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Session_Expires.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_SIP_ETag.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_SIP_If_Match.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Subject.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Subscription_State.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Supported.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Target_Dialog.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Timestamp.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_To.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Unsupported.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_User_Agent.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Via.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Warning.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_WWW_Authenticate.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\headers\tsip_headers.h">
+      <Filter>include\tinysip\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\transports\tsip_transport.h">
+      <Filter>include\tinysip\transports</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\transports\tsip_transport_ipsec.h">
+      <Filter>include\tinysip\transports</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\transports\tsip_transport_layer.h">
+      <Filter>include\tinysip\transports</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\transports\tsip_transport_tls.h">
+      <Filter>include\tinysip\transports</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\transactions\tsip_transac.h">
+      <Filter>include\tinysip\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\transactions\tsip_transac_ict.h">
+      <Filter>include\tinysip\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\transactions\tsip_transac_ist.h">
+      <Filter>include\tinysip\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\transactions\tsip_transac_layer.h">
+      <Filter>include\tinysip\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\transactions\tsip_transac_nict.h">
+      <Filter>include\tinysip\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\transactions\tsip_transac_nist.h">
+      <Filter>include\tinysip\transactions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\sigcomp\tsip_sigcomp.h">
+      <Filter>include\tinysip\sigcomp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\parsers\tsip_parser_header.h">
+      <Filter>include\tinysip\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\parsers\tsip_parser_message.h">
+      <Filter>include\tinysip\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysip\parsers\tsip_parser_uri.h">
+      <Filter>include\tinysip\parsers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\tsip.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsip_action.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsip_event.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsip_message.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsip_ssession.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsip_timers.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsip_uri.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\api\tsip_api_common.c">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\api\tsip_api_info.c">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\api\tsip_api_invite.c">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\api\tsip_api_message.c">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\api\tsip_api_options.c">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\api\tsip_api_publish.c">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\api\tsip_api_register.c">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\api\tsip_api_subscribe.c">
+      <Filter>src\api</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\authentication\tsip_challenge.c">
+      <Filter>src\authentication</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\authentication\tsip_milenage.c">
+      <Filter>src\authentication</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\authentication\tsip_rijndael.c">
+      <Filter>src\authentication</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_info.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.cdiv.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.client.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.conf.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.ect.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.hold.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.ice.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.qos.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.server.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.timers.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_layer.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_message.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_options.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_publish.client.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_register.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_register.client.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_register.server.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_subscribe.client.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dialogs\tsip_dialog_subscribe.server.c">
+      <Filter>src\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_accept.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Accept_Contact.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Accept_Encoding.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Accept_Language.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Accept_Resource_Priority.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Alert_Info.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Allow.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Allow_Events.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Authentication_Info.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Authorization.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Call_ID.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Call_Info.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Contact.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Content_Disposition.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Content_Encoding.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Content_Language.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Content_Length.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Content_Type.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_CSeq.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Date.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Dummy.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Error_Info.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Event.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Expires.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_From.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_History_Info.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Identity.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Identity_Info.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_In_Reply_To.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Join.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Max_Forwards.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_MIME_Version.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Min_Expires.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Min_SE.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Organization.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_Access_Network_Info.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_Answer_State.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_Asserted_Identity.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_Associated_URI.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_Called_Party_ID.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_Charging_Function_Addresses.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_Charging_Vector.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_DCS_Billing_Info.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_DCS_LAES.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_DCS_OSPS.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_DCS_Redirect.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_DCS_Trace_Party_ID.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_Early_Media.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_Media_Authorization.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_Preferred_Identity.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_Profile_Key.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_User_Database.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_P_Visited_Network_ID.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Path.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Priority.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Privacy.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Proxy_Authenticate.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Proxy_Authorization.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Proxy_Require.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_RAck.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Reason.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Record_Route.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Refer_Sub.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Refer_To.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Referred_By.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Reject_Contact.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Replaces.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Reply_To.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Request_Disposition.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Require.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Resource_Priority.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Retry_After.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Route.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_RSeq.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Security_Client.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Security_Server.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Security_Verify.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Server.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Service_Route.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Session_Expires.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_SIP_ETag.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_SIP_If_Match.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Subject.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Subscription_State.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Supported.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Target_Dialog.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Timestamp.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_To.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Unsupported.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_User_Agent.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Via.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_Warning.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsip_header_WWW_Authenticate.c">
+      <Filter>src\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\transports\tsip_transport.c">
+      <Filter>src\transports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\transports\tsip_transport_ipsec.c">
+      <Filter>src\transports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\transports\tsip_transport_layer.c">
+      <Filter>src\transports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\transports\tsip_transport_tls.c">
+      <Filter>src\transports</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\transactions\tsip_transac.c">
+      <Filter>src\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\transactions\tsip_transac_ict.c">
+      <Filter>src\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\transactions\tsip_transac_ist.c">
+      <Filter>src\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\transactions\tsip_transac_layer.c">
+      <Filter>src\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\transactions\tsip_transac_nict.c">
+      <Filter>src\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\transactions\tsip_transac_nist.c">
+      <Filter>src\transactions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\sigcomp\tsip_sigcomp.c">
+      <Filter>src\sigcomp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\tsip_parser_header.c">
+      <Filter>src\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\tsip_parser_message.c">
+      <Filter>src\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\tsip_parser_uri.c">
+      <Filter>src\parsers</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Windows Phone
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyMEDIA", "tinyMEDIA.vcxproj", "{52E43EEB-A549-4159-B254-DCA225D7638B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{19279F5B-CDAF-4187-9F09-2A896A828B05} = {19279F5B-CDAF-4187-9F09-2A896A828B05}
+		{982D737A-0649-4C32-A00E-08992A0B7673} = {982D737A-0649-4C32-A00E-08992A0B7673}
+		{06E58F9D-28A1-4DD4-AF11-2F5239222CCC} = {06E58F9D-28A1-4DD4-AF11-2F5239222CCC}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinySAK", "..\..\tinySAK\winrt\tinySAK.vcxproj", "{19279F5B-CDAF-4187-9F09-2A896A828B05}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinySDP", "..\..\tinySDP\winrt\tinySDP.vcxproj", "{982D737A-0649-4C32-A00E-08992A0B7673}"
+	ProjectSection(ProjectDependencies) = postProject
+		{19279F5B-CDAF-4187-9F09-2A896A828B05} = {19279F5B-CDAF-4187-9F09-2A896A828B05}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyNET", "..\..\tinyNET\winrt\tinyNET.vcxproj", "{06E58F9D-28A1-4DD4-AF11-2F5239222CCC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{19279F5B-CDAF-4187-9F09-2A896A828B05} = {19279F5B-CDAF-4187-9F09-2A896A828B05}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Debug|Win32 = Debug|Win32
+		Release|ARM = Release|ARM
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{52E43EEB-A549-4159-B254-DCA225D7638B}.Debug|ARM.ActiveCfg = Debug|ARM
+		{52E43EEB-A549-4159-B254-DCA225D7638B}.Debug|ARM.Build.0 = Debug|ARM
+		{52E43EEB-A549-4159-B254-DCA225D7638B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{52E43EEB-A549-4159-B254-DCA225D7638B}.Debug|Win32.Build.0 = Debug|Win32
+		{52E43EEB-A549-4159-B254-DCA225D7638B}.Release|ARM.ActiveCfg = Release|ARM
+		{52E43EEB-A549-4159-B254-DCA225D7638B}.Release|ARM.Build.0 = Release|ARM
+		{52E43EEB-A549-4159-B254-DCA225D7638B}.Release|Win32.ActiveCfg = Release|Win32
+		{52E43EEB-A549-4159-B254-DCA225D7638B}.Release|Win32.Build.0 = Release|Win32
+		{19279F5B-CDAF-4187-9F09-2A896A828B05}.Debug|ARM.ActiveCfg = Debug|ARM
+		{19279F5B-CDAF-4187-9F09-2A896A828B05}.Debug|ARM.Build.0 = Debug|ARM
+		{19279F5B-CDAF-4187-9F09-2A896A828B05}.Debug|Win32.ActiveCfg = Debug|Win32
+		{19279F5B-CDAF-4187-9F09-2A896A828B05}.Debug|Win32.Build.0 = Debug|Win32
+		{19279F5B-CDAF-4187-9F09-2A896A828B05}.Release|ARM.ActiveCfg = Release|ARM
+		{19279F5B-CDAF-4187-9F09-2A896A828B05}.Release|ARM.Build.0 = Release|ARM
+		{19279F5B-CDAF-4187-9F09-2A896A828B05}.Release|Win32.ActiveCfg = Release|Win32
+		{19279F5B-CDAF-4187-9F09-2A896A828B05}.Release|Win32.Build.0 = Release|Win32
+		{982D737A-0649-4C32-A00E-08992A0B7673}.Debug|ARM.ActiveCfg = Debug|ARM
+		{982D737A-0649-4C32-A00E-08992A0B7673}.Debug|ARM.Build.0 = Debug|ARM
+		{982D737A-0649-4C32-A00E-08992A0B7673}.Debug|Win32.ActiveCfg = Debug|Win32
+		{982D737A-0649-4C32-A00E-08992A0B7673}.Debug|Win32.Build.0 = Debug|Win32
+		{982D737A-0649-4C32-A00E-08992A0B7673}.Release|ARM.ActiveCfg = Release|ARM
+		{982D737A-0649-4C32-A00E-08992A0B7673}.Release|ARM.Build.0 = Release|ARM
+		{982D737A-0649-4C32-A00E-08992A0B7673}.Release|Win32.ActiveCfg = Release|Win32
+		{982D737A-0649-4C32-A00E-08992A0B7673}.Release|Win32.Build.0 = Release|Win32
+		{06E58F9D-28A1-4DD4-AF11-2F5239222CCC}.Debug|ARM.ActiveCfg = Debug|ARM
+		{06E58F9D-28A1-4DD4-AF11-2F5239222CCC}.Debug|ARM.Build.0 = Debug|ARM
+		{06E58F9D-28A1-4DD4-AF11-2F5239222CCC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{06E58F9D-28A1-4DD4-AF11-2F5239222CCC}.Debug|Win32.Build.0 = Debug|Win32
+		{06E58F9D-28A1-4DD4-AF11-2F5239222CCC}.Release|ARM.ActiveCfg = Release|ARM
+		{06E58F9D-28A1-4DD4-AF11-2F5239222CCC}.Release|ARM.Build.0 = Release|ARM
+		{06E58F9D-28A1-4DD4-AF11-2F5239222CCC}.Release|Win32.ActiveCfg = Release|Win32
+		{06E58F9D-28A1-4DD4-AF11-2F5239222CCC}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

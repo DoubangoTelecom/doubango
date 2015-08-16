@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>doubango - open source 3GPP IMS/LTE framework for embedded systems</title>
+    <meta name="Keywords" content="doubango, 3GPP NGN/IMS framework, open source, SIP, RFC 3261, 3GPP TS 24.229, VoIP, MMTel, IPTV, 4G, LTE, XCAP, MSRP, IPSec, SigComp, One Voice " />
+    <meta name="Description" content="cross-platform and open source 3GPP NGN/IMS framework for embedded devices such as Android, Symbian, iPhone, Windows Mobile or uLinux." />
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <!-- Le styles -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+        body
+        {
+            padding-top: 50px;
+            padding-bottom: 40px;
+        }
+    </style>
+    <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="./assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
+</head>
+<body>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a><a class="brand" href="./index.html">Doubango Telecom</a>
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li><a href="./index.html">Home</a></li>
+                        <li class="active"><a href="./licensing.html">Licensing</a></li>
+                        <li><a href="./gettingstarted.html">Getting Started</a></li>
+                        <li><a href="http://code.google.com/p/doubango/" target="_blank">Source Code</a></li>
+                        <li><a href="./contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+    <p>
+        The framework and demo applications are <b>dual licensed (GPL / commercial)</b> and contains third-parties libraries with commercial-friendly licensing terms.<br />
+        The framework depends on:
+    </p>
+        
+    <table border="1" style="background-color: #fff; padding: 5px;" cellspacing="0">
+        <tr style="background-color: #f0b;">
+            <td>Name</td>
+            <td>Version</td>
+            <td>License</td>
+            <td>Dependency</td>
+            <td>Comments</td>
+        </tr>
+        <tr>
+            <td><a href="http://www.ffmpeg.org/">FFmpeg</a></td>
+            <td>GIT 1.2</td>
+            <td>GPL or LGPL</td>
+            <td><i>optional</i></td>
+            <td>The commercial version could be linked against the LGPL version as far as the FFmpeg's <a href="http://ffmpeg.org/legal.html">License Compliance Checklist</a> is respected. <br /><b>We recommend not using FFmpeg for commercial use</b></td>
+        </tr>
+        <tr>
+            <td><a href="http://www.ilbcfreeware.org/">iLBC</a></td>
+            <td>1.0</td>
+            <td>GIPS Public License</td>
+            <td><i>optional</i></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://launchpad.net/libgsm">libgsm</a></td>
+            <td>1.0-pl13</td>
+            <td>BSD</td>
+            <td><i>optional</i></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="http://downloads.xiph.org/releases/ogg/libogg-1.1.4.tar.gz">libogg</a></td>
+            <td>1.1.4</td>
+            <td>BSD</td>
+            <td><i>optional</i></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="http://code.google.com/p/libyuv/">libyuv</a></td>
+            <td>SVN r321</td>
+            <td>BSD-style</td>
+            <td><b>mandatory</b></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="http://srtp.sourceforge.net/srtp.html">libsrtp</a></td>
+            <td>1.4.2</td>
+            <td>BSD-based</td>
+            <td><i>optional</i></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="http://www.theora.org/">libtheora</a></td>
+            <td>1.1.1</td>
+            <td>BSD</td>
+            <td><i>optional</i></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.3.tar.gz">libvorbis</a></td>
+            <td>1.2.3</td>
+            <td>BSD</td>
+            <td><i>optional</i></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="http://www.webmproject.org">libvpx</a></td>
+            <td>1.1.0</td>
+            <td>BSD</td>
+            <td><i>optional</i></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="http://xmlsoft.org/">libxml2</a></td>
+            <td>Git v2.9.1</td>
+            <td>MIT</td>
+            <td><i>optional</i></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="https://sourceforge.net/projects/opencore-amr/">opencore-amr</a></td>
+            <td>0.1.2</td>
+            <td>Apache license 2.0</td>
+            <td><i>optional</i></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="http://www.openssl.org/">openssl</a></td>
+            <td>1.0.2a</td>
+            <td>Apache-style License</td>
+            <td><i>optional</i></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="http://www.complang.org/ragel/">Ragel output</a></td>
+            <td>6.7</td>
+            <td>Doubango License</td>
+            <td><b>mandatory</b></td>
+            <td>No linking</td>
+        </tr>
+        <tr>
+            <td><a href="http://simple.sourceforge.net/">SimpleXML</a></td>
+            <td>2.3.4</td>
+            <td>Apache License 2.0</td>
+            <td><b>mandatory</b></td>
+            <td>Only on Android</td>
+        </tr>
+        <tr>
+            <td><a href="http://www.swig.org/">swig output</a></td>
+            <td>SVN r12023</td>
+            <td>Doubango License</td>
+            <td><b>mandatory</b></td>
+            <td>No linking</td>
+        </tr>
+        <tr>
+            <td><a href="http://www.speex.org/">Speex</a></td>
+            <td>1.2</td>
+            <td>Revisited-BSD</td>
+            <td><b>mandatory</b></td>
+            <td></td>
+        </tr>        
+        <tr>
+            <td><a href="http://www.webrtc.org/">WebRTC audio processing</a></td>
+            <td>SVN r2512</td>
+            <td>BSD</td>
+            <td>optional</td>
+            <td>AEC, Noise suppression ...</td>
+        </tr>
+        <tr>
+            <td><a href="http://www.videolan.org/developers/x264.html">x264</a></td>
+            <td>0.104</td>
+            <td>GPL</td>
+            <td><i>optional</i></td>
+            <td><b>Must be disbaled for commerical use</b></td>
+        </tr>
+        <tr>
+            <td><a href="https://github.com/cisco/openh264">OpenH264</a></td>
+            <td>GIT v1.1</td>
+            <td>BSD</td>
+            <td><i>optional</i></td>
+            <td>H264 constrained baseline</td>
+        </tr>
+    </table>
+    <hr />
+    <footer>
+        <p>
+            &copy; Doubango Telecom 2011-2015</p>
+        <i>Inspiring the future</i>
+    </footer>
+    <!-- /container -->
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="assets/js/jquery.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-transition.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-alert.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-modal.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-dropdown.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-scrollspy.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-tab.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-tooltip.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-popover.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-button.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-collapse.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-carousel.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap-typeahead.js"></script>
+</body>
+</html>

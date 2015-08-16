@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{c89a9764-c625-4c3b-9980-30c97b440ea3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{8f205ba6-84f7-4863-bd40-9d93b94228d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinymedia">
+      <UniqueIdentifier>{1224fd1c-e1b6-4ced-94e1-03465211556c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinymedia\content">
+      <UniqueIdentifier>{c4c0550e-c464-4135-a8a5-502a39b79795}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\content">
+      <UniqueIdentifier>{19e7973f-0178-4b2a-98e2-7b8f0f41672d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\tinymedia.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia_config.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_codec.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_codec_dummy.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_common.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_consumer.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_converter_video.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_defaults.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_denoise.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_imageattr.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_jitterbuffer.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_params.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_producer.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_qos.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_resampler.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_session.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_session_dummy.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_session_ghost.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\tmedia_vad.h">
+      <Filter>include\tinymedia</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\content\tmedia_content.h">
+      <Filter>include\tinymedia\content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\content\tmedia_content_cpim.h">
+      <Filter>include\tinymedia\content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\content\tmedia_content_multipart.h">
+      <Filter>include\tinymedia\content</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymedia\content\tmedia_content_sip_frag.h">
+      <Filter>include\tinymedia\content</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\tmedia.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_codec.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_codec_dummy.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_common.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_consumer.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_converter_video.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_defaults.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_denoise.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_imageattr.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_jitterbuffer.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_params.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_producer.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_qos.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_resampler.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_session.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_session_dummy.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_session_ghost.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmedia_vad.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\content\tmedia_content.c">
+      <Filter>src\content</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\content\tmedia_content_cpim.c">
+      <Filter>src\content</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\content\tmedia_content_multipart.c">
+      <Filter>src\content</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\content\tmedia_content_sip_frag.c">
+      <Filter>src\content</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

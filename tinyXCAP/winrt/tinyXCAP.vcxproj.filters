@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{25b3a3ba-679b-41a9-b1e1-b8f1cf7d71c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{0add7c3e-36a6-448d-bf8f-4f331ac8a299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tinyxcap">
+      <UniqueIdentifier>{d95441d1-7dbb-4d1a-ae40-fbd0dfb7c161}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\tinyxcap.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinyxcap_config.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\txcap.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinyxcap\txcap_action.h">
+      <Filter>include\tinyxcap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinyxcap\txcap_auid.h">
+      <Filter>include\tinyxcap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinyxcap\txcap_document.h">
+      <Filter>include\tinyxcap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinyxcap\txcap_node.h">
+      <Filter>include\tinyxcap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinyxcap\txcap_selector.h">
+      <Filter>include\tinyxcap</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\txcap.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\txcap_action.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\txcap_auid.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\txcap_document.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\txcap_node.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\txcap_selector.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

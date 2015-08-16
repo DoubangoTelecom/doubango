@@ -1,0 +1,350 @@
+/**@page _Page_Main_Overview Overview
+This page is about the <b>open source 3GPP IMS-IPSec implementation</b> in <a target=_blank href="https://code.google.com/p/doubango/">Doubango VoIP framework</a> from <a target=_blank href="http://doubango.org/">Doubango Telecom</a>. <br />
+In this page we'll try to explain how security mechanisms are negotiated between an IMS Client and the Proxy-CSCF and how to setup SAs using <a href="http://ipsec-tools.sourceforge.net/"> Linux IPSec-Tools</a> and our demo clients (console app and <a href="https://code.google.com/p/boghe/">Boghe IMS Client</a>). <br />
+Our code have been fully tested against <a href="http://www.openimscore.org/">OpenIMSCore</a> and many other comercial IMS Cores. <br />
+
+ - @ref _Anchor_TIPSec_Overview_Intro "1/ IPSec implementation in Doubango VoIP framework"
+ - @ref _Anchor_TIPSec_Overview_SecAgree "2/ Security agreement"
+  - @ref _Anchor_TIPSec_Overview_SecAgree_CallFlow "2.1/ Call flow"
+  - @ref _Anchor_TIPSec_Overview_SecAgree_SipMessages "2.3/ SIP messages"
+ - @ref _Anchor_TIPSec_Overview_IPSecTools "3/ Setting up SAs using Linux Tools"
+ - @ref _Anchor_TIPSec_Overview_IPSecAPI "4/ Using tinyIPSec API"
+  - @ref _Anchor_TIPSec_Overview_IPSecAPI_LoadPlugin "4.1/ Loading the Plugin"
+  - @ref _Anchor_TIPSec_Overview_IPSecAPI_Client "4.2/ Client-side API"
+
+<h2>@anchor _Anchor_TIPSec_Overview_Intro 1/ IPSec implementation in Doubango VoIP framework</h2>
+The IPSec implementation in Doubango VoIP framework is distributed as standalone plugins (<b>pluginWinIPSecVista.DLL</b>, <b>pluginWinIPSecXP.DLL</b> and <b>pluginWinIPSecLinux.SO</b>). 
+This allows having a single installer for all platforms as the right implementation is loaded at runtime (versus at link-time). Right now only <b>pluginWinIPSecVista.DLL</b> is open sourced. <br />
+<b>pluginWinIPSecVista.DLL</b> as it's name says, requires Windows Vista or later and uses <a href="http://msdn.microsoft.com/en-us/windows/hardware/gg463267.aspx">Windows Filtering Platform</a> to manually setup the IPSec SAs. <br />
+<b>pluginWinIPSecVista.DLL</b> supports:
+<ul>
+	<li>IPProto: "udp", "tcp" and "icmp"</li>
+	<li>Modes: "tun" (tunnel) and "trans" (transport)</li>
+	<li>Encryption algorithm: "des-ede3-cbc", "aes-cbc" and "null"</li>
+	<li>Authentication algorithm: "hmac-sha-1-96" and "hmac-md5-96"</li>
+	<li>IPsecProto:"esp", "ah" and "ah/esp"</li>
+</ul>
+The utility functions used to load/unload the plugins and the wrappers for the high level APIs are in <b>tinyIPSec</b> project. <b>tinyIPSec</b> depends on <b>tinySAK </b>. <br />
+
+The framework implements: 3GPP TS 24.229, 3GPP TS 35.205, 3GPP TS 35.206, 3GPP TS 35.207, 3GPP TS 35.208, 3GPP TS 35.909, RFC 3329.
+
+<h2>@anchor _Anchor_TIPSec_Overview_SecAgree 2/ Security agreement</h2>
+The main purpose of Security agreement (<a href="http://www.ietf.org/rfc/rfc3329.txt">RFC 3329</a>) is to agree on which mechanisms, algorithms or security parameters to use.
+There are five main mechanisms used in VoIP networks: <br />
+<ul>
+<li>digest</li>
+<li>tls</li>
+<li>ipsec-ike</li>
+<li>ipsec-man</li>
+<li><b>ipsec-3gpp</b></li>
+</ul>
+We will focus on <b>ipsec-3gpp</b> because it's <b>mandatory</b> for IMS. This requires SIP <b>AKAv1/v2</b> authentication. <br />
+
+The security mechanism to use is known after the negotiation between the IMS Client and the Proxy-CSCF succeeds. This negotiation is performed during the IMS registration and authentication procedures.
+Three new SIP header fields have been defined, namely <b>Security-Client</b>, <b>Security-Server</b> and <b>Security-Verify</b>.
+
+<h3>@anchor _Anchor_TIPSec_Overview_SecAgree_CallFlow 2.1/ Call flow</h3>
+@code
+
+
+IMS Client         P-CSCF              S-CSCF
+|                    |                  |
+|----(1)REGISTER---->|                  |
+|                    |                  |
+|                    |---(2)REGISTER--->|
+|                    |                  |
+|                    |<-----(3) 401 ----|
+|                    |                  |
+|<----(4) 494/401----|                  |
+|                    |                  |
+|<==IPSec in place==>|                  |
+|                    |                  |
+|----(5)REGISTER---->|                  |
+|                    |----(6)REGISTER-->|
+|                    |                  |
+|                    |<---(7) 200 OK----|
+|<---(8) 200 OK------|                  |
+|                    |                  |
+
+
+@endcode
+
+ - In step <b>(1)</b> the IMS Client sends an unprotected registration request including the security-client header. The Client must indicate that it is able to negotiate security mechanism by adding "Require" and "Proxy-Require" headers. The security-client header includes two ports (client and server ports) that the client wants to negotiate with the proxy CSCF.
+
+ - In step <b>(2)</b> the Proxy CSCF forwards the request to the Serving CSCF.
+
+ - In step <b>(3)</b> the Serving CSCF (registrar) challenges the Proxy CSCF. The 401 response is sent to the Proxy CSCF (challenge parameters are under WWW-Authenticated header). The Serving CSCF must include the "Security-Server" header.
+
+ - In step <b>(4)</b> the Proxy CSCF forwards the 401/494 response to the IMS Client. At this stage the Proxy CSCF opens the IPsec security association (SA) for the IMS Client. The IMS Client also setup a SA (this is a temporary SA).
+
+ - The lifetime of the created SA (between the IMS Client and the Proxy CSCF) is equal to the value of reg-await-auth timer.
+
+ - In step <b>(5)</b> the IMS Client sends a new registration (to the Proxy CSCF) request including its credentials and copies the content of security-server header to the security-verify header. Before forwarding the request to the Serving CSCF, the Proxy CSCF will check that the previous security-server header and the security-verify headers (added by the IMS Client) are the same. If these values are different, the Proxy CSCF sends an error message to the IMS Client and terminates the created SAs.
+
+ - In step <b>(6)</b> the Proxy CSCF forwards the request to the Serving CSCF.
+
+ - In step <b>(7)</b> the Serving CSCF authenticates the IMS Client, and responds with 200 OK.
+
+ - In step <b>(8)</b> the Proxy CSCF forwards the response to the IMS Client. At this step new SAs will be created. The temporary SAs will be destroyed (or not) by the Proxy CSCF.
+
+<h3>@anchor _Anchor_TIPSec_Overview_SecAgree_SipMessages 2.3/ SIP messages</h3>
+<b>(1)</b><br />
+@code
+REGISTER sip:pcscf.open-ims.test SIP/2.0
+Security-Client: ipsec-3gpp; alg=hmac-md5-96; ealg=des-ede3-cbc; prot=ah; mod=trans; spi-c=1111; spi-s=2222; port-c=5062; port-s=5064
+Require: sec-agree
+Proxy-Require: sec-agree
+@endcode
+
+<b>(4)</b>
+@code
+SIP/2.0 [494 Security Agreement Required / 401 Unauthorized]
+Security-Server: ipsec-3gpp; q=0.1; alg=hmac-md5-96; ealg=des-ede3-cbc; prot=ah; mod=trans; spi-c=3333; spi-s=4444; port-c=5066; port-s=5068
+@endcode
+
+<b>(5)</b><br />
+@code
+REGISTER sip:pcscf.open-ims.test SIP/2.0
+Security-Client: ipsec-3gpp; alg=hmac-md5-96; ealg=des-ede3-cbc; prot=ah; mod=trans; spi-c=1111; spi-s=2222; port-c=5062; port-s=5064
+Security-Verify: ipsec-3gpp; q=0.1; alg=hmac-md5-96; ealg=des-ede3-cbc; prot=ah; mod=trans; spi-c=3333; spi-s=4444; port-c=5066; port-s=5068
+Require: sec-agree
+Proxy-Require: sec-agree
+@endcode
+
+<h2>@anchor _Anchor_TIPSec_Overview_IPSecTools 3/ Setting up SAs using Linux Tools</h2>
+Here we suppose that: <br />
+ - We are using Ubuntu (Linux Kernel 2.6 + KAME-tools)
+ - the Proxy-CSCF address is '192.168.0.10' and Mercuro IMS Client address is '192.168.0.11'
+ - for secure ports see above SIP capture
+ - protocol is esp
+ - algorithm is 'hmac-md5'
+ - encrypt-algorithm is 'des-ede3-cbc'
+ - mode is 'transport'
+ - confidentiality key is '123456789012123456789012' (see function f2345 in 3GPP milenage algorithms)
+ - integrity key is '1234567890123456' (see function f2345 in 3GPP milenage algorithms)
+
+<b>1. Install the tools</b>
+@code
+sudo apt-get install ipsec-tools
+@endcode
+
+<b>2. Edit /etc/ipsec-tools file and add the following script</b>
+@code
+#Incoming Requests [US <- PC]
+spdadd 192.168.0.10/32[5066] 192.168.0.11/32[5064] udp -P in ipsec esp/transport//require;
+add 192.168.0.10 192.168.0.11 esp 2222 -m transport -E des-ede3-cbc "123456789012123456789012" -A hmac-md5 "1234567890123456";
+
+#Incoming Replies [UC <- PS]
+spdadd 192.168.0.10/32[5068] 192.168.0.11/32[5062] udp -P in ipsec esp/transport//require;
+add 192.168.0.10 192.168.0.11 esp 1111 -m transport -E des-ede3-cbc "123456789012123456789012" -A hmac-md5 "1234567890123456";
+
+#Outgoing Requests [UC -> PS]
+spdadd 192.168.0.11/32[5062] 192.168.0.10/32[5068] udp -P out ipsec esp/transport//unique:1;
+add 192.168.0.11 192.168.0.10 esp 4444 -m transport -u 1 -E des-ede3-cbc "123456789012123456789012" -A hmac-md5 "1234567890123456";
+
+#Outgoing Replies [US -> PC]
+spdadd 192.168.0.11/32[5064] 192.168.0.10/32[5066] udp -P out ipsec esp/transport//unique:2;
+add 192.168.0.11 192.168.0.10 esp 3333 -m transport -u 2 -E des-ede3-cbc "123456789012123456789012" -A hmac-md5 "1234567890123456";
+@endcode
+
+<b>3. Run the script</b>
+@code
+sudo /etc/init.d/setkey start
+@endcode
+
+<h2>@anchor _Anchor_TIPSec_Overview_IPSecAPI 4/ Using tinyIPSec API</h2>
+This section explain how to setup the IPSec SAs using our API for a client (for the server it's obvisious). The values (SPIs, Ports, IP addresses...) are from previous sections. <br />
+In this section:
+ - <b>UC</b> means UE acting as client (i.e sending a SIP request)
+ - <b>US</b> means UE acting as server (i.e receiving a SIP request)
+ - <b>PC</b> means P-CSCF acting as client (i.e sending a SIP request)
+ - <b>PS</b> means P-CSCF acting as server (i.e receiving a SIP request)
+ - <b>PORT-C</b> means port used by UC or PC
+ - <b>PORT-S</b> means port used by US or PS
+ - <a href="http://en.wikipedia.org/wiki/Security_Parameter_Index">SPI</a> means <b>S</b>ecurity <b>P</b>arameter <b>I</b>ndex (more info: <a href="http://en.wikipedia.org/wiki/Security_Parameter_Index">http://en.wikipedia.org/wiki/Security_Parameter_Index</a>)
+ - <b>SPI-C</b> means SPI for PORT-C
+ - <b>SPI-S</b> means SPI for PORT-S
+ 
+ <b>/!\\VERY IMPORTANT:</b> On Windows the application (or Visual Studio if you're debugging the code) must be started as "Administrator" (Right click then <b>Run as administrator</b>) to be autorized to setup IPSec SAs (otherwise <b>error code 5</b>).
+
+<h3>@anchor _Anchor_TIPSec_Overview_IPSecAPI_LoadPlugin 4.1/ Loading the Plugin</h3>
+Before calling any API function from <b>tinyIPSec</b> it's required to load the standalone plugin like this:
+@code
+#include "tipsec.h"
+
+static tsk_bool_t __b_ipsec_supported = tsk_false;
+static struct tsk_plugin_s* __dll_plugin_ipsec_wfp = tsk_null;
+
+if(tdav_win32_is_winvista_or_later()){
+	char* full_path = tsk_null;
+	tsk_sprintf(&full_path, "%s/pluginWinIPSecVista.dll", tdav_get_current_directory_const());
+	if (tsk_plugin_file_exist(full_path) && (tipsec_plugin_register_file(full_path, &__dll_plugin_ipsec_wfp) == 0)){
+		__b_ipsec_supported = tsk_true;
+	}
+	TSK_FREE(full_path);
+}
+@endcode
+
+To unload the plugin:
+@code
+if (__dll_plugin_ipsec_wfp) {
+	tipsec_plugin_unregister_file(__dll_plugin_ipsec_wfp);
+	TSK_OBJECT_SAFE_FREE(__dll_plugin_ipsec_wfp); // free and set the pointer to NULL
+}
+@endcode
+
+<h3>@anchor _Anchor_TIPSec_Overview_IPSecAPI_Client 4.2/ Client-side API</h3>
+<b>1) Create a context</b>
+@code
+tipsec_error_t err;
+tipsec_ctx_t* p_ctx = tsk_null;
+err = tipsec_ctx_create(
+	tipsec_ipproto_udp, // IPProto
+	tsk_false, // Whether to use IPv6
+	tipsec_mode_trans, // Mode
+	tipsec_ealg_des_ede3_cbc, // Encryption algo
+	tipsec_alg_hmac_md5_96, // Authentication algo
+	tipsec_proto_ah, // IPSec proto
+	&p_ctx);
+if (err) {
+	exit(-1);
+}
+@endcode
+
+Because <a href="http://msdn.microsoft.com/en-us/windows/hardware/gg463267.aspx">Windows Filtering Platform</a> doesn't allow setting arbitrary SPIs we must create temporary SAs in order to have client SPIs for the initial REGISTER request.
+Temporary SAs requires information about the local address and ports. Remote port is not required but expected for better filtering to avoid IPSec restrictions for <b>any</b> in/out data towards the local ports. <br />
+
+<b>2) Create temporary SAs and request local SPIs</b>
+@code
+err = tipsec_ctx_set_local(
+	p_ctx, 
+	"192.168.0.11", // Local IPv4 address (UE)
+	"192.168.0.10", // Remote IPv4 address (P-CSCF)
+	5062, // Port used for outgoing data (UE, PORT-C, SPI-C)
+	5064 // Port used for incoming data (UE, PORT-S, SPI-S)
+	);
+if (err) {
+	exit(-1);
+}
+@endcode
+
+To create the <b>Security-Client</b> header for the initial REGISTER request:
+
+@code
+char* str_sec_client = tsk_null;
+// Security-Client: ipsec-3gpp; alg=hmac-md5-96; ealg=des-ede3-cbc; prot=ah; mod=trans; spi-c=1111; spi-s=2222; port-c=5062; port-s=5064
+tsk_sprintf(&str_sec_client, "Security-Client: ipsec-3gpp; alg=%s; ealg=%s; prot=%s; mod=%s; spi-c=%u; spi-s=%u; port-c=%u; port-s=%u",
+	TIPSEC_ALG_TO_STR(p_ctx->alg),
+	TIPSEC_EALG_TO_STR(p_ctx->ealg),
+	TIPSEC_PROTOCOL_TO_STR(p_ctx->protocol),
+	TIPSEC_MODE_TO_STR(p_ctx->mode),
+	p_ctx->spi_uc,
+	p_ctx->spi_us,
+	p_ctx->port_uc,
+	p_ctx->port_us);
+
+@endcode
+
+Now you can send the initial REGISTER (unprotected).
+
+<b>3) Setting remote information</b>
+Once the initial REGISTER is sent the server will send back a 494 response with one or several <b>Security-Server</b> headers. Select the best one and extract the information (SPIs, Ports, alogs,...) from it:
+@code
+err = tipsec_ctx_set_remote(
+	p_ctx, 
+	3333, // SPI-C for the P-CSCF
+	4444,  // SPI-S for the P-CSCF
+	5066,  // PORT-C for the P-CSCF
+	5068,  // PORT-S for the P-CSCF
+	1800 // lifetime (in seconds) (at least the registration timeout)
+	);
+if (err) {
+	exit(-1);
+}
+@endcode
+
+<b>At this step, any data sent using PORT-C or receieved using PORT-S is (and must be) encrypted.</b>
+
+<b>4) Setting the CK and IK keys</b>
+The CK (Confidentiality) and IK (Integrity) keys are computed using the 3GPP milenage functions like this: <a href="https://code.google.com/p/doubango/source/browse/branches/2.0/doubango/tinySIP/src/authentication/tsip_challenge.c?r=765#85">https://code.google.com/p/doubango/source/browse/branches/2.0/doubango/tinySIP/src/authentication/tsip_challenge.c?r=765#85</a>. <br />
+To set the keys:
+@code
+err = tipsec_ctx_set_keys(
+	p_ctx, 
+	"1234567890123456", // IK 
+	"123456789012123456789012" // CK
+	);
+if (err) {
+	exit(-1);
+}
+@endcode 
+
+<b>5) Ensure the IPSec SAs</b>
+Ensure (promote) the temporary SAs:
+@code
+err = tipsec_ctx_start(p_ctx);
+if (err) {
+	exit(-1);
+}
+@endcode
+
+to destroy IPSec SAs:
+@code
+TSK_OBJECT_SAFE_FREE(p_ctx); // call "stop(p_ctx)" then "free(p_ctx)"
+@endcode
+
+Et voilà, you're ready to send (port-c) and receive (port-s) IPSec data. <br />
+If you have any issue please check the @ref _Page_Main_FAQ "FAQ".
+
+*/
+
+
+/**@page _Page_Main_FAQ (FAQ)
+ - @ref _Anchor_TIPSec_FAQ_Client "Is there any IMS-Client implementing the new API?"
+ - @ref _Anchor_TIPSec_FAQ_Samples "Is there any sample code showing how to use the new API?"
+ - @ref _Anchor_TIPSec_FAQ_Stable "Is IPSec implementation in Doubango stable?"
+ - @ref _Anchor_TIPSec_FAQ_Systems "Which operating systems are supported?"
+ - @ref _Anchor_TIPSec_FAQ_Logs "Where are Boghe logs?"
+ - @ref _Anchor_TIPSec_FAQ_ReportIssues "I'm using Boghe IMS Client to test IPSec but it's not working. How to report issues?"
+ - @ref _Anchor_TIPSec_FAQ_CheckSAs "How to check SAs are up?"
+ - @ref _Anchor_TIPSec_FAQ_Error5 "I see \"Error code 5\" when I try to setup a SA. How can I fix this?"
+ 
+<h2>@anchor _Anchor_TIPSec_FAQ_Client Is there any IMS-Client implementing the new API?</h2>
+Yes. <br />
+Try Boghe IMS Client: <a href="https://code.google.com/p/boghe/">https://code.google.com/p/boghe/</a>.
+
+<h2>@anchor _Anchor_TIPSec_FAQ_Samples Is there any sample code showing how to use the new API?</h2>
+Yes. <br />
+<b>ANSI-C:</b> $DOUBANGO_HOME/branches/2.0/doubango/tinyIPSec/tinyIPSec.sln <br />
+<b>C#:</b> $DOUBANGO_HOME/branches/2.0/doubango/Samples/C#/IPSec/ipsec.sln <br />
+
+<h2>@anchor _Anchor_TIPSec_FAQ_Stable Is IPSec implementation in Doubango stable?</h2>
+Our IPSec implementation is <b>3 years old</b> and have been tested against OpenIMSCore and many other IMS Cores. <br />
+By default, IPSec was desabled and it was up to the developer to rebuild the code to enable it. The new code is also clean and use standalone plugins.
+
+<h2>@anchor _Anchor_TIPSec_FAQ_Systems Which operating systems are supported?</h2>
+For now only <b>Windows Vista and later</b>. We've code for <b>Windows XP</b> and <b>Linux</b> but it's not published yet. <br />
+Ask on our <a href="https://groups.google.com/forum/#!forum/doubango">dev-group</a> to get the complete source code.
+
+<h2>@anchor _Anchor_TIPSec_FAQ_Logs Where are Boghe logs?</h2>
+On vista: C:\\Users\\your identity here\\AppData\\Roaming\\Doubango\\Boghe IMS Client\\Boghe.log.
+
+<h2>@anchor _Anchor_TIPSec_FAQ_ReportIssues I'm using Boghe IMS Client to test IPSec but it's not working. How to report issues?</h2>
+Make sure that you're:
+ - using the latest <a href="https://code.google.com/p/boghe/downloads/list">Boghe</a> version (December 2013)
+ - using Windows Vista or later
+ - started the app as administrator (right click then, "Run as administrator") or disabled UAC
+If you still have problems then, share them on our <a href="https://groups.google.com/forum/#!forum/doubango">dev-group</a>. You <b>must</b> share your @ref _Anchor_TIPSec_FAQ_Logs "logs".
+
+<h2>@anchor _Anchor_TIPSec_FAQ_CheckSAs How to check SAs are up?</h2>
+Go to "Control Panel" -> "Administrative Tools" -> "Windows Firewall with Advanced Security" -> "Security Associations" -> "Quick Mode" and check that your SAs are listed there.
+
+<h2>@anchor _Anchor_TIPSec_FAQ_Error5 I see "Error code 5" when I try to setup a SA. How can I fix this?</h2>
+On Windows, error code 5 means "Access denied". You must start your app (or Visual Studio) as administrator or disable the UAC.
+
+*/
+
+
+/**@page _Page_Main_Medium_Level_API_Overview Medium level API (C++)
+bla bla bla
+*/

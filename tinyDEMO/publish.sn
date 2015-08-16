@@ -1,0 +1,35 @@
+# File used to test embedded scenarios
+++pub --to sip:$$(user)@$$(domain) --caps +g.oma.sip-im --caps language="en,fr" --header Content-Type=application/pidf+xml @@a --pay \
+<?xml version=1.0 encoding=utf-8?>\
+<presence xmlns:cp=urn:ietf:params:xml:ns:pidf:cipid xmlns:caps=urn:ietf:params:xml:ns:pidf:caps xmlns:rpid=urn:ietf:params:xml:ns:pidf:rpid xmlns:pdm=urn:ietf:params:xml:ns:pidf:data-model xmlns:p=urn:ietf:params:xml:ns:pidf-diff xmlns:op=urn:oma:xml:prs:pidf:oma-pres entity=sip:$$(user)@$$(domain) xmlns=urn:ietf:params:xml:ns:pidf>\
+<pdm:person id=CRUVREZS>\
+<op:overriding-willingness>\
+<op:basic>open</op:basic>\
+</op:overriding-willingness>\
+<rpid:activities>\
+<rpid:unknown />\
+</rpid:activities>\
+<rpid:mood>\
+<rpid:neutral />\
+</rpid:mood>\
+<pdm:note>Hello world</pdm:note>\
+</pdm:person>\
+<pdm:device id=d0001>\
+<status>\
+<basic>open</basic>\
+</status>\
+<caps:devcaps>\
+<caps:mobility>\
+<caps:supported>\
+<caps:fixed />\
+</caps:supported>\
+</caps:mobility>\
+</caps:devcaps>\
+<op:network-availability>\
+<op:network id=IMS>\
+<op:active />\
+</op:network>\
+</op:network-availability>\
+<pdm:deviceID>urn:uuid:00000000-0000-0000-0000-000000000000</pdm:deviceID>\
+</pdm:device>\
+</presence> >>(pub-sid) @@a
