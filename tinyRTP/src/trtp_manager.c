@@ -95,10 +95,14 @@ static int _trtp_transport_layer_cb(const tnet_transport_event_t* e)
 			}
         case event_brokenpipe:
             {
+				tnet_fd_t broken_fd;
+				tnet_socket_t* socket;
+				tsk_bool_t is_rtcp_socket;
+
                 tsk_safeobj_lock(manager);
-                tnet_fd_t broken_fd = e->local_fd;
-                tnet_socket_t* socket = tsk_null;
-                tsk_bool_t is_rtcp_socket = tsk_false;
+                broken_fd = e->local_fd;
+                socket = tsk_null;
+                is_rtcp_socket = tsk_false;
                 
                 if (manager->transport && manager->transport->master &&  manager->transport->master->fd == broken_fd) {
                     socket = manager->transport->master;
