@@ -1,54 +1,45 @@
-<font color='green' size='3'>
-<hr />
-<strong>Doubango v2.x</strong><br />
-<hr />
-To all developers: Doubango v1.x is now deprecated. <br />
-Please use version v2.x. The source code is under <strong>branches/2.0</strong><br />
-</font>
-<br />
-
-<h2>Welcome to <a href='http://www.doubango.org'>doubango</a> project!</h2>
+<h2>Welcome to <a href='https://www.doubango.org'>doubango</a> project!</h2>
 <p><a href='http://en.wikipedia.org/wiki/IP_Multimedia_Subsystem'>3GPP IMS</a> (IP Multimedia Subsystem) is the next generation network for delivering<br>
 IP multimedia services. IMS is standardized by the 3rd Generation Partnership Project (3GPP). <br />
 IMS services could be used over any type of network, such as <a href='http://en.wikipedia.org/wiki/3GPP_Long_Term_Evolution'>3GPP LTE</a>, GPRS, Wireless LAN, CDMA2000 or fixed line.<br>
 </p>
 <p>
-<a href='http://www.doubango.org'>doubango</a> is an experimental, open source, 3GPP IMS/LTE framework for both embedded and desktop systems.<br />
+<a href='https://www.doubango.org'>doubango</a> is a mature, open source, 3GPP IMS/LTE framework for both embedded and desktop systems.<br />
 The framework is written in ANSI-C to ease portability and has been carefully designed to efficiently work on embedded systems with limited memory and low computing power and to be extremely portable.</p>
 
 <h2>Proof Of Concept</h2>
 <table border='1'>
 <tr><td><b>Client-side components</b></td></tr>
 <tr>
-<td><a href='http://code.google.com/p/boghe/'>Boghe</a></td>
+<td><a href='https://github.com/DoubangoTelecom/boghe/'>Boghe</a></td>
 <td>- SIP Video Client for Windows Phone 8 and Surface Pro<br /> - IMS/RCS Client for Windows XP, Vista, 7 and 8</td>
 </tr>
 <tr>
-<td><a href='http://code.google.com/p/imsdroid/'>IMSDroid</a></td>
+<td><a href='https://github.com/DoubangoTelecom/imsdroid/'>IMSDroid</a></td>
 <td>SIP/IMS Client for Android</td>
 </tr>
 <tr>
-<td><a href='http://code.google.com/p/idoubs/'>iDoubs</a></td>
+<td><a href='https://github.com/DoubangoTelecom/idoubs/'>iDoubs</a></td>
 <td>SIP/IMS VideoPhone for iOS (iPhone, iPad and iPod Touch) and MAC OS X</td>
 </tr>
 
 <tr><td><b>Server-side components</b></td></tr>
 <tr>
-<td><a href='http://webrtc2sip.org'>webrtc2sip</a></td>
+<td><a href='https://github.com/DoubangoTelecom/webrtc2sip'>webrtc2sip</a></td>
 <td>Smart SIP and Media Gateway to connect WebRTC endpoints to any SIP-legacy network</td>
 </tr>
 <tr>
-<td><a href='http://code.google.com/p/telepresence/'>telepresence</a></td>
+<td><a href='https://github.com/DoubangoTelecom/telepresence/'>telepresence</a></td>
 <td>the open source SIP TelePresence system with a porwerfull <a href='http://en.wikipedia.org/wiki/Multipoint_Control_Unit'>MCU</a>
 </td>
 </tr>
 <tr>
-<td><a href='http://code.google.com/p/flash2ims/'>Flash2IMS</a></td>
+<td><a href='https://github.com/DoubangoTelecom/flash2ims/'>Flash2IMS</a></td>
 <td>Adobe® Flash® to SIP/IMS Gateway.</td>
 </tr>
 </table>
 
-See also [webrtc4all](http://code.google.com/p/webrtc4all/), [sipML5](http://code.google.com/p/sipml5/) and [click2dial](https://code.google.com/p/click-2-dial/) components.
+See also [webrtc4all](https://github.com/DoubangoTelecom/webrtc4all/), [sipML5](https://github.com/DoubangoTelecom/sipml5/) and [click2dial](https://github.com/DoubangoTelecom/click-2-dial/) components.
 
 <h2>Features</h2>
 <ul>
@@ -82,10 +73,10 @@ See also [webrtc4all](http://code.google.com/p/webrtc4all/), [sipML5](http://cod
 </ul></blockquote>
 
 <h2>The One Voice Profile (4G/LTE)</h2>
-<p><a href='http://www.doubango.org'>doubango</a> supports both Voice and SMS over LTE as defined by the <b>One Voice initiative</b>.<br />
+<p><a href='https://www.doubango.org'>doubango</a> supports both Voice and SMS over LTE as defined by the <b>One Voice initiative</b>.<br />
 For more information, please refer to <a href='http://news.vzw.com/OneVoiceProfile.pdf'>Voice over IMS profile V1.0.0(2009-11)</a>.<br>
 <blockquote></p>
-<img src='http://doubango.org/LTE_Architecture.png' alt='3GPP LTE Architecture' title='3GPP LTE Architecture' /></blockquote>
+<img src='https://doubango.org/LTE_Architecture.png' alt='3GPP LTE Architecture' title='3GPP LTE Architecture' /></blockquote>
 
 <h2>Multimedia Telephony (MMTel)</h2>
 <ul>
@@ -101,11 +92,10 @@ For more information, please refer to <a href='http://news.vzw.com/OneVoiceProfi
 <br>
 
 <h2>Support</h2>
-Please check our <a href='http://code.google.com/p/webrtc2sip/issues/list'>issue tracker</a> or <a href='https://groups.google.com/group/doubango'>developer group</a> if you have any problem.<br>
+Please check our <a href='https://github.com/DoubangoTelecom/doubango/issues'>issue tracker</a> or <a href='https://groups.google.com/group/doubango'>developer group</a> if you have any problem.<br>
 <br>
-For more information, please visit <a href='http://www.doubango.org'><a href='http://www.doubango.org'>http://www.doubango.org</a></a>
+For more information, please visit <a href='https://www.doubango.org'><a href='https://www.doubango.org'>http://www.doubango.org</a></a>
 
 <br />
-<br />
-<b>© 2010-2013 Doubango Telecom</b> <br />
+<b>© 2010-2015 Doubango Telecom</b> <br />
 <i>Inspiring the future</i>
