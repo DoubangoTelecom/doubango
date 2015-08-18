@@ -164,7 +164,7 @@ static int tdav_codec_vp8_set(tmedia_codec_t* self, const tmedia_param_t* param)
 			else {
 				TMEDIA_CODEC(vp8)->bandwidth_max_upload = max_bw_new;
 			}
-            vp8->encoder.cfg.rc_target_bitrate = TSK_CLAMP(0, vp8->encoder.cfg.rc_target_bitrate, TMEDIA_CODEC(vp8)->bandwidth_max_upload);
+            vp8->encoder.cfg.rc_target_bitrate = TSK_CLAMP(0, (unsigned int)vp8->encoder.cfg.rc_target_bitrate, (unsigned int)TMEDIA_CODEC(vp8)->bandwidth_max_upload);
             TSK_DEBUG_INFO("New target bitrate = %d kbps", vp8->encoder.cfg.rc_target_bitrate);
 			reconf = tsk_true;
 		}
