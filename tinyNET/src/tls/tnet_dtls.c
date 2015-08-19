@@ -306,6 +306,7 @@ tnet_dtls_socket_handle_t* tnet_dtls_socket_create(struct tnet_socket_s* wrapped
 		return tsk_null;
 	}
 	if ((socket = tsk_object_new(tnet_dtls_socket_def_t))) {
+		EC_KEY* ecdh;
 		const tsk_bool_t set_mtu = TNET_SOCKET_TYPE_IS_DGRAM(wrapped_sock->type) || 1; //!\ This is required even if the local transport is TCP/TLS because the relayed (TURN) transport could be UDP
 		socket->wrapped_sock = tsk_object_ref(wrapped_sock);
 		if (!(socket->ssl = SSL_new(ssl_ctx))) {
@@ -334,6 +335,13 @@ tnet_dtls_socket_handle_t* tnet_dtls_socket_create(struct tnet_socket_s* wrapped
 		SSL_set_bio(socket->ssl, socket->rbio, socket->wbio);
 		SSL_set_mode(socket->ssl, SSL_MODE_AUTO_RETRY);
 		SSL_set_read_ahead(socket->ssl, 1);
+		// https://groups.google.com/forum/#!topic/doubango/Oo0t1e3tlL8
+		if ((ecdh = EC_KEY_new_by_curve_name(NID_X9_62_prime256v1))) {
+			SSL_set_options(socket->ssl, SSL_OP_SINGLE_ECDH_USE);
+			SSL_set_tmp_ecdh(socket->ssl, ecdh);
+			EC_KEY_free(ecdh);
+		}
+
 		if (set_mtu) {
 			BIO_ctrl(SSL_get_wbio(socket->ssl), BIO_CTRL_DGRAM_SET_MTU, TNET_DTLS_MTU - 28, NULL);
 		}
