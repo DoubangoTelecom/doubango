@@ -647,8 +647,13 @@ int tsip_transport_add_stream_peer_2(tsip_transport_t *self, tnet_fd_t local_fd,
 	tsip_transport_stream_peers_lock(self);
 
 	if(tsip_transport_have_stream_peer_with_local_fd(self, local_fd)){
-		// could happen if the closed socket haven't raise "close event" yet and new own added : Windows only
+		TSK_DEBUG_INFO("Peer with local fd=%d already exist", local_fd);
+#if TSIP_UNDER_WINDOWS
+		// could happen if the closed socket haven't raised "close event" yet and new one added : Windows only
 		tsip_transport_remove_stream_peer_by_local_fd(self, local_fd);
+#else
+		peer = tsip_transport_pop_stream_peer_by_local_fd(self, local_fd);
+#endif
 	}
 
 	if(tsk_strnullORempty(remote_host) || !remote_port){
@@ -665,7 +670,7 @@ int tsip_transport_add_stream_peer_2(tsip_transport_t *self, tnet_fd_t local_fd,
 		goto bail;
 	}
 
-	if(!(peer = tsk_object_new(tsip_transport_stream_peer_def_t))){
+	if(!peer && !(peer = tsk_object_new(tsip_transport_stream_peer_def_t))){
 		TSK_DEBUG_ERROR("Failed to create network stream peer");
 		ret = -4;
 		goto bail;
