@@ -684,10 +684,16 @@ static void* TSK_STDCALL RunSessionThread(void *pArg)
 	TSK_DEBUG_INFO("RunSessionThread (MF video producer) - ENTER");
 
 	while (pSelf->bStarted){
-		CHECK_HR(hr = pSelf->pSession->GetEvent(0, &pEvent));
+		hr = pSelf->pSession->GetEvent(0, &pEvent);
+		if (hr == MF_E_SHUTDOWN) {
+			if (pSelf->bStarted) {
+				CHECK_HR(hr); // Shutdown called but "bStarted" not equal to false
+			}
+			break; // Shutdown called and "bStarted" is equal to false => break the loop
+		}
 		CHECK_HR(hr = pEvent->GetStatus(&hrStatus));
 		CHECK_HR(hr = pEvent->GetType(&met));
-
+		
 		if (FAILED(hrStatus) /*&& hrStatus != MF_E_NO_SAMPLE_TIMESTAMP*/)
 		{
 			TSK_DEBUG_ERROR("Session error: 0x%x (event id: %d)\n", hrStatus, met);
