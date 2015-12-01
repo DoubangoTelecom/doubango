@@ -93,7 +93,7 @@ static tsk_object_t* tnet_dhcp_option_sip_ctor(tsk_object_t * self, va_list * ap
 
 			while(payloadPtr < payloadEnd){
 				++payloadPtr;
-				address = tnet_htonl_2(payloadPtr);
+				address = (uint32_t)tnet_htonl_2(payloadPtr);
 				
 				tsk_sprintf(&ip4, "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
 				

@@ -340,7 +340,7 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 		
 		context->ufds[context->count].fd = fd;
 		context->ufds[context->count].events = (fd == context->pipeR) ? TNET_POLLIN : (TNET_POLLIN | TNET_POLLNVAL | TNET_POLLERR);
-		if(TNET_SOCKET_TYPE_IS_STREAM(sock->type)){
+		if(TNET_SOCKET_TYPE_IS_STREAM(sock->type) && fd != context->pipeR){
 			context->ufds[context->count].events |= TNET_POLLOUT; // emulate WinSock2 FD_CONNECT event
 		}
 		context->ufds[context->count].revents = 0;
@@ -350,7 +350,7 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 		
 		tsk_safeobj_unlock(context);
 		
-		TSK_DEBUG_INFO("Socket added[%s]: fd=%d, tail.count=%d", transport->description, fd, context->count);
+		TSK_DEBUG_INFO("Socket added[%s]: fd=%d, tail.count=%d", transport->description, fd, (int)context->count);
 		
 		return 0;
 	}
@@ -384,7 +384,7 @@ int removeSocket(int index, transport_context_t *context)
 
 	if(index < (int)context->count){
 		/* Close the socket if we are the owner. */
-		TSK_DEBUG_INFO("Socket to remove: fd=%d, index=%d, tail.count=%d", context->sockets[index]->fd, index, context->count);
+		TSK_DEBUG_INFO("Socket to remove: fd=%d, index=%d, tail.count=%d", context->sockets[index]->fd, index, (int)context->count);
 		if(context->sockets[index]->owner){
 			// do not close the socket while it's being poll()ed
 			// http://stackoverflow.com/questions/5039608/poll-cant-detect-event-when-socket-is-closed-locally
@@ -587,12 +587,13 @@ void *tnet_transport_mainthread(void *param)
 	
 	is_stream = TNET_SOCKET_TYPE_IS_STREAM(transport->master->type);
 	
-	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d} using fd {%d} with type {%d}...", 
+	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d} using master fd {%d} with type {%d} with max_fds {%lu}...",
 			transport->description, 
 			transport->master->ip, 
 			transport->master->port,
 			transport->master->fd,
-			transport->master->type);
+			transport->master->type,
+            sizeof(context->ufds)/sizeof(context->ufds[0]));
 
 	while(TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started){
 		context->polling = tsk_true;
@@ -700,7 +701,7 @@ void *tnet_transport_mainthread(void *param)
 					int listening = 0, remove_socket = 0;
 					socklen_t socklen = sizeof(listening);
 					
-					TSK_DEBUG_INFO("ioctlt(%d), len=%u returned zero or failed", active_socket->fd, len);
+					TSK_DEBUG_INFO("ioctlt(%d), len=%u returned zero or failed", active_socket->fd, (unsigned)len);
 					
 					// check if socket is listening
 					if(getsockopt(active_socket->fd, SOL_SOCKET, SO_ACCEPTCONN, &listening, &socklen) != 0){

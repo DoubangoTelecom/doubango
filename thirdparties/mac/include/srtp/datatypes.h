@@ -383,7 +383,7 @@ void
 octet_string_set_to_zero(uint8_t *s, int len);
 
 
-#ifndef SRTP_KERNEL_LINUX
+#if !defined(SRTP_KERNEL_LINUX) && defined(HAVE_CONFIG_H) 
 
 /* 
  * Convert big endian integers to CPU byte order.
@@ -508,5 +508,9 @@ bitvector_left_shift(bitvector_t *x, int index);
 
 char *
 bitvector_bit_string(bitvector_t *x, char* buf, int len);
+
+#ifdef TESTAPP_SOURCE
+int base64_string_to_octet_string(char *raw, int *pad, char *base64, int len);
+#endif
 
 #endif /* _DATATYPES_H */

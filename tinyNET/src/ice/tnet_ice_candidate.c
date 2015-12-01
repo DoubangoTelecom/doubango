@@ -437,10 +437,10 @@ int tnet_ice_candidate_process_stun_response(tnet_ice_candidate_t* self, const t
                 }
             }
             if ((ret = tnet_stun_pkt_attr_find_first(response, tnet_stun_attr_type_nonce, (const tnet_stun_attr_t**)&pc_attr)) == 0 && pc_attr) {
-                tsk_strupdate(&self->stun.nonce, pc_attr->p_data_ptr);
+                tsk_strupdate(&self->stun.nonce, (const char*)pc_attr->p_data_ptr);
             }
             if ((ret = tnet_stun_pkt_attr_find_first(response, tnet_stun_attr_type_realm, (const tnet_stun_attr_t**)&pc_attr)) == 0 && pc_attr) {
-                tsk_strupdate(&self->stun.realm, pc_attr->p_data_ptr);
+                tsk_strupdate(&self->stun.realm, (const char*)pc_attr->p_data_ptr);
             }
             return 0;
         }

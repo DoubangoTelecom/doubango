@@ -50,7 +50,10 @@
 extern "C" {
 #endif
 
-#include "crypto_kernel.h" 
+#include <stdint.h>
+#include "crypto.h" 
+#include "crypto_types.h"
+#include "err.h"
 
 /**
  * @defgroup SRTP Secure RTP
@@ -76,7 +79,7 @@ extern "C" {
  * SRTP_MAX_TAG_LEN is the maximum tag length supported by libSRTP
  */
 
-#define SRTP_MAX_TAG_LEN 12 
+#define SRTP_MAX_TAG_LEN 16 
 
 /**
  * SRTP_MAX_TRAILER_LEN is the maximum length of the SRTP trailer
@@ -97,6 +100,7 @@ extern "C" {
 #define AES_128_GCM_KEYSIZE_WSALT   SRTP_AEAD_SALT_LEN + 16
 #define AES_192_GCM_KEYSIZE_WSALT   SRTP_AEAD_SALT_LEN + 24
 #define AES_256_GCM_KEYSIZE_WSALT   SRTP_AEAD_SALT_LEN + 32
+
 
 
 /* 
@@ -358,8 +362,7 @@ srtp_protect(srtp_t ctx, void *rtp_hdr, int *len_ptr);
  * @warning This function assumes that the SRTP packet is aligned on a
  * 32-bit boundary.
  *
- * @param ctx is a pointer to the srtp_t which applies to the
- * particular packet.
+ * @param ctx is the SRTP session which applies to the particular packet.
  *
  * @param srtp_hdr is a pointer to the header of the SRTP packet
  * (before the call).  after the function returns, it points to the
@@ -392,7 +395,8 @@ srtp_unprotect(srtp_t ctx, void *srtp_hdr, int *len_ptr);
  * initializes an SRTP session context, applying the given policy and
  * key.
  *
- * @param session is the SRTP session to which the policy is to be added.
+ * @param session is a pointer to the SRTP session to which the policy is
+ * to be added.
  * 
  * @param policy is the srtp_policy_t struct that describes the policy
  * for the session.  The struct may be a single element, or it may be
@@ -1083,6 +1087,57 @@ srtp_unprotect_rtcp(srtp_t ctx, void *srtcp_hdr, int *pkt_octet_len);
  * @}
  */
 
+
+/**
+ * @defgroup User data associated to a SRTP session.
+ * @ingroup  SRTP
+ *
+ * @brief Store custom user data within a SRTP session.
+ *
+ * @{
+ */
+
+/**
+ * @brief srtp_set_user_data() stores the given pointer into the SRTP
+ * session for later retrieval.
+ *
+ * @param ctx is the srtp_t context in which the given data pointer is
+ * stored.
+ *
+ * @param data is a pointer to the custom information (struct, function,
+ * etc) associated with the SRTP session.
+ *
+ * @return void.
+ *
+ */
+
+void
+srtp_set_user_data(srtp_t ctx, void *data);
+
+/**
+ * @brief srtp_get_user_data() retrieves the pointer to the custom data
+ * previously stored with srtp_set_user_data().
+ *
+ * This function is mostly useful for retrieving data associated to a
+ * SRTP session when an event fires. The user can then get such a custom
+ * data by calling this function with the session field of the
+ * srtp_event_data_t struct as argument.
+ *
+ * @param ctx is the srtp_t context in which the given data pointer was
+ * stored.
+ *
+ * @return void* pointer to the user data.
+ *
+ */
+
+void*
+srtp_get_user_data(srtp_t ctx);
+
+/**
+ * @}
+ */
+
+
 /**
  * @defgroup SRTPevents SRTP events and callbacks
  * @ingroup  SRTP
@@ -1182,6 +1237,18 @@ typedef void (srtp_event_handler_func_t)(srtp_event_data_t *data);
 
 err_status_t
 srtp_install_event_handler(srtp_event_handler_func_t func);
+
+/**
+ * @brief Returns the version string of the library. 
+ * 
+ */
+const char *srtp_get_version_string(void);
+
+/**
+ * @brief Returns the numeric representation of the library version. 
+ * 
+ */
+unsigned int srtp_get_version(void);
 
 /**
  * @}

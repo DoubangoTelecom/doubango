@@ -22,9 +22,11 @@
 
 #if TDAV_UNDER_APPLE
 
+#if TDAV_UNDER_IPHONE || TDAV_UNDER_IPHONE_SIMULATOR
 #import <UIKit/UIKit.h>
-#include <AudioToolbox/AudioToolbox.h>
+#import <AudioToolbox/AudioToolbox.h>
 #import <AVFoundation/AVFoundation.h>
+#endif
 
 #include "tsk_debug.h"
 

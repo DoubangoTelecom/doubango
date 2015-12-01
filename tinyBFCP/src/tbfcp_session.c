@@ -615,7 +615,7 @@ static int _tbfcp_session_send_buff(tbfcp_session_t* p_self, const void* pc_buff
     }
 
     if (u_sent_bytes != u_buff_size) {
-        TSK_DEBUG_ERROR("Failed to send %u bytes. Only %u sent", u_buff_size, u_sent_bytes);
+        TSK_DEBUG_ERROR("Failed to send %u bytes. Only %u sent", (unsigned)u_buff_size, u_sent_bytes);
         ret = -2;
         goto bail;
     }
