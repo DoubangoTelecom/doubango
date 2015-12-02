@@ -86,6 +86,9 @@ void* tsk_realloc (void* ptr, tsk_size_t size)
 			}
 		}
 	}
+	else if (ptr) {
+		free(ptr);
+	}
 
 	return ret;
 }
