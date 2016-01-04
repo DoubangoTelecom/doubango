@@ -543,6 +543,17 @@ bool ProxyVideoProducer::setRotation(int nRot)
 	return false;
 }
 
+bool ProxyVideoProducer::setChroma(tmedia_chroma_t eChroma)
+{
+    m_eChroma = eChroma;
+    if (m_pWrappedPlugin) {
+	TMEDIA_PRODUCER(m_pWrappedPlugin)->video.chroma = eChroma;
+	return true;
+    }
+    return false;
+}
+
+
 bool ProxyVideoProducer::getMirror()const
 {
 	return m_bMirror;
