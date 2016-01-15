@@ -39,6 +39,17 @@
 #include "g729b/typedef.h"
 #include "g729b/ld8a.h"
 
+#if defined(__BORLANDC__) || defined (__WATCOMC__) || defined(_MSC_VER) || defined(__ZTC__) || defined(__HIGHC__)
+typedef  short int   Word16   ;
+#elif defined( __sun)
+typedef short  Word16;
+#elif defined(__unix__) || defined(__unix)
+typedef short Word16;
+#elif defined(VMS) || defined(__VMS)
+typedef short  Word16;
+#else
+#error  COMPILER NOT TESTED
+#endif
 
 TDAV_BEGIN_DECLS
 
