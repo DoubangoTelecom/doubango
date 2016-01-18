@@ -1278,7 +1278,7 @@ static tsk_size_t SendRTCPReport(trtp_rtcp_session_t* session, event_ e)
 					continue;
 				}
 				if((rblock = trtp_rtcp_rblock_create_null())){
-					uint32_t expected, expected_interval, received_interval, lost_interval;
+					int32_t expected, expected_interval, received_interval, lost_interval;
 					
 					rblock->ssrc = source->ssrc;
 					// RFC 3550 - A.3 Determining Number of Packets Expected and Lost
