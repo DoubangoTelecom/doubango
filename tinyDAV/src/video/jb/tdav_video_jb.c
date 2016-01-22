@@ -426,7 +426,6 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
     int32_t missing_seq_num_start = 0, prev_missing_seq_num_start = 0;
     int32_t missing_seq_num_count = 0, prev_lasted_missing_seq_num_count = 0;
     const tdav_video_frame_t* frame;
-    tsk_list_item_t* item;
     uint64_t next_decode_duration = 0, now, _now, latency = 0;
     //uint64_t x_decode_duration = (1000 / jb->fps); // expected
     //uint64_t x_decode_time = tsk_time_now();//expected
@@ -457,7 +456,7 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
         
         // the second condition (jb->frames_count > 0 && latency >= jb->latency_max) is required to make sure we'll process the pending pkts even if the remote party stops sending frames. GE issue: device stops sending frames when it enters in "frame freeze" mode which means #"latency_min" frames won't be displayed.
         if (jb->frames_count >= (int64_t)jb->latency_min || (jb->frames_count > 0 && latency >= jb->latency_max)) {
-            item = tsk_null;
+			tsk_list_item_t *item = tsk_null;
             postpone = tsk_false;
             latency = 0;
             
@@ -489,14 +488,16 @@ static void* TSK_STDCALL _tdav_video_jb_decode_thread_func(void *arg)
                 // postpone is equal to "tsk_false" which means the pending frame will be displayed in all cases
             }
             if (!postpone) {
-                item = tsk_list_pop_first_item(jb->frames);
-                --jb->frames_count;
+				if ((item = tsk_list_pop_first_item(jb->frames))) { // always true (jb->frames_count > 0)
+					--jb->frames_count;
+					// Update the latest decoded timestamp here while we have the lock on the frames
+					jb->decode_last_timestamp = ((const tdav_video_frame_t*)item->data)->timestamp;
+				}
             }
             tsk_list_unlock(jb->frames);
             tsk_safeobj_unlock(jb);
             
             if (item) {
-                jb->decode_last_timestamp = ((const tdav_video_frame_t*)item->data)->timestamp;
                 if(jb->callback){
                     trtp_rtp_packet_t* pkt;
                     const tsk_list_item_t* _item = item; // save memory address as "tsk_list_foreach() will change it for each loop"
