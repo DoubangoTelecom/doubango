@@ -303,7 +303,7 @@ int tmedia_parse_video_fmtp(const char* fmtp, tmedia_pref_video_size_t pref_vs, 
 	// set default values
 	best_vs = fmtp_sizes[(sizeof(fmtp_sizes)/sizeof(fmtp_sizes[0])) - 1].pref_vs /* last = lowest resolution */;
 	ret = tmedia_video_get_size(pref_vs, width, height);
-	*fps = 15;
+	*fps = tmedia_defaults_get_video_fps();
 
 	if((params = tsk_params_fromstring(fmtp, ";", tsk_true))){
 		// set real values
@@ -316,7 +316,7 @@ int tmedia_parse_video_fmtp(const char* fmtp, tmedia_pref_video_size_t pref_vs, 
 					*width= fmtp_sizes[i].width; 
 					*height = fmtp_sizes[i].height;
 					*fps = atoi(param->value);
-					*fps = *fps ? 30/(*fps) : 15;
+					*fps = *fps ? 30/(*fps) : tmedia_defaults_get_video_fps();
 					ret = 0;
 					best_vs = fmtp_sizes[i].pref_vs;
 					// rfc 4629 section 8.2.1: Parameters offered first are the most preferred picture mode to be received.

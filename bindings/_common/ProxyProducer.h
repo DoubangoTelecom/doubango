@@ -128,6 +128,7 @@ public:
 	bool setRotation(int nRot);
 	bool getMirror()const;
 	bool setMirror(bool bMirror);
+	bool setChroma(tmedia_chroma_t eChroma);
 	bool setActualCameraOutputSize(unsigned nWidth, unsigned nHeight);
 	int push(const void* pBuffer, unsigned nSize);
 	void setCallback(ProxyVideoProducerCallback* pCallback) { m_pCallback = pCallback; }
