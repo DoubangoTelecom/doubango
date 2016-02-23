@@ -2,19 +2,19 @@
 * Copyright (C) 2009 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -71,176 +71,176 @@
 
 void test_sessions_client()
 {
-	tmedia_session_mgr_t* mgr;
-	const tsdp_message_t* sdp_lo;
-	tsdp_message_t* sdp_ro;
-	char* temp;
-	tsk_bool_t canresume;
-	tmedia_type_t media_type = (tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38);
+    tmedia_session_mgr_t* mgr;
+    const tsdp_message_t* sdp_lo;
+    tsdp_message_t* sdp_ro;
+    char* temp;
+    tsk_bool_t canresume;
+    tmedia_type_t media_type = (tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38);
 
-	int32_t width = 176;
-	int64_t height = 144LL;
-	
-	
-	/* create manager */
-	mgr = tmedia_session_mgr_create((tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38), 
-		"0.0.0.0", tsk_false, tsk_true);
-	tmedia_session_mgr_set_qos(mgr, tmedia_qos_stype_segmented, tmedia_qos_strength_mandatory);
+    int32_t width = 176;
+    int64_t height = 144LL;
 
-	tmedia_session_mgr_set(mgr,
-		TMEDIA_SESSION_VIDEO_SET_INT32("width", width),
-		TMEDIA_SESSION_VIDEO_SET_INT64("height", height),
-		TMEDIA_SESSION_VIDEO_SET_STR("description", "This is my session"),
-		TMEDIA_SESSION_AUDIO_SET_INT32("rate", "8000"),
-		TMEDIA_SESSION_SET_STR(tmedia_audio | tmedia_video, "hello", "world"),
-		TMEDIA_SESSION_SET_NULL());
 
-	/* get lo */
-	sdp_lo = tmedia_session_mgr_get_lo(mgr);
-	if((temp = tsdp_message_tostring(sdp_lo))){
-		TSK_DEBUG_INFO("sdp_lo=%s", temp);
-		TSK_FREE(temp);
-	}
+    /* create manager */
+    mgr = tmedia_session_mgr_create((tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38),
+                                    "0.0.0.0", tsk_false, tsk_true);
+    tmedia_session_mgr_set_qos(mgr, tmedia_qos_stype_segmented, tmedia_qos_strength_mandatory);
 
-	/* set ro */
-	if((sdp_ro = tsdp_message_parse(SDP_RO, tsk_strlen(SDP_RO)))){
-		tmedia_session_mgr_set_ro(mgr, sdp_ro);
-		TSK_OBJECT_SAFE_FREE(sdp_ro);
-	}
+    tmedia_session_mgr_set(mgr,
+                           TMEDIA_SESSION_VIDEO_SET_INT32("width", width),
+                           TMEDIA_SESSION_VIDEO_SET_INT64("height", height),
+                           TMEDIA_SESSION_VIDEO_SET_STR("description", "This is my session"),
+                           TMEDIA_SESSION_AUDIO_SET_INT32("rate", "8000"),
+                           TMEDIA_SESSION_SET_STR(tmedia_audio | tmedia_video, "hello", "world"),
+                           TMEDIA_SESSION_SET_NULL());
 
-	/* get lo */
-	sdp_lo = tmedia_session_mgr_get_lo(mgr);
-	if((temp = tsdp_message_tostring(sdp_lo))){
-		TSK_DEBUG_INFO("sdp_lo=%s", temp);
-		TSK_FREE(temp);
-	}
+    /* get lo */
+    sdp_lo = tmedia_session_mgr_get_lo(mgr);
+    if((temp = tsdp_message_tostring(sdp_lo))) {
+        TSK_DEBUG_INFO("sdp_lo=%s", temp);
+        TSK_FREE(temp);
+    }
 
-	tmedia_session_mgr_start(mgr);
+    /* set ro */
+    if((sdp_ro = tsdp_message_parse(SDP_RO, tsk_strlen(SDP_RO)))) {
+        tmedia_session_mgr_set_ro(mgr, sdp_ro);
+        TSK_OBJECT_SAFE_FREE(sdp_ro);
+    }
 
-	canresume = tmedia_session_mgr_canresume(mgr);
-	
-	TSK_OBJECT_SAFE_FREE(mgr);
+    /* get lo */
+    sdp_lo = tmedia_session_mgr_get_lo(mgr);
+    if((temp = tsdp_message_tostring(sdp_lo))) {
+        TSK_DEBUG_INFO("sdp_lo=%s", temp);
+        TSK_FREE(temp);
+    }
+
+    tmedia_session_mgr_start(mgr);
+
+    canresume = tmedia_session_mgr_canresume(mgr);
+
+    TSK_OBJECT_SAFE_FREE(mgr);
 }
 
 void test_sessions_server()
 {
-	tmedia_session_mgr_t* mgr = tsk_null;
-	const tsdp_message_t* sdp_lo;
-	tsdp_message_t* sdp_ro = tsk_null;
-	char* temp;
-	tmedia_type_t type;
+    tmedia_session_mgr_t* mgr = tsk_null;
+    const tsdp_message_t* sdp_lo;
+    tsdp_message_t* sdp_ro = tsk_null;
+    char* temp;
+    tmedia_type_t type;
 
-	/* parse ro */
-	if(!(sdp_ro = tsdp_message_parse(SDP_RO, tsk_strlen(SDP_RO)))){
-		TSK_DEBUG_ERROR("Failed to parse ro");
-		return;
-	}
-	else{
-		/* get ro media type */
-		type = tmedia_type_from_sdp(sdp_ro);
-	}
+    /* parse ro */
+    if(!(sdp_ro = tsdp_message_parse(SDP_RO, tsk_strlen(SDP_RO)))) {
+        TSK_DEBUG_ERROR("Failed to parse ro");
+        return;
+    }
+    else {
+        /* get ro media type */
+        type = tmedia_type_from_sdp(sdp_ro);
+    }
 
-	/* create manager */
-	mgr = tmedia_session_mgr_create(type, "192.168.16.82", tsk_false, tsk_false);
+    /* create manager */
+    mgr = tmedia_session_mgr_create(type, "192.168.16.82", tsk_false, tsk_false);
 
-	/* set ro */
-	tmedia_session_mgr_set_ro(mgr, sdp_ro);
+    /* set ro */
+    tmedia_session_mgr_set_ro(mgr, sdp_ro);
 
-	/* get lo */
-	sdp_lo = tmedia_session_mgr_get_lo(mgr);
-	if((temp = tsdp_message_tostring(sdp_lo))){
-		TSK_DEBUG_INFO("sdp_lo=%s", temp);
-		TSK_FREE(temp);
-	}
+    /* get lo */
+    sdp_lo = tmedia_session_mgr_get_lo(mgr);
+    if((temp = tsdp_message_tostring(sdp_lo))) {
+        TSK_DEBUG_INFO("sdp_lo=%s", temp);
+        TSK_FREE(temp);
+    }
 
-	TSK_OBJECT_SAFE_FREE(sdp_ro);
-	TSK_OBJECT_SAFE_FREE(mgr);
+    TSK_OBJECT_SAFE_FREE(sdp_ro);
+    TSK_OBJECT_SAFE_FREE(mgr);
 }
 
 void test_sessions_hold_resume()
 {
-	tmedia_session_mgr_t* mgr;
-	const tsdp_message_t* sdp_lo;
-	char* temp;
-	tmedia_type_t type = tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38;
-	
-	/* create manager */
-	mgr = tmedia_session_mgr_create(type, "192.168.16.82", tsk_false, tsk_true);
+    tmedia_session_mgr_t* mgr;
+    const tsdp_message_t* sdp_lo;
+    char* temp;
+    tmedia_type_t type = tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38;
 
-	/* get lo */
-	sdp_lo = tmedia_session_mgr_get_lo(mgr);
-	if((temp = tsdp_message_tostring(sdp_lo))){
-		TSK_DEBUG_INFO("sdp_lo=%s", temp);
-		TSK_FREE(temp);
-	}
+    /* create manager */
+    mgr = tmedia_session_mgr_create(type, "192.168.16.82", tsk_false, tsk_true);
 
-	/* hold */
-	tmedia_session_mgr_hold(mgr, type);
-	sdp_lo = tmedia_session_mgr_get_lo(mgr);
-	if((temp = tsdp_message_tostring(sdp_lo))){
-		TSK_DEBUG_INFO("sdp_lo(hold)=%s", temp);
-		TSK_FREE(temp);
-	}
-	TSK_DEBUG_INFO("Hold local=%s and remote=%s", 
-		tmedia_session_mgr_is_held(mgr, type, tsk_true) ? "yes" : "no",
-		tmedia_session_mgr_is_held(mgr, type, tsk_false) ? "yes" : "no"
-		);
+    /* get lo */
+    sdp_lo = tmedia_session_mgr_get_lo(mgr);
+    if((temp = tsdp_message_tostring(sdp_lo))) {
+        TSK_DEBUG_INFO("sdp_lo=%s", temp);
+        TSK_FREE(temp);
+    }
 
-	/* resume */
-	tmedia_session_mgr_resume(mgr, type, tsk_true);
-	sdp_lo = tmedia_session_mgr_get_lo(mgr);
-	if((temp = tsdp_message_tostring(sdp_lo))){
-		TSK_DEBUG_INFO("sdp_lo(resume)=%s", temp);
-		TSK_FREE(temp);
-	}
-	TSK_DEBUG_INFO("Hold local=%s and remote=%s", 
-		tmedia_session_mgr_is_held(mgr, type, tsk_true) ? "yes" : "no",
-		tmedia_session_mgr_is_held(mgr, type, tsk_false) ? "yes" : "no"
-		);
+    /* hold */
+    tmedia_session_mgr_hold(mgr, type);
+    sdp_lo = tmedia_session_mgr_get_lo(mgr);
+    if((temp = tsdp_message_tostring(sdp_lo))) {
+        TSK_DEBUG_INFO("sdp_lo(hold)=%s", temp);
+        TSK_FREE(temp);
+    }
+    TSK_DEBUG_INFO("Hold local=%s and remote=%s",
+                   tmedia_session_mgr_is_held(mgr, type, tsk_true) ? "yes" : "no",
+                   tmedia_session_mgr_is_held(mgr, type, tsk_false) ? "yes" : "no"
+                  );
 
-	TSK_OBJECT_SAFE_FREE(mgr);
+    /* resume */
+    tmedia_session_mgr_resume(mgr, type, tsk_true);
+    sdp_lo = tmedia_session_mgr_get_lo(mgr);
+    if((temp = tsdp_message_tostring(sdp_lo))) {
+        TSK_DEBUG_INFO("sdp_lo(resume)=%s", temp);
+        TSK_FREE(temp);
+    }
+    TSK_DEBUG_INFO("Hold local=%s and remote=%s",
+                   tmedia_session_mgr_is_held(mgr, type, tsk_true) ? "yes" : "no",
+                   tmedia_session_mgr_is_held(mgr, type, tsk_false) ? "yes" : "no"
+                  );
+
+    TSK_OBJECT_SAFE_FREE(mgr);
 }
 
 void test_sessions_add_remove()
 {
-	tmedia_session_mgr_t* mgr = tsk_null;
-	const tsdp_message_t* sdp_lo;
-	tsdp_message_t* sdp_ro = tsk_null;
-	char* temp;
-	tmedia_type_t type;
+    tmedia_session_mgr_t* mgr = tsk_null;
+    const tsdp_message_t* sdp_lo;
+    tsdp_message_t* sdp_ro = tsk_null;
+    char* temp;
+    tmedia_type_t type;
 
-	/* parse ro */
-	if(!(sdp_ro = tsdp_message_parse(SDP_RO, tsk_strlen(SDP_RO)))){
-		TSK_DEBUG_ERROR("Failed to parse ro");
-		return;
-	}
-	else{
-		/* get ro media type */
-		type = tmedia_type_from_sdp(sdp_ro);
-	}
+    /* parse ro */
+    if(!(sdp_ro = tsdp_message_parse(SDP_RO, tsk_strlen(SDP_RO)))) {
+        TSK_DEBUG_ERROR("Failed to parse ro");
+        return;
+    }
+    else {
+        /* get ro media type */
+        type = tmedia_type_from_sdp(sdp_ro);
+    }
 
-	/* create manager */
-	mgr = tmedia_session_mgr_create(type, "192.168.16.82", tsk_false, tsk_false);
+    /* create manager */
+    mgr = tmedia_session_mgr_create(type, "192.168.16.82", tsk_false, tsk_false);
 
-	/* set ro */
-	tmedia_session_mgr_set_ro(mgr, sdp_ro);
+    /* set ro */
+    tmedia_session_mgr_set_ro(mgr, sdp_ro);
 
-	/* get lo */
-	sdp_lo = tmedia_session_mgr_get_lo(mgr);
-	if((temp = tsdp_message_tostring(sdp_lo))){
-		TSK_DEBUG_INFO("sdp_lo=%s", temp);
-		TSK_FREE(temp);
-	}
+    /* get lo */
+    sdp_lo = tmedia_session_mgr_get_lo(mgr);
+    if((temp = tsdp_message_tostring(sdp_lo))) {
+        TSK_DEBUG_INFO("sdp_lo=%s", temp);
+        TSK_FREE(temp);
+    }
 
-	TSK_OBJECT_SAFE_FREE(sdp_ro);
-	TSK_OBJECT_SAFE_FREE(mgr);
+    TSK_OBJECT_SAFE_FREE(sdp_ro);
+    TSK_OBJECT_SAFE_FREE(mgr);
 }
 
 void test_sessions()
 {
-	test_sessions_client();
-	//test_sessions_server();
-	//test_sessions_hold_resume();
+    test_sessions_client();
+    //test_sessions_server();
+    //test_sessions_hold_resume();
 }
 
 #endif /* _TEST_SESSIONS_H_ */

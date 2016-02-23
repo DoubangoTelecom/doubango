@@ -17,28 +17,28 @@
 /***************************************************************************/
 
 
-  /*************************************************************************/
-  /*************************************************************************/
-  /*************************************************************************/
-  /*************************************************************************/
-  /*************************************************************************/
-  /*********                                                       *********/
-  /*********        WARNING, THIS IS ALPHA CODE!  THIS API         *********/
-  /*********    IS DUE TO CHANGE UNTIL STRICTLY NOTIFIED BY THE    *********/
-  /*********            FREETYPE DEVELOPMENT TEAM                  *********/
-  /*********                                                       *********/
-  /*************************************************************************/
-  /*************************************************************************/
-  /*************************************************************************/
-  /*************************************************************************/
-  /*************************************************************************/
+/*************************************************************************/
+/*************************************************************************/
+/*************************************************************************/
+/*************************************************************************/
+/*************************************************************************/
+/*********                                                       *********/
+/*********        WARNING, THIS IS ALPHA CODE!  THIS API         *********/
+/*********    IS DUE TO CHANGE UNTIL STRICTLY NOTIFIED BY THE    *********/
+/*********            FREETYPE DEVELOPMENT TEAM                  *********/
+/*********                                                       *********/
+/*************************************************************************/
+/*************************************************************************/
+/*************************************************************************/
+/*************************************************************************/
+/*************************************************************************/
 
 
-  /* Main reason for not lifting the functions in this module to a  */
-  /* `standard' API is that the used parameters for emboldening and */
-  /* slanting are not configurable.  Consider the functions as a    */
-  /* code resource which should be copied into the application and  */
-  /* adapted to the particular needs.                               */
+/* Main reason for not lifting the functions in this module to a  */
+/* `standard' API is that the used parameters for emboldening and */
+/* slanting are not configurable.  Consider the functions as a    */
+/* code resource which should be copied into the application and  */
+/* adapted to the particular needs.                               */
 
 
 #ifndef __FTSYNTH_H__
@@ -57,21 +57,21 @@
 
 FT_BEGIN_HEADER
 
-  /* Embolden a glyph by a `reasonable' value (which is highly a matter of */
-  /* taste).  This function is actually a convenience function, providing  */
-  /* a wrapper for @FT_Outline_Embolden and @FT_Bitmap_Embolden.           */
-  /*                                                                       */
-  /* For emboldened outlines the height, width, and advance metrics are    */
-  /* increased by the strength of the emboldening.  You can also call      */
-  /* @FT_Outline_Get_CBox to get precise values.                           */
-  FT_EXPORT( void )
-  FT_GlyphSlot_Embolden( FT_GlyphSlot  slot );
+/* Embolden a glyph by a `reasonable' value (which is highly a matter of */
+/* taste).  This function is actually a convenience function, providing  */
+/* a wrapper for @FT_Outline_Embolden and @FT_Bitmap_Embolden.           */
+/*                                                                       */
+/* For emboldened outlines the height, width, and advance metrics are    */
+/* increased by the strength of the emboldening.  You can also call      */
+/* @FT_Outline_Get_CBox to get precise values.                           */
+FT_EXPORT( void )
+FT_GlyphSlot_Embolden( FT_GlyphSlot  slot );
 
-  /* Slant an outline glyph to the right by about 12 degrees. */
-  FT_EXPORT( void )
-  FT_GlyphSlot_Oblique( FT_GlyphSlot  slot );
+/* Slant an outline glyph to the right by about 12 degrees. */
+FT_EXPORT( void )
+FT_GlyphSlot_Oblique( FT_GlyphSlot  slot );
 
-  /* */
+/* */
 
 FT_END_HEADER
 

@@ -24,28 +24,29 @@ extern "C" {
 #endif
 
 typedef enum SVC_ENCODING_MODE {
-  INTER_LAYER_PREDICTION_I,
-  ALT_INTER_LAYER_PREDICTION_IP,
-  INTER_LAYER_PREDICTION_IP,
-  USE_GOLDEN_FRAME
-} SVC_ENCODING_MODE;
+    INTER_LAYER_PREDICTION_I,
+    ALT_INTER_LAYER_PREDICTION_IP,
+    INTER_LAYER_PREDICTION_IP,
+    USE_GOLDEN_FRAME
+}
+SVC_ENCODING_MODE;
 
 typedef enum SVC_LOG_LEVEL {
-  SVC_LOG_ERROR,
-  SVC_LOG_INFO,
-  SVC_LOG_DEBUG
+    SVC_LOG_ERROR,
+    SVC_LOG_INFO,
+    SVC_LOG_DEBUG
 } SVC_LOG_LEVEL;
 
 typedef struct {
-  // public interface to svc_command options
-  int spatial_layers;               // number of layers
-  SVC_ENCODING_MODE encoding_mode;  // svc encoding strategy
-  SVC_LOG_LEVEL log_level;  // amount of information to display
-  int log_print;  // when set, printf log messages instead of returning the
-                  // message with svc_get_message
+    // public interface to svc_command options
+    int spatial_layers;               // number of layers
+    SVC_ENCODING_MODE encoding_mode;  // svc encoding strategy
+    SVC_LOG_LEVEL log_level;  // amount of information to display
+    int log_print;  // when set, printf log messages instead of returning the
+    // message with svc_get_message
 
-  // private storage for vpx_svc_encode
-  void *internal;
+    // private storage for vpx_svc_encode
+    void *internal;
 } SvcContext;
 
 /**
@@ -73,7 +74,7 @@ vpx_codec_err_t vpx_svc_set_quantizers(SvcContext *svc_ctx,
  * e.g.,  "4/16,5/16,7/16,11/16,16/16"
  */
 vpx_codec_err_t vpx_svc_set_scale_factors(SvcContext *svc_ctx,
-                                          const char *scale_factors);
+        const char *scale_factors);
 
 /**
  * initialize SVC encoding
@@ -128,9 +129,9 @@ char *vpx_svc_get_rc_stats_buffer(const SvcContext *svc_ctx);
  * return spatial resolution of the specified layer
  */
 vpx_codec_err_t vpx_svc_get_layer_resolution(const SvcContext *svc_ctx,
-                                             int layer,
-                                             unsigned int *width,
-                                             unsigned int *height);
+        int layer,
+        unsigned int *width,
+        unsigned int *height);
 /**
  * return number of frames that have been encoded
  */

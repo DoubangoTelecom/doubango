@@ -1,20 +1,20 @@
-/* 
+/*
 * Copyright (C) Microsoft Corporation. All rights reserved.
 * Copyright (C) 2013 Mamadou DIOP
 * Copyright (C) 2013 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 */
@@ -63,7 +63,7 @@ LONGLONG BufferSizeFromAudioDuration(const WAVEFORMATEX *pWav, LONGLONG duration
 
 HRESULT CMFSource_CreateInstance(REFIID iid, void **ppMFT)
 {
-	return CMFSource::CreateInstance(iid, ppMFT);
+    return CMFSource::CreateInstance(iid, ppMFT);
 }
 
 
@@ -77,30 +77,26 @@ HRESULT CMFSource_CreateInstance(REFIID iid, void **ppMFT)
 
 HRESULT CMFSource::CreateInstance(REFIID iid, void **ppSource) // Called when source used as plugin
 {
-	return CreateInstanceEx(iid, ppSource, NULL);
+    return CreateInstanceEx(iid, ppSource, NULL);
 }
 
 HRESULT CMFSource::CreateInstanceEx(REFIID iid, void **ppSource, IMFMediaType *pMediaType) // Called when source directly called
 {
-	if (ppSource == NULL)
-    {
+    if (ppSource == NULL) {
         return E_POINTER;
     }
 
     HRESULT hr = S_OK;
     CMFSource *pSource = new (std::nothrow) CMFSource(hr, pMediaType); // Created with ref count = 1.
-    if (pSource == NULL)
-    {
+    if (pSource == NULL) {
         return E_OUTOFMEMORY;
     }
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = pSource->QueryInterface(iid, ppSource);
-		if(SUCCEEDED(hr))
-		{
-			((CMFSource*)(*ppSource))->AddRef();
-		}
+        if(SUCCEEDED(hr)) {
+            ((CMFSource*)(*ppSource))->AddRef();
+        }
     }
 
     SafeRelease(&pSource);
@@ -115,22 +111,21 @@ HRESULT CMFSource::CreateInstanceEx(REFIID iid, void **ppSource, IMFMediaType *p
 //-------------------------------------------------------------------
 
 CMFSource::CMFSource(HRESULT& hr, IMFMediaType *pMediaType)
-  : m_nRefCount(1),
-    m_pEventQueue(NULL),
-    m_pPresentationDescriptor(NULL),
-    m_IsShutdown(FALSE),
-    m_state(STATE_STOPPED),
-    m_pStream(NULL),
-	m_pMediaType(NULL)
+    : m_nRefCount(1),
+      m_pEventQueue(NULL),
+      m_pPresentationDescriptor(NULL),
+      m_IsShutdown(FALSE),
+      m_state(STATE_STOPPED),
+      m_pStream(NULL),
+      m_pMediaType(NULL)
 {
     // Create the media event queue.
     hr = MFCreateEventQueue(&m_pEventQueue);
 
-	if(pMediaType)
-	{
-		m_pMediaType = pMediaType;
-		pMediaType->AddRef();
-	}
+    if(pMediaType) {
+        m_pMediaType = pMediaType;
+        pMediaType->AddRef();
+    }
 
     InitializeCriticalSection(&m_critSec);
 }
@@ -145,7 +140,7 @@ CMFSource::~CMFSource()
 {
     assert(m_IsShutdown);
     assert(m_nRefCount == 0);
-	SafeRelease(&m_pMediaType);
+    SafeRelease(&m_pMediaType);
 
     DeleteCriticalSection(&m_critSec);
 }
@@ -154,26 +149,22 @@ CMFSource::~CMFSource()
 
 HRESULT CMFSource::CopyVideoBuffer(UINT32 nWidth, UINT32 nHeight, const void* pBufferPtr, UINT32 nBufferSize)
 {
-	if(!pBufferPtr)
-	{
-		TSK_DEBUG_ERROR("Invalid buffer pointer");
-		return E_POINTER;
-	}
+    if(!pBufferPtr) {
+        TSK_DEBUG_ERROR("Invalid buffer pointer");
+        return E_POINTER;
+    }
 
-	if(!nWidth || !nHeight || !nBufferSize)
-	{
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return E_INVALIDARG;
-	}
-	if(m_pStream)
-	{
-		return m_pStream->CopyVideoBuffer(nWidth, nHeight, pBufferPtr, nBufferSize);
-	}
-	else
-	{
-		TSK_DEBUG_ERROR("No stream associated to this source");
-		return E_NOT_VALID_STATE;
-	}
+    if(!nWidth || !nHeight || !nBufferSize) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return E_INVALIDARG;
+    }
+    if(m_pStream) {
+        return m_pStream->CopyVideoBuffer(nWidth, nHeight, pBufferPtr, nBufferSize);
+    }
+    else {
+        TSK_DEBUG_ERROR("No stream associated to this source");
+        return E_NOT_VALID_STATE;
+    }
 }
 
 // IUnknown methods
@@ -186,8 +177,7 @@ ULONG CMFSource::AddRef()
 ULONG  CMFSource::Release()
 {
     ULONG uCount = InterlockedDecrement(&m_nRefCount);
-    if (uCount == 0)
-    {
+    if (uCount == 0) {
         delete this;
     }
     // For thread safety, return a temporary variable.
@@ -196,8 +186,7 @@ ULONG  CMFSource::Release()
 
 HRESULT CMFSource::QueryInterface(REFIID iid, void** ppv)
 {
-    static const QITAB qit[] =
-    {
+    static const QITAB qit[] = {
         QITABENT(CMFSource, IMFMediaEventGenerator),
         QITABENT(CMFSource, IMFMediaSource),
         { 0 }
@@ -220,8 +209,7 @@ HRESULT CMFSource::BeginGetEvent(IMFAsyncCallback* pCallback, IUnknown* punkStat
 
     hr = CheckShutdown();
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = m_pEventQueue->BeginGetEvent(pCallback, punkState);
     }
 
@@ -238,8 +226,7 @@ HRESULT CMFSource::EndGetEvent(IMFAsyncResult* pResult, IMFMediaEvent** ppEvent)
 
     hr = CheckShutdown();
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = m_pEventQueue->EndGetEvent(pResult, ppEvent);
     }
 
@@ -263,16 +250,14 @@ HRESULT CMFSource::GetEvent(DWORD dwFlags, IMFMediaEvent** ppEvent)
     // Check shutdown
     hr = CheckShutdown();
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         pQueue = m_pEventQueue;
         pQueue->AddRef();
     }
 
     LeaveCriticalSection(&m_critSec);
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = pQueue->GetEvent(dwFlags, ppEvent);
     }
 
@@ -288,8 +273,7 @@ HRESULT CMFSource::QueueEvent(MediaEventType met, REFGUID guidExtendedType, HRES
 
     hr = CheckShutdown();
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = m_pEventQueue->QueueEventParamVar(met, guidExtendedType, hrStatus, pvValue);
     }
 
@@ -309,8 +293,7 @@ HRESULT CMFSource::QueueEvent(MediaEventType met, REFGUID guidExtendedType, HRES
 
 HRESULT CMFSource::CreatePresentationDescriptor(IMFPresentationDescriptor** ppPresentationDescriptor)
 {
-    if (ppPresentationDescriptor == NULL)
-    {
+    if (ppPresentationDescriptor == NULL) {
         return E_POINTER;
     }
 
@@ -320,17 +303,14 @@ HRESULT CMFSource::CreatePresentationDescriptor(IMFPresentationDescriptor** ppPr
 
     hr = CheckShutdown();
 
-    if (SUCCEEDED(hr))
-    {
-        if (m_pPresentationDescriptor == NULL)
-        {
+    if (SUCCEEDED(hr)) {
+        if (m_pPresentationDescriptor == NULL) {
             hr = CreatePresentationDescriptor();
         }
     }
 
     // Clone our default presentation descriptor.
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = m_pPresentationDescriptor->Clone(ppPresentationDescriptor);
     }
 
@@ -347,8 +327,7 @@ HRESULT CMFSource::CreatePresentationDescriptor(IMFPresentationDescriptor** ppPr
 
 HRESULT CMFSource::GetCharacteristics(DWORD* pdwCharacteristics)
 {
-    if (pdwCharacteristics == NULL)
-    {
+    if (pdwCharacteristics == NULL) {
         return E_POINTER;
     }
 
@@ -358,8 +337,7 @@ HRESULT CMFSource::GetCharacteristics(DWORD* pdwCharacteristics)
 
     hr = CheckShutdown();
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         *pdwCharacteristics =  MFMEDIASOURCE_CAN_PAUSE | MFMEDIASOURCE_IS_LIVE;
     }
 
@@ -377,7 +355,7 @@ HRESULT CMFSource::Start(
     IMFPresentationDescriptor* pPresentationDescriptor,
     const GUID* pguidTimeFormat,
     const PROPVARIANT* pvarStartPosition
-    )
+)
 {
     HRESULT hr = S_OK;
     LONGLONG llStartOffset = 0;
@@ -392,14 +370,12 @@ HRESULT CMFSource::Start(
 
     // Check parameters.
     // Start position and presentation descriptor cannot be NULL.
-    if (pvarStartPosition == NULL || pPresentationDescriptor == NULL)
-    {
+    if (pvarStartPosition == NULL || pPresentationDescriptor == NULL) {
         return E_INVALIDARG;
     }
 
     // Check the time format. Must be "reference time" units.
-    if ((pguidTimeFormat != NULL) && (*pguidTimeFormat != GUID_NULL))
-    {
+    if ((pguidTimeFormat != NULL) && (*pguidTimeFormat != GUID_NULL)) {
         // Unrecognized time format GUID.
         return MF_E_UNSUPPORTED_TIME_FORMAT;
     }
@@ -410,33 +386,27 @@ HRESULT CMFSource::Start(
     CHECK_HR(hr = CheckShutdown());
 
     // Check the start position.
-    if (pvarStartPosition->vt == VT_I8)
-    {
+    if (pvarStartPosition->vt == VT_I8) {
         // Start position is given in pvarStartPosition in 100-ns units.
         llStartOffset = pvarStartPosition->hVal.QuadPart;
 
-        if (m_state != STATE_STOPPED)
-        {
+        if (m_state != STATE_STOPPED) {
             // Source is running or paused, so this is a seek.
             bIsSeek = TRUE;
         }
     }
-    else if (pvarStartPosition->vt == VT_EMPTY)
-    {
+    else if (pvarStartPosition->vt == VT_EMPTY) {
         // Start position is "current position".
         // For stopped, that means 0. Otherwise, use the current position.
-        if (m_state == STATE_STOPPED)
-        {
+        if (m_state == STATE_STOPPED) {
             llStartOffset = 0;
         }
-        else
-        {
+        else {
             llStartOffset = GetCurrentPosition();
             bIsRestartFromCurrentPosition = TRUE;
         }
     }
-    else
-    {
+    else {
         // We don't support this time format.
         hr =  MF_E_UNSUPPORTED_TIME_FORMAT;
         goto bail;
@@ -457,12 +427,10 @@ HRESULT CMFSource::Start(
     var.hVal.QuadPart = llStartOffset;
 
     // Send the source event.
-    if (bIsSeek)
-    {
+    if (bIsSeek) {
         CHECK_HR(hr = QueueEvent(MESourceSeeked, GUID_NULL, hr, &var));
     }
-    else
-    {
+    else {
         // For starting, if we are RESTARTING from the current position and our
         // previous state was running/paused, then we need to add the
         // MF_EVENT_SOURCE_ACTUAL_START attribute to the event. This requires
@@ -472,8 +440,7 @@ HRESULT CMFSource::Start(
         CHECK_HR(hr = MFCreateMediaEvent(MESourceStarted, GUID_NULL, hr, &var, &pEvent));
 
         // For restarts, set the actual start time as an attribute.
-        if (bIsRestartFromCurrentPosition)
-        {
+        if (bIsRestartFromCurrentPosition) {
             CHECK_HR(hr = pEvent->SetUINT64(MF_EVENT_SOURCE_ACTUAL_START, llStartOffset));
         }
 
@@ -484,31 +451,26 @@ HRESULT CMFSource::Start(
     bQueuedStartEvent = TRUE;
 
     // Send the stream event.
-    if (m_pStream)
-    {
-        if (bIsSeek)
-        {
+    if (m_pStream) {
+        if (bIsSeek) {
             CHECK_HR(hr = m_pStream->QueueEvent(MEStreamSeeked, GUID_NULL, hr, &var));
         }
-        else
-        {
+        else {
             CHECK_HR(hr = m_pStream->QueueEvent(MEStreamStarted, GUID_NULL, hr, &var));
         }
     }
 
-    if (bIsSeek)
-    {
+    if (bIsSeek) {
         // For seek requests, flush any queued samples.
         CHECK_HR(hr = m_pStream->Flush());
     }
-    else
-    {
+    else {
         // Otherwise, deliver any queued samples.
         CHECK_HR(hr = m_pStream->DeliverQueuedSamples());
     }
 
-	// Initialize Stream parameters
-	CHECK_HR(hr = m_pStream->InitializeParams());
+    // Initialize Stream parameters
+    CHECK_HR(hr = m_pStream->InitializeParams());
 
     m_state = STATE_STARTED;
 
@@ -522,8 +484,7 @@ bail:
     // event (with a success code), then we need to raise an
     // MEError event.
 
-    if (FAILED(hr) && bQueuedStartEvent)
-    {
+    if (FAILED(hr) && bQueuedStartEvent) {
         hr = QueueEvent(MEError, GUID_NULL, hr, &var);
     }
 
@@ -531,7 +492,7 @@ bail:
     SafeRelease(&pEvent);
 
     LeaveCriticalSection(&m_critSec);
-	
+
     return hr;
 }
 
@@ -550,31 +511,25 @@ HRESULT CMFSource::Pause()
     hr = CheckShutdown();
 
     // Pause is only allowed from started state.
-    if (SUCCEEDED(hr))
-    {
-        if (m_state != STATE_STARTED)
-        {
+    if (SUCCEEDED(hr)) {
+        if (m_state != STATE_STARTED) {
             hr = MF_E_INVALID_STATE_TRANSITION;
         }
     }
 
     // Send the appropriate events.
-    if (SUCCEEDED(hr))
-    {
-        if (m_pStream)
-        {
+    if (SUCCEEDED(hr)) {
+        if (m_pStream) {
             hr = m_pStream->QueueEvent(MEStreamPaused, GUID_NULL, S_OK, NULL);
         }
     }
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = QueueEvent(MESourcePaused, GUID_NULL, S_OK, NULL);
     }
 
     // Update our state.
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         m_state = STATE_PAUSED;
     }
 
@@ -597,8 +552,7 @@ HRESULT CMFSource::Stop()
 
     hr = CheckShutdown();
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         // Update our state.
         m_state = STATE_STOPPED;
 
@@ -610,15 +564,12 @@ HRESULT CMFSource::Stop()
     // Queue events.
     //
 
-    if (SUCCEEDED(hr))
-    {
-        if (m_pStream)
-        {
+    if (SUCCEEDED(hr)) {
+        if (m_pStream) {
             hr = m_pStream->QueueEvent(MEStreamStopped, GUID_NULL, S_OK, NULL);
         }
     }
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = QueueEvent(MESourceStopped, GUID_NULL, S_OK, NULL);
     }
 
@@ -645,17 +596,14 @@ HRESULT CMFSource::Shutdown()
 
     hr = CheckShutdown();
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         // Shut down the stream object.
-        if (m_pStream)
-        {
+        if (m_pStream) {
             (void)m_pStream->Shutdown();
         }
 
         // Shut down the event queue.
-        if (m_pEventQueue)
-        {
+        if (m_pEventQueue) {
             (void)m_pEventQueue->Shutdown();
         }
 
@@ -694,44 +642,39 @@ HRESULT CMFSource::CreatePresentationDescriptor()
 
     // Create the stream descriptor.
     hr = MFCreateStreamDescriptor(
-        0,          // stream identifier
-        1,          // Number of media types.
-        &m_pMediaType, // Array of media types
-        &pStreamDescriptor
-        );
+             0,          // stream identifier
+             1,          // Number of media types.
+             &m_pMediaType, // Array of media types
+             &pStreamDescriptor
+         );
 
     // Set the default media type on the media type handler.
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = pStreamDescriptor->GetMediaTypeHandler(&pHandler);
     }
-	
-    if (SUCCEEDED(hr))
-    {
-       hr = pHandler->SetCurrentMediaType(m_pMediaType);
+
+    if (SUCCEEDED(hr)) {
+        hr = pHandler->SetCurrentMediaType(m_pMediaType);
     }
 
     // Create the presentation descriptor.
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = MFCreatePresentationDescriptor(
-            1,                      // Number of stream descriptors
-            &pStreamDescriptor,     // Array of stream descriptors
-            &m_pPresentationDescriptor
-            );
+                 1,                      // Number of stream descriptors
+                 &pStreamDescriptor,     // Array of stream descriptors
+                 &m_pPresentationDescriptor
+             );
     }
     // Select the first stream
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = m_pPresentationDescriptor->SelectStream(0);
     }
 
     // Set the file/stream duration as an attribute on the presentation descriptor.
-    if (SUCCEEDED(hr))
-    {
-		hr = m_pPresentationDescriptor->SetUINT64(MF_PD_DURATION, (UINT64)ULLONG_MAX);
+    if (SUCCEEDED(hr)) {
+        hr = m_pPresentationDescriptor->SetUINT64(MF_PD_DURATION, (UINT64)ULLONG_MAX);
     }
-    
+
     SafeRelease(&pStreamDescriptor);
     SafeRelease(&pHandler);
     return hr;
@@ -764,7 +707,7 @@ HRESULT CMFSource::ValidatePresentationDescriptor(IMFPresentationDescriptor *pPD
     IMFStreamDescriptor *pStreamDescriptor = NULL;
     IMFMediaTypeHandler *pHandler = NULL;
     IMFMediaType        *pMediaType = NULL;
-	GUID				majorType;
+    GUID				majorType;
 
     DWORD   cStreamDescriptors = 0;
     BOOL    fSelected = FALSE;
@@ -772,85 +715,71 @@ HRESULT CMFSource::ValidatePresentationDescriptor(IMFPresentationDescriptor *pPD
     // Make sure there is only one stream.
     hr = pPD->GetStreamDescriptorCount(&cStreamDescriptors);
 
-    if (SUCCEEDED(hr))
-    {
-        if (cStreamDescriptors != 1)
-        {
+    if (SUCCEEDED(hr)) {
+        if (cStreamDescriptors != 1) {
             hr = MF_E_UNSUPPORTED_REPRESENTATION;
         }
     }
 
     // Get the stream descriptor.
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = pPD->GetStreamDescriptorByIndex(0, &fSelected, &pStreamDescriptor);
     }
 
     // Make sure it's selected. (This media source has only one stream, so it
     // is not useful to deselect the only stream.)
-    if (SUCCEEDED(hr))
-    {
-        if (!fSelected)
-        {
+    if (SUCCEEDED(hr)) {
+        if (!fSelected) {
             hr = MF_E_UNSUPPORTED_REPRESENTATION;
         }
     }
 
     // Get the media type handler, so that we can get the media type.
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = pStreamDescriptor->GetMediaTypeHandler(&pHandler);
     }
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = pHandler->GetCurrentMediaType(&pMediaType);
     }
 
-	hr = pMediaType->GetMajorType(&majorType);
+    hr = pMediaType->GetMajorType(&majorType);
 
-	if (SUCCEEDED(hr))
-	{
-		if(majorType == MFMediaType_Video)
-		{
-			if (SUCCEEDED(hr))
-			{
-				hr = MFUtils::ValidateVideoFormat(pMediaType);
-			}
-		}
-		else
-		{
-			WAVEFORMATEX        *pFormat = NULL;
-			UINT32  cbWaveFormat = 0;
+    if (SUCCEEDED(hr)) {
+        if(majorType == MFMediaType_Video) {
+            if (SUCCEEDED(hr)) {
+                hr = MFUtils::ValidateVideoFormat(pMediaType);
+            }
+        }
+        else {
+            WAVEFORMATEX        *pFormat = NULL;
+            UINT32  cbWaveFormat = 0;
 
-			if (SUCCEEDED(hr))
-			{
-				hr = MFCreateWaveFormatExFromMFMediaType(
-					pMediaType,
-					&pFormat,
-					&cbWaveFormat);
-			}
-			if (SUCCEEDED(hr))
-			{
-				/*assert(this->WaveFormat() != NULL);
+            if (SUCCEEDED(hr)) {
+                hr = MFCreateWaveFormatExFromMFMediaType(
+                         pMediaType,
+                         &pFormat,
+                         &cbWaveFormat);
+            }
+            if (SUCCEEDED(hr)) {
+                /*assert(this->WaveFormat() != NULL);
 
-				if (cbWaveFormat < this->WaveFormatSize())
-				{
-					hr = MF_E_INVALIDMEDIATYPE;
-				}*/
-			}
+                if (cbWaveFormat < this->WaveFormatSize())
+                {
+                	hr = MF_E_INVALIDMEDIATYPE;
+                }*/
+            }
 
-			if (SUCCEEDED(hr))
-			{
-				/*if (memcmp(pFormat, WaveFormat(), WaveFormatSize()) != 0)
-				{
-					hr = MF_E_INVALIDMEDIATYPE;
-				}*/
-			}
+            if (SUCCEEDED(hr)) {
+                /*if (memcmp(pFormat, WaveFormat(), WaveFormatSize()) != 0)
+                {
+                	hr = MF_E_INVALIDMEDIATYPE;
+                }*/
+            }
 
-			CoTaskMemFree(pFormat);
-		}
-	}
+            CoTaskMemFree(pFormat);
+        }
+    }
 
     SafeRelease(&pStreamDescriptor);
     SafeRelease(&pHandler);
@@ -882,27 +811,23 @@ HRESULT CMFSource::QueueNewStreamEvent(IMFPresentationDescriptor *pPD)
 
     hr = pPD->GetStreamDescriptorByIndex(0, &fSelected, &pSD);
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         // The stream must be selected, because we don't allow the app
         // to de-select the stream. See ValidatePresentationDescriptor.
         assert(fSelected);
 
-        if (m_pStream)
-        {
+        if (m_pStream) {
             // The stream already exists, and is still selected.
             // Send the MEUpdatedStream event.
             hr = QueueEventWithIUnknown(this, MEUpdatedStream, S_OK, m_pStream);
         }
-        else
-        {
+        else {
             // The stream does not exist, and is now selected.
             // Create a new stream.
 
             hr = CreateCMFStreamSource(pSD);
 
-            if (SUCCEEDED(hr))
-            {
+            if (SUCCEEDED(hr)) {
                 // CreateCMFStreamSource creates the stream, so m_pStream is no longer NULL.
                 assert(m_pStream != NULL);
 
@@ -926,13 +851,11 @@ HRESULT CMFSource::CreateCMFStreamSource(IMFStreamDescriptor *pSD)
     HRESULT hr = S_OK;
     m_pStream = new (std::nothrow) CMFStreamSource(this, pSD, hr);
 
-    if (m_pStream == NULL)
-    {
+    if (m_pStream == NULL) {
         hr = E_OUTOFMEMORY;
     }
 
-    if (FAILED(hr))
-    {
+    if (FAILED(hr)) {
         SafeRelease(&m_pStream);
     }
 
@@ -948,12 +871,10 @@ HRESULT CMFSource::CreateCMFStreamSource(IMFStreamDescriptor *pSD)
 
 LONGLONG CMFSource::GetCurrentPosition() const
 {
-    if (m_pStream)
-    {
+    if (m_pStream) {
         return m_pStream->GetCurrentPosition();
     }
-    else
-    {
+    else {
         // If no stream is selected, we are at time 0 by definition.
         return 0;
     }
@@ -977,11 +898,11 @@ CMFStreamSource::CMFStreamSource(CMFSource *pSource,  IMFStreamDescriptor *pSD, 
     m_pEventQueue(NULL),
     m_IsShutdown(FALSE),
     m_rtCurrentPosition(0),
-	m_rtDuration(0),
+    m_rtDuration(0),
     m_discontinuity(FALSE),
     m_EOS(FALSE),
-	m_pMediaBuffer(NULL),
-	m_nBufferSize(0)
+    m_pMediaBuffer(NULL),
+    m_nBufferSize(0)
 {
     m_pSource = pSource;
     m_pSource->AddRef();
@@ -992,12 +913,12 @@ CMFStreamSource::CMFStreamSource(CMFSource *pSource,  IMFStreamDescriptor *pSD, 
     // Create the media event queue.
     CHECK_HR(hr = MFCreateEventQueue(&m_pEventQueue));
 
-	//CHECK_HR(hr = InitializeParams());
-	
+    //CHECK_HR(hr = InitializeParams());
+
     InitializeCriticalSection(&m_critSec);
 
 bail:
-	return;
+    return;
 }
 
 
@@ -1010,7 +931,7 @@ CMFStreamSource::~CMFStreamSource()
     assert(m_IsShutdown);
     assert(m_nRefCount == 0);
 
-	SafeRelease(&m_pMediaBuffer);
+    SafeRelease(&m_pMediaBuffer);
 
     DeleteCriticalSection(&m_critSec);
 }
@@ -1020,38 +941,36 @@ CMFStreamSource::~CMFStreamSource()
 
 HRESULT CMFStreamSource::CopyVideoBuffer(UINT32 nWidth, UINT32 nHeight, const void* pBufferPtr, UINT32 nBufferSize)
 {
-	// Buffer pointer and size validity already checked by source (caller)
-	if(m_guidMajorType != MFMediaType_Video)
-	{
-		TSK_DEBUG_ERROR("Calling CopyVideoBuffer on no-video stream");
+    // Buffer pointer and size validity already checked by source (caller)
+    if(m_guidMajorType != MFMediaType_Video) {
+        TSK_DEBUG_ERROR("Calling CopyVideoBuffer on no-video stream");
 #if defined(E_ILLEGAL_METHOD_CALL)
-		return E_ILLEGAL_METHOD_CALL;
+        return E_ILLEGAL_METHOD_CALL;
 #else
-		return _HRESULT_TYPEDEF_(0x8000000EL);
+        return _HRESULT_TYPEDEF_(0x8000000EL);
 #endif
-	}
-	if(nWidth != m_structVideoParams.nWidth || nHeight != m_structVideoParams.nHeigh || nBufferSize != m_nBufferSize)
-	{
-		TSK_DEBUG_ERROR("Invalid argument %u#%u or %u#%u or %u#%u. If the call is from a video consumer then, you can safely ignore this message.", nWidth, m_structVideoParams.nWidth, nHeight, m_structVideoParams.nHeigh, nBufferSize, m_nBufferSize);
+    }
+    if(nWidth != m_structVideoParams.nWidth || nHeight != m_structVideoParams.nHeigh || nBufferSize != m_nBufferSize) {
+        TSK_DEBUG_ERROR("Invalid argument %u#%u or %u#%u or %u#%u. If the call is from a video consumer then, you can safely ignore this message.", nWidth, m_structVideoParams.nWidth, nHeight, m_structVideoParams.nHeigh, nBufferSize, m_nBufferSize);
 #if defined(E_BOUNDS)
-		return E_BOUNDS;
+        return E_BOUNDS;
 #else
-		return _HRESULT_TYPEDEF_(0x8000000BL);
+        return _HRESULT_TYPEDEF_(0x8000000BL);
 #endif
-	}
+    }
 
-	HRESULT hr = S_OK;
-	
-	BYTE* pMediaBufferPtr = NULL;
-	DWORD cbMaxLength = nBufferSize, cbCurrentLength = nBufferSize;
-	CHECK_HR(hr = m_pMediaBuffer->Lock(&pMediaBufferPtr, &cbMaxLength, &cbCurrentLength));
-	
-	memcpy(pMediaBufferPtr, pBufferPtr, nBufferSize);
-	CHECK_HR(hr = m_pMediaBuffer->SetCurrentLength(nBufferSize));
-	CHECK_HR(hr = m_pMediaBuffer->Unlock());
-	
+    HRESULT hr = S_OK;
+
+    BYTE* pMediaBufferPtr = NULL;
+    DWORD cbMaxLength = nBufferSize, cbCurrentLength = nBufferSize;
+    CHECK_HR(hr = m_pMediaBuffer->Lock(&pMediaBufferPtr, &cbMaxLength, &cbCurrentLength));
+
+    memcpy(pMediaBufferPtr, pBufferPtr, nBufferSize);
+    CHECK_HR(hr = m_pMediaBuffer->SetCurrentLength(nBufferSize));
+    CHECK_HR(hr = m_pMediaBuffer->Unlock());
+
 bail:
-	return hr;
+    return hr;
 }
 
 // IUnknown methods
@@ -1064,8 +983,7 @@ ULONG CMFStreamSource::AddRef()
 ULONG  CMFStreamSource::Release()
 {
     ULONG uCount = InterlockedDecrement(&m_nRefCount);
-    if (uCount == 0)
-    {
+    if (uCount == 0) {
         delete this;
     }
     // For thread safety, return a temporary variable.
@@ -1074,8 +992,7 @@ ULONG  CMFStreamSource::Release()
 
 HRESULT CMFStreamSource::QueryInterface(REFIID iid, void** ppv)
 {
-    static const QITAB qit[] =
-    {
+    static const QITAB qit[] = {
         QITABENT(CMFStreamSource, IMFMediaEventGenerator),
         QITABENT(CMFStreamSource, IMFMediaStream),
         { 0 }
@@ -1094,8 +1011,7 @@ HRESULT CMFStreamSource::BeginGetEvent(IMFAsyncCallback* pCallback, IUnknown* pu
     EnterCriticalSection(&m_critSec);
 
     hr = CheckShutdown();
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = m_pEventQueue->BeginGetEvent(pCallback, punkState);
     }
 
@@ -1110,8 +1026,7 @@ HRESULT CMFStreamSource::EndGetEvent(IMFAsyncResult* pResult, IMFMediaEvent** pp
     EnterCriticalSection(&m_critSec);
 
     hr = CheckShutdown();
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = m_pEventQueue->EndGetEvent(pResult, ppEvent);
     }
 
@@ -1129,16 +1044,14 @@ HRESULT CMFStreamSource::GetEvent(DWORD dwFlags, IMFMediaEvent** ppEvent)
 
     hr = CheckShutdown();
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         pQueue = m_pEventQueue;
         pQueue->AddRef();
     }
 
     LeaveCriticalSection(&m_critSec);
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = pQueue->GetEvent(dwFlags, ppEvent);
     }
 
@@ -1153,8 +1066,7 @@ HRESULT CMFStreamSource::QueueEvent(MediaEventType met, REFGUID guidExtendedType
     EnterCriticalSection(&m_critSec);
 
     hr = CheckShutdown();
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = m_pEventQueue->QueueEventParamVar(met, guidExtendedType, hrStatus, pvValue);
     }
 
@@ -1173,8 +1085,7 @@ HRESULT CMFStreamSource::QueueEvent(MediaEventType met, REFGUID guidExtendedType
 
 HRESULT CMFStreamSource::GetMediaSource(IMFMediaSource** ppMediaSource)
 {
-    if (ppMediaSource == NULL)
-    {
+    if (ppMediaSource == NULL) {
         return E_POINTER;
     }
 
@@ -1187,16 +1098,13 @@ HRESULT CMFStreamSource::GetMediaSource(IMFMediaSource** ppMediaSource)
 
     hr = CheckShutdown();
 
-    if (SUCCEEDED(hr))
-    {
-        if (m_pSource == NULL)
-        {
+    if (SUCCEEDED(hr)) {
+        if (m_pSource == NULL) {
             hr = E_UNEXPECTED;
         }
     }
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = m_pSource->QueryInterface(IID_PPV_ARGS(ppMediaSource));
     }
 
@@ -1212,13 +1120,11 @@ HRESULT CMFStreamSource::GetMediaSource(IMFMediaSource** ppMediaSource)
 
 HRESULT CMFStreamSource::GetStreamDescriptor(IMFStreamDescriptor** ppStreamDescriptor)
 {
-    if (ppStreamDescriptor == NULL)
-    {
+    if (ppStreamDescriptor == NULL) {
         return E_POINTER;
     }
 
-    if (m_pStreamDescriptor == NULL)
-    {
+    if (m_pStreamDescriptor == NULL) {
         return E_UNEXPECTED;
     }
 
@@ -1228,8 +1134,7 @@ HRESULT CMFStreamSource::GetStreamDescriptor(IMFStreamDescriptor** ppStreamDescr
 
     hr = CheckShutdown();
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         *ppStreamDescriptor = m_pStreamDescriptor;
         (*ppStreamDescriptor)->AddRef();
     }
@@ -1250,8 +1155,7 @@ HRESULT CMFStreamSource::GetStreamDescriptor(IMFStreamDescriptor** ppStreamDescr
 
 HRESULT CMFStreamSource::RequestSample(IUnknown* pToken)
 {
-    if (m_pSource == NULL)
-    {
+    if (m_pSource == NULL) {
         return E_UNEXPECTED;
     }
 
@@ -1266,60 +1170,49 @@ HRESULT CMFStreamSource::RequestSample(IUnknown* pToken)
     hr = CheckShutdown();
 
     // Check if we already reached the end of the stream.
-    if (SUCCEEDED(hr))
-    {
-        if (m_EOS)
-        {
+    if (SUCCEEDED(hr)) {
+        if (m_EOS) {
             hr = MF_E_END_OF_STREAM;
         }
     }
 
     // Check the source is stopped.
     // GetState does not hold the source's critical section. Safe to call.
-    if (SUCCEEDED(hr))
-    {
-        if (m_pSource->GetState() == CMFSource::STATE_STOPPED)
-        {
+    if (SUCCEEDED(hr)) {
+        if (m_pSource->GetState() == CMFSource::STATE_STOPPED) {
             hr = MF_E_INVALIDREQUEST;
         }
     }
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         // Create a new audio sample.
         hr = CreateSample(&pSample);
     }
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         // If the caller provided a token, attach it to the sample as
         // an attribute.
 
         // NOTE: If we processed sample requests asynchronously, we would
         // need to call AddRef on the token and put the token onto a FIFO
         // queue. See documenation for IMFMediaStream::RequestSample.
-        if (pToken && pSample)
-        {
+        if (pToken && pSample) {
             hr = pSample->SetUnknown(MFSampleExtension_Token, pToken);
         }
     }
 
     // If paused, queue the sample for later delivery. Otherwise, deliver the sample now.
-    if (SUCCEEDED(hr) && pSample)
-    {
-        if (m_pSource->GetState() == CMFSource::STATE_PAUSED)
-        {
+    if (SUCCEEDED(hr) && pSample) {
+        if (m_pSource->GetState() == CMFSource::STATE_PAUSED) {
             hr = m_sampleQueue.Queue(pSample);
         }
-        else
-        {
+        else {
             hr = DeliverSample(pSample);
         }
     }
 
     // Cache a pointer to the source, prior to leaving the critical section.
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         pSource = m_pSource;
         pSource->AddRef();
     }
@@ -1334,10 +1227,8 @@ HRESULT CMFStreamSource::RequestSample(IUnknown* pToken)
     // source's critical section while holding the stream's critical section, at
     // risk of deadlock.
 
-    if (SUCCEEDED(hr))
-    {
-        if (m_EOS)
-        {
+    if (SUCCEEDED(hr)) {
+        if (m_EOS) {
             hr = pSource->QueueEvent(MEEndOfPresentation, GUID_NULL, S_OK, NULL);
         }
     }
@@ -1352,78 +1243,72 @@ HRESULT CMFStreamSource::RequestSample(IUnknown* pToken)
 
 HRESULT CMFStreamSource::InitializeParams()
 {
-	HRESULT hr = S_OK;
+    HRESULT hr = S_OK;
 
-	IMFMediaTypeHandler *pMediaTypeHandler = NULL;
-	IMFMediaType* pMediaType = NULL;
+    IMFMediaTypeHandler *pMediaTypeHandler = NULL;
+    IMFMediaType* pMediaType = NULL;
 
-	CHECK_HR(hr = m_pStreamDescriptor->GetMediaTypeHandler(&pMediaTypeHandler));
-	CHECK_HR(hr = pMediaTypeHandler->GetCurrentMediaType(&pMediaType));
+    CHECK_HR(hr = m_pStreamDescriptor->GetMediaTypeHandler(&pMediaTypeHandler));
+    CHECK_HR(hr = pMediaTypeHandler->GetCurrentMediaType(&pMediaType));
 
-	GUID majorType, subType;
-	pMediaType->GetMajorType(&majorType);
-	if(majorType == MFMediaType_Video)
-	{
-		memset(&m_structVideoParams, 0, sizeof(m_structVideoParams));
-		CHECK_HR(hr = MFGetAttributeSize(pMediaType, MF_MT_FRAME_SIZE, &m_structVideoParams.nWidth, &m_structVideoParams.nHeigh));
-		CHECK_HR(hr = pMediaType->GetGUID(MF_MT_SUBTYPE, &subType));
+    GUID majorType, subType;
+    pMediaType->GetMajorType(&majorType);
+    if(majorType == MFMediaType_Video) {
+        memset(&m_structVideoParams, 0, sizeof(m_structVideoParams));
+        CHECK_HR(hr = MFGetAttributeSize(pMediaType, MF_MT_FRAME_SIZE, &m_structVideoParams.nWidth, &m_structVideoParams.nHeigh));
+        CHECK_HR(hr = pMediaType->GetGUID(MF_MT_SUBTYPE, &subType));
 
-		m_guidMajorType = MFMediaType_Video;
-		m_guidSubType = subType;
+        m_guidMajorType = MFMediaType_Video;
+        m_guidSubType = subType;
 
-		// Guess video size
-		UINT32 nBufferSize;
-		if(subType == MFVideoFormat_RGB32)
-		{
-			nBufferSize = (m_structVideoParams.nWidth * m_structVideoParams.nHeigh << 2);
-		}
-		else if(subType == MFVideoFormat_RGB24)
-		{
-			nBufferSize = (m_structVideoParams.nWidth * m_structVideoParams.nHeigh << 2);
-		}
-		else if(subType == MFVideoFormat_NV12 || subType == MFVideoFormat_I420)
-		{
-			nBufferSize = (m_structVideoParams.nWidth * m_structVideoParams.nHeigh * 3) >> 1;
-		}
-		else
-		{
-			TSK_DEBUG_ERROR("Video subType not supported");
-			CHECK_HR(hr = E_NOTIMPL);
-		}
+        // Guess video size
+        UINT32 nBufferSize;
+        if(subType == MFVideoFormat_RGB32) {
+            nBufferSize = (m_structVideoParams.nWidth * m_structVideoParams.nHeigh << 2);
+        }
+        else if(subType == MFVideoFormat_RGB24) {
+            nBufferSize = (m_structVideoParams.nWidth * m_structVideoParams.nHeigh << 2);
+        }
+        else if(subType == MFVideoFormat_NV12 || subType == MFVideoFormat_I420) {
+            nBufferSize = (m_structVideoParams.nWidth * m_structVideoParams.nHeigh * 3) >> 1;
+        }
+        else {
+            TSK_DEBUG_ERROR("Video subType not supported");
+            CHECK_HR(hr = E_NOTIMPL);
+        }
 
-		// Allocate media buffer
-		SafeRelease(&m_pMediaBuffer);
-		CHECK_HR(hr = MFCreateMemoryBuffer(nBufferSize, &m_pMediaBuffer));
-		m_nBufferSize = nBufferSize;
-		{
-			//FIXME: DeliverSample() stops if no data
-			BYTE* pBuffer = NULL;
-			CHECK_HR(hr = m_pMediaBuffer->Lock(&pBuffer, NULL, NULL));
-			memset(pBuffer, 0, nBufferSize);
-			CHECK_HR(hr = m_pMediaBuffer->SetCurrentLength(nBufferSize));
-			CHECK_HR(hr = m_pMediaBuffer->Unlock());
-		}
-		
-		// Retrieve video Frame rate
-		UINT32 unNumerator, unDenominator;
-		CHECK_HR(hr = MFGetAttributeRatio(pMediaType, MF_MT_FRAME_RATE, &unNumerator, &unDenominator));
-		m_structVideoParams.nFps = (unNumerator / unDenominator);
-		
-		// Retrieve sample duration based on framerate
-		m_rtCurrentPosition = 0;
-		CHECK_HR(hr = MFFrameRateToAverageTimePerFrame(m_structVideoParams.nFps, 1, &m_rtDuration));
-	}
-	else
-	{
-		TSK_DEBUG_ERROR("Only video media type is supported");
-		CHECK_HR(hr = E_NOTIMPL);
-	}
+        // Allocate media buffer
+        SafeRelease(&m_pMediaBuffer);
+        CHECK_HR(hr = MFCreateMemoryBuffer(nBufferSize, &m_pMediaBuffer));
+        m_nBufferSize = nBufferSize;
+        {
+            //FIXME: DeliverSample() stops if no data
+            BYTE* pBuffer = NULL;
+            CHECK_HR(hr = m_pMediaBuffer->Lock(&pBuffer, NULL, NULL));
+            memset(pBuffer, 0, nBufferSize);
+            CHECK_HR(hr = m_pMediaBuffer->SetCurrentLength(nBufferSize));
+            CHECK_HR(hr = m_pMediaBuffer->Unlock());
+        }
+
+        // Retrieve video Frame rate
+        UINT32 unNumerator, unDenominator;
+        CHECK_HR(hr = MFGetAttributeRatio(pMediaType, MF_MT_FRAME_RATE, &unNumerator, &unDenominator));
+        m_structVideoParams.nFps = (unNumerator / unDenominator);
+
+        // Retrieve sample duration based on framerate
+        m_rtCurrentPosition = 0;
+        CHECK_HR(hr = MFFrameRateToAverageTimePerFrame(m_structVideoParams.nFps, 1, &m_rtDuration));
+    }
+    else {
+        TSK_DEBUG_ERROR("Only video media type is supported");
+        CHECK_HR(hr = E_NOTIMPL);
+    }
 
 bail:
-	SafeRelease(&pMediaTypeHandler);
-	SafeRelease(&pMediaType);
+    SafeRelease(&pMediaTypeHandler);
+    SafeRelease(&pMediaType);
 
-	return hr;
+    return hr;
 }
 
 // NOTE: Some of these methods hold the stream's critical section
@@ -1436,29 +1321,27 @@ bail:
 
 HRESULT CMFStreamSource::CreateSample(IMFSample **ppSample)
 {
-	*ppSample = NULL;
+    *ppSample = NULL;
 
     HRESULT hr = S_OK;
 
     IMFSample *pSample = NULL;
-	DWORD nCurrentLength = 0;
+    DWORD nCurrentLength = 0;
 
-	CHECK_HR(hr = m_pMediaBuffer->GetCurrentLength(&nCurrentLength));
+    CHECK_HR(hr = m_pMediaBuffer->GetCurrentLength(&nCurrentLength));
 
-	if(nCurrentLength > 0)
-	{
-		CHECK_HR(hr = MFCreateSample(&pSample));
-		CHECK_HR(hr = pSample->SetSampleTime(m_rtCurrentPosition));
-		CHECK_HR(hr = pSample->SetSampleDuration(m_rtDuration));
-		m_rtCurrentPosition += m_rtDuration;
-		CHECK_HR(hr = pSample->AddBuffer(m_pMediaBuffer));
+    if(nCurrentLength > 0) {
+        CHECK_HR(hr = MFCreateSample(&pSample));
+        CHECK_HR(hr = pSample->SetSampleTime(m_rtCurrentPosition));
+        CHECK_HR(hr = pSample->SetSampleDuration(m_rtDuration));
+        m_rtCurrentPosition += m_rtDuration;
+        CHECK_HR(hr = pSample->AddBuffer(m_pMediaBuffer));
 
-		if((*ppSample = pSample))
-		{
-			(*ppSample)->AddRef();
-		}
-	}
-	
+        if((*ppSample = pSample)) {
+            (*ppSample)->AddRef();
+        }
+    }
+
 bail:
     SafeRelease(&pSample);
     return hr;
@@ -1472,15 +1355,13 @@ HRESULT CMFStreamSource::DeliverSample(IMFSample *pSample)
 {
     HRESULT hr = S_OK;
 
-	if(pSample)
-	{
-		// Send the MEMediaSample event with the new sample.
-		hr = QueueEventWithIUnknown(this, MEMediaSample, hr, pSample);
-	}
+    if(pSample) {
+        // Send the MEMediaSample event with the new sample.
+        hr = QueueEventWithIUnknown(this, MEMediaSample, hr, pSample);
+    }
 
     // See if we reached the end of the stream.
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         hr = CheckEndOfStream();    // This method sends MEEndOfStream if needed.
     }
 
@@ -1506,25 +1387,20 @@ HRESULT CMFStreamSource::DeliverQueuedSamples()
 
     // If we already reached the end of the stream, send the MEEndStream
     // event again.
-    if (m_EOS)
-    {
+    if (m_EOS) {
         hr = QueueEvent(MEEndOfStream, GUID_NULL, S_OK, NULL);
     }
 
-    if (SUCCEEDED(hr))
-    {
+    if (SUCCEEDED(hr)) {
         // Deliver any queued samples.
-        while (!m_sampleQueue.IsEmpty())
-        {
+        while (!m_sampleQueue.IsEmpty()) {
             hr = m_sampleQueue.Dequeue(&pSample);
-            if (FAILED(hr))
-            {
+            if (FAILED(hr)) {
                 break;
             }
 
             hr = DeliverSample(pSample);
-            if (FAILED(hr))
-            {
+            if (FAILED(hr)) {
                 break;
             }
 
@@ -1536,10 +1412,8 @@ HRESULT CMFStreamSource::DeliverQueuedSamples()
 
     // If we reached the end of the stream, send the end-of-presentation event from
     // the media source.
-    if (SUCCEEDED(hr))
-    {
-        if (m_EOS)
-        {
+    if (SUCCEEDED(hr)) {
+        if (m_EOS) {
             hr = m_pSource->QueueEvent(MEEndOfPresentation, GUID_NULL, S_OK, NULL);
         }
     }
@@ -1578,8 +1452,7 @@ HRESULT CMFStreamSource::Shutdown()
     Flush();
 
     // Shut down the event queue.
-    if (m_pEventQueue)
-    {
+    if (m_pEventQueue) {
         m_pEventQueue->Shutdown();
     }
 
@@ -1602,37 +1475,37 @@ HRESULT CMFStreamSource::SetPosition(LONGLONG rtNewPosition)
 {
     EnterCriticalSection(&m_critSec);
 
-	HRESULT hr = S_OK;
+    HRESULT hr = S_OK;
 
-/*
-    // Check if the requested position is beyond the end of the stream.
-    LONGLONG duration = AudioDurationFromBufferSize(m_pRiff->Format(), m_pRiff->Chunk().DataSize());
+    /*
+        // Check if the requested position is beyond the end of the stream.
+        LONGLONG duration = AudioDurationFromBufferSize(m_pRiff->Format(), m_pRiff->Chunk().DataSize());
 
-    if (rtNewPosition > duration)
-    {
-        LeaveCriticalSection(&m_critSec);
-
-        return MF_E_INVALIDREQUEST; // Start position is past the end of the presentation.
-    }
-
-    if (m_rtCurrentPosition != rtNewPosition)
-    {
-        LONGLONG offset = BufferSizeFromAudioDuration(m_pRiff->Format(), rtNewPosition);
-
-        // The chunk size is a DWORD. So if our calculations are correct, there is no
-        // way that the maximum valid seek position can be larger than a DWORD.
-        assert(offset <= MAXDWORD);
-
-        hr = m_pRiff->MoveToChunkOffset((DWORD)offset);
-
-        if (SUCCEEDED(hr))
+        if (rtNewPosition > duration)
         {
-            m_rtCurrentPosition = rtNewPosition;
-            m_discontinuity = TRUE;
-            m_EOS = FALSE;
+            LeaveCriticalSection(&m_critSec);
+
+            return MF_E_INVALIDREQUEST; // Start position is past the end of the presentation.
         }
-    }
-*/
+
+        if (m_rtCurrentPosition != rtNewPosition)
+        {
+            LONGLONG offset = BufferSizeFromAudioDuration(m_pRiff->Format(), rtNewPosition);
+
+            // The chunk size is a DWORD. So if our calculations are correct, there is no
+            // way that the maximum valid seek position can be larger than a DWORD.
+            assert(offset <= MAXDWORD);
+
+            hr = m_pRiff->MoveToChunkOffset((DWORD)offset);
+
+            if (SUCCEEDED(hr))
+            {
+                m_rtCurrentPosition = rtNewPosition;
+                m_discontinuity = TRUE;
+                m_EOS = FALSE;
+            }
+        }
+    */
     LeaveCriticalSection(&m_critSec);
     return hr;
 }
@@ -1640,18 +1513,18 @@ HRESULT CMFStreamSource::SetPosition(LONGLONG rtNewPosition)
 HRESULT CMFStreamSource::CheckEndOfStream()
 {
     HRESULT hr = S_OK;
-/*
-    if (m_pRiff->BytesRemainingInChunk() < m_pRiff->Format()->nBlockAlign)
-    {
-        // The remaining data is smaller than the audio block size. (In theory there shouldn't be
-        // partial bits of data at the end, so we should reach an even zero bytes, but the file
-        // might not be authored correctly.)
-        m_EOS = TRUE;
+    /*
+        if (m_pRiff->BytesRemainingInChunk() < m_pRiff->Format()->nBlockAlign)
+        {
+            // The remaining data is smaller than the audio block size. (In theory there shouldn't be
+            // partial bits of data at the end, so we should reach an even zero bytes, but the file
+            // might not be authored correctly.)
+            m_EOS = TRUE;
 
-        // Send the end-of-stream event,
-        hr = QueueEvent(MEEndOfStream, GUID_NULL, S_OK, NULL);
-    }
-	*/
+            // Send the end-of-stream event,
+            hr = QueueEvent(MEEndOfStream, GUID_NULL, S_OK, NULL);
+        }
+    	*/
     return hr;
 }
 
@@ -1697,8 +1570,7 @@ LONGLONG AudioDurationFromBufferSize(const WAVEFORMATEX *pWav, DWORD cbAudioData
 {
     assert(pWav != NULL);
 
-    if (pWav->nAvgBytesPerSec == 0)
-    {
+    if (pWav->nAvgBytesPerSec == 0) {
         return 0;
     }
     return (LONGLONG)cbAudioDataSize * 10000000 / pWav->nAvgBytesPerSec;
@@ -1711,8 +1583,7 @@ LONGLONG BufferSizeFromAudioDuration(const WAVEFORMATEX *pWav, LONGLONG duration
     ULONG ulRemainder = (ULONG)(cbSize % pWav->nBlockAlign);
 
     // Round up to the next block.
-    if(ulRemainder)
-    {
+    if(ulRemainder) {
         cbSize += pWav->nBlockAlign - ulRemainder;
     }
 

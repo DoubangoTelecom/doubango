@@ -23,22 +23,19 @@
 // Warnings
 #define AGC_BAD_PARAMETER_WARNING       18050
 
-enum
-{
+enum {
     kAgcModeUnchanged,
     kAgcModeAdaptiveAnalog,
     kAgcModeAdaptiveDigital,
     kAgcModeFixedDigital
 };
 
-enum
-{
+enum {
     kAgcFalse = 0,
     kAgcTrue
 };
 
-typedef struct
-{
+typedef struct {
     WebRtc_Word16 targetLevelDbfs;   // default 3 (-3 dBOv)
     WebRtc_Word16 compressionGaindB; // default 9 dB
     WebRtc_UWord8 limiterEnable;     // default kAgcTrue (on)

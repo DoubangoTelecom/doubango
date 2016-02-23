@@ -27,24 +27,23 @@
 static tsk_object_t* tnet_ice_event_ctor(tsk_object_t * self, va_list * app)
 {
     tnet_ice_event_t *e = self;
-    if(e){
-        
+    if(e) {
+
     }
     return self;
 }
 static tsk_object_t* tnet_ice_event_dtor(tsk_object_t * self)
 {
     tnet_ice_event_t *e = self;
-    if(e){
+    if(e) {
         TSK_SAFE_FREE(e->phrase);
         TSK_OBJECT_SAFE_FREE(e->action);
         e->ctx = tsk_null; // not the owner (const)
     }
-    
+
     return self;
 }
-static const tsk_object_def_t tnet_ice_event_def_s =
-{
+static const tsk_object_def_t tnet_ice_event_def_s = {
     sizeof(tnet_ice_event_t),
     tnet_ice_event_ctor,
     tnet_ice_event_dtor,
@@ -56,29 +55,29 @@ const tsk_object_def_t *tnet_ice_event_def_t = &tnet_ice_event_def_s;
 tnet_ice_event_t* tnet_ice_event_create(const struct tnet_ice_ctx_s* ctx, tnet_ice_event_type_t type, const char* phrase, const void* userdata)
 {
     tnet_ice_event_t* e;
-    
-    if((e = tsk_object_new(tnet_ice_event_def_t))){
+
+    if((e = tsk_object_new(tnet_ice_event_def_t))) {
         e->ctx = ctx;
         e->type = type;
         e->phrase = tsk_strdup(phrase);
         e->userdata = userdata;
     }
-    else{
+    else {
         TSK_DEBUG_ERROR("Failed to create ICE event");
     }
-    
+
     return e;
 }
 
 int tnet_ice_event_set_action(tnet_ice_event_t* self, struct tnet_ice_action_s* action)
 {
-    if(!self){
+    if(!self) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
     self->type = tnet_ice_event_type_action;
     TSK_OBJECT_SAFE_FREE(self->action);
-    if(action){
+    if(action) {
         self->action = tsk_object_ref(action);
     }
     return 0;

@@ -12,7 +12,8 @@
 #define INCLUDE_LIBYUV_CPU_ID_H_
 
 #ifdef __cplusplus
-namespace libyuv {
+namespace libyuv
+{
 extern "C" {
 #endif
 
@@ -36,10 +37,11 @@ static const int kCpuHasAVX = 0x200;
 // Detect CPU has SSE2 etc.
 // Test_flag parameter should be one of kCpuHas constants above.
 // returns non-zero if instruction set is detected
-static __inline int TestCpuFlag(int test_flag) {
-  extern int cpu_info_;
-  extern int InitCpuFlags();
-  return (cpu_info_ ? cpu_info_ : InitCpuFlags()) & test_flag;
+static __inline int TestCpuFlag(int test_flag)
+{
+    extern int cpu_info_;
+    extern int InitCpuFlags();
+    return (cpu_info_ ? cpu_info_ : InitCpuFlags()) & test_flag;
 }
 
 // For testing, allow CPU flags to be disabled.

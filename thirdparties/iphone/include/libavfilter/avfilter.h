@@ -753,7 +753,7 @@ int avfilter_config_links(AVFilterContext *filter);
  */
 AVFilterBufferRef *
 avfilter_get_video_buffer_ref_from_arrays(uint8_t * const data[4], const int linesize[4], int perms,
-                                          int w, int h, enum PixelFormat format);
+        int w, int h, enum PixelFormat format);
 
 /**
  * Create an audio buffer reference wrapped around an already
@@ -767,11 +767,11 @@ avfilter_get_video_buffer_ref_from_arrays(uint8_t * const data[4], const int lin
  * @param channel_layout the channel layout of the buffer
  */
 AVFilterBufferRef *avfilter_get_audio_buffer_ref_from_arrays(uint8_t **data,
-                                                             int linesize,
-                                                             int perms,
-                                                             int nb_samples,
-                                                             enum AVSampleFormat sample_fmt,
-                                                             uint64_t channel_layout);
+        int linesize,
+        int perms,
+        int nb_samples,
+        enum AVSampleFormat sample_fmt,
+        uint64_t channel_layout);
 
 
 #define AVFILTER_CMD_FLAG_ONE   1 ///< Stop once a filter understood the command (for target=all for example), fast filters are favored automatically

@@ -2,19 +2,19 @@
 * Copyright (C) 2009 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -38,14 +38,13 @@
 
 TSMS_BEGIN_DECLS
 
-/** SMS alphabet values as per 3GPP TS 23.038 v911 section 4. 
+/** SMS alphabet values as per 3GPP TS 23.038 v911 section 4.
 * Part of TP-DCS (SMS Data Coding Scheme).
 */
-typedef enum tsms_alphabet_e
-{
-	/*11*/ tsms_alpha_reserved = 0x03,
-	/*00*/ tsms_alpha_7bit = 0x00,
-	/*01*/ tsms_alpha_8bit = 0x01,
+typedef enum tsms_alphabet_e {
+    /*11*/ tsms_alpha_reserved = 0x03,
+    /*00*/ tsms_alpha_7bit = 0x00,
+    /*01*/ tsms_alpha_8bit = 0x01,
     /*10*/ tsms_alpha_ucs2 = 0x02
 }
 tsms_alphabet_t;
@@ -54,19 +53,18 @@ tsms_alphabet_t;
 #define TSMS_ALPHA_FROM_DCS(dcs) (((dcs) & 0x0C) >> 2) /* Bit3 and Bit2 */
 
 
-/* ======================== TPDU ======================== 
+/* ======================== TPDU ========================
 =========================================================*/
 
 /** 3GPP TS 23.040 - 9.2.3.1	TP Message Type Indicator (TP MTI) */
-typedef enum tsms_tpdu_mti_e
-{
-	/*0 0*/ tsms_tpdu_mti_deliver_mt		= 0x00,	/**< SMS-DELIVER (in the direction SC to MS)*/
-	/*0 0*/ tsms_tpdu_mti_deliver_report_mo	= 0x00,	/**< SMS-DELIVER-REPORT (in the direction MS to SC)*/
-	/*1 0*/ tsms_tpdu_mti_status_report_mt	= 0x02,	/**< SMS-STATUS-REPORT (in the direction SC to MS)*/
-	/*1 0*/ tsms_tpdu_mti_command_mo		= 0x02,	/**< SMS-COMMAND (in the direction MS to SC)*/
-	/*0 1*/ tsms_tpdu_mti_submit_mo			= 0x01,	/**< SMS-SUBMIT (in the direction MS to SC)*/
-	/*0 1*/ tsms_tpdu_mti_submit_report_mt	= 0x01,	/**< SMS-SUBMIT-REPORT (in the direction SC to MS)*/
-	/*1 1*/ tsms_tpdu_mti_reserved			= 0x03	/**< Reserved*/
+typedef enum tsms_tpdu_mti_e {
+    /*0 0*/ tsms_tpdu_mti_deliver_mt		= 0x00,	/**< SMS-DELIVER (in the direction SC to MS)*/
+    /*0 0*/ tsms_tpdu_mti_deliver_report_mo	= 0x00,	/**< SMS-DELIVER-REPORT (in the direction MS to SC)*/
+    /*1 0*/ tsms_tpdu_mti_status_report_mt	= 0x02,	/**< SMS-STATUS-REPORT (in the direction SC to MS)*/
+    /*1 0*/ tsms_tpdu_mti_command_mo		= 0x02,	/**< SMS-COMMAND (in the direction MS to SC)*/
+    /*0 1*/ tsms_tpdu_mti_submit_mo			= 0x01,	/**< SMS-SUBMIT (in the direction MS to SC)*/
+    /*0 1*/ tsms_tpdu_mti_submit_report_mt	= 0x01,	/**< SMS-SUBMIT-REPORT (in the direction SC to MS)*/
+    /*1 1*/ tsms_tpdu_mti_reserved			= 0x03	/**< Reserved*/
 }
 tsms_tpdu_mti_t;
 
@@ -74,38 +72,36 @@ tsms_tpdu_mti_t;
 #define TSMS_TPDU_MTI_IS_MO(mti)		(((mti) == tsms_tpdu_mti_deliver_report_mo) || ((mti) == tsms_tpdu_mti_command_mo) || ((mti) == tsms_tpdu_mti_submit_mo))
 
 /** 3GPP TS 23.040 - 9.2.3.1	TP Message Type Indicator (TP MTI) */
-typedef enum tsms_tpdu_vpf_e
-{
-	// Bit4 and Bit3
-	/*0	0*/	tsms_tpdu_vpf_not_present = 0x00, /**< TP VP field not present	*/
-	/*1	0*/	tsms_tpdu_vpf_relative = 0x02, /**< TP VP field present - relative format*/
-	/*0	1*/	tsms_tpdu_vpf_enhanced = 0x01, /**< TP-VP field present - enhanced format */
-	/*1	1*/	tsms_tpdu_vpf_absolute = 0x03, /**< TP VP field present - absolute format */
+typedef enum tsms_tpdu_vpf_e {
+    // Bit4 and Bit3
+    /*0	0*/	tsms_tpdu_vpf_not_present = 0x00, /**< TP VP field not present	*/
+    /*1	0*/	tsms_tpdu_vpf_relative = 0x02, /**< TP VP field present - relative format*/
+    /*0	1*/	tsms_tpdu_vpf_enhanced = 0x01, /**< TP-VP field present - enhanced format */
+    /*1	1*/	tsms_tpdu_vpf_absolute = 0x03, /**< TP VP field present - absolute format */
 }
 tsms_tpdu_vpf_t;
 
 /** SM-TL base type as per 3GPP TS 23.040 section 9.2.
 */
-typedef struct tsms_tpdu_message_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsms_tpdu_message_s {
+    TSK_DECLARE_OBJECT;
 
-	tsk_bool_t MobOrig;
+    tsk_bool_t MobOrig;
 
-	/** TP Message Type Indicator (TP MTI) as per TS 23.040 section 9.2.3.1. 2-bit field. */
-	tsms_tpdu_mti_t mti; 
-	/** TP Protocol Identifier (M - o)
-	* Parameter identifying the above layer protocol, if any. */
-	uint8_t pid;
-	/** TP Data Coding Scheme (M - o)
-	* Parameter identifying the coding scheme within the TP-User-Data. */
-	uint8_t dcs;
-	/** TP User Data Length (M - I)
-	* Parameter indicating the length of the TP User Data field to follow. */
-	uint8_t udl;
-	/** TP User Data (O - v)
-	* User data. */
-	tsk_buffer_t* ud;
+    /** TP Message Type Indicator (TP MTI) as per TS 23.040 section 9.2.3.1. 2-bit field. */
+    tsms_tpdu_mti_t mti;
+    /** TP Protocol Identifier (M - o)
+    * Parameter identifying the above layer protocol, if any. */
+    uint8_t pid;
+    /** TP Data Coding Scheme (M - o)
+    * Parameter identifying the coding scheme within the TP-User-Data. */
+    uint8_t dcs;
+    /** TP User Data Length (M - I)
+    * Parameter indicating the length of the TP User Data field to follow. */
+    uint8_t udl;
+    /** TP User Data (O - v)
+    * User data. */
+    tsk_buffer_t* ud;
 }
 tsms_tpdu_message_t;
 
@@ -167,20 +163,19 @@ int tsms_tpdu_message_deinit(tsms_tpdu_message_t* self);
 */
 #define TSMS_TPDU_APPEND_SMSC	0
 
-/* ======================== RPDU ======================== 
+/* ======================== RPDU ========================
 =========================================================*/
 
 /** RP-MTI types as per 3GPP TS 24.011 section 8.2.2
 * 3bit field located in the first octet of all RP-Messages. */
-typedef enum tsms_rpdu_type_e
-{
-	/*000*/ tsms_rpdu_type_data_mo		= 0x00, /**< RP-DATA message ms->n */
-	/*001*/ tsms_rpdu_type_data_mt		= 0x01, /**< RP-DATA message n->ms */
-	/*010*/ tsms_rpdu_type_ack_mo		= 0x02, /**< RP-ACK message ms->n */
-	/*011*/ tsms_rpdu_type_ack_mt		= 0x03, /**< RP-ACK message n->ms */
-	/*100*/ tsms_rpdu_type_error_mo		= 0x04, /**< RP-ERROR message ms->n */
-	/*101*/ tsms_rpdu_type_error_mt		= 0x05, /**< RP-ERROR message n->ms */
-	/*110*/ tsms_rpdu_type_smma_mo		= 0x06, /**< RP-SMMA message ms->n */
+typedef enum tsms_rpdu_type_e {
+    /*000*/ tsms_rpdu_type_data_mo		= 0x00, /**< RP-DATA message ms->n */
+    /*001*/ tsms_rpdu_type_data_mt		= 0x01, /**< RP-DATA message n->ms */
+    /*010*/ tsms_rpdu_type_ack_mo		= 0x02, /**< RP-ACK message ms->n */
+    /*011*/ tsms_rpdu_type_ack_mt		= 0x03, /**< RP-ACK message n->ms */
+    /*100*/ tsms_rpdu_type_error_mo		= 0x04, /**< RP-ERROR message ms->n */
+    /*101*/ tsms_rpdu_type_error_mt		= 0x05, /**< RP-ERROR message n->ms */
+    /*110*/ tsms_rpdu_type_smma_mo		= 0x06, /**< RP-SMMA message ms->n */
 }
 tsms_rpdu_type_t;
 
@@ -189,12 +184,11 @@ tsms_rpdu_type_t;
 									|| ((type) == tsms_rpdu_type_error_mo) \
 									|| ((type) == tsms_rpdu_type_smma_mo))
 
-typedef struct tsms_rpdu_message_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsms_rpdu_message_s {
+    TSK_DECLARE_OBJECT;
 
-	tsms_rpdu_type_t mti;
-	uint8_t mr; /**< Message Reference. */
+    tsms_rpdu_type_t mti;
+    uint8_t mr; /**< Message Reference. */
 }
 tsms_rpdu_message_t;
 #define TSMS_DECLARE_RPDU_MESSAGE tsms_rpdu_message_t rpdu

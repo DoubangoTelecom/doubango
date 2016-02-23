@@ -2,19 +2,19 @@
 * Copyright (C) 2009 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -38,18 +38,17 @@ TMSRP_BEGIN_DECLS
 #define TMSRP_HEADER_EXPIRES_VA_ARGS(value)		tmsrp_header_Expires_def_t, (int64_t)value
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
+/// @struct
 ///
 /// @brief	MSRP 'Expires' header.
 ///
 /// @par ABNF :  Expires	=  	"Expires:" SP 1*DIGIT
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-typedef struct tmsrp_header_Expires_s
-{	
-	TMSRP_DECLARE_HEADER;
-	
-	int64_t value;
+typedef struct tmsrp_header_Expires_s {
+    TMSRP_DECLARE_HEADER;
+
+    int64_t value;
 }
 tmsrp_header_Expires_t;
 

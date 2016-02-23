@@ -45,8 +45,7 @@ extern vpx_codec_iface_t* vpx_codec_vp8_dx(void);
  *
  * \sa #vpx_codec_control
  */
-enum vp8_dec_control_id
-{
+enum vp8_dec_control_id {
     /** control function to get info on which reference frames were updated
      *  by the last decode
      */

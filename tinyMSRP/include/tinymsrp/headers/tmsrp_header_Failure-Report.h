@@ -2,19 +2,19 @@
 * Copyright (C) 2009 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -39,26 +39,24 @@ TMSRP_BEGIN_DECLS
 
 /** Failure report type;
 */
-typedef enum tmsrp_freport_type_e
-{
-	freport_yes,
-	freport_no,
-	freport_partial
+typedef enum tmsrp_freport_type_e {
+    freport_yes,
+    freport_no,
+    freport_partial
 }
 tmsrp_freport_type_t;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
+/// @struct
 ///
 /// @brief	MSRP 'Failure-Report' header.
 ///
-/// @par ABNF :  "Failure-Report:" ( "yes" / "no" / "partial" ) 
+/// @par ABNF :  "Failure-Report:" ( "yes" / "no" / "partial" )
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-typedef struct tmsrp_header_Failure_Report_s
-{	
-	TMSRP_DECLARE_HEADER;
-	tmsrp_freport_type_t type;
+typedef struct tmsrp_header_Failure_Report_s {
+    TMSRP_DECLARE_HEADER;
+    tmsrp_freport_type_t type;
 }
 tmsrp_header_Failure_Report_t;
 

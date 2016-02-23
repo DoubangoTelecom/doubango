@@ -85,13 +85,13 @@ static __inline__ void x86_cpuid(int func, int values[4])
     /* We need to preserve ebx since we're compiling PIC code */
     /* this means we can't use "=b" for the second output register */
     __asm__ __volatile__ ( \
-      "push %%ebx\n"
-      "cpuid\n" \
-      "mov %1, %%ebx\n"
-      "pop %%ebx\n"
-      : "=a" (a), "=r" (b), "=c" (c), "=d" (d) \
-      : "a" (func) \
-    );
+                           "push %%ebx\n"
+                           "cpuid\n" \
+                           "mov %1, %%ebx\n"
+                           "pop %%ebx\n"
+                           : "=a" (a), "=r" (b), "=c" (c), "=d" (d) \
+                           : "a" (func) \
+                         );
     values[0] = a;
     values[1] = b;
     values[2] = c;
@@ -110,12 +110,14 @@ read_file(const char*  pathname, char*  buffer, size_t  buffsize)
     int  fd, len;
 
     fd = open(pathname, O_RDONLY);
-    if (fd < 0)
+    if (fd < 0) {
         return -1;
+    }
 
     do {
         len = read(fd, buffer, buffsize);
-    } while (len < 0 && errno == EINTR);
+    }
+    while (len < 0 && errno == EINTR);
 
     close(fd);
 
@@ -143,11 +145,13 @@ extract_cpuinfo_field(char* buffer, int buflen, const char* field)
     bufend = buffer + buflen;
     for (;;) {
         p = memmem(p, bufend-p, field, fieldlen);
-        if (p == NULL)
+        if (p == NULL) {
             goto EXIT;
+        }
 
-        if (p == buffer || p[-1] == '\n')
+        if (p == buffer || p[-1] == '\n') {
             break;
+        }
 
         p += fieldlen;
     }
@@ -155,20 +159,23 @@ extract_cpuinfo_field(char* buffer, int buflen, const char* field)
     /* Skip to the first column followed by a space */
     p += fieldlen;
     p  = memchr(p, ':', bufend-p);
-    if (p == NULL || p[1] != ' ')
+    if (p == NULL || p[1] != ' ') {
         goto EXIT;
+    }
 
     /* Find the end of the line */
     p += 2;
     q = memchr(p, '\n', bufend-p);
-    if (q == NULL)
+    if (q == NULL) {
         q = bufend;
+    }
 
     /* Copy the line into a heap-allocated buffer */
     len = q-p;
     result = malloc(len+1);
-    if (result == NULL)
+    if (result == NULL) {
         goto EXIT;
+    }
 
     memcpy(result, p, len);
     result[len] = '\0';
@@ -190,23 +197,27 @@ has_list_item(const char* list, const char* item)
     const char*  p = list;
     int itemlen = strlen(item);
 
-    if (list == NULL)
+    if (list == NULL) {
         return 0;
+    }
 
     while (*p) {
         const char*  q;
 
         /* skip spaces */
-        while (*p == ' ' || *p == '\t')
+        while (*p == ' ' || *p == '\t') {
             p++;
+        }
 
         /* find end of current list item */
         q = p;
-        while (*q && *q != ' ' && *q != '\t')
+        while (*q && *q != ' ' && *q != '\t') {
             q++;
+        }
 
-        if (itemlen == q-p && !memcmp(p, item, itemlen))
+        if (itemlen == q-p && !memcmp(p, item, itemlen)) {
             return 1;
+        }
 
         /* skip to next item */
         p = q;
@@ -231,13 +242,15 @@ parse_decimal(const char* input, const char* limit, int* result)
     int val = 0;
     while (p < limit) {
         int d = (*p - '0');
-        if ((unsigned)d >= 10U)
+        if ((unsigned)d >= 10U) {
             break;
+        }
         val = val*10 + d;
         p++;
     }
-    if (p == input)
+    if (p == input) {
         return NULL;
+    }
 
     *result = val;
     return p;
@@ -254,24 +267,28 @@ typedef struct {
 } CpuList;
 
 static __inline__ void
-cpulist_init(CpuList* list) {
+cpulist_init(CpuList* list)
+{
     list->mask = 0;
 }
 
 static __inline__ void
-cpulist_and(CpuList* list1, CpuList* list2) {
+cpulist_and(CpuList* list1, CpuList* list2)
+{
     list1->mask &= list2->mask;
 }
 
 static __inline__ void
-cpulist_set(CpuList* list, int index) {
+cpulist_set(CpuList* list, int index)
+{
     if ((unsigned)index < 32) {
         list->mask |= (uint32_t)(1U << index);
     }
 }
 
 static __inline__ int
-cpulist_count(CpuList* list) {
+cpulist_count(CpuList* list)
+{
     return __builtin_popcount(list->mask);
 }
 
@@ -295,8 +312,7 @@ cpulist_parse(CpuList* list, const char* line, int line_len)
     /* NOTE: the input line coming from sysfs typically contains a
      * trailing newline, so take care of it in the code below
      */
-    while (p < end && *p != '\n')
-    {
+    while (p < end && *p != '\n') {
         int val, start_value, end_value;
 
         /* Find the end of current item, and put it into 'q' */
@@ -307,8 +323,9 @@ cpulist_parse(CpuList* list, const char* line, int line_len)
 
         /* Get first value */
         p = parse_decimal(p, q, &start_value);
-        if (p == NULL)
+        if (p == NULL) {
             goto BAD_FORMAT;
+        }
 
         end_value = start_value;
 
@@ -317,8 +334,9 @@ cpulist_parse(CpuList* list, const char* line, int line_len)
          */
         if (p < q && *p == '-') {
             p = parse_decimal(p+1, q, &end_value);
-            if (p == NULL)
+            if (p == NULL) {
                 goto BAD_FORMAT;
+            }
         }
 
         /* Set bits CPU list bits */
@@ -328,8 +346,9 @@ cpulist_parse(CpuList* list, const char* line, int line_len)
 
         /* Jump to next item */
         p = q;
-        if (p < end)
+        if (p < end) {
             p++;
+        }
     }
 
 BAD_FORMAT:
@@ -391,7 +410,7 @@ android_cpuInit(void)
     D("cpuinfo_len is (%d):\n%.*s\n", cpuinfo_len,
       cpuinfo_len >= 0 ? cpuinfo_len : 0, cpuinfo);
 
-    if (cpuinfo_len < 0)  /* should not happen */ {
+    if (cpuinfo_len < 0) { /* should not happen */
         return;
     }
 
@@ -478,11 +497,13 @@ android_cpuInit(void)
 
             D("found cpuFeatures = '%s'\n", cpuFeatures);
 
-            if (has_list_item(cpuFeatures, "vfpv3"))
+            if (has_list_item(cpuFeatures, "vfpv3")) {
                 g_cpuFeatures |= ANDROID_CPU_ARM_FEATURE_VFPv3;
+            }
 
-            else if (has_list_item(cpuFeatures, "vfpv3d16"))
+            else if (has_list_item(cpuFeatures, "vfpv3d16")) {
                 g_cpuFeatures |= ANDROID_CPU_ARM_FEATURE_VFPv3;
+            }
 
             if (has_list_item(cpuFeatures, "neon")) {
                 /* Note: Certain kernels only report neon but not vfpv3
@@ -503,7 +524,7 @@ android_cpuInit(void)
 
     int regs[4];
 
-/* According to http://en.wikipedia.org/wiki/CPUID */
+    /* According to http://en.wikipedia.org/wiki/CPUID */
 #define VENDOR_INTEL_b  0x756e6547
 #define VENDOR_INTEL_c  0x6c65746e
 #define VENDOR_INTEL_d  0x49656e69

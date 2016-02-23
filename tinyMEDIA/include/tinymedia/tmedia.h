@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -47,51 +47,48 @@ TMEDIA_BEGIN_DECLS
 
 #define TMEDIA(self)		((tmedia_t*)(self))
 
-typedef enum tmedia_action_e
-{
-	// Dummy
-	tma_dummy_say_hello,
+typedef enum tmedia_action_e {
+    // Dummy
+    tma_dummy_say_hello,
 
-	// MSRP
-	tma_msrp_send_data,
-	tma_msrp_send_file,
+    // MSRP
+    tma_msrp_send_data,
+    tma_msrp_send_file,
 
-	// Audio / Video
+    // Audio / Video
 
-	// T.38
+    // T.38
 }
 tmedia_action_t;
 
-typedef struct tmedia_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tmedia_s {
+    TSK_DECLARE_OBJECT;
 
-	const struct tmedia_plugin_def_s* plugin;
-	
-	char* name;
-	uint32_t port;
-	char* protocol;
+    const struct tmedia_plugin_def_s* plugin;
+
+    char* name;
+    uint32_t port;
+    char* protocol;
 }
 tmedia_t;
 typedef tsk_list_t tmedias_L_t;
 
 #define TMED_DECLARE_MEDIA tmedia_t media
 
-typedef struct tmedia_plugin_def_s
-{
-	const tsk_object_def_t* objdef;
-	const char* name;
-	const char* media;
-	
-	int	(* start) (tmedia_t* );
-	int	(* pause) (tmedia_t* );
-	int	(* stop) (tmedia_t* );
+typedef struct tmedia_plugin_def_s {
+    const tsk_object_def_t* objdef;
+    const char* name;
+    const char* media;
 
-	const tsdp_header_M_t* (* get_local_offer) (tmedia_t* , va_list* );
-	const tsdp_header_M_t* (* get_negotiated_offer) (tmedia_t* );
-	int (* set_remote_offer) (tmedia_t* , const tsdp_message_t* );
+    int	(* start) (tmedia_t* );
+    int	(* pause) (tmedia_t* );
+    int	(* stop) (tmedia_t* );
 
-	int (* perform) (tmedia_t* , tmedia_action_t action, const tsk_params_L_t* );
+    const tsdp_header_M_t* (* get_local_offer) (tmedia_t* , va_list* );
+    const tsdp_header_M_t* (* get_negotiated_offer) (tmedia_t* );
+    int (* set_remote_offer) (tmedia_t* , const tsdp_message_t* );
+
+    int (* perform) (tmedia_t* , tmedia_action_t action, const tsk_params_L_t* );
 }
 tmedia_plugin_def_t;
 

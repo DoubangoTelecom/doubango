@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -42,8 +42,8 @@
 
 TNET_BEGIN_DECLS
 
-/**@ingroup tnet_dhcp_group 
-* Default timeout (in milliseconds) value for DHCP requests. 
+/**@ingroup tnet_dhcp_group
+* Default timeout (in milliseconds) value for DHCP requests.
 */
 #define TNET_DHCP_TIMEOUT_DEFAULT				2000
 
@@ -70,32 +70,30 @@ TNET_BEGIN_DECLS
 /**@ingroup tnet_dhcp_group
 * Parameter Request List (55)
 */
-typedef struct tnet_dhcp_params_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tnet_dhcp_params_s {
+    TSK_DECLARE_OBJECT;
 
-	tnet_dhcp_option_code_t codes[TNET_DHCP_MAX_CODES];
-	unsigned codes_count;
+    tnet_dhcp_option_code_t codes[TNET_DHCP_MAX_CODES];
+    unsigned codes_count;
 }
 tnet_dhcp_params_t;
 
 /**@ingroup tnet_dhcp_group
 */
-typedef struct tnet_dhcp_ctx_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	char* vendor_id;
-	char* hostname;
-	uint16_t max_msg_size; /**< Option code 57. */
+typedef struct tnet_dhcp_ctx_s {
+    TSK_DECLARE_OBJECT;
 
-	uint64_t timeout;
+    char* vendor_id;
+    char* hostname;
+    uint16_t max_msg_size; /**< Option code 57. */
 
-	tnet_port_t port_client; /**< Local port to bind to for incloming DHCP messages. Default: 68 */
-	tnet_port_t server_port; /**< Destination port for outgoing DHCP messages. Default: 64 */
-	tnet_interfaces_L_t *interfaces;
-	
-	TSK_DECLARE_SAFEOBJ;
+    uint64_t timeout;
+
+    tnet_port_t port_client; /**< Local port to bind to for incloming DHCP messages. Default: 68 */
+    tnet_port_t server_port; /**< Destination port for outgoing DHCP messages. Default: 64 */
+    tnet_interfaces_L_t *interfaces;
+
+    TSK_DECLARE_SAFEOBJ;
 }
 tnet_dhcp_ctx_t;
 

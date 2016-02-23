@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -55,32 +55,31 @@ TSIP_BEGIN_DECLS
 /// 								dresponse	= 	"response" EQUAL request-digest
 /// 								request-digest	= 	LDQUOT 32LHEX RDQUOT
 /// 								auth-request-uri = not-defined
-/// 								 
+///
 /// 								auth-param	= 	auth-param-name EQUAL ( token / quoted-string )
 /// 								auth-param-name	= 	token
-/// 								 
+///
 /// 								other-response	= 	auth-scheme LWS auth-param *(COMMA auth-param)
 /// 								auth-scheme	= 	token
 /// 								auts	= 	"auts" EQUAL auts-param
 /// 								auts-param	= 	LDQUOT auts-value RDQUOT
 /// 								auts-value	= 	[base64 encoding of AUTS]
-/// 	
+///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-typedef struct tsip_header_Authorization_s
-{	
-	TSIP_DECLARE_HEADER;
+typedef struct tsip_header_Authorization_s {
+    TSIP_DECLARE_HEADER;
 
-	char* scheme;
-	char* username;
-	char* realm;
-	char* nonce;
-	char* uri;
-	char* response;
-	char* algorithm;
-	char* cnonce;
-	char* opaque;
-	char* qop;
-	char* nc;
+    char* scheme;
+    char* username;
+    char* realm;
+    char* nonce;
+    char* uri;
+    char* response;
+    char* algorithm;
+    char* cnonce;
+    char* opaque;
+    char* qop;
+    char* nc;
 }
 tsip_header_Authorization_t;
 

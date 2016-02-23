@@ -7,18 +7,18 @@
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions
    are met:
-   
+
    - Redistributions of source code must retain the above copyright
    notice, this list of conditions and the following disclaimer.
-   
+
    - Redistributions in binary form must reproduce the above copyright
    notice, this list of conditions and the following disclaimer in the
    documentation and/or other materials provided with the distribution.
-   
+
    - Neither the name of the Xiph.org Foundation nor the names of its
    contributors may be used to endorse or promote products derived from
    this software without specific prior written permission.
-   
+
    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
    ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -57,21 +57,21 @@ struct SpeexMode;
 
 /** Speex header info for file-based formats */
 typedef struct SpeexHeader {
-   char speex_string[SPEEX_HEADER_STRING_LENGTH];   /**< Identifies a Speex bit-stream, always set to "Speex   " */
-   char speex_version[SPEEX_HEADER_VERSION_LENGTH]; /**< Speex version */ 
-   spx_int32_t speex_version_id;       /**< Version for Speex (for checking compatibility) */
-   spx_int32_t header_size;            /**< Total size of the header ( sizeof(SpeexHeader) ) */
-   spx_int32_t rate;                   /**< Sampling rate used */
-   spx_int32_t mode;                   /**< Mode used (0 for narrowband, 1 for wideband) */
-   spx_int32_t mode_bitstream_version; /**< Version ID of the bit-stream */
-   spx_int32_t nb_channels;            /**< Number of channels encoded */
-   spx_int32_t bitrate;                /**< Bit-rate used */
-   spx_int32_t frame_size;             /**< Size of frames */
-   spx_int32_t vbr;                    /**< 1 for a VBR encoding, 0 otherwise */
-   spx_int32_t frames_per_packet;      /**< Number of frames stored per Ogg packet */
-   spx_int32_t extra_headers;          /**< Number of additional headers after the comments */
-   spx_int32_t reserved1;              /**< Reserved for future use, must be zero */
-   spx_int32_t reserved2;              /**< Reserved for future use, must be zero */
+    char speex_string[SPEEX_HEADER_STRING_LENGTH];   /**< Identifies a Speex bit-stream, always set to "Speex   " */
+    char speex_version[SPEEX_HEADER_VERSION_LENGTH]; /**< Speex version */
+    spx_int32_t speex_version_id;       /**< Version for Speex (for checking compatibility) */
+    spx_int32_t header_size;            /**< Total size of the header ( sizeof(SpeexHeader) ) */
+    spx_int32_t rate;                   /**< Sampling rate used */
+    spx_int32_t mode;                   /**< Mode used (0 for narrowband, 1 for wideband) */
+    spx_int32_t mode_bitstream_version; /**< Version ID of the bit-stream */
+    spx_int32_t nb_channels;            /**< Number of channels encoded */
+    spx_int32_t bitrate;                /**< Bit-rate used */
+    spx_int32_t frame_size;             /**< Size of frames */
+    spx_int32_t vbr;                    /**< 1 for a VBR encoding, 0 otherwise */
+    spx_int32_t frames_per_packet;      /**< Number of frames stored per Ogg packet */
+    spx_int32_t extra_headers;          /**< Number of additional headers after the comments */
+    spx_int32_t reserved1;              /**< Reserved for future use, must be zero */
+    spx_int32_t reserved2;              /**< Reserved for future use, must be zero */
 } SpeexHeader;
 
 /** Initializes a SpeexHeader using basic information */

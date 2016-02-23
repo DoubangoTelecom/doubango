@@ -35,80 +35,72 @@ PLUGIN_WIN_DDP_API tsk_plugin_def_ptr_const_t __plugin_get_def_at(int index);
 PLUGIN_WIN_DD_END_DECLS /* END */
 
 BOOL APIENTRY DllMain(HMODULE hModule,
-DWORD  ul_reason_for_call,
-LPVOID lpReserved
-)
+                      DWORD  ul_reason_for_call,
+                      LPVOID lpReserved
+                     )
 {
-	switch (ul_reason_for_call)
-	{
-	case DLL_PROCESS_ATTACH:
-		break;
-	case DLL_THREAD_ATTACH:
-		break;
-	case DLL_THREAD_DETACH:
-		break;
-	case DLL_PROCESS_DETACH:
-		break;
-	}
-	return TRUE;
+    switch (ul_reason_for_call) {
+    case DLL_PROCESS_ATTACH:
+        break;
+    case DLL_THREAD_ATTACH:
+        break;
+    case DLL_THREAD_DETACH:
+        break;
+    case DLL_PROCESS_DETACH:
+        break;
+    }
+    return TRUE;
 }
 
 
-typedef enum PLUGIN_INDEX_E
-{
-	PLUGIN_INDEX_PRODUCER,
+typedef enum PLUGIN_INDEX_E {
+    PLUGIN_INDEX_PRODUCER,
 
-	PLUGIN_INDEX_COUNT
+    PLUGIN_INDEX_COUNT
 }
 PLUGIN_INDEX_T;
 
 
 int __plugin_get_def_count()
 {
-	return PLUGIN_INDEX_COUNT;
+    return PLUGIN_INDEX_COUNT;
 }
 
 tsk_plugin_def_type_t __plugin_get_def_type_at(int index)
 {
-	switch (index){
-	case PLUGIN_INDEX_PRODUCER:
-	{
-		return tsk_plugin_def_type_producer;
-	}
-	default:
-	{
-		TSK_DEBUG_ERROR("No plugin at index %d", index);
-		return tsk_plugin_def_type_none;
-	}
-	}
+    switch (index) {
+    case PLUGIN_INDEX_PRODUCER: {
+        return tsk_plugin_def_type_producer;
+    }
+    default: {
+        TSK_DEBUG_ERROR("No plugin at index %d", index);
+        return tsk_plugin_def_type_none;
+    }
+    }
 }
 
 tsk_plugin_def_media_type_t	__plugin_get_def_media_type_at(int index)
 {
-	switch (index){
-	case PLUGIN_INDEX_PRODUCER:
-	{
-		return tsk_plugin_def_media_type_screencast;
-	}
-	default:
-	{
-		TSK_DEBUG_ERROR("No plugin at index %d", index);
-		return tsk_plugin_def_media_type_none;
-	}
-	}
+    switch (index) {
+    case PLUGIN_INDEX_PRODUCER: {
+        return tsk_plugin_def_media_type_screencast;
+    }
+    default: {
+        TSK_DEBUG_ERROR("No plugin at index %d", index);
+        return tsk_plugin_def_media_type_none;
+    }
+    }
 }
 
 tsk_plugin_def_ptr_const_t __plugin_get_def_at(int index)
 {
-	switch (index){
-	case PLUGIN_INDEX_PRODUCER:
-	{
-		return plugin_win_dd_producer_plugin_def_t;
-	}
-	default:
-	{
-		TSK_DEBUG_ERROR("No plugin at index %d", index);
-		return tsk_null;
-	}
-	}
+    switch (index) {
+    case PLUGIN_INDEX_PRODUCER: {
+        return plugin_win_dd_producer_plugin_def_t;
+    }
+    default: {
+        TSK_DEBUG_ERROR("No plugin at index %d", index);
+        return tsk_null;
+    }
+    }
 }

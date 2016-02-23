@@ -54,29 +54,29 @@ extern vpx_codec_iface_t *vpx_codec_vp9_dx(void);
  * \sa #vpx_codec_control
  */
 enum vp8_dec_control_id {
-  /** control function to get info on which reference frames were updated
-   *  by the last decode
-   */
-  VP8D_GET_LAST_REF_UPDATES = VP8_DECODER_CTRL_ID_START,
+    /** control function to get info on which reference frames were updated
+     *  by the last decode
+     */
+    VP8D_GET_LAST_REF_UPDATES = VP8_DECODER_CTRL_ID_START,
 
-  /** check if the indicated frame is corrupted */
-  VP8D_GET_FRAME_CORRUPTED,
+    /** check if the indicated frame is corrupted */
+    VP8D_GET_FRAME_CORRUPTED,
 
-  /** control function to get info on which reference frames were used
-   *  by the last decode
-   */
-  VP8D_GET_LAST_REF_USED,
+    /** control function to get info on which reference frames were used
+     *  by the last decode
+     */
+    VP8D_GET_LAST_REF_USED,
 
-  /** decryption function to decrypt encoded buffer data immediately
-   * before decoding. Takes a vp8_decrypt_init, which contains
-   * a callback function and opaque context pointer.
-   */
-  VP8D_SET_DECRYPTOR,
+    /** decryption function to decrypt encoded buffer data immediately
+     * before decoding. Takes a vp8_decrypt_init, which contains
+     * a callback function and opaque context pointer.
+     */
+    VP8D_SET_DECRYPTOR,
 
-  /** For testing. */
-  VP9_INVERT_TILE_DECODE_ORDER,
+    /** For testing. */
+    VP9_INVERT_TILE_DECODE_ORDER,
 
-  VP8_DECODER_CTRL_ID_MAX
+    VP8_DECODER_CTRL_ID_MAX
 };
 
 /*!\brief Structure to hold decryption state

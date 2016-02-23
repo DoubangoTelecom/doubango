@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -43,32 +43,31 @@
 
 TCOMP_BEGIN_DECLS
 
-typedef struct tcomp_compartment_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	/*
-	* An identifier (in a locally chosen format) that uniquely references a compartment.
-	*/
-	uint64_t identifier;
+typedef struct tcomp_compartment_s {
+    TSK_DECLARE_OBJECT;
 
-	tcomp_states_L_t *local_states;
-	tcomp_params_t *remote_parameters;
-	tcomp_params_t *local_parameters;
-	uint32_t total_memory_size;
-	uint32_t total_memory_left;
+    /*
+    * An identifier (in a locally chosen format) that uniquely references a compartment.
+    */
+    uint64_t identifier;
 
-	tcomp_buffer_handle_t *lpReqFeedback;
-	tcomp_buffer_handle_t *lpRetFeedback;
+    tcomp_states_L_t *local_states;
+    tcomp_params_t *remote_parameters;
+    tcomp_params_t *local_parameters;
+    uint32_t total_memory_size;
+    uint32_t total_memory_left;
 
-	TCOMP_DECLARE_COMPRESSORDATA;
+    tcomp_buffer_handle_t *lpReqFeedback;
+    tcomp_buffer_handle_t *lpRetFeedback;
 
-	tcomp_buffers_L_t* nacks;
-	uint8_t nacks_history_count;
+    TCOMP_DECLARE_COMPRESSORDATA;
 
-	tsk_bool_t useOnlyACKedStates;
+    tcomp_buffers_L_t* nacks;
+    uint8_t nacks_history_count;
 
-	TSK_DECLARE_SAFEOBJ;
+    tsk_bool_t useOnlyACKedStates;
+
+    TSK_DECLARE_SAFEOBJ;
 }
 tcomp_compartment_t;
 

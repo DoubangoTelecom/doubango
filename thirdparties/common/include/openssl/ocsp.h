@@ -274,26 +274,26 @@ typedef struct ocsp_response_data_st {
  *      signature            BIT STRING,
  *      certs                [0] EXPLICIT SEQUENCE OF Certificate OPTIONAL }
  */
-  /*
-   * Note 1: The value for "signature" is specified in the OCSP rfc2560 as
-   * follows: "The value for the signature SHALL be computed on the hash of
-   * the DER encoding ResponseData." This means that you must hash the
-   * DER-encoded tbsResponseData, and then run it through a crypto-signing
-   * function, which will (at least w/RSA) do a hash-'n'-private-encrypt
-   * operation.  This seems a bit odd, but that's the spec.  Also note that
-   * the data structures do not leave anywhere to independently specify the
-   * algorithm used for the initial hash. So, we look at the
-   * signature-specification algorithm, and try to do something intelligent.
-   * -- Kathy Weinhold, CertCo
-   */
-  /*
-   * Note 2: It seems that the mentioned passage from RFC 2560 (section
-   * 4.2.1) is open for interpretation.  I've done tests against another
-   * responder, and found that it doesn't do the double hashing that the RFC
-   * seems to say one should.  Therefore, all relevant functions take a flag
-   * saying which variant should be used.  -- Richard Levitte, OpenSSL team
-   * and CeloCom
-   */
+/*
+ * Note 1: The value for "signature" is specified in the OCSP rfc2560 as
+ * follows: "The value for the signature SHALL be computed on the hash of
+ * the DER encoding ResponseData." This means that you must hash the
+ * DER-encoded tbsResponseData, and then run it through a crypto-signing
+ * function, which will (at least w/RSA) do a hash-'n'-private-encrypt
+ * operation.  This seems a bit odd, but that's the spec.  Also note that
+ * the data structures do not leave anywhere to independently specify the
+ * algorithm used for the initial hash. So, we look at the
+ * signature-specification algorithm, and try to do something intelligent.
+ * -- Kathy Weinhold, CertCo
+ */
+/*
+ * Note 2: It seems that the mentioned passage from RFC 2560 (section
+ * 4.2.1) is open for interpretation.  I've done tests against another
+ * responder, and found that it doesn't do the double hashing that the RFC
+ * seems to say one should.  Therefore, all relevant functions take a flag
+ * saying which variant should be used.  -- Richard Levitte, OpenSSL team
+ * and CeloCom
+ */
 typedef struct ocsp_basic_response_st {
     OCSP_RESPDATA *tbsResponseData;
     X509_ALGOR *signatureAlgorithm;

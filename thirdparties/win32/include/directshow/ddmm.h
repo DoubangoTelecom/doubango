@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // File: DDMM.h
 //
-// Desc: DirectShow base classes - efines routines for using DirectDraw 
+// Desc: DirectShow base classes - efines routines for using DirectDraw
 //       on a multimonitor system.
 //
 // Copyright (c) 1995-2001 Microsoft Corporation.  All rights reserved.

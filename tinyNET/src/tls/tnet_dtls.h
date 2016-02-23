@@ -1,18 +1,18 @@
 /*
 * Copyright (C) 2013 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -34,15 +34,14 @@ struct tnet_socket_s;
 
 typedef void tnet_dtls_socket_handle_t;
 
-typedef enum tnet_dtls_socket_event_type_e
-{
-	tnet_dtls_socket_event_type_handshake_started,
-	tnet_dtls_socket_event_type_handshake_succeed,
-	tnet_dtls_socket_event_type_handshake_failed,
-	tnet_dtls_socket_event_type_fingerprint_mismatch,
-	tnet_dtls_socket_event_type_error,
-	tnet_dtls_socket_event_type_dtls_srtp_profile_selected, /* SRTP_AES128_CM_SHA1_80 | SRTP_AES128_CM_SHA1_32 */
-	tnet_dtls_socket_event_type_dtls_srtp_data, /* key||salt */
+typedef enum tnet_dtls_socket_event_type_e {
+    tnet_dtls_socket_event_type_handshake_started,
+    tnet_dtls_socket_event_type_handshake_succeed,
+    tnet_dtls_socket_event_type_handshake_failed,
+    tnet_dtls_socket_event_type_fingerprint_mismatch,
+    tnet_dtls_socket_event_type_error,
+    tnet_dtls_socket_event_type_dtls_srtp_profile_selected, /* SRTP_AES128_CM_SHA1_80 | SRTP_AES128_CM_SHA1_32 */
+    tnet_dtls_socket_event_type_dtls_srtp_data, /* key||salt */
 }
 tnet_dtls_socket_event_type_t;
 

@@ -2,19 +2,19 @@
  * Copyright (C) 2010-2011 Mamadou Diop.
  *
  * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
- *	
+ *
  * This file is part of Open Source Doubango Framework.
  *
  * DOUBANGO is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *	
+ *
  * DOUBANGO is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *	
+ *
  * You should have received a copy of the GNU General Public License
  * along with DOUBANGO.
  *
@@ -45,6 +45,10 @@ TINYMEDIA_API int tmedia_defaults_set_bandwidth_video_download_max(int32_t bw_vi
 TINYMEDIA_API int32_t tmedia_defaults_get_bandwidth_video_download_max();
 TINYMEDIA_API int tmedia_defaults_set_pref_video_size(tmedia_pref_video_size_t pref_video_size);
 TINYMEDIA_API tmedia_pref_video_size_t tmedia_defaults_get_pref_video_size();
+TINYMEDIA_API int tmedia_defaults_set_pref_video_size_range(tmedia_pref_video_size_t min, tmedia_pref_video_size_t max);
+TINYMEDIA_API int tmedia_defaults_get_pref_video_size_range(tmedia_pref_video_size_t *min, tmedia_pref_video_size_t* max);
+TINYMEDIA_API int tmedia_defaults_set_adapt_video_size_range_enabled(tsk_bool_t enabled);
+TINYMEDIA_API tsk_bool_t tmedia_defaults_get_adapt_video_size_range_enabled();
 TINYMEDIA_API int tmedia_defaults_set_jb_margin(int32_t jb_margin_ms);
 TINYMEDIA_API int32_t tmedia_defaults_get_jb_margin();
 TINYMEDIA_API int tmedia_defaults_set_jb_max_late_rate(int32_t jb_max_late_rate_percent);

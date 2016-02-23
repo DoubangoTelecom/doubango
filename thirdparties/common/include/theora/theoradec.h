@@ -136,16 +136,16 @@ extern "C" {
  *                   I.e., this section contains fragment rows
  *                    <tt>\a _yfrag0 ...\a _yfrag_end -1</tt>.*/
 typedef void (*th_stripe_decoded_func)(void *_ctx,th_ycbcr_buffer _buf,
- int _yfrag0,int _yfrag_end);
+                                       int _yfrag0,int _yfrag_end);
 
 /**The striped decode callback data to pass to #TH_DECCTL_SET_STRIPE_CB.*/
-typedef struct{
-  /**An application-provided context pointer.
-   * This will be passed back verbatim to the application.*/
-  void                   *ctx;
-  /**The callback function pointer.*/
-  th_stripe_decoded_func  stripe_decoded;
-}th_stripe_callback;
+typedef struct {
+    /**An application-provided context pointer.
+     * This will be passed back verbatim to the application.*/
+    void                   *ctx;
+    /**The callback function pointer.*/
+    th_stripe_decoded_func  stripe_decoded;
+} th_stripe_callback;
 
 
 
@@ -171,7 +171,7 @@ typedef struct th_setup_info th_setup_info;
 /**\defgroup decfuncs Functions for Decoding*/
 /*@{*/
 /**\name Functions for decoding
- * You must link to <tt>libtheoradec</tt> if you use any of the 
+ * You must link to <tt>libtheoradec</tt> if you use any of the
  * functions in this section.
  *
  * The functions are listed in the order they are used in a typical decode.
@@ -229,7 +229,7 @@ typedef struct th_setup_info th_setup_info;
  * \retval TH_ENOTFORMAT The packet was not a Theora header.
  */
 extern int th_decode_headerin(th_info *_info,th_comment *_tc,
- th_setup_info **_setup,ogg_packet *_op);
+                              th_setup_info **_setup,ogg_packet *_op);
 /**Allocates a decoder instance.
  *
  * <b>Security Warning:</b> The Theora format supports very large frame sizes,
@@ -253,7 +253,7 @@ extern int th_decode_headerin(th_info *_info,th_comment *_tc,
  * \return The initialized #th_dec_ctx handle.
  * \retval NULL If the decoding parameters were invalid.*/
 extern th_dec_ctx *th_decode_alloc(const th_info *_info,
- const th_setup_info *_setup);
+                                   const th_setup_info *_setup);
 /**Releases all storage used for the decoder setup information.
  * This should be called after you no longer want to create any decoders for
  *  a stream whose headers you have parsed with th_decode_headerin().
@@ -269,7 +269,7 @@ extern void th_setup_free(th_setup_info *_setup);
  * \param _buf    The parameters for this control code.
  * \param _buf_sz The size of the parameter buffer.*/
 extern int th_decode_ctl(th_dec_ctx *_dec,int _req,void *_buf,
- size_t _buf_sz);
+                         size_t _buf_sz);
 /**Submits a packet containing encoded video data to the decoder.
  * \param _dec     A #th_dec_ctx handle.
  * \param _op      An <tt>ogg_packet</tt> containing encoded video data.
@@ -292,7 +292,7 @@ extern int th_decode_ctl(th_dec_ctx *_dec,int _req,void *_buf,
  * \retval TH_EIMPL      The video data uses bitstream features which this
  *                        library does not support.*/
 extern int th_decode_packetin(th_dec_ctx *_dec,const ogg_packet *_op,
- ogg_int64_t *_granpos);
+                              ogg_int64_t *_granpos);
 /**Outputs the next available frame of decoded Y'CbCr data.
  * If a striped decode callback has been set with #TH_DECCTL_SET_STRIPE_CB,
  *  then the application does not need to call this function.
@@ -309,7 +309,7 @@ extern int th_decode_packetin(th_dec_ctx *_dec,const ogg_packet *_op,
  * \retval TH_EFAULT     \a _dec or \a _ycbcr was <tt>NULL</tt>.
  */
 extern int th_decode_ycbcr_out(th_dec_ctx *_dec,
- th_ycbcr_buffer _ycbcr);
+                               th_ycbcr_buffer _ycbcr);
 /**Frees an allocated decoder instance.
  * \param _dec A #th_dec_ctx handle.*/
 extern void th_decode_free(th_dec_ctx *_dec);

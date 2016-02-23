@@ -175,6 +175,52 @@ sub ACQUIRE {
 }
 
 
+############# Class : tinyWRAP::QoS ##############
+
+package tinyWRAP::QoS;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_QoS($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getQavg = *tinyWRAPc::QoS_getQavg;
+*getQ1 = *tinyWRAPc::QoS_getQ1;
+*getQ2 = *tinyWRAPc::QoS_getQ2;
+*getQ3 = *tinyWRAPc::QoS_getQ3;
+*getQ4 = *tinyWRAPc::QoS_getQ4;
+*getQ5 = *tinyWRAPc::QoS_getQ5;
+*getVideoInWidth = *tinyWRAPc::QoS_getVideoInWidth;
+*getVideoOutWidth = *tinyWRAPc::QoS_getVideoOutWidth;
+*getVideoInHeight = *tinyWRAPc::QoS_getVideoInHeight;
+*getVideoOutHeight = *tinyWRAPc::QoS_getVideoOutHeight;
+*getBandwidthDownKbps = *tinyWRAPc::QoS_getBandwidthDownKbps;
+*getBandwidthUpKbps = *tinyWRAPc::QoS_getBandwidthUpKbps;
+*getVideoInAvgFps = *tinyWRAPc::QoS_getVideoInAvgFps;
+*getVideoDecAvgTime = *tinyWRAPc::QoS_getVideoDecAvgTime;
+*getVideoEncAvgTime = *tinyWRAPc::QoS_getVideoEncAvgTime;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
 ############# Class : tinyWRAP::Codec ##############
 
 package tinyWRAP::Codec;
@@ -233,6 +279,7 @@ sub DESTROY {
 
 *sessionSetInt32 = *tinyWRAPc::MediaSessionMgr_sessionSetInt32;
 *sessionGetInt32 = *tinyWRAPc::MediaSessionMgr_sessionGetInt32;
+*sessionGetQoS = *tinyWRAPc::MediaSessionMgr_sessionGetQoS;
 *consumerSetInt32 = *tinyWRAPc::MediaSessionMgr_consumerSetInt32;
 *consumerSetInt64 = *tinyWRAPc::MediaSessionMgr_consumerSetInt64;
 *producerSetInt32 = *tinyWRAPc::MediaSessionMgr_producerSetInt32;
@@ -252,6 +299,8 @@ sub DESTROY {
 *defaultsSetBandwidthVideoUploadMax = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoUploadMax;
 *defaultsSetBandwidthVideoDownloadMax = *tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax;
 *defaultsSetPrefVideoSize = *tinyWRAPc::MediaSessionMgr_defaultsSetPrefVideoSize;
+*defaultsSetPrefVideoSizeOutRange = *tinyWRAPc::MediaSessionMgr_defaultsSetPrefVideoSizeOutRange;
+*defaultsSetAdaptativeVideoSizeOutEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled;
 *defaultsSetJbMargin = *tinyWRAPc::MediaSessionMgr_defaultsSetJbMargin;
 *defaultsSetJbMaxLateRate = *tinyWRAPc::MediaSessionMgr_defaultsSetJbMaxLateRate;
 *defaultsSetEchoTail = *tinyWRAPc::MediaSessionMgr_defaultsSetEchoTail;

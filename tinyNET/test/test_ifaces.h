@@ -21,79 +21,73 @@
 
 void test_faces_bestsource()
 {
-	tnet_ip_t source;
+    tnet_ip_t source;
 
     // IPv6
-	if(!tnet_getbestsource("fe80::fe4c:3ea1", 5060, tnet_socket_type_udp_ipv6, &source)){
-		TSK_DEBUG_INFO("Best IPv6 source is [%s]", source);
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to get best IPv6 source.");
-	}
+    if(!tnet_getbestsource("fe80::fe4c:3ea1", 5060, tnet_socket_type_udp_ipv6, &source)) {
+        TSK_DEBUG_INFO("Best IPv6 source is [%s]", source);
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to get best IPv6 source.");
+    }
     // IPv6
-	if(!tnet_getbestsource("2a01:e35:8b32:7050:212:f0ff:fe4c:3ea1", 5060, tnet_socket_type_udp_ipv6, &source)){
-		TSK_DEBUG_INFO("Best IPv6 source is [%s]", source);
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to get best IPv6 source.");
-	}
-	// IPv4
-	if(!tnet_getbestsource("192.168.0.11", 5060, tnet_socket_type_udp_ipv4, &source)){
-		TSK_DEBUG_INFO("Best IPv4 source is [%s]", source);
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to get best IPv4 source.");
-	}
+    if(!tnet_getbestsource("2a01:e35:8b32:7050:212:f0ff:fe4c:3ea1", 5060, tnet_socket_type_udp_ipv6, &source)) {
+        TSK_DEBUG_INFO("Best IPv6 source is [%s]", source);
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to get best IPv6 source.");
+    }
+    // IPv4
+    if(!tnet_getbestsource("192.168.0.11", 5060, tnet_socket_type_udp_ipv4, &source)) {
+        TSK_DEBUG_INFO("Best IPv4 source is [%s]", source);
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to get best IPv4 source.");
+    }
 }
 
 void test_ifaces_dump_ifaces()
 {
-	tnet_interfaces_L_t* ifaces = tnet_get_interfaces();
-	tsk_list_item_t *item;
+    tnet_interfaces_L_t* ifaces = tnet_get_interfaces();
+    tsk_list_item_t *item;
 
-	tsk_list_foreach(item, ifaces)
-	{
-		const tnet_interface_t *iface = item->data;
-		TSK_DEBUG_INFO("Interface: %s", iface->description);
-	}
+    tsk_list_foreach(item, ifaces) {
+        const tnet_interface_t *iface = item->data;
+        TSK_DEBUG_INFO("Interface: %s", iface->description);
+    }
 
-	TSK_OBJECT_SAFE_FREE(ifaces);
+    TSK_OBJECT_SAFE_FREE(ifaces);
 }
 
 void test_ifaces_dump_addresses()
 {
-	tnet_addresses_L_t* addresses = tnet_get_addresses_all();
-	tsk_list_item_t *item;
+    tnet_addresses_L_t* addresses = tnet_get_addresses_all();
+    tsk_list_item_t *item;
 
-	tsk_list_foreach(item, addresses)
-	{
-		const tnet_address_t *address = item->data;
-		if(address->anycast)
-		{
-			TSK_DEBUG_INFO("ANYCAST address: %s", address->ip);
-		}
-		else if(address->unicast)
-		{
-			TSK_DEBUG_INFO("UNICAST address: %s", address->ip);
-		}
-		else if(address->multicast)
-		{
-			TSK_DEBUG_INFO("MULTICAST address: %s", address->ip);
-		}
-		else if(address->dnsserver)
-		{
-			TSK_DEBUG_INFO("DNSSERVER address: %s", address->ip);
-		}
-	}
+    tsk_list_foreach(item, addresses) {
+        const tnet_address_t *address = item->data;
+        if(address->anycast) {
+            TSK_DEBUG_INFO("ANYCAST address: %s", address->ip);
+        }
+        else if(address->unicast) {
+            TSK_DEBUG_INFO("UNICAST address: %s", address->ip);
+        }
+        else if(address->multicast) {
+            TSK_DEBUG_INFO("MULTICAST address: %s", address->ip);
+        }
+        else if(address->dnsserver) {
+            TSK_DEBUG_INFO("DNSSERVER address: %s", address->ip);
+        }
+    }
 
-	TSK_OBJECT_SAFE_FREE(addresses);
+    TSK_OBJECT_SAFE_FREE(addresses);
 }
 
 void test_ifaces()
 {
-	test_faces_bestsource();
-	test_ifaces_dump_ifaces();
-	test_ifaces_dump_addresses();
+    test_faces_bestsource();
+    test_ifaces_dump_ifaces();
+    test_ifaces_dump_addresses();
 }
 
 #endif /* TNET_TEST_IFACES_H */

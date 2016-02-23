@@ -7,26 +7,26 @@
  */
 
 /*
- *	
+ *
  * Copyright (c) 2001-2006, Cisco Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   Redistributions in binary form must reproduce the above
  *   copyright notice, this list of conditions and the following
  *   disclaimer in the documentation and/or other materials provided
  *   with the distribution.
- * 
+ *
  *   Neither the name of the Cisco Systems, Inc. nor the names of its
  *   contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -48,7 +48,7 @@
 #include "auth.h"
 
 typedef struct {
-	char foo;
+    char foo;
 } null_auth_ctx_t;
 
 err_status_t
@@ -62,7 +62,7 @@ null_auth_init(null_auth_ctx_t *state, const uint8_t *key, int key_len);
 
 err_status_t
 null_auth_compute (null_auth_ctx_t *state, uint8_t *message,
-		   int msg_octets, int tag_len, uint8_t *result);
+                   int msg_octets, int tag_len, uint8_t *result);
 
 
 #endif /* NULL_AUTH_H */

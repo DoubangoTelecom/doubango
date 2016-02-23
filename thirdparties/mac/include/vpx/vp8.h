@@ -36,8 +36,7 @@
  *
  * The set of macros define the control functions of VP8 interface
  */
-enum vp8_com_control_id
-{
+enum vp8_com_control_id {
     VP8_SET_REFERENCE           = 1,    /**< pass in an external frame into decoder to be used as reference frame */
     VP8_COPY_REFERENCE          = 2,    /**< get a copy of reference frame from the decoder */
     VP8_SET_POSTPROC            = 3,    /**< set the decoder's post processing settings  */
@@ -53,8 +52,7 @@ enum vp8_com_control_id
  *
  * The set of macros define VP8 decoder post processing flags
  */
-enum vp8_postproc_level
-{
+enum vp8_postproc_level {
     VP8_NOFILTERING             = 0,
     VP8_DEBLOCK                 = 1<<0,
     VP8_DEMACROBLOCK            = 1<<1,
@@ -73,8 +71,7 @@ enum vp8_postproc_level
  * to VP8_DEBLOCK and deblocking_level to 1.
  */
 
-typedef struct vp8_postproc_cfg
-{
+typedef struct vp8_postproc_cfg {
     int post_proc_flag;         /**< the types of post processing to be done, should be combination of "vp8_postproc_level" */
     int deblocking_level;       /**< the strength of deblocking, valid range [0, 16] */
     int noise_level;            /**< the strength of additive noise, valid range [0, 16] */
@@ -84,8 +81,7 @@ typedef struct vp8_postproc_cfg
  *
  * The set of macros define the type of VP8 reference frames
  */
-typedef enum vpx_ref_frame_type
-{
+typedef enum vpx_ref_frame_type {
     VP8_LAST_FRAME = 1,
     VP8_GOLD_FRAME = 2,
     VP8_ALTR_FRAME = 4
@@ -96,8 +92,7 @@ typedef enum vpx_ref_frame_type
  * define the data struct to access vp8 reference frames
  */
 
-typedef struct vpx_ref_frame
-{
+typedef struct vpx_ref_frame {
     vpx_ref_frame_type_t  frame_type;   /**< which reference frame */
     vpx_image_t           img;          /**< reference frame data in image format */
 } vpx_ref_frame_t;

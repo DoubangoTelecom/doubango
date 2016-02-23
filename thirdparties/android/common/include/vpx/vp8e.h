@@ -24,8 +24,7 @@
 DECLSPEC_DEPRECATED extern vpx_codec_iface_t vpx_enc_vp8_algo DEPRECATED;
 
 
-enum
-{
+enum {
     VP8E_SET_REFERENCE     = VP8_SET_REFERENCE,
     VP8E_COPY_REFERENCE    = VP8_COPY_REFERENCE,
     VP8E_SET_PREVIEWPP     = VP8_SET_POSTPROC,

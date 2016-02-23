@@ -40,7 +40,7 @@ extern Word16 a100[3];
 extern Word16 b140[3];
 extern Word16 a140[3];
 extern Word16 bitsno[PRM_SIZE];
-extern Word16 bitsno2[4]; 
+extern Word16 bitsno2[4];
 extern Word16 tabpow[33];
 extern Word16 tablog[33];
 extern Word16 tabsqr[49];

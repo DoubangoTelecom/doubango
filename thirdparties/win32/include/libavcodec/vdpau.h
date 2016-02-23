@@ -104,12 +104,12 @@ typedef struct AVVDPAUContext {
      */
     int bitstream_buffers_used;
 
-   /**
-     * Table of bitstream buffers.
-     * The user is responsible for freeing this buffer using av_freep().
-     *
-     * Set by libavcodec.
-     */
+    /**
+      * Table of bitstream buffers.
+      * The user is responsible for freeing this buffer using av_freep().
+      *
+      * Set by libavcodec.
+      */
     VdpBitstreamBuffer *bitstream_buffers;
 } AVVDPAUContext;
 

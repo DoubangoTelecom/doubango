@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -41,60 +41,58 @@ TSIP_BEGIN_DECLS
 #define TSIP_INVITE_EVENT(self)		((tsip_invite_event_t*)(self))
 
 //@tinyWRAP
-typedef enum tsip_invite_event_type_e
-{
-	// ============================
-	//	Sip Events
-	//
-	tsip_i_newcall,
-	
-	//! in-dialog requests/reponses
-	tsip_i_request,
-	tsip_ao_request,
-	
-	/* 3GPP TS 24.629: Explicit Call Transfer (ECT) */
-	tsip_o_ect_trying,
-	tsip_o_ect_accepted,
-	tsip_o_ect_completed,
-	tsip_o_ect_failed,
-	tsip_o_ect_notify,
-	tsip_i_ect_requested,
-	tsip_i_ect_newcall,
-	tsip_i_ect_completed,
-	tsip_i_ect_failed,
-	tsip_i_ect_notify,
-	
-	// ============================
-	//	Media Events
-	//
+typedef enum tsip_invite_event_type_e {
+    // ============================
+    //	Sip Events
+    //
+    tsip_i_newcall,
 
-	tsip_m_early_media,
-	tsip_m_updating, // Trying to update from Audio -> Video for example
-	tsip_m_updated, // succeed to update
-	
-	/* 3GPP TS 24.610: Communication Hold */
-	tsip_m_local_hold_ok,
-	tsip_m_local_hold_nok,
-	tsip_m_local_resume_ok,
-	tsip_m_local_resume_nok,
-	tsip_m_remote_hold,
-	tsip_m_remote_resume,
+    //! in-dialog requests/reponses
+    tsip_i_request,
+    tsip_ao_request,
+
+    /* 3GPP TS 24.629: Explicit Call Transfer (ECT) */
+    tsip_o_ect_trying,
+    tsip_o_ect_accepted,
+    tsip_o_ect_completed,
+    tsip_o_ect_failed,
+    tsip_o_ect_notify,
+    tsip_i_ect_requested,
+    tsip_i_ect_newcall,
+    tsip_i_ect_completed,
+    tsip_i_ect_failed,
+    tsip_i_ect_notify,
+
+    // ============================
+    //	Media Events
+    //
+
+    tsip_m_early_media,
+    tsip_m_updating, // Trying to update from Audio -> Video for example
+    tsip_m_updated, // succeed to update
+
+    /* 3GPP TS 24.610: Communication Hold */
+    tsip_m_local_hold_ok,
+    tsip_m_local_hold_nok,
+    tsip_m_local_resume_ok,
+    tsip_m_local_resume_nok,
+    tsip_m_remote_hold,
+    tsip_m_remote_resume,
 }
 tsip_invite_event_type_t;
 
-typedef struct tsip_invite_event_e
-{
-	TSIP_DECLARE_EVENT;
+typedef struct tsip_invite_event_e {
+    TSIP_DECLARE_EVENT;
 
-	tsip_invite_event_type_t type;
+    tsip_invite_event_type_t type;
 
-	struct{
-		unsigned toto:1;
-	} av;
+    struct {
+        unsigned toto:1;
+    } av;
 
-	/*struct{
-		char* dir;
-	} msrp;*/
+    /*struct{
+    	char* dir;
+    } msrp;*/
 }
 tsip_invite_event_t;
 

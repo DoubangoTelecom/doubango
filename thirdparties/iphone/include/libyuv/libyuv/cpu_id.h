@@ -14,7 +14,8 @@
 #include "libyuv/basic_types.h"
 
 #ifdef __cplusplus
-namespace libyuv {
+namespace libyuv
+{
 extern "C" {
 #endif
 
@@ -55,9 +56,10 @@ int ArmCpuCaps(const char* cpuinfo_name);
 // Detect CPU has SSE2 etc.
 // Test_flag parameter should be one of kCpuHas constants above.
 // returns non-zero if instruction set is detected
-static __inline int TestCpuFlag(int test_flag) {
-  LIBYUV_API extern int cpu_info_;
-  return (cpu_info_ == kCpuInit ? InitCpuFlags() : cpu_info_) & test_flag;
+static __inline int TestCpuFlag(int test_flag)
+{
+    LIBYUV_API extern int cpu_info_;
+    return (cpu_info_ == kCpuInit ? InitCpuFlags() : cpu_info_) & test_flag;
 }
 
 // For testing, allow CPU flags to be disabled.

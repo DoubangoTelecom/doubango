@@ -38,7 +38,7 @@ typedef enum {
     AV_CLASS_CATEGORY_SWSCALER,
     AV_CLASS_CATEGORY_SWRESAMPLER,
     AV_CLASS_CATEGORY_NB, ///< not part of ABI/API
-}AVClassCategory;
+} AVClassCategory;
 
 struct AVOptionRanges;
 

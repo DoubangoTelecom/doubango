@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -124,40 +124,38 @@ typedef int (*tsk_fsm_onterminated_f)(const void*);
 /**@ingroup tsk_fsm_group
 * FSM entry.
 */
-typedef struct tsk_fsm_entry_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsk_fsm_entry_s {
+    TSK_DECLARE_OBJECT;
 
-	tsk_fsm_state_id from;
-	tsk_fsm_action_id action;
-	tsk_fsm_cond cond;
-	tsk_fsm_state_id to;
-	tsk_fsm_exec exec;
-	const char* desc;
+    tsk_fsm_state_id from;
+    tsk_fsm_action_id action;
+    tsk_fsm_cond cond;
+    tsk_fsm_state_id to;
+    tsk_fsm_exec exec;
+    const char* desc;
 }
 tsk_fsm_entry_t;
 
 /**@ingroup tsk_fsm_group
-* List of @ref tsk_fsm_entry_t elements. 
+* List of @ref tsk_fsm_entry_t elements.
 */
 typedef tsk_list_t tsk_fsm_entries_L_t;
 
 /**@ingroup tsk_fsm_group
 * FSM.
 */
-typedef struct tsk_fsm_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsk_fsm_s {
+    TSK_DECLARE_OBJECT;
 
-	unsigned debug:1;
-	tsk_fsm_state_id current;
-	tsk_fsm_state_id term;
-	tsk_fsm_entries_L_t* entries;
+    unsigned debug:1;
+    tsk_fsm_state_id current;
+    tsk_fsm_state_id term;
+    tsk_fsm_entries_L_t* entries;
 
-	tsk_fsm_onterminated_f callback_term;
-	const void* callback_data;
+    tsk_fsm_onterminated_f callback_term;
+    const void* callback_data;
 
-	TSK_DECLARE_SAFEOBJ;
+    TSK_DECLARE_SAFEOBJ;
 }
 tsk_fsm_t;
 

@@ -41,6 +41,6 @@ STDAPI EliminateSubKey( HKEY, LPCTSTR );
 
 STDAPI
 AMovieSetupRegisterFilter2( const AMOVIESETUP_FILTER * const psetupdata
-                          , IFilterMapper2 *         pIFM2
-                          , BOOL                             bRegister  );
+                            , IFilterMapper2 *         pIFM2
+                            , BOOL                             bRegister  );
 

@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -103,35 +103,33 @@ TSIP_BEGIN_DECLS
 #define TSIP_RESPONSE_IS_23456(self)		(TSIP_MESSAGE_IS_RESPONSE((self)) && 200<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= 699)
 #define TSIP_RESPONSE_IS_3456(self)			(TSIP_MESSAGE_IS_RESPONSE((self)) && 300<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= 699)
 
-/** Defines the message type (Request or Response). 
+/** Defines the message type (Request or Response).
 **/
-typedef enum tsip_message_type_e
-{
-	tsip_unknown,
-	tsip_request,
-	tsip_response
+typedef enum tsip_message_type_e {
+    tsip_unknown,
+    tsip_request,
+    tsip_response
 }
 tsip_message_type_t;
 
 // SWIG
-typedef enum tsip_request_type_e
-{
-	tsip_NONE = 0,
+typedef enum tsip_request_type_e {
+    tsip_NONE = 0,
 
-	tsip_ACK,
-	tsip_BYE,
-	tsip_CANCEL,
-	tsip_INVITE,
-	tsip_OPTIONS,
-	tsip_REGISTER,
-	tsip_SUBSCRIBE,
-	tsip_NOTIFY,
-	tsip_REFER,
-	tsip_INFO,
-	tsip_UPDATE,
-	tsip_MESSAGE,
-	tsip_PUBLISH,
-	tsip_PRACK
+    tsip_ACK,
+    tsip_BYE,
+    tsip_CANCEL,
+    tsip_INVITE,
+    tsip_OPTIONS,
+    tsip_REGISTER,
+    tsip_SUBSCRIBE,
+    tsip_NOTIFY,
+    tsip_REFER,
+    tsip_INFO,
+    tsip_UPDATE,
+    tsip_MESSAGE,
+    tsip_PUBLISH,
+    tsip_PRACK
 }
 tsip_request_type_t;
 

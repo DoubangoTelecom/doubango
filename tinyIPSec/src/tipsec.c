@@ -36,7 +36,7 @@
 static const tipsec_plugin_def_t* __tipsec_plugins[TIPSEC_MAX_PLUGINS] = { tsk_null };
 
 /**
-* Create an IPSec context to manage the SAs. 
+* Create an IPSec context to manage the SAs.
 * Before calling this function at least one special implementation must be registered using @ref tipsec_plugin_register_static().
 * @param ipproto IPSec internet protocol.
 * @param use_ipv6 Whether to use IPv6 or not (IPv4).
@@ -80,16 +80,16 @@ tipsec_error_t tipsec_ctx_create(
                 p_ctx->ealg = ealg;
                 p_ctx->alg = alg;
                 p_ctx->protocol = protocol;
-				p_ctx->ipproto = ipproto;
+                p_ctx->ipproto = ipproto;
                 break;
             }
         }
     }
 
-	if (!pc_plugin || !p_ctx) {
-		TSK_DEBUG_ERROR("Failed to find/create a plugin instance");
+    if (!pc_plugin || !p_ctx) {
+        TSK_DEBUG_ERROR("Failed to find/create a plugin instance");
         return tipsec_error_notfound;
-	}
+    }
 
     // Initialize the newly created context
     err = pc_plugin->init(p_ctx);
@@ -116,10 +116,10 @@ tipsec_error_t tipsec_ctx_start(tipsec_ctx_t* p_ctx)
         TSK_DEBUG_ERROR("Invalid parameter");
         return tipsec_error_invalid_param;
     }
-	if (!p_ctx->initialized || p_ctx->state != tipsec_state_full) {
-		TSK_DEBUG_ERROR("Invalid state (not initialized or not in full state)");
-		return tipsec_error_invalid_state;
-	}
+    if (!p_ctx->initialized || p_ctx->state != tipsec_state_full) {
+        TSK_DEBUG_ERROR("Invalid state (not initialized or not in full state)");
+        return tipsec_error_invalid_state;
+    }
     return p_ctx->pc_plugin->start(p_ctx);
 }
 
@@ -138,10 +138,10 @@ tipsec_error_t tipsec_ctx_set_local(tipsec_ctx_t* p_ctx, const char* addr_local,
         TSK_DEBUG_ERROR("Invalid parameter");
         return tipsec_error_invalid_param;
     }
-	if (!p_ctx->initialized || p_ctx->state != tipsec_state_initial) {
-		TSK_DEBUG_ERROR("Invalid state (not initialized or not in initial state)");
-		return tipsec_error_invalid_state;
-	}
+    if (!p_ctx->initialized || p_ctx->state != tipsec_state_initial) {
+        TSK_DEBUG_ERROR("Invalid state (not initialized or not in initial state)");
+        return tipsec_error_invalid_state;
+    }
     return p_ctx->pc_plugin->set_local(p_ctx, addr_local, addr_remote, port_uc, port_us);
 }
 
@@ -178,10 +178,10 @@ tipsec_error_t tipsec_ctx_set_remote(tipsec_ctx_t* p_ctx, tipsec_spi_t spi_pc, t
         TSK_DEBUG_ERROR("Invalid parameter");
         return tipsec_error_invalid_param;
     }
-	if (!p_ctx->initialized || p_ctx->state != tipsec_state_inbound) {
-		TSK_DEBUG_ERROR("Invalid state (not initialized or not in initial state)");
-		return tipsec_error_invalid_state;
-	}
+    if (!p_ctx->initialized || p_ctx->state != tipsec_state_inbound) {
+        TSK_DEBUG_ERROR("Invalid state (not initialized or not in initial state)");
+        return tipsec_error_invalid_state;
+    }
     return p_ctx->pc_plugin->set_remote(p_ctx, spi_pc, spi_ps, port_pc, port_ps, lifetime);
 }
 
@@ -276,33 +276,33 @@ tipsec_error_t tipsec_plugin_unregister_static(const tipsec_plugin_def_t* pc_plu
 */
 tipsec_error_t tipsec_plugin_register_file(const char* pc_filepath, struct tsk_plugin_s** pp_plugin)
 {
-	struct tsk_plugin_s* p_plugin = tsk_null;
-	tsk_plugin_def_ptr_const_t p_def;
-	tipsec_error_t err = tipsec_error_success;
-	int i = 0, count = 0;
+    struct tsk_plugin_s* p_plugin = tsk_null;
+    tsk_plugin_def_ptr_const_t p_def;
+    tipsec_error_t err = tipsec_error_success;
+    int i = 0, count = 0;
 
-	p_plugin = tsk_plugin_create(pc_filepath);
-	if (!p_plugin) {
-		return tipsec_error_notfound;
-	}
-	
-	while ((p_def = tsk_plugin_get_def_2(p_plugin, tsk_plugin_def_type_ipsec, tsk_plugin_def_media_type_all, i++))) {
-		if (p_def) {
-			err = tipsec_plugin_register_static(p_def);
-			if (!err) {
-				++count;
-			}
-		}
-	}
+    p_plugin = tsk_plugin_create(pc_filepath);
+    if (!p_plugin) {
+        return tipsec_error_notfound;
+    }
 
-	if (count <= 0) {
-		TSK_DEBUG_ERROR("No plugin in %s", pc_filepath);
-		TSK_OBJECT_SAFE_FREE(p_plugin);
-		return tipsec_error_notfound;
-	}
-	
-	*pp_plugin = p_plugin;
-	return err;
+    while ((p_def = tsk_plugin_get_def_2(p_plugin, tsk_plugin_def_type_ipsec, tsk_plugin_def_media_type_all, i++))) {
+        if (p_def) {
+            err = tipsec_plugin_register_static(p_def);
+            if (!err) {
+                ++count;
+            }
+        }
+    }
+
+    if (count <= 0) {
+        TSK_DEBUG_ERROR("No plugin in %s", pc_filepath);
+        TSK_OBJECT_SAFE_FREE(p_plugin);
+        return tipsec_error_notfound;
+    }
+
+    *pp_plugin = p_plugin;
+    return err;
 }
 
 /**
@@ -313,16 +313,16 @@ tipsec_error_t tipsec_plugin_register_file(const char* pc_filepath, struct tsk_p
 */
 tipsec_error_t tipsec_plugin_unregister_file(struct tsk_plugin_s* p_plugin)
 {
-	int i = 0;
-	tsk_plugin_def_ptr_const_t p_def;
-	if (!p_plugin) {
-		TSK_DEBUG_ERROR("Invalid parameter");
+    int i = 0;
+    tsk_plugin_def_ptr_const_t p_def;
+    if (!p_plugin) {
+        TSK_DEBUG_ERROR("Invalid parameter");
         return tipsec_error_invalid_param;
-	}
-	while ((p_def = tsk_plugin_get_def_2(p_plugin, tsk_plugin_def_type_ipsec, tsk_plugin_def_media_type_all, i++))) {
-		if (p_def) {
-			tipsec_plugin_unregister_static(p_def);
-		}
-	}
-	return tipsec_error_success;
+    }
+    while ((p_def = tsk_plugin_get_def_2(p_plugin, tsk_plugin_def_type_ipsec, tsk_plugin_def_media_type_all, i++))) {
+        if (p_def) {
+            tipsec_plugin_unregister_static(p_def);
+        }
+    }
+    return tipsec_error_success;
 }

@@ -1,18 +1,18 @@
 /*
 * Copyright (C) 2010-2015 Mamadou DIOP.
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -45,7 +45,7 @@
 *
 * ======
 *
-* - @ref tnet_socket_group 
+* - @ref tnet_socket_group
 * - @ref tnet_utils_group
 * - @ref tnet_dhcp_group
 * - @ref tnet_dhcp6_group
@@ -70,32 +70,32 @@ tsk_bool_t tnet_isBigEndian = tsk_false;
  * You MUST call @ref tnet_cleanup to cleanup the network stack if you no longer need to use networking function.
  *
  * @sa @ref tnet_cleanup.
- * @return 0 if succeed and error code otherwise. 
+ * @return 0 if succeed and error code otherwise.
 **/
 int tnet_startup()
 {
-	int err = 0;
-	short word = 0x4321;
+    int err = 0;
+    short word = 0x4321;
 
-	if (__tnet_started) {
-		goto bail;
-	}
-    
+    if (__tnet_started) {
+        goto bail;
+    }
+
     if ((err = tnet_proxy_node_plugin_register(tnet_proxy_node_socks_plugin_def_t)) != 0) {
         goto bail;
     }
 
-	// rand()
-	srand((unsigned int) tsk_time_epoch());
+    // rand()
+    srand((unsigned int) tsk_time_epoch());
 
-	// endianness
-	tnet_isBigEndian = ((*(int8_t *)&word) != 0x21);
+    // endianness
+    tnet_isBigEndian = ((*(int8_t *)&word) != 0x21);
 #if TNET_UNDER_WINDOWS
-	if (tnet_isBigEndian){
-		TSK_DEBUG_ERROR("Big endian on Windows machine. Is it right?");
-	}
+    if (tnet_isBigEndian) {
+        TSK_DEBUG_ERROR("Big endian on Windows machine. Is it right?");
+    }
 #endif
-	// Print messages regardless the debug level
+    // Print messages regardless the debug level
 #if TNET_UNDER_WINDOWS_CE && (BUILD_TYPE_GE && SIN_CITY)
 #	define PRINT_INFO TSK_DEBUG_INFO
 #	define PRINT_ERROR TSK_DEBUG_ERROR
@@ -105,45 +105,45 @@ int tnet_startup()
 #endif
 
 #if TNET_UNDER_WINDOWS
-	{
-		WORD wVersionRequested;
-		WSADATA wsaData;
+    {
+        WORD wVersionRequested;
+        WSADATA wsaData;
 
-		wVersionRequested = MAKEWORD(2, 2);
+        wVersionRequested = MAKEWORD(2, 2);
 
-		err = WSAStartup(wVersionRequested, &wsaData);
-		if (err != 0) {
-			PRINT_ERROR("WSAStartup failed with error: %d", err);
-			return -1;
-		}
+        err = WSAStartup(wVersionRequested, &wsaData);
+        if (err != 0) {
+            PRINT_ERROR("WSAStartup failed with error: %d", err);
+            return -1;
+        }
 
-		if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2) {
-			PRINT_ERROR("Could not find a usable version of Winsock.dll");
-			tnet_cleanup();
-			return -2;
-		}
-		else {
-			PRINT_INFO("The Winsock 2.2 dll was found okay");
-		}
-	}
+        if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2) {
+            PRINT_ERROR("Could not find a usable version of Winsock.dll");
+            tnet_cleanup();
+            return -2;
+        }
+        else {
+            PRINT_INFO("The Winsock 2.2 dll was found okay");
+        }
+    }
 #endif /* TNET_UNDER_WINDOWS */
 
 #if HAVE_OPENSSL
-	PRINT_INFO("SSL is enabled :)");
-	SSL_library_init();
-	OpenSSL_add_all_algorithms();
-	SSL_load_error_strings();
+    PRINT_INFO("SSL is enabled :)");
+    SSL_library_init();
+    OpenSSL_add_all_algorithms();
+    SSL_load_error_strings();
 
-	PRINT_INFO("DTLS supported: %s", tnet_dtls_is_supported() ? "yes" : "no");
-	PRINT_INFO("DTLS-SRTP supported: %s", tnet_dtls_is_srtp_supported() ? "yes" : "no");
+    PRINT_INFO("DTLS supported: %s", tnet_dtls_is_supported() ? "yes" : "no");
+    PRINT_INFO("DTLS-SRTP supported: %s", tnet_dtls_is_srtp_supported() ? "yes" : "no");
 #else
-	PRINT_ERROR("SSL is disabled :(");
+    PRINT_ERROR("SSL is disabled :(");
 #endif
-	
-	__tnet_started = tsk_true;
+
+    __tnet_started = tsk_true;
 
 bail:
-	return err;
+    return err;
 }
 
 
@@ -155,20 +155,20 @@ bail:
 **/
 int tnet_cleanup()
 {
-	if (!__tnet_started){
-		goto bail;
-	}
-    
+    if (!__tnet_started) {
+        goto bail;
+    }
+
     tnet_proxy_node_plugin_unregister(tnet_proxy_node_socks_plugin_def_t);
 
 #if TNET_UNDER_WINDOWS
-	__tnet_started = tsk_false;
-	return WSACleanup();
+    __tnet_started = tsk_false;
+    return WSACleanup();
 #else
-	__tnet_started = tsk_false;
+    __tnet_started = tsk_false;
 #endif
 
 bail:
-	return 0;
+    return 0;
 }
 

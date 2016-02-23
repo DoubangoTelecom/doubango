@@ -1,18 +1,18 @@
 /*
 * Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -35,18 +35,17 @@ TDAV_BEGIN_DECLS
 
 #define TDAV_CONSUMER_T140(self)		((tdav_consumer_t140_t*)(self))
 
-typedef struct tdav_consumer_t140_s
-{
-	TMEDIA_DECLARE_CONSUMER;
+typedef struct tdav_consumer_t140_s {
+    TMEDIA_DECLARE_CONSUMER;
 
-	tsk_bool_t started;
+    tsk_bool_t started;
 
-	struct{
-		const void* context;
-		tmedia_session_t140_ondata_cb_f func;
-	} cb_ondata;
-	
-	TSK_DECLARE_SAFEOBJ;
+    struct {
+        const void* context;
+        tmedia_session_t140_ondata_cb_f func;
+    } cb_ondata;
+
+    TSK_DECLARE_SAFEOBJ;
 }
 tdav_consumer_t140_t;
 

@@ -1,17 +1,17 @@
 /* Copyright (C) 2011-2013 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 */
@@ -33,19 +33,19 @@
 #define STRETCH_2_1	7
 
 void __stdcall StretchDIB(
-		   LPBITMAPINFOHEADER biDst,   //	--> BITMAPINFO of destination
-		   LPVOID	lpvDst,		    //	--> to destination bits
-		   int	DstX,		    //	Destination origin - x coordinate
-		   int	DstY,		    //	Destination origin - y coordinate
-		   int	DstXE,		    //	x extent of the BLT
-		   int	DstYE,		    //	y extent of the BLT
-		   LPBITMAPINFOHEADER biSrc,   //	--> BITMAPINFO of source
-		   LPVOID	lpvSrc,		    //	--> to source bits
-		   int	SrcX,		    //	Source origin - x coordinate
-		   int	SrcY,		    //	Source origin - y coordinate
-		   int	SrcXE,		    //	x extent of the BLT
-		   int	SrcYE	 	    //	y extent of the BLT
-		   );
+    LPBITMAPINFOHEADER biDst,   //	--> BITMAPINFO of destination
+    LPVOID	lpvDst,		    //	--> to destination bits
+    int	DstX,		    //	Destination origin - x coordinate
+    int	DstY,		    //	Destination origin - y coordinate
+    int	DstXE,		    //	x extent of the BLT
+    int	DstYE,		    //	y extent of the BLT
+    LPBITMAPINFOHEADER biSrc,   //	--> BITMAPINFO of source
+    LPVOID	lpvSrc,		    //	--> to source bits
+    int	SrcX,		    //	Source origin - x coordinate
+    int	SrcY,		    //	Source origin - y coordinate
+    int	SrcXE,		    //	x extent of the BLT
+    int	SrcYE	 	    //	y extent of the BLT
+);
 
 /*
 * an X_FUNC is a function that copies one scanline, stretching or shrinking it
@@ -63,10 +63,10 @@ void __stdcall StretchDIB(
 * the fraction is multiplied by 65536.
 */
 typedef void (*X_FUNC) (LPBYTE lpSrc,
-						LPBYTE lpDst,
-						int SrcXE,
-						int DstXE,
-						int x_fract);
+                        LPBYTE lpDst,
+                        int SrcXE,
+                        int DstXE,
+                        int x_fract);
 
 
 void X_Stretch_1_1_8Bits(LPBYTE lpSrc, LPBYTE lpDst, int SrcXE, int DstXE, int x_fract);
@@ -97,23 +97,23 @@ void X_Stretch_N_1_32Bits(LPBYTE lpSrc, LPBYTE lpDst, int SrcXE, int DstXE, int 
 */
 
 void Y_Stretch_1_N(LPBYTE lpSrc, LPBYTE lpDst, int SrcXE,int SrcYE, int DstXE,
-				   int DstYE, int SrcWidth, int DstWidth, int x_fract,
-				   X_FUNC x_func, int nBits);
+                   int DstYE, int SrcWidth, int DstWidth, int x_fract,
+                   X_FUNC x_func, int nBits);
 
 void Y_Stretch_N_1(LPBYTE lpSrc, LPBYTE lpDst, int SrcXE,int SrcYE, int DstXE,
-				   int DstYE, int SrcWidth, int DstWidth, int x_fract,
-				   X_FUNC x_func);
+                   int DstYE, int SrcWidth, int DstWidth, int x_fract,
+                   X_FUNC x_func);
 
 /*
 * special case y-stretch functions for 1:2 in both dimensions for 8 and 16 bits
 * takes no X_FUNC arg. Will do entire stretch.
 */
 void Stretch_1_2_8Bits(LPBYTE lpSrc, LPBYTE lpDst, int SrcXE,int SrcYE, int DstXE,
-					   int DstYE, int SrcWidth, int DstWidth, int x_fract);
+                       int DstYE, int SrcWidth, int DstWidth, int x_fract);
 
 
 void Stretch_1_2_16Bits(LPBYTE lpSrc, LPBYTE lpDst, int SrcXE,int SrcYE, int DstXE,
-						int DstYE, int SrcWidth, int DstWidth, int x_fract);
+                        int DstYE, int SrcWidth, int DstWidth, int x_fract);
 
 /* straight copy of one scanline of count bytes */
 void X_CopyScanline(LPBYTE lpSrc, LPBYTE lpDst, int count);
@@ -123,27 +123,27 @@ void X_CopyScanline(LPBYTE lpSrc, LPBYTE lpDst, int count);
 // Resize function
 //
 void ResizeRGB( BITMAPINFOHEADER *pbiIn,    //Src's BitMapInFoHeader
-			   const unsigned char * dibBits,    //Src bits
-			   BITMAPINFOHEADER *pbiOut,
-			   unsigned char *pFrame,    //Dst bits
-			   int iNewWidth,            //new W in pixel
-			   int iNewHeight)           //new H in pixel
-{	
-	StretchDIB(	pbiOut,				//	--> BITMAPINFO of destination
-		pFrame,             //  --> to destination bits
-		0,                  //  Destination origin - x coordinate
-		0,                  //  Destination origin - y coordinate
-		iNewWidth,          //  x extent of the BLT
-		iNewHeight,         //  y extent of the BLT
-		pbiIn,   			//	--> BITMAPINFO of destination
-		(void*) dibBits,    //  --> to source bits
-		0,                  //  Source origin - x coordinate
-		0,                  //  Source origin - y coordinate
-		pbiIn->biWidth,		//  x extent of the BLT
-		pbiIn->biHeight		//  y extent of the BLT
-		);
+                const unsigned char * dibBits,    //Src bits
+                BITMAPINFOHEADER *pbiOut,
+                unsigned char *pFrame,    //Dst bits
+                int iNewWidth,            //new W in pixel
+                int iNewHeight)           //new H in pixel
+{
+    StretchDIB(	pbiOut,				//	--> BITMAPINFO of destination
+                pFrame,             //  --> to destination bits
+                0,                  //  Destination origin - x coordinate
+                0,                  //  Destination origin - y coordinate
+                iNewWidth,          //  x extent of the BLT
+                iNewHeight,         //  y extent of the BLT
+                pbiIn,   			//	--> BITMAPINFO of destination
+                (void*) dibBits,    //  --> to source bits
+                0,                  //  Source origin - x coordinate
+                0,                  //  Source origin - y coordinate
+                pbiIn->biWidth,		//  x extent of the BLT
+                pbiIn->biHeight		//  y extent of the BLT
+              );
 
-	return;
+    return;
 }
 
 
@@ -166,44 +166,49 @@ StretchFactor(int SrcE, int DstE, int *pfract)
 {
 
 
-	if (SrcE == DstE) {
-		if (pfract != NULL) {
-			pfract = 0;	     	
-		}
+    if (SrcE == DstE) {
+        if (pfract != NULL) {
+            pfract = 0;
+        }
 
-		return(STRETCH_1_1);
+        return(STRETCH_1_1);
 
-	}
+    }
 
 
-	if (SrcE > DstE) {
-		if (pfract != NULL) {
-			*pfract = ( (DstE << 16) / SrcE) & 0xffff;
-		}
+    if (SrcE > DstE) {
+        if (pfract != NULL) {
+            *pfract = ( (DstE << 16) / SrcE) & 0xffff;
+        }
 
-		if (SrcE == (DstE * 2)) {
-			return(STRETCH_2_1);
-		} else if (SrcE == (DstE * 4)) {
-			return(STRETCH_4_1);
-		} else {
-			return(STRETCH_N_1);
-		}
+        if (SrcE == (DstE * 2)) {
+            return(STRETCH_2_1);
+        }
+        else if (SrcE == (DstE * 4)) {
+            return(STRETCH_4_1);
+        }
+        else {
+            return(STRETCH_N_1);
+        }
 
-	} else {
+    }
+    else {
 
-		/* calculate delta fraction based on smallest / largest */
-		if (pfract != NULL) {
-			*pfract = ( (SrcE << 16) / DstE) & 0xffff;
-		}
+        /* calculate delta fraction based on smallest / largest */
+        if (pfract != NULL) {
+            *pfract = ( (SrcE << 16) / DstE) & 0xffff;
+        }
 
-		if (DstE == (SrcE * 2)) {
-			return(STRETCH_1_2);
-		} else if (DstE == (SrcE * 4)) {
-			return(STRETCH_1_4);
-		} else {
-			return(STRETCH_1_N);
-		}
-	}
+        if (DstE == (SrcE * 2)) {
+            return(STRETCH_1_2);
+        }
+        else if (DstE == (SrcE * 4)) {
+            return(STRETCH_1_4);
+        }
+        else {
+            return(STRETCH_1_N);
+        }
+    }
 }
 
 
@@ -216,226 +221,227 @@ StretchFactor(int SrcE, int DstE, int *pfract)
 
 void FAR PASCAL
 StretchDIB(
-		   LPBITMAPINFOHEADER biDst,   //	--> BITMAPINFO of destination
-		   LPVOID	lpvDst,		    //	--> to destination bits
-		   int	DstX,		    //	Destination origin - x coordinate
-		   int	DstY,		    //	Destination origin - y coordinate
-		   int	DstXE,		    //	x extent of the BLT
-		   int	DstYE,		    //	y extent of the BLT
-		   LPBITMAPINFOHEADER biSrc,   //	--> BITMAPINFO of source
-		   LPVOID	lpvSrc,		    //	--> to source bits
-		   int	SrcX,		    //	Source origin - x coordinate
-		   int	SrcY,		    //	Source origin - y coordinate
-		   int	SrcXE,		    //	x extent of the BLT
-		   int	SrcYE	 	    //	y extent of the BLT
-		   )
+    LPBITMAPINFOHEADER biDst,   //	--> BITMAPINFO of destination
+    LPVOID	lpvDst,		    //	--> to destination bits
+    int	DstX,		    //	Destination origin - x coordinate
+    int	DstY,		    //	Destination origin - y coordinate
+    int	DstXE,		    //	x extent of the BLT
+    int	DstYE,		    //	y extent of the BLT
+    LPBITMAPINFOHEADER biSrc,   //	--> BITMAPINFO of source
+    LPVOID	lpvSrc,		    //	--> to source bits
+    int	SrcX,		    //	Source origin - x coordinate
+    int	SrcY,		    //	Source origin - y coordinate
+    int	SrcXE,		    //	x extent of the BLT
+    int	SrcYE	 	    //	y extent of the BLT
+)
 {
 
-	int nBits;
-	int SrcWidth, DstWidth;
-	LPBYTE lpDst = (LPBYTE)lpvDst, lpSrc = (LPBYTE)lpvSrc;
-	int x_fract;
-	int x_factor;
-	int y_factor;
-	X_FUNC xfunc;
+    int nBits;
+    int SrcWidth, DstWidth;
+    LPBYTE lpDst = (LPBYTE)lpvDst, lpSrc = (LPBYTE)lpvSrc;
+    int x_fract;
+    int x_factor;
+    int y_factor;
+    X_FUNC xfunc;
 
 
-	/*
-	* chek that sizes are not same
-	*/
-	/*if(DstXE == SrcXE && DstYE == SrcYE)
-	{
-	return;
-	}*/
-	/*
-	* check that bit depths are same and 8, 16 or 24
-	*/
+    /*
+    * chek that sizes are not same
+    */
+    /*if(DstXE == SrcXE && DstYE == SrcYE)
+    {
+    return;
+    }*/
+    /*
+    * check that bit depths are same and 8, 16 or 24
+    */
 
-	if ((nBits = biDst->biBitCount) != biSrc->biBitCount) {
-		return;
-	}
+    if ((nBits = biDst->biBitCount) != biSrc->biBitCount) {
+        return;
+    }
 
-	if ( (nBits != 8 ) && (nBits != 16) && (nBits != 24) &&
-		(nBits != 32)) {
-			return;
-	}
+    if ( (nBits != 8 ) && (nBits != 16) && (nBits != 24) &&
+            (nBits != 32)) {
+        return;
+    }
 
-	/*
-	* check that extents are not bad
-	*/
-	if ( (SrcXE <= 0) || (SrcYE <= 0) || (DstXE <= 0) || (DstYE <= 0)) {
-		return;
-	}
+    /*
+    * check that extents are not bad
+    */
+    if ( (SrcXE <= 0) || (SrcYE <= 0) || (DstXE <= 0) || (DstYE <= 0)) {
+        return;
+    }
 
-	/*
-	* calculate width of one scan line in bytes, rounded up to
-	* DWORD boundary.
-	*/
-	SrcWidth = (((biSrc->biWidth * nBits) + 31) & ~31) / 8;
-	DstWidth = (((biDst->biWidth * nBits) + 31) & ~31) / 8;
+    /*
+    * calculate width of one scan line in bytes, rounded up to
+    * DWORD boundary.
+    */
+    SrcWidth = (((biSrc->biWidth * nBits) + 31) & ~31) / 8;
+    DstWidth = (((biDst->biWidth * nBits) + 31) & ~31) / 8;
 
-	/*
-	* set initial source and dest pointers
-	*/
-	lpSrc += (SrcY * SrcWidth) + ((SrcX * nBits) / 8);
-	lpDst += (DstY * DstWidth) + ((DstX * nBits) / 8);
-
-
-	/*
-	* calculate stretch proportions (1:1, 1:2, 1:N, N:1 etc) and
-	* also the fractional stretch factor. (we are not interested in
-	* the y stretch fraction - this is only used in x stretching.
-	*/
-
-	y_factor = StretchFactor(SrcYE, DstYE, NULL);
-	x_factor = StretchFactor(SrcXE, DstXE, &x_fract);
-
-	/*
-	* we have special case routines for 1:2 in both dimensions
-	* for 8 and 16 bits
-	*/
-	if ((y_factor == x_factor) && (y_factor == STRETCH_1_2)) {
-
-		if (nBits == 8) {
-			//StartCounting();
-			Stretch_1_2_8Bits(lpSrc, lpDst, SrcXE, SrcYE,
-				DstXE, DstYE, SrcWidth, DstWidth,
-				x_fract);
-			//EndCounting("8 bit");
-			return;
-
-		} else if (nBits == 16) {
-			//StartCounting();
-			Stretch_1_2_16Bits(lpSrc, lpDst, SrcXE, SrcYE,
-				DstXE, DstYE, SrcWidth, DstWidth,
-				x_fract);
-			//EndCounting("16 bit");
-			return;
-		}
-	}
+    /*
+    * set initial source and dest pointers
+    */
+    lpSrc += (SrcY * SrcWidth) + ((SrcX * nBits) / 8);
+    lpDst += (DstY * DstWidth) + ((DstX * nBits) / 8);
 
 
-	/* pick an X stretch function */
-	switch(nBits) {
+    /*
+    * calculate stretch proportions (1:1, 1:2, 1:N, N:1 etc) and
+    * also the fractional stretch factor. (we are not interested in
+    * the y stretch fraction - this is only used in x stretching.
+    */
 
-	case 8:
-		switch(x_factor) {
-	case STRETCH_1_1:
-		xfunc = X_Stretch_1_1_8Bits;
-		break;
+    y_factor = StretchFactor(SrcYE, DstYE, NULL);
+    x_factor = StretchFactor(SrcXE, DstXE, &x_fract);
 
-	case STRETCH_1_2:
-		xfunc = X_Stretch_1_2_8Bits;
-		break;
+    /*
+    * we have special case routines for 1:2 in both dimensions
+    * for 8 and 16 bits
+    */
+    if ((y_factor == x_factor) && (y_factor == STRETCH_1_2)) {
 
-	case STRETCH_1_4:
-		xfunc = X_Stretch_1_4_8Bits;
-		break;
+        if (nBits == 8) {
+            //StartCounting();
+            Stretch_1_2_8Bits(lpSrc, lpDst, SrcXE, SrcYE,
+                              DstXE, DstYE, SrcWidth, DstWidth,
+                              x_fract);
+            //EndCounting("8 bit");
+            return;
 
-	case STRETCH_1_N:
-		xfunc = X_Stretch_1_N_8Bits;
-		break;
-
-	case STRETCH_N_1:
-	case STRETCH_4_1:
-	case STRETCH_2_1:
-		xfunc = X_Stretch_N_1_8Bits;
-		break;
-
-		}
-		break;
-
-	case 16:
-		switch(x_factor) {
-	case STRETCH_1_1:
-		xfunc = X_Stretch_1_1_16Bits;
-		break;
-
-	case STRETCH_1_2:
-		xfunc = X_Stretch_1_2_16Bits;
-		break;
-
-	case STRETCH_1_4:
-	case STRETCH_1_N:
-		xfunc = X_Stretch_1_N_16Bits;
-		break;
-
-	case STRETCH_N_1:
-	case STRETCH_4_1:
-	case STRETCH_2_1:
-		xfunc = X_Stretch_N_1_16Bits;
-		break;
-
-		}
-		break;
-
-	case 24:
-		switch(x_factor) {
-	case STRETCH_1_1:
-		xfunc = X_Stretch_1_1_24Bits;
-		break;
-
-	case STRETCH_1_2:
-	case STRETCH_1_4:
-	case STRETCH_1_N:
-		xfunc = X_Stretch_1_N_24Bits;
-		break;
-
-	case STRETCH_N_1:
-	case STRETCH_4_1:
-	case STRETCH_2_1:
-		xfunc = X_Stretch_N_1_24Bits;
-		break;
-
-		}
-		break;
-
-	case 32:
-		switch(x_factor) {
-	case STRETCH_1_1:
-		xfunc = X_Stretch_1_1_32Bits;
-		break;
-
-	case STRETCH_1_2:
-	case STRETCH_1_4:
-	case STRETCH_1_N:
-		xfunc = X_Stretch_1_N_32Bits;
-		break;
-
-	case STRETCH_N_1:
-	case STRETCH_4_1:
-	case STRETCH_2_1:
-		xfunc = X_Stretch_N_1_32Bits;
-		break;
-
-		}
-		break;
-
-	}
+        }
+        else if (nBits == 16) {
+            //StartCounting();
+            Stretch_1_2_16Bits(lpSrc, lpDst, SrcXE, SrcYE,
+                               DstXE, DstYE, SrcWidth, DstWidth,
+                               x_fract);
+            //EndCounting("16 bit");
+            return;
+        }
+    }
 
 
-	/*
-	* now call appropriate stretching function depending
-	* on the y stretch factor
-	*/
-	switch (y_factor) {
-	case STRETCH_1_1:
-	case STRETCH_1_2:
-	case STRETCH_1_4:
-	case STRETCH_1_N:
-		Y_Stretch_1_N(lpSrc, lpDst, SrcXE, SrcYE,
-			DstXE, DstYE, SrcWidth, DstWidth, x_fract, xfunc, nBits);
-		break;
+    /* pick an X stretch function */
+    switch(nBits) {
 
-	case STRETCH_N_1:
-	case STRETCH_4_1:
-	case STRETCH_2_1:
-		Y_Stretch_N_1(lpSrc, lpDst, SrcXE, SrcYE,
-			DstXE, DstYE, SrcWidth, DstWidth, x_fract, xfunc);
-		break;
+    case 8:
+        switch(x_factor) {
+        case STRETCH_1_1:
+            xfunc = X_Stretch_1_1_8Bits;
+            break;
 
-	}
-	return;
+        case STRETCH_1_2:
+            xfunc = X_Stretch_1_2_8Bits;
+            break;
+
+        case STRETCH_1_4:
+            xfunc = X_Stretch_1_4_8Bits;
+            break;
+
+        case STRETCH_1_N:
+            xfunc = X_Stretch_1_N_8Bits;
+            break;
+
+        case STRETCH_N_1:
+        case STRETCH_4_1:
+        case STRETCH_2_1:
+            xfunc = X_Stretch_N_1_8Bits;
+            break;
+
+        }
+        break;
+
+    case 16:
+        switch(x_factor) {
+        case STRETCH_1_1:
+            xfunc = X_Stretch_1_1_16Bits;
+            break;
+
+        case STRETCH_1_2:
+            xfunc = X_Stretch_1_2_16Bits;
+            break;
+
+        case STRETCH_1_4:
+        case STRETCH_1_N:
+            xfunc = X_Stretch_1_N_16Bits;
+            break;
+
+        case STRETCH_N_1:
+        case STRETCH_4_1:
+        case STRETCH_2_1:
+            xfunc = X_Stretch_N_1_16Bits;
+            break;
+
+        }
+        break;
+
+    case 24:
+        switch(x_factor) {
+        case STRETCH_1_1:
+            xfunc = X_Stretch_1_1_24Bits;
+            break;
+
+        case STRETCH_1_2:
+        case STRETCH_1_4:
+        case STRETCH_1_N:
+            xfunc = X_Stretch_1_N_24Bits;
+            break;
+
+        case STRETCH_N_1:
+        case STRETCH_4_1:
+        case STRETCH_2_1:
+            xfunc = X_Stretch_N_1_24Bits;
+            break;
+
+        }
+        break;
+
+    case 32:
+        switch(x_factor) {
+        case STRETCH_1_1:
+            xfunc = X_Stretch_1_1_32Bits;
+            break;
+
+        case STRETCH_1_2:
+        case STRETCH_1_4:
+        case STRETCH_1_N:
+            xfunc = X_Stretch_1_N_32Bits;
+            break;
+
+        case STRETCH_N_1:
+        case STRETCH_4_1:
+        case STRETCH_2_1:
+            xfunc = X_Stretch_N_1_32Bits;
+            break;
+
+        }
+        break;
+
+    }
+
+
+    /*
+    * now call appropriate stretching function depending
+    * on the y stretch factor
+    */
+    switch (y_factor) {
+    case STRETCH_1_1:
+    case STRETCH_1_2:
+    case STRETCH_1_4:
+    case STRETCH_1_N:
+        Y_Stretch_1_N(lpSrc, lpDst, SrcXE, SrcYE,
+                      DstXE, DstYE, SrcWidth, DstWidth, x_fract, xfunc, nBits);
+        break;
+
+    case STRETCH_N_1:
+    case STRETCH_4_1:
+    case STRETCH_2_1:
+        Y_Stretch_N_1(lpSrc, lpDst, SrcXE, SrcYE,
+                      DstXE, DstYE, SrcWidth, DstWidth, x_fract, xfunc);
+        break;
+
+    }
+    return;
 }
 
 
@@ -456,49 +462,50 @@ StretchDIB(
 
 void
 Y_Stretch_1_N(LPBYTE lpSrc,
-			  LPBYTE lpDst,
-			  int SrcXE,
-			  int SrcYE,
-			  int DstXE,
-			  int DstYE,
-			  int SrcWidth,
-			  int DstWidth,
-			  int x_fract,
-			  X_FUNC x_func,
-			  int nBits)
+              LPBYTE lpDst,
+              int SrcXE,
+              int SrcYE,
+              int DstXE,
+              int DstYE,
+              int SrcWidth,
+              int DstWidth,
+              int x_fract,
+              X_FUNC x_func,
+              int nBits)
 {
 
-	int ydelta;
-	register int i;
-	LPBYTE lpPrev = NULL;
+    int ydelta;
+    register int i;
+    LPBYTE lpPrev = NULL;
 
-	ydelta = DstYE -1;
+    ydelta = DstYE -1;
 
-	for (i = 0; i < DstYE; i++) {
+    for (i = 0; i < DstYE; i++) {
 
-		/* have we already stretched this scanline ? */
-		if (lpPrev == NULL) {
-			/* no - copy one scanline */
-			(*x_func)(lpSrc, lpDst, SrcXE, DstXE, x_fract);
-			lpPrev = lpDst;
-		} else {	
-			/* yes - this is a duplicate scanline. do
-			* a straight copy of one that has already
-			* been stretched/shrunk
-			*/
-			X_CopyScanline(lpPrev, lpDst, DstXE * nBits / 8);
-		}
+        /* have we already stretched this scanline ? */
+        if (lpPrev == NULL) {
+            /* no - copy one scanline */
+            (*x_func)(lpSrc, lpDst, SrcXE, DstXE, x_fract);
+            lpPrev = lpDst;
+        }
+        else {
+            /* yes - this is a duplicate scanline. do
+            * a straight copy of one that has already
+            * been stretched/shrunk
+            */
+            X_CopyScanline(lpPrev, lpDst, DstXE * nBits / 8);
+        }
 
-		/* advance dest pointer */
-		lpDst += DstWidth;
+        /* advance dest pointer */
+        lpDst += DstWidth;
 
-		/* should we advance source pointer this time ? */
-		if ( (ydelta -= SrcYE) < 0) {
-			ydelta += DstYE;
-			lpSrc += SrcWidth;
-			lpPrev = NULL;
-		}
-	}
+        /* should we advance source pointer this time ? */
+        if ( (ydelta -= SrcYE) < 0) {
+            ydelta += DstYE;
+            lpSrc += SrcWidth;
+            lpPrev = NULL;
+        }
+    }
 }
 
 
@@ -510,38 +517,39 @@ Y_Stretch_1_N(LPBYTE lpSrc,
 */
 void
 Y_Stretch_N_1(LPBYTE lpSrc,
-			  LPBYTE lpDst,
-			  int SrcXE,
-			  int SrcYE,
-			  int DstXE,
-			  int DstYE,
-			  int SrcWidth,
-			  int DstWidth,
-			  int x_fract,
-			  X_FUNC x_func)
+              LPBYTE lpDst,
+              int SrcXE,
+              int SrcYE,
+              int DstXE,
+              int DstYE,
+              int SrcWidth,
+              int DstWidth,
+              int x_fract,
+              X_FUNC x_func)
 {
 
-	int ydelta;
-	register int i;
+    int ydelta;
+    register int i;
 
-	ydelta = SrcYE -1;
+    ydelta = SrcYE -1;
 
-	for (i = 0; i < DstYE; i++) {
+    for (i = 0; i < DstYE; i++) {
 
-		/* copy one scanline */
-		(*x_func)(lpSrc, lpDst, SrcXE, DstXE, x_fract);
+        /* copy one scanline */
+        (*x_func)(lpSrc, lpDst, SrcXE, DstXE, x_fract);
 
-		/* advance dest pointer */
-		lpDst += DstWidth;
+        /* advance dest pointer */
+        lpDst += DstWidth;
 
-		/* how many times do we advance source pointer this time ? */
-		do {
-			lpSrc += SrcWidth;
-			ydelta -= DstYE;
-		} while (ydelta >= 0);
+        /* how many times do we advance source pointer this time ? */
+        do {
+            lpSrc += SrcWidth;
+            ydelta -= DstYE;
+        }
+        while (ydelta >= 0);
 
-		ydelta += SrcYE;
-	}
+        ydelta += SrcYE;
+    }
 }
 
 /* ---8-bit X stretching -------------------------------------------------- */
@@ -553,27 +561,27 @@ Y_Stretch_N_1(LPBYTE lpSrc,
 */
 void
 X_Stretch_1_N_8Bits(LPBYTE lpSrc,
-					LPBYTE lpDst,
-					int SrcXE,
-					int DstXE,
-					int x_fract)
+                    LPBYTE lpDst,
+                    int SrcXE,
+                    int DstXE,
+                    int x_fract)
 {
-	int xdelta;
-	register int i;
+    int xdelta;
+    register int i;
 
-	xdelta = DstXE -1;
+    xdelta = DstXE -1;
 
-	for (i = 0; i < DstXE; i++) {
+    for (i = 0; i < DstXE; i++) {
 
-		/* copy one byte and advance dest */
-		*lpDst++ = *lpSrc;
+        /* copy one byte and advance dest */
+        *lpDst++ = *lpSrc;
 
-		/* should we advance source pointer this time ? */
-		if ( (xdelta -= SrcXE) < 0) {
-			xdelta += DstXE;
-			lpSrc++;
-		}
-	}
+        /* should we advance source pointer this time ? */
+        if ( (xdelta -= SrcXE) < 0) {
+            xdelta += DstXE;
+            lpSrc++;
+        }
+    }
 }
 
 
@@ -584,29 +592,30 @@ X_Stretch_1_N_8Bits(LPBYTE lpSrc,
 */
 void
 X_Stretch_N_1_8Bits(LPBYTE lpSrc,
-					LPBYTE lpDst,
-					int SrcXE,
-					int DstXE,
-					int x_fract)
+                    LPBYTE lpDst,
+                    int SrcXE,
+                    int DstXE,
+                    int x_fract)
 {
-	int xdelta;
-	register int i;
+    int xdelta;
+    register int i;
 
-	xdelta = SrcXE -1;
+    xdelta = SrcXE -1;
 
-	for (i = 0; i < DstXE; i++) {
+    for (i = 0; i < DstXE; i++) {
 
-		/* copy one byte and advance dest */
-		*lpDst++ = *lpSrc;
+        /* copy one byte and advance dest */
+        *lpDst++ = *lpSrc;
 
-		/* how many times do we advance source pointer this time ? */
-		do {
-			lpSrc++;
-			xdelta -= DstXE;
-		} while (xdelta >= 0);
+        /* how many times do we advance source pointer this time ? */
+        do {
+            lpSrc++;
+            xdelta -= DstXE;
+        }
+        while (xdelta >= 0);
 
-		xdelta += SrcXE;
-	}
+        xdelta += SrcXE;
+    }
 }
 
 /*
@@ -616,51 +625,52 @@ X_Stretch_N_1_8Bits(LPBYTE lpSrc,
 void
 X_CopyScanline(LPBYTE lpSrc, LPBYTE lpDst, int count)
 {
-	register int i;
+    register int i;
 
-	/*
-	* if the alignment of lpSrc and lpDst is the same, then
-	* we can get them aligned and do a faster copy
-	*/
-	if (((DWORD_PTR) lpSrc & 0x3) == ( (DWORD_PTR) lpDst & 0x3)) {
+    /*
+    * if the alignment of lpSrc and lpDst is the same, then
+    * we can get them aligned and do a faster copy
+    */
+    if (((DWORD_PTR) lpSrc & 0x3) == ( (DWORD_PTR) lpDst & 0x3)) {
 
-		/* align on WORD boundary */
-		if ( (DWORD_PTR) lpSrc & 0x1) {
-			*lpDst++ = *lpSrc++;
-			count--;
-		}
+        /* align on WORD boundary */
+        if ( (DWORD_PTR) lpSrc & 0x1) {
+            *lpDst++ = *lpSrc++;
+            count--;
+        }
 
-		/* align on DWORD boundary */
-		if ((DWORD_PTR) lpSrc & 0x2) {
-			* ((LPWORD) lpDst) = *((LPWORD) lpSrc);
-			lpDst += sizeof(WORD);
-			lpSrc += sizeof(WORD);
-			count -= sizeof(WORD);
-		}
+        /* align on DWORD boundary */
+        if ((DWORD_PTR) lpSrc & 0x2) {
+            * ((LPWORD) lpDst) = *((LPWORD) lpSrc);
+            lpDst += sizeof(WORD);
+            lpSrc += sizeof(WORD);
+            count -= sizeof(WORD);
+        }
 
-		/* copy whole DWORDS */
-		for ( i = (count / 4); i > 0; i--) {
-			*((LPDWORD) lpDst) =  *((LPDWORD) lpSrc);
-			lpSrc += sizeof(DWORD);
-			lpDst += sizeof(DWORD);
-		}
-	} else {
-		/* the lpSrc and lpDst pointers are different
-		* alignment, so leave them unaligned and
-		* copy all the whole DWORDs
-		*/
-		for (i = (count / 4); i> 0; i--) {
-			*( (DWORD UNALIGNED FAR *) lpDst) =
-				*((DWORD UNALIGNED FAR *) lpSrc);
-			lpSrc += sizeof(DWORD);
-			lpDst += sizeof(DWORD);
-		}
-	}
+        /* copy whole DWORDS */
+        for ( i = (count / 4); i > 0; i--) {
+            *((LPDWORD) lpDst) =  *((LPDWORD) lpSrc);
+            lpSrc += sizeof(DWORD);
+            lpDst += sizeof(DWORD);
+        }
+    }
+    else {
+        /* the lpSrc and lpDst pointers are different
+        * alignment, so leave them unaligned and
+        * copy all the whole DWORDs
+        */
+        for (i = (count / 4); i> 0; i--) {
+            *( (DWORD UNALIGNED FAR *) lpDst) =
+                *((DWORD UNALIGNED FAR *) lpSrc);
+            lpSrc += sizeof(DWORD);
+            lpDst += sizeof(DWORD);
+        }
+    }
 
-	/* in either case, copy last (up to 3) bytes. */
-	for ( i = count % 4; i > 0; i--) {
-		*lpDst++ = *lpSrc++;
-	}
+    /* in either case, copy last (up to 3) bytes. */
+    for ( i = count % 4; i > 0; i--) {
+        *lpDst++ = *lpSrc++;
+    }
 }
 
 /*
@@ -670,13 +680,13 @@ X_CopyScanline(LPBYTE lpSrc, LPBYTE lpDst, int count)
 */
 void
 X_Stretch_1_1_8Bits(LPBYTE lpSrc,
-					LPBYTE lpDst,
-					int SrcXE,
-					int DstXE,
-					int x_fract)
+                    LPBYTE lpDst,
+                    int SrcXE,
+                    int DstXE,
+                    int x_fract)
 {
 
-	X_CopyScanline(lpSrc, lpDst, DstXE);
+    X_CopyScanline(lpSrc, lpDst, DstXE);
 }
 
 
@@ -687,22 +697,22 @@ X_Stretch_1_1_8Bits(LPBYTE lpSrc,
 */
 void
 X_Stretch_1_2_8Bits(LPBYTE lpSrc,
-					LPBYTE lpDst,
-					int SrcXE,
-					int DstXE,
-					int x_fract)
+                    LPBYTE lpDst,
+                    int SrcXE,
+                    int DstXE,
+                    int x_fract)
 {
-	WORD wPix;
-	register int i;
+    WORD wPix;
+    register int i;
 
-	for (i = 0; i < SrcXE; i++) {
+    for (i = 0; i < SrcXE; i++) {
 
-		/* get a pixel and double it */
-		wPix = *lpSrc++;
-		wPix |= (wPix << 8);
-		* ((WORD UNALIGNED *) lpDst) = wPix;
-		lpDst += sizeof(WORD);
-	}
+        /* get a pixel and double it */
+        wPix = *lpSrc++;
+        wPix |= (wPix << 8);
+        * ((WORD UNALIGNED *) lpDst) = wPix;
+        lpDst += sizeof(WORD);
+    }
 }
 
 
@@ -713,23 +723,23 @@ X_Stretch_1_2_8Bits(LPBYTE lpSrc,
 */
 void
 X_Stretch_1_4_8Bits(LPBYTE lpSrc,
-					LPBYTE lpDst,
-					int SrcXE,
-					int DstXE,
-					int x_fract)
+                    LPBYTE lpDst,
+                    int SrcXE,
+                    int DstXE,
+                    int x_fract)
 {
-	DWORD dwPix;
-	register int i;
+    DWORD dwPix;
+    register int i;
 
-	for (i = 0; i < SrcXE; i++) {
+    for (i = 0; i < SrcXE; i++) {
 
-		/* get a pixel and make four copies of it */
-		dwPix = *lpSrc++;
-		dwPix |= (dwPix <<8);
-		dwPix |= (dwPix << 16);
-		* ((DWORD UNALIGNED *) lpDst) = dwPix;
-		lpDst += sizeof(DWORD);
-	}
+        /* get a pixel and make four copies of it */
+        dwPix = *lpSrc++;
+        dwPix |= (dwPix <<8);
+        dwPix |= (dwPix << 16);
+        * ((DWORD UNALIGNED *) lpDst) = dwPix;
+        lpDst += sizeof(DWORD);
+    }
 }
 
 
@@ -740,13 +750,13 @@ X_Stretch_1_4_8Bits(LPBYTE lpSrc,
 */
 void
 X_Stretch_1_1_16Bits(LPBYTE lpSrc,
-					 LPBYTE lpDst,
-					 int SrcXE,
-					 int DstXE,
-					 int x_fract)
+                     LPBYTE lpDst,
+                     int SrcXE,
+                     int DstXE,
+                     int x_fract)
 {
 
-	X_CopyScanline(lpSrc, lpDst, DstXE * sizeof(WORD));
+    X_CopyScanline(lpSrc, lpDst, DstXE * sizeof(WORD));
 
 }
 
@@ -756,25 +766,25 @@ X_Stretch_1_1_16Bits(LPBYTE lpSrc,
 */
 void
 X_Stretch_1_2_16Bits(LPBYTE lpSrc,
-					 LPBYTE lpDst,
-					 int SrcXE,
-					 int DstXE,
-					 int x_fract)
+                     LPBYTE lpDst,
+                     int SrcXE,
+                     int DstXE,
+                     int x_fract)
 {
 
-	DWORD dwPix;
-	register int i;
+    DWORD dwPix;
+    register int i;
 
-	for (i = 0; i < SrcXE; i++) {
+    for (i = 0; i < SrcXE; i++) {
 
-		/* get a pixel and double it */
-		dwPix = * ((WORD *)lpSrc);
-		dwPix |= (dwPix << 16);
-		* ((DWORD UNALIGNED *) lpDst) = dwPix;
+        /* get a pixel and double it */
+        dwPix = * ((WORD *)lpSrc);
+        dwPix |= (dwPix << 16);
+        * ((DWORD UNALIGNED *) lpDst) = dwPix;
 
-		lpDst += sizeof(DWORD);
-		lpSrc += sizeof(WORD);
-	}
+        lpDst += sizeof(DWORD);
+        lpSrc += sizeof(WORD);
+    }
 
 }
 
@@ -783,29 +793,29 @@ X_Stretch_1_2_16Bits(LPBYTE lpSrc,
 */
 void
 X_Stretch_1_N_16Bits(LPBYTE lpSrc,
-					 LPBYTE lpDst,
-					 int SrcXE,
-					 int DstXE,
-					 int x_fract)
+                     LPBYTE lpDst,
+                     int SrcXE,
+                     int DstXE,
+                     int x_fract)
 {
-	int xdelta;
-	register int i;
+    int xdelta;
+    register int i;
 
-	xdelta = DstXE -1;
+    xdelta = DstXE -1;
 
-	for (i = 0; i < DstXE; i++) {
+    for (i = 0; i < DstXE; i++) {
 
-		/* copy one pixel and advance dest */
-		*((WORD *) lpDst) = *((WORD *) lpSrc);
+        /* copy one pixel and advance dest */
+        *((WORD *) lpDst) = *((WORD *) lpSrc);
 
-		lpDst += sizeof(WORD);
+        lpDst += sizeof(WORD);
 
-		/* should we advance source pointer this time ? */
-		if ( (xdelta -= SrcXE) < 0) {
-			xdelta += DstXE;
-			lpSrc += sizeof(WORD);
-		}
-	}
+        /* should we advance source pointer this time ? */
+        if ( (xdelta -= SrcXE) < 0) {
+            xdelta += DstXE;
+            lpSrc += sizeof(WORD);
+        }
+    }
 }
 
 /*
@@ -813,32 +823,33 @@ X_Stretch_1_N_16Bits(LPBYTE lpSrc,
 */
 void
 X_Stretch_N_1_16Bits(LPBYTE lpSrc,
-					 LPBYTE lpDst,
-					 int SrcXE,
-					 int DstXE,
-					 int x_fract)
+                     LPBYTE lpDst,
+                     int SrcXE,
+                     int DstXE,
+                     int x_fract)
 {
 
-	int xdelta;
-	register int i;
+    int xdelta;
+    register int i;
 
-	xdelta = SrcXE -1;
+    xdelta = SrcXE -1;
 
-	for (i = 0; i < DstXE; i++) {
+    for (i = 0; i < DstXE; i++) {
 
-		/* copy one pixel and advance dest */
-		*((WORD *) lpDst) = *((WORD *)lpSrc);
+        /* copy one pixel and advance dest */
+        *((WORD *) lpDst) = *((WORD *)lpSrc);
 
-		lpDst += sizeof(WORD);
+        lpDst += sizeof(WORD);
 
-		/* how many times do we advance source pointer this time ? */
-		do {
-			lpSrc += sizeof(WORD);
-			xdelta -= DstXE;
-		} while (xdelta >= 0);
+        /* how many times do we advance source pointer this time ? */
+        do {
+            lpSrc += sizeof(WORD);
+            xdelta -= DstXE;
+        }
+        while (xdelta >= 0);
 
-		xdelta += SrcXE;
-	}
+        xdelta += SrcXE;
+    }
 
 }
 
@@ -850,12 +861,12 @@ X_Stretch_N_1_16Bits(LPBYTE lpSrc,
 */
 void
 X_Stretch_1_1_24Bits(LPBYTE lpSrc,
-					 LPBYTE lpDst,
-					 int SrcXE,
-					 int DstXE,
-					 int x_fract)
+                     LPBYTE lpDst,
+                     int SrcXE,
+                     int DstXE,
+                     int x_fract)
 {
-	X_CopyScanline(lpSrc, lpDst, DstXE * 3);
+    X_CopyScanline(lpSrc, lpDst, DstXE * 3);
 }
 
 /*
@@ -863,32 +874,32 @@ X_Stretch_1_1_24Bits(LPBYTE lpSrc,
 */
 void
 X_Stretch_1_N_24Bits(LPBYTE lpSrc,
-					 LPBYTE lpDst,
-					 int SrcXE,
-					 int DstXE,
-					 int x_fract)
+                     LPBYTE lpDst,
+                     int SrcXE,
+                     int DstXE,
+                     int x_fract)
 {
 
-	int xdelta;
-	register int i;
+    int xdelta;
+    register int i;
 
-	xdelta = DstXE -1;
+    xdelta = DstXE -1;
 
-	for (i = 0; i < DstXE; i++) {
-		/* copy first word of pixel and advance dest */
-		*((WORD UNALIGNED *) lpDst) = *((WORD UNALIGNED *) lpSrc);
+    for (i = 0; i < DstXE; i++) {
+        /* copy first word of pixel and advance dest */
+        *((WORD UNALIGNED *) lpDst) = *((WORD UNALIGNED *) lpSrc);
 
-		lpDst += sizeof(WORD);
+        lpDst += sizeof(WORD);
 
-		/* copy third byte and advance dest */
-		*lpDst++ = lpSrc[sizeof(WORD)];
+        /* copy third byte and advance dest */
+        *lpDst++ = lpSrc[sizeof(WORD)];
 
-		/* should we advance source pointer this time ? */
-		if ( (xdelta -= SrcXE) < 0) {
-			xdelta += DstXE;
-			lpSrc += 3;
-		}
-	}
+        /* should we advance source pointer this time ? */
+        if ( (xdelta -= SrcXE) < 0) {
+            xdelta += DstXE;
+            lpSrc += 3;
+        }
+    }
 }
 
 /*
@@ -896,36 +907,37 @@ X_Stretch_1_N_24Bits(LPBYTE lpSrc,
 */
 void
 X_Stretch_N_1_24Bits(LPBYTE lpSrc,
-					 LPBYTE lpDst,
-					 int SrcXE,
-					 int DstXE,
-					 int x_fract)
+                     LPBYTE lpDst,
+                     int SrcXE,
+                     int DstXE,
+                     int x_fract)
 {
-	int xdelta;
-	register int i;
+    int xdelta;
+    register int i;
 
-	xdelta = SrcXE -1;
+    xdelta = SrcXE -1;
 
-	for (i = 0; i < DstXE; i++) {
+    for (i = 0; i < DstXE; i++) {
 
-		/* copy first word of pixel and advance dest */
-		*((WORD UNALIGNED *) lpDst) = *((WORD UNALIGNED *) lpSrc);
+        /* copy first word of pixel and advance dest */
+        *((WORD UNALIGNED *) lpDst) = *((WORD UNALIGNED *) lpSrc);
 
-		lpDst += sizeof(WORD);
+        lpDst += sizeof(WORD);
 
-		/* copy third byte and advance dest */
-		*lpDst++ = lpSrc[sizeof(WORD)];
+        /* copy third byte and advance dest */
+        *lpDst++ = lpSrc[sizeof(WORD)];
 
 
-		/* how many times do we advance source pointer this time ? */
-		do {
-			lpSrc += 3;
-			xdelta -= DstXE;
-		} while (xdelta >= 0);
+        /* how many times do we advance source pointer this time ? */
+        do {
+            lpSrc += 3;
+            xdelta -= DstXE;
+        }
+        while (xdelta >= 0);
 
-		xdelta += SrcXE;
-	}
-}		
+        xdelta += SrcXE;
+    }
+}
 
 
 /* 32-bits ---------------------------------------------------------*/
@@ -935,12 +947,12 @@ X_Stretch_N_1_24Bits(LPBYTE lpSrc,
 */
 void
 X_Stretch_1_1_32Bits(LPBYTE lpSrc,
-					 LPBYTE lpDst,
-					 int SrcXE,
-					 int DstXE,
-					 int x_fract)
+                     LPBYTE lpDst,
+                     int SrcXE,
+                     int DstXE,
+                     int x_fract)
 {
-	X_CopyScanline((BYTE*) lpSrc, (BYTE*) lpDst, DstXE * sizeof( RGBQUAD ) );
+    X_CopyScanline((BYTE*) lpSrc, (BYTE*) lpDst, DstXE * sizeof( RGBQUAD ) );
 }
 
 /*
@@ -948,34 +960,32 @@ X_Stretch_1_1_32Bits(LPBYTE lpSrc,
 */
 void
 X_Stretch_1_N_32Bits(LPBYTE lpSrc0,
-					 LPBYTE lpDst0,
-					 int SrcXE,
-					 int DstXE,
-					 int x_fract)
+                     LPBYTE lpDst0,
+                     int SrcXE,
+                     int DstXE,
+                     int x_fract)
 {
 
-	int xdelta;
-	register int i;
+    int xdelta;
+    register int i;
 
-	RGBQUAD *lpSrc=(RGBQUAD *)lpSrc0;
-	RGBQUAD *lpDst=(RGBQUAD *)lpDst0;
+    RGBQUAD *lpSrc=(RGBQUAD *)lpSrc0;
+    RGBQUAD *lpDst=(RGBQUAD *)lpDst0;
 
 
-	xdelta = DstXE -1;
+    xdelta = DstXE -1;
 
-	for (i = 0; i < DstXE; i++) 
-	{
-		/* copy first word of pixel and advance dest */
-		*lpDst = *lpSrc;
-		lpDst++;
+    for (i = 0; i < DstXE; i++) {
+        /* copy first word of pixel and advance dest */
+        *lpDst = *lpSrc;
+        lpDst++;
 
-		/* should we advance source pointer this time ? */
-		if ( (xdelta -= SrcXE) < 0) 
-		{
-			xdelta += DstXE;
-			lpSrc++;
-		}
-	}
+        /* should we advance source pointer this time ? */
+        if ( (xdelta -= SrcXE) < 0) {
+            xdelta += DstXE;
+            lpSrc++;
+        }
+    }
 }
 
 /*
@@ -983,34 +993,33 @@ X_Stretch_1_N_32Bits(LPBYTE lpSrc0,
 */
 void
 X_Stretch_N_1_32Bits(LPBYTE lpSrc0,
-					 LPBYTE lpDst0,
-					 int SrcXE,
-					 int DstXE,
-					 int x_fract)
+                     LPBYTE lpDst0,
+                     int SrcXE,
+                     int DstXE,
+                     int x_fract)
 {
-	int xdelta;
-	register int i;
+    int xdelta;
+    register int i;
 
-	RGBQUAD *lpSrc=(RGBQUAD *)lpSrc0;
-	RGBQUAD *lpDst=(RGBQUAD *)lpDst0;
+    RGBQUAD *lpSrc=(RGBQUAD *)lpSrc0;
+    RGBQUAD *lpDst=(RGBQUAD *)lpDst0;
 
-	xdelta = SrcXE -1;
+    xdelta = SrcXE -1;
 
-	for (i = 0; i < DstXE; i++) 
-	{
-		*lpDst = *lpSrc;
-		lpDst++;
+    for (i = 0; i < DstXE; i++) {
+        *lpDst = *lpSrc;
+        lpDst++;
 
-		/* how many times do we advance source pointer this time ? */
-		do 
-		{
-			lpSrc++;
-			xdelta -= DstXE;
-		} while (xdelta >= 0);
+        /* how many times do we advance source pointer this time ? */
+        do {
+            lpSrc++;
+            xdelta -= DstXE;
+        }
+        while (xdelta >= 0);
 
-		xdelta += SrcXE;
-	}
-}        
+        xdelta += SrcXE;
+    }
+}
 
 
 
@@ -1026,116 +1035,116 @@ X_Stretch_N_1_32Bits(LPBYTE lpSrc0,
 */
 void
 Stretch_1_2_8Bits(LPBYTE lpSrc, LPBYTE lpDst, int SrcXE,int SrcYE, int DstXE,
-				  int DstYE, int SrcWidth, int DstWidth, int x_fract)
+                  int DstYE, int SrcWidth, int DstWidth, int x_fract)
 {
 
-	int SrcInc, DstInc;
-	register int i, j;
-	WORD wPix;
-	DWORD dwPix4;
+    int SrcInc, DstInc;
+    register int i, j;
+    WORD wPix;
+    DWORD dwPix4;
 
-	/* amount to advance source by at the end of each scan */
-	SrcInc = SrcWidth - SrcXE;
-
-
-	/* amount to advance dest by at the end of each scan - note
-	* that we write two scans at once, so advance past the next
-	* scan line
-	*/
-	DstInc = (DstWidth * 2) - DstXE;
-
-	/*
-	* we would like to copy the pixels DWORD at a time. this means
-	* being aligned. if we are currently aligned on a WORD boundary,
-	* then copy one pixel to get aligned. If we are on a byte
-	* boundary, we can never get aligned, so use the slower loop.
-	*/
-	if ( ((DWORD_PTR)lpDst) & 1) {
-
-		/*
-		* dest is byte aligned - so we can never align it
-		* by writing WORDs - use slow loop.
-		*/
-		for (i = 0; i < SrcYE; i++) {
-
-			for (j = 0; j < SrcXE; j++) {
-
-				/* get a pixel and double it */
-
-				wPix = *lpSrc++;
-				wPix |= (wPix<<8);
+    /* amount to advance source by at the end of each scan */
+    SrcInc = SrcWidth - SrcXE;
 
 
-				/* write doubled pixel to this scanline */
+    /* amount to advance dest by at the end of each scan - note
+    * that we write two scans at once, so advance past the next
+    * scan line
+    */
+    DstInc = (DstWidth * 2) - DstXE;
 
-				*( (WORD UNALIGNED *) lpDst) = wPix;
+    /*
+    * we would like to copy the pixels DWORD at a time. this means
+    * being aligned. if we are currently aligned on a WORD boundary,
+    * then copy one pixel to get aligned. If we are on a byte
+    * boundary, we can never get aligned, so use the slower loop.
+    */
+    if ( ((DWORD_PTR)lpDst) & 1) {
 
-				/* write double pixel to next scanline */
-				*( (WORD UNALIGNED *) (lpDst + DstWidth)) = wPix;
+        /*
+        * dest is byte aligned - so we can never align it
+        * by writing WORDs - use slow loop.
+        */
+        for (i = 0; i < SrcYE; i++) {
 
-				lpDst += sizeof(WORD);
-			}
-			lpSrc += SrcInc;
-			lpDst += DstInc;
-		}
-		return;
-	}
+            for (j = 0; j < SrcXE; j++) {
 
-	/*
-	* this will be the aligned version. align each scan line
-	*/
-	for ( i = 0; i < SrcYE; i++) {
+                /* get a pixel and double it */
 
-		/* count of pixels remaining */
-		j = SrcXE;
-
-		/* align this scan line */
-		if (((DWORD_PTR)lpDst) & 2) {
-
-			/* word aligned - copy one doubled pixel and we are ok */
-			wPix = *lpSrc++;
-			wPix |= (wPix << 8);
-
-			*( (WORD *) lpDst) = wPix;
-			*( (WORD *) (lpDst + DstWidth)) = wPix;
-			lpDst += sizeof(WORD);
-
-			j -= 1;
-		}
+                wPix = *lpSrc++;
+                wPix |= (wPix<<8);
 
 
-		/* now dest is aligned - so loop eating two pixels at a time
-		* until there is at most one left
-		*/
-		for ( ; j > 1; j -= 2) {
+                /* write doubled pixel to this scanline */
 
-			/* read two pixels and double them */
-			wPix = * ((WORD UNALIGNED *) lpSrc);
-			lpSrc += sizeof(WORD);
+                *( (WORD UNALIGNED *) lpDst) = wPix;
 
-			dwPix4 = (wPix & 0xff) | ((wPix & 0xff) << 8);
-			dwPix4 |= ((wPix & 0xff00) << 8) | ((wPix & 0xff00) << 16);
-			*((DWORD *) lpDst) = dwPix4;
-			*((DWORD *) (lpDst + DstWidth)) = dwPix4;
+                /* write double pixel to next scanline */
+                *( (WORD UNALIGNED *) (lpDst + DstWidth)) = wPix;
 
-			lpDst += sizeof(DWORD);
-		}
+                lpDst += sizeof(WORD);
+            }
+            lpSrc += SrcInc;
+            lpDst += DstInc;
+        }
+        return;
+    }
 
-		/* odd byte remaining ? */
-		if (j > 0) {
-			/* word aligned - copy one doubled pixel and we are ok */
-			wPix = *lpSrc++;
-			wPix |= (wPix << 8);
+    /*
+    * this will be the aligned version. align each scan line
+    */
+    for ( i = 0; i < SrcYE; i++) {
 
-			*( (WORD *) lpDst) = wPix;
-			*( (WORD *) (lpDst + DstWidth)) = wPix;
-			lpDst += sizeof(WORD);
+        /* count of pixels remaining */
+        j = SrcXE;
 
-			j -= 1;
-		}
-		lpSrc += SrcInc;
-		lpDst += DstInc;
-	}
+        /* align this scan line */
+        if (((DWORD_PTR)lpDst) & 2) {
+
+            /* word aligned - copy one doubled pixel and we are ok */
+            wPix = *lpSrc++;
+            wPix |= (wPix << 8);
+
+            *( (WORD *) lpDst) = wPix;
+            *( (WORD *) (lpDst + DstWidth)) = wPix;
+            lpDst += sizeof(WORD);
+
+            j -= 1;
+        }
+
+
+        /* now dest is aligned - so loop eating two pixels at a time
+        * until there is at most one left
+        */
+        for ( ; j > 1; j -= 2) {
+
+            /* read two pixels and double them */
+            wPix = * ((WORD UNALIGNED *) lpSrc);
+            lpSrc += sizeof(WORD);
+
+            dwPix4 = (wPix & 0xff) | ((wPix & 0xff) << 8);
+            dwPix4 |= ((wPix & 0xff00) << 8) | ((wPix & 0xff00) << 16);
+            *((DWORD *) lpDst) = dwPix4;
+            *((DWORD *) (lpDst + DstWidth)) = dwPix4;
+
+            lpDst += sizeof(DWORD);
+        }
+
+        /* odd byte remaining ? */
+        if (j > 0) {
+            /* word aligned - copy one doubled pixel and we are ok */
+            wPix = *lpSrc++;
+            wPix |= (wPix << 8);
+
+            *( (WORD *) lpDst) = wPix;
+            *( (WORD *) (lpDst + DstWidth)) = wPix;
+            lpDst += sizeof(WORD);
+
+            j -= 1;
+        }
+        lpSrc += SrcInc;
+        lpDst += DstInc;
+    }
 }
 
 
@@ -1148,45 +1157,45 @@ Stretch_1_2_8Bits(LPBYTE lpSrc, LPBYTE lpDst, int SrcXE,int SrcYE, int DstXE,
 
 void
 Stretch_1_2_16Bits(LPBYTE lpSrc, LPBYTE lpDst, int SrcXE,int SrcYE, int DstXE,
-				   int DstYE, int SrcWidth, int DstWidth, int x_fract)
+                   int DstYE, int SrcWidth, int DstWidth, int x_fract)
 
 {
-	int SrcInc, DstInc;
-	register int i, j;
-	DWORD dwPix;
+    int SrcInc, DstInc;
+    register int i, j;
+    DWORD dwPix;
 
-	/* amount to advance source by at the end of each scan */
-	SrcInc = SrcWidth - (SrcXE * sizeof(WORD));
+    /* amount to advance source by at the end of each scan */
+    SrcInc = SrcWidth - (SrcXE * sizeof(WORD));
 
 
-	/* amount to advance dest by at the end of each scan - note
-	* that we write two scans at once, so advance past the next
-	* scan line
-	*/
-	DstInc = (DstWidth * 2) - (DstXE * sizeof(WORD));
+    /* amount to advance dest by at the end of each scan - note
+    * that we write two scans at once, so advance past the next
+    * scan line
+    */
+    DstInc = (DstWidth * 2) - (DstXE * sizeof(WORD));
 
-	for (i = 0; i < SrcYE; i++) {
+    for (i = 0; i < SrcYE; i++) {
 
-		for (j = 0; j < SrcXE; j++) {
+        for (j = 0; j < SrcXE; j++) {
 
-			/* get a pixel and double it */
+            /* get a pixel and double it */
 
-			dwPix = *((WORD *)lpSrc);
-			dwPix |= (dwPix<<16);
+            dwPix = *((WORD *)lpSrc);
+            dwPix |= (dwPix<<16);
 
-			lpSrc += sizeof(WORD);
+            lpSrc += sizeof(WORD);
 
-			/* write doubled pixel to this scanline */
+            /* write doubled pixel to this scanline */
 
-			*( (DWORD UNALIGNED *) lpDst) = dwPix;
+            *( (DWORD UNALIGNED *) lpDst) = dwPix;
 
-			/* write double pixel to next scanline */
-			*( (DWORD UNALIGNED *) (lpDst + DstWidth)) = dwPix;
+            /* write double pixel to next scanline */
+            *( (DWORD UNALIGNED *) (lpDst + DstWidth)) = dwPix;
 
-			lpDst += sizeof(DWORD);
-		}
-		lpSrc += SrcInc;
-		lpDst += DstInc;
+            lpDst += sizeof(DWORD);
+        }
+        lpSrc += SrcInc;
+        lpDst += DstInc;
 
-	}
+    }
 }

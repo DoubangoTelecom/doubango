@@ -1,21 +1,21 @@
 /* File from: http://cms.speakup.nl/tech/opensource/jitterbuffer/verslag-20051209.pdf/ */
 
 /*******************************************************
- * jitterbuffer: 
- * an application-independent jitterbuffer, which tries 
+ * jitterbuffer:
+ * an application-independent jitterbuffer, which tries
  * to achieve the maximum user perception during a call.
  * For more information look at:
  * http://www.speakup.nl/opensource/jitterbuffer/
  *
  * Copyright on this file is held by:
- * - Jesse Kaijen <jesse@speakup.nl>  
+ * - Jesse Kaijen <jesse@speakup.nl>
  * - SpeakUp <info@speakup.nl>
  *
  * Contributors:
  * Jesse Kaijen <jesse@speakup.nl>
  *
  * Version: 1.1
- * 
+ *
  * Changelog:
 * 1.0 => 1.1 (2006-03-24) (thanks to Micheal Jerris, freeswitch.org)
  * - added MSVC 2005 project files
@@ -25,13 +25,13 @@
  * This program is free software, distributed under the terms of:
  * - the GNU Lesser (Library) General Public License
  * - the Mozilla Public License
- * 
+ *
  * if you are interested in an different licence type, please contact us.
  *
- * How to use the jitterbuffer, please look at the comments 
+ * How to use the jitterbuffer, please look at the comments
  * in the headerfile.
  *
- * Further details on specific implementations, 
+ * Further details on specific implementations,
  * please look at the comments in the code file.
  */
 
@@ -48,26 +48,26 @@ TDAV_BEGIN_DECLS
  * The header file consists of four parts.
  * - configuration constants, structs and parameter definitions
  * - functions
- * - How to use the jitterbuffer and 
+ * - How to use the jitterbuffer and
  *   which responsibilities do YOU have
  * - debug messages explained
  */
 
 
 // configuration constants
-/* Number of historical timestamps to use in calculating jitter and jitterbuffer size */ 
+/* Number of historical timestamps to use in calculating jitter and jitterbuffer size */
 #ifndef JB_HISTORY_SIZE
 #	define JB_HISTORY_SIZE 500
 #endif
 
 /* minimum jitterbuffer size, disabled if 0 */
 #define JB_MIN_SIZE 0
-/* maximum jitterbuffer size, disabled if 0 */ 
+/* maximum jitterbuffer size, disabled if 0 */
 #define JB_MAX_SIZE 0
- /* maximum successive interpolating frames, disabled if 0 */
+/* maximum successive interpolating frames, disabled if 0 */
 #define JB_MAX_SUCCESSIVE_INTERP 0
 /* amount of extra delay allowed before shrinking */
-#define JB_ALLOW_EXTRA_DELAY 30																														
+#define JB_ALLOW_EXTRA_DELAY 30
 /* ms between growing */
 #define JB_WAIT_GROW 60
 /* ms between shrinking */
@@ -77,70 +77,70 @@ TDAV_BEGIN_DECLS
 
 //structs
 typedef struct jb_info {
-	long frames_received;       /* Number of frames received by the jitterbuffer */
-  long frames_late;           /* Number of frames that were late */
-  long frames_lost;           /* Number of frames that were lost */
-  long frames_ooo;            /* Number of frames that were Out Of Order */
-  long frames_dropped;        /* Number of frames that were dropped due shrinkage of the jitterbuffer */
-  long frames_dropped_twice;  /* Number of frames that were dropped because this timestamp was already in the jitterbuffer */
-                              
-  long delay;     /* Current delay due the jitterbuffer */
-	long jitter; 		/* jitter measured within current history interval*/
-	long losspct; 	/* recent lost frame percentage (network and jitterbuffer loss) */
-	                            
-	long delay_target;   /* The delay where we want to grow to */
-	long losspct_jb;     /* recent lost percentage due the jitterbuffer */
-	long last_voice_ms;	 /* the duration of the last voice frame */
-  short silence;       /* If we are in silence 1-yes 0-no */
-  long iqr;            /* Inter Quartile Range of current history, if the squareroot is taken it is a good estimate of jitter */
+    long frames_received;       /* Number of frames received by the jitterbuffer */
+    long frames_late;           /* Number of frames that were late */
+    long frames_lost;           /* Number of frames that were lost */
+    long frames_ooo;            /* Number of frames that were Out Of Order */
+    long frames_dropped;        /* Number of frames that were dropped due shrinkage of the jitterbuffer */
+    long frames_dropped_twice;  /* Number of frames that were dropped because this timestamp was already in the jitterbuffer */
+
+    long delay;     /* Current delay due the jitterbuffer */
+    long jitter; 		/* jitter measured within current history interval*/
+    long losspct; 	/* recent lost frame percentage (network and jitterbuffer loss) */
+
+    long delay_target;   /* The delay where we want to grow to */
+    long losspct_jb;     /* recent lost percentage due the jitterbuffer */
+    long last_voice_ms;	 /* the duration of the last voice frame */
+    short silence;       /* If we are in silence 1-yes 0-no */
+    long iqr;            /* Inter Quartile Range of current history, if the squareroot is taken it is a good estimate of jitter */
 } jb_info;
 
 typedef struct jb_frame {
-	void *data;		                /* the frame data */
-	long ts;	                    /* the senders timestamp */
-	long ms;	                    /* length of this frame in ms */
-	int  type;	                  /* the type of frame */
-	int codec;                    /* codec of this frame, undefined if nonvoice */
-	struct jb_frame *next, *prev; /* pointers to the next and previous frames in the queue */ 
+    void *data;		                /* the frame data */
+    long ts;	                    /* the senders timestamp */
+    long ms;	                    /* length of this frame in ms */
+    int  type;	                  /* the type of frame */
+    int codec;                    /* codec of this frame, undefined if nonvoice */
+    struct jb_frame *next, *prev; /* pointers to the next and previous frames in the queue */
 } jb_frame;
 
 typedef struct jb_hist_element {
-	long delay; /* difference between time of arrival and senders timestamp */
-	long ts;    /* senders timestamp */
-	long ms;    /* length of this frame in ms */
-	int codec;  /* wich codec this frame has */
-} jb_hist_element;								
+    long delay; /* difference between time of arrival and senders timestamp */
+    long ts;    /* senders timestamp */
+    long ms;    /* length of this frame in ms */
+    int codec;  /* wich codec this frame has */
+} jb_hist_element;
 
 typedef struct jb_settings {
-  /* settings */
-	long min_jb;	              /* defines a hard clamp to use in setting the jitterbuffer delay */
-  long max_jb;	              /* defines a hard clamp to use in setting the jitterbuffer delay */
-  long max_successive_interp; /* the maximum count of successive interpolations before assuming silence */
-  long extra_delay;           /* amount of extra delay allowed before shrinking */
-  long wait_grow;             /* ms between growing */
-  long wait_shrink;           /* ms between shrinking */
-  long max_diff;              /* maximum number of milliseconds the jitterbuffer may be off */
+    /* settings */
+    long min_jb;	              /* defines a hard clamp to use in setting the jitterbuffer delay */
+    long max_jb;	              /* defines a hard clamp to use in setting the jitterbuffer delay */
+    long max_successive_interp; /* the maximum count of successive interpolations before assuming silence */
+    long extra_delay;           /* amount of extra delay allowed before shrinking */
+    long wait_grow;             /* ms between growing */
+    long wait_shrink;           /* ms between shrinking */
+    long max_diff;              /* maximum number of milliseconds the jitterbuffer may be off */
 } jb_settings;
 
 typedef struct jitterbuffer {
-	struct jb_hist_element hist[JB_HISTORY_SIZE]; /* the history of the last received frames */
-	long hist_sorted_delay[JB_HISTORY_SIZE];      /* a sorted buffer of the delays (lowest first) */
-	long hist_sorted_timestamp[JB_HISTORY_SIZE];  /* a sorted buffer of the timestamps (lowest first) */
-	
-	int  hist_pointer;          /* points to index in history for next entry */
-	long last_adjustment;       /* the time of the last adjustment (growing or shrinking) */
-  long next_voice_time;	      /* the next ts is to be read from the jb (senders timestamp) */
-	long cnt_successive_interp; /* the count of consecutive interpolation frames */	
-	long silence_begin_ts;      /* the time of the last CNG frame, when in silence */
-	long min;		                /* the clock difference within current history interval */
-	long current; 		          /* the present jitterbuffer adjustment */
-	long target; 		            /* the target jitterbuffer adjustment */
-	long last_delay;            /* the delay of the last packet, used for calc. jitter */
-	                            
-	jb_frame *voiceframes; 	 /* queued voiceframes */
-	jb_frame *controlframes; /* queued controlframes */
-	jb_settings settings;    /* the settings of the jitterbuffer */
-	jb_info info;            /* the statistics of the jitterbuffer */
+    struct jb_hist_element hist[JB_HISTORY_SIZE]; /* the history of the last received frames */
+    long hist_sorted_delay[JB_HISTORY_SIZE];      /* a sorted buffer of the delays (lowest first) */
+    long hist_sorted_timestamp[JB_HISTORY_SIZE];  /* a sorted buffer of the timestamps (lowest first) */
+
+    int  hist_pointer;          /* points to index in history for next entry */
+    long last_adjustment;       /* the time of the last adjustment (growing or shrinking) */
+    long next_voice_time;	      /* the next ts is to be read from the jb (senders timestamp) */
+    long cnt_successive_interp; /* the count of consecutive interpolation frames */
+    long silence_begin_ts;      /* the time of the last CNG frame, when in silence */
+    long min;		                /* the clock difference within current history interval */
+    long current; 		          /* the present jitterbuffer adjustment */
+    long target; 		            /* the target jitterbuffer adjustment */
+    long last_delay;            /* the delay of the last packet, used for calc. jitter */
+
+    jb_frame *voiceframes; 	 /* queued voiceframes */
+    jb_frame *controlframes; /* queued controlframes */
+    jb_settings settings;    /* the settings of the jitterbuffer */
+    jb_info info;            /* the statistics of the jitterbuffer */
 } jitterbuffer;
 
 //parameter definitions
@@ -174,24 +174,24 @@ typedef struct jitterbuffer {
 
 /*
  * Creates a new jitterbuffer and sets the default settings.
- * Always use this function for creating a new jitterbuffer. 
+ * Always use this function for creating a new jitterbuffer.
  */
 jitterbuffer *jb_new();
 
 /*
- * The control frames and possible personal settings are kept. 
- * History and voice/silence frames are destroyed. 
+ * The control frames and possible personal settings are kept.
+ * History and voice/silence frames are destroyed.
  */
 void jb_reset(jitterbuffer *jb);
 
 /*
  * Resets the jitterbuffer totally, all the control/voice/silence frames are destroyed
- * default settings are put as well. 
+ * default settings are put as well.
  */
 void jb_reset_all(jitterbuffer *jb);
 
 /*
- * Destroy the jitterbuffer and any frame within. 
+ * Destroy the jitterbuffer and any frame within.
  * Always use this function for destroying a jitterbuffer,
  * otherwise there is a chance of memory leaking.
  */
@@ -204,7 +204,7 @@ void jb_destroy(jitterbuffer *jb);
 void jb_set_settings(jitterbuffer *jb, jb_settings *settings);
 
 /*
- * Get the statistics for the jitterbuffer. 
+ * Get the statistics for the jitterbuffer.
  * Copying the statistics directly for the jitterbuffer won't work because
  * The statistics are only calculated when calling this function.
  */
@@ -248,7 +248,7 @@ void jb_put(jitterbuffer *jb, void *data, int type, long ms, long ts, long now, 
  * Get a packet from the jitterbuffer if it's available.
  * control packets have a higher priority above voice and silence packets
  * they are always delivered as fast as possible. The delay of the jitterbuffer
- * doesn't work for these packets. 
+ * doesn't work for these packets.
  * @REQUIRE 1<interpl <= jb->settings->extra_delay (=default JB_ALLOW_EXTRA_DELAY)
  *
  * return will be:

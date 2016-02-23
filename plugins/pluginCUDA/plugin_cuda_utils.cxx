@@ -1,18 +1,18 @@
 /* Copyright (C) 2013 Mamadou DIOP
 * Copyright (C) 2013 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 */
@@ -31,83 +31,74 @@ int CudaUtils::g_nCores = 0;
 
 HRESULT CudaUtils::Startup()
 {
-	if(!g_bStarted)
-	{
-		CUresult cuResult = CUDA_SUCCESS;
-		HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
-		if(SUCCEEDED(hr) || hr == 0x80010106) // 0x80010106 when called from managed code (e.g. Boghe) - More info: http://support.microsoft.com/kb/824480
-		{
-			if((cuResult = cuInit(0)) != CUDA_SUCCESS)
-			{
-				TSK_DEBUG_ERROR("cuInit() failed with error code = %08x", cuResult);
-				hr = E_FAIL;
-			}
-			else
-			{	
-				hr = S_OK;
-			}
-		}
-		g_bStarted = true;
-		return hr;
-	}
-	return S_OK;
+    if(!g_bStarted) {
+        CUresult cuResult = CUDA_SUCCESS;
+        HRESULT hr = CoInitializeEx(NULL, COINIT_MULTITHREADED);
+        if(SUCCEEDED(hr) || hr == 0x80010106) { // 0x80010106 when called from managed code (e.g. Boghe) - More info: http://support.microsoft.com/kb/824480
+            if((cuResult = cuInit(0)) != CUDA_SUCCESS) {
+                TSK_DEBUG_ERROR("cuInit() failed with error code = %08x", cuResult);
+                hr = E_FAIL;
+            }
+            else {
+                hr = S_OK;
+            }
+        }
+        g_bStarted = true;
+        return hr;
+    }
+    return S_OK;
 }
 
 HRESULT CudaUtils::Shutdown()
 {
-	// cuDeinit();
-	return S_OK;
+    // cuDeinit();
+    return S_OK;
 }
 
 bool CudaUtils::IsH264Supported()
 {
-	if(g_bH264Checked)
-	{
-		return g_bH264Supported;
-	}
+    if(g_bH264Checked) {
+        return g_bH264Supported;
+    }
 
-	HRESULT hr = S_OK;
+    HRESULT hr = S_OK;
 
-	CHECK_HR(hr = Startup());
+    CHECK_HR(hr = Startup());
 
-	g_bH264Checked = true;
-	
-	NVEncoder pEncoder = NULL;
+    g_bH264Checked = true;
 
-	CHECK_HR(hr = NVGetHWEncodeCaps());
-	CHECK_HR(hr = NVCreateEncoder(&pEncoder));
-	// Both Base and Main profiles *must* be supported
-	CHECK_HR(hr = NVIsSupportedCodecProfile(pEncoder, NV_CODEC_TYPE_H264, NVVE_H264_PROFILE_BASELINE));
-	CHECK_HR(hr = NVIsSupportedCodecProfile(pEncoder, NV_CODEC_TYPE_H264, NVVE_H264_PROFILE_MAIN));
-	
-	g_bH264Supported = true;
-	
+    NVEncoder pEncoder = NULL;
+
+    CHECK_HR(hr = NVGetHWEncodeCaps());
+    CHECK_HR(hr = NVCreateEncoder(&pEncoder));
+    // Both Base and Main profiles *must* be supported
+    CHECK_HR(hr = NVIsSupportedCodecProfile(pEncoder, NV_CODEC_TYPE_H264, NVVE_H264_PROFILE_BASELINE));
+    CHECK_HR(hr = NVIsSupportedCodecProfile(pEncoder, NV_CODEC_TYPE_H264, NVVE_H264_PROFILE_MAIN));
+
+    g_bH264Supported = true;
+
 bail:
-	if(pEncoder)
-	{
-		NVDestroyEncoder(pEncoder);
-		pEncoder = NULL;
-	}
+    if(pEncoder) {
+        NVDestroyEncoder(pEncoder);
+        pEncoder = NULL;
+    }
 
-	return g_bH264Supported;
+    return g_bH264Supported;
 }
 
 int CudaUtils::ConvertSMVer2Cores(int nMajor, int nMinor)
 {
-	if(g_nCores != 0)
-	{
-		return g_nCores;
-	}
+    if(g_nCores != 0) {
+        return g_nCores;
+    }
 
-	// Defines for GPU Architecture types (using the SM version to determine the # of cores per SM
-    typedef struct
-    {
+    // Defines for GPU Architecture types (using the SM version to determine the # of cores per SM
+    typedef struct {
         int SM; // 0xMm (hexidecimal notation), M = SM Major version, and m = SM minor version
         int Cores;
     } sSMtoCores;
 
-    sSMtoCores nGpuArchCoresPerSM[] =
-    {
+    sSMtoCores nGpuArchCoresPerSM[] = {
         { 0x10,  8 }, // Tesla Generation (SM 1.0) G80 class
         { 0x11,  8 }, // Tesla Generation (SM 1.1) G8x class
         { 0x12,  8 }, // Tesla Generation (SM 1.2) G9x class
@@ -120,12 +111,10 @@ int CudaUtils::ConvertSMVer2Cores(int nMajor, int nMinor)
 
     int index = 0;
 
-    while (nGpuArchCoresPerSM[index].SM != -1)
-    {
-        if (nGpuArchCoresPerSM[index].SM == ((nMajor << 4) + nMinor))
-        {
+    while (nGpuArchCoresPerSM[index].SM != -1) {
+        if (nGpuArchCoresPerSM[index].SM == ((nMajor << 4) + nMinor)) {
             g_nCores = nGpuArchCoresPerSM[index].Cores;
-			break;
+            break;
         }
 
         index++;
@@ -135,34 +124,32 @@ int CudaUtils::ConvertSMVer2Cores(int nMajor, int nMinor)
     TSK_DEBUG_INFO("MapSMtoCores for SM %d.%d is undefined.  Default to use %d Cores/SM", nMajor, nMinor, nGpuArchCoresPerSM[7].Cores);
     g_nCores = nGpuArchCoresPerSM[7].Cores;
 
-	return g_nCores;
+    return g_nCores;
 }
 
 int CudaUtils::GetMaxGflopsDeviceId()
 {
-	int device_count = 0;
-	cudaGetDeviceCount( &device_count );
+    int device_count = 0;
+    cudaGetDeviceCount( &device_count );
 
-	cudaDeviceProp device_properties;
-	int max_gflops_device = 0;
-	int max_gflops = 0;
-	
-	int current_device = 0;
-	cudaGetDeviceProperties( &device_properties, current_device );
-	max_gflops = device_properties.multiProcessorCount * device_properties.clockRate;
-	++current_device;
+    cudaDeviceProp device_properties;
+    int max_gflops_device = 0;
+    int max_gflops = 0;
 
-	while( current_device < device_count )
-	{
-		cudaGetDeviceProperties( &device_properties, current_device );
-		int gflops = device_properties.multiProcessorCount * device_properties.clockRate;
-		if( gflops > max_gflops )
-		{
-			max_gflops        = gflops;
-			max_gflops_device = current_device;
-		}
-		++current_device;
-	}
+    int current_device = 0;
+    cudaGetDeviceProperties( &device_properties, current_device );
+    max_gflops = device_properties.multiProcessorCount * device_properties.clockRate;
+    ++current_device;
 
-	return max_gflops_device;
+    while( current_device < device_count ) {
+        cudaGetDeviceProperties( &device_properties, current_device );
+        int gflops = device_properties.multiProcessorCount * device_properties.clockRate;
+        if( gflops > max_gflops ) {
+            max_gflops        = gflops;
+            max_gflops_device = current_device;
+        }
+        ++current_device;
+    }
+
+    return max_gflops_device;
 }

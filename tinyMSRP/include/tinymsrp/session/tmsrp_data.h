@@ -2,19 +2,19 @@
 * Copyright (C) 2009 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -42,40 +42,37 @@ TMSRP_BEGIN_DECLS
 #define TMSRP_DATA_IS_OUTGOING(self)		(TMSRP_DATA(self)->outgoing)
 
 
-typedef struct tmsrp_data_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	tsk_bool_t outgoing;
-	tsk_bool_t isOK;
-	
-	char* id;
-	char* ctype;
-	char* wctype;
+typedef struct tmsrp_data_s {
+    TSK_DECLARE_OBJECT;
+
+    tsk_bool_t outgoing;
+    tsk_bool_t isOK;
+
+    char* id;
+    char* ctype;
+    char* wctype;
 }
 tmsrp_data_t;
 
 #define TMSRP_DECLARE_DATA tmsrp_data_t data
 typedef tsk_list_t tmsrp_datas_L_t;
 
-typedef struct tmsrp_data_in_s
-{
-	TMSRP_DECLARE_DATA;
+typedef struct tmsrp_data_in_s {
+    TMSRP_DECLARE_DATA;
 
-	tsk_buffer_t* buffer;
+    tsk_buffer_t* buffer;
 }
 tmsrp_data_in_t;
 
 int tmsrp_data_in_put(tmsrp_data_in_t* self, const void* pdata, tsk_size_t size);
 tmsrp_message_t* tmsrp_data_in_get(tmsrp_data_in_t* self);
 
-typedef struct tmsrp_data_out_s
-{
-	TMSRP_DECLARE_DATA;
-	
-	FILE* file;
-	tsk_buffer_t* message;
-	tsk_size_t size; // File/message size
+typedef struct tmsrp_data_out_s {
+    TMSRP_DECLARE_DATA;
+
+    FILE* file;
+    tsk_buffer_t* message;
+    tsk_size_t size; // File/message size
 }
 tmsrp_data_out_t;
 

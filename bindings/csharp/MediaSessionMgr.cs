@@ -51,6 +51,12 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public QoS sessionGetQoS(twrap_media_type_t media) {
+    IntPtr cPtr = tinyWRAPPINVOKE.MediaSessionMgr_sessionGetQoS(swigCPtr, (int)media);
+    QoS ret = (cPtr == IntPtr.Zero) ? null : new QoS(cPtr, true);
+    return ret;
+  }
+
   public bool consumerSetInt32(twrap_media_type_t media, string key, int value) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_consumerSetInt32(swigCPtr, (int)media, key, value);
     return ret;
@@ -146,6 +152,16 @@ public class MediaSessionMgr : IDisposable {
 
   public static bool defaultsSetPrefVideoSize(tmedia_pref_video_size_t pref_video_size) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetPrefVideoSize((int)pref_video_size);
+    return ret;
+  }
+
+  public static bool defaultsSetPrefVideoSizeOutRange(tmedia_pref_video_size_t min, tmedia_pref_video_size_t max) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetPrefVideoSizeOutRange((int)min, (int)max);
+    return ret;
+  }
+
+  public static bool defaultsSetAdaptativeVideoSizeOutEnabled(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled(enabled);
     return ret;
   }
 

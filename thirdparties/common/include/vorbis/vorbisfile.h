@@ -37,10 +37,10 @@ extern "C"
  * unseekable
  */
 typedef struct {
-  size_t (*read_func)  (void *ptr, size_t size, size_t nmemb, void *datasource);
-  int    (*seek_func)  (void *datasource, ogg_int64_t offset, int whence);
-  int    (*close_func) (void *datasource);
-  long   (*tell_func)  (void *datasource);
+    size_t (*read_func)  (void *ptr, size_t size, size_t nmemb, void *datasource);
+    int    (*seek_func)  (void *datasource, ogg_int64_t offset, int whence);
+    int    (*close_func) (void *datasource);
+    long   (*tell_func)  (void *datasource);
 } ov_callbacks;
 
 #ifndef OV_EXCLUDE_STATIC_CALLBACKS
@@ -50,15 +50,18 @@ typedef struct {
  * ov_open() to avoid problems with incompatible crt.o version linking
  * issues. */
 
-static int _ov_header_fseek_wrap(FILE *f,ogg_int64_t off,int whence){
-  if(f==NULL)return(-1);
+static int _ov_header_fseek_wrap(FILE *f,ogg_int64_t off,int whence)
+{
+    if(f==NULL) {
+        return(-1);
+    }
 
 #ifdef __MINGW32__
-  return fseeko64(f,off,whence);
+    return fseeko64(f,off,whence);
 #elif defined (_WIN32)
-  return _fseeki64(f,off,whence);
+    return _fseeki64(f,off,whence);
 #else
-  return fseek(f,off,whence);
+    return fseek(f,off,whence);
 #endif
 }
 
@@ -73,31 +76,31 @@ static int _ov_header_fseek_wrap(FILE *f,ogg_int64_t off,int whence){
  */
 
 static ov_callbacks OV_CALLBACKS_DEFAULT = {
-  (size_t (*)(void *, size_t, size_t, void *))  fread,
-  (int (*)(void *, ogg_int64_t, int))           _ov_header_fseek_wrap,
-  (int (*)(void *))                             fclose,
-  (long (*)(void *))                            ftell
+    (size_t (*)(void *, size_t, size_t, void *))  fread,
+    (int (*)(void *, ogg_int64_t, int))           _ov_header_fseek_wrap,
+    (int (*)(void *))                             fclose,
+    (long (*)(void *))                            ftell
 };
 
 static ov_callbacks OV_CALLBACKS_NOCLOSE = {
-  (size_t (*)(void *, size_t, size_t, void *))  fread,
-  (int (*)(void *, ogg_int64_t, int))           _ov_header_fseek_wrap,
-  (int (*)(void *))                             NULL,
-  (long (*)(void *))                            ftell
+    (size_t (*)(void *, size_t, size_t, void *))  fread,
+    (int (*)(void *, ogg_int64_t, int))           _ov_header_fseek_wrap,
+    (int (*)(void *))                             NULL,
+    (long (*)(void *))                            ftell
 };
 
 static ov_callbacks OV_CALLBACKS_STREAMONLY = {
-  (size_t (*)(void *, size_t, size_t, void *))  fread,
-  (int (*)(void *, ogg_int64_t, int))           NULL,
-  (int (*)(void *))                             fclose,
-  (long (*)(void *))                            NULL
+    (size_t (*)(void *, size_t, size_t, void *))  fread,
+    (int (*)(void *, ogg_int64_t, int))           NULL,
+    (int (*)(void *))                             fclose,
+    (long (*)(void *))                            NULL
 };
 
 static ov_callbacks OV_CALLBACKS_STREAMONLY_NOCLOSE = {
-  (size_t (*)(void *, size_t, size_t, void *))  fread,
-  (int (*)(void *, ogg_int64_t, int))           NULL,
-  (int (*)(void *))                             NULL,
-  (long (*)(void *))                            NULL
+    (size_t (*)(void *, size_t, size_t, void *))  fread,
+    (int (*)(void *, ogg_int64_t, int))           NULL,
+    (int (*)(void *))                             NULL,
+    (long (*)(void *))                            NULL
 };
 
 #endif
@@ -109,39 +112,39 @@ static ov_callbacks OV_CALLBACKS_STREAMONLY_NOCLOSE = {
 #define  INITSET   4
 
 typedef struct OggVorbis_File {
-  void            *datasource; /* Pointer to a FILE *, etc. */
-  int              seekable;
-  ogg_int64_t      offset;
-  ogg_int64_t      end;
-  ogg_sync_state   oy;
+    void            *datasource; /* Pointer to a FILE *, etc. */
+    int              seekable;
+    ogg_int64_t      offset;
+    ogg_int64_t      end;
+    ogg_sync_state   oy;
 
-  /* If the FILE handle isn't seekable (eg, a pipe), only the current
-     stream appears */
-  int              links;
-  ogg_int64_t     *offsets;
-  ogg_int64_t     *dataoffsets;
-  long            *serialnos;
-  ogg_int64_t     *pcmlengths; /* overloaded to maintain binary
+    /* If the FILE handle isn't seekable (eg, a pipe), only the current
+       stream appears */
+    int              links;
+    ogg_int64_t     *offsets;
+    ogg_int64_t     *dataoffsets;
+    long            *serialnos;
+    ogg_int64_t     *pcmlengths; /* overloaded to maintain binary
                                   compatibility; x2 size, stores both
                                   beginning and end values */
-  vorbis_info     *vi;
-  vorbis_comment  *vc;
+    vorbis_info     *vi;
+    vorbis_comment  *vc;
 
-  /* Decoding working state local storage */
-  ogg_int64_t      pcm_offset;
-  int              ready_state;
-  long             current_serialno;
-  int              current_link;
+    /* Decoding working state local storage */
+    ogg_int64_t      pcm_offset;
+    int              ready_state;
+    long             current_serialno;
+    int              current_link;
 
-  double           bittrack;
-  double           samptrack;
+    double           bittrack;
+    double           samptrack;
 
-  ogg_stream_state os; /* take physical pages, weld into a logical
+    ogg_stream_state os; /* take physical pages, weld into a logical
                           stream of packets */
-  vorbis_dsp_state vd; /* central working state for the packet->PCM decoder */
-  vorbis_block     vb; /* local working space for packet->PCM decode */
+    vorbis_dsp_state vd; /* central working state for the packet->PCM decoder */
+    vorbis_block     vb; /* local working space for packet->PCM decode */
 
-  ov_callbacks callbacks;
+    ov_callbacks callbacks;
 
 } OggVorbis_File;
 
@@ -150,11 +153,11 @@ extern int ov_clear(OggVorbis_File *vf);
 extern int ov_fopen(const char *path,OggVorbis_File *vf);
 extern int ov_open(FILE *f,OggVorbis_File *vf,const char *initial,long ibytes);
 extern int ov_open_callbacks(void *datasource, OggVorbis_File *vf,
-                const char *initial, long ibytes, ov_callbacks callbacks);
+                             const char *initial, long ibytes, ov_callbacks callbacks);
 
 extern int ov_test(FILE *f,OggVorbis_File *vf,const char *initial,long ibytes);
 extern int ov_test_callbacks(void *datasource, OggVorbis_File *vf,
-                const char *initial, long ibytes, ov_callbacks callbacks);
+                             const char *initial, long ibytes, ov_callbacks callbacks);
 extern int ov_test_open(OggVorbis_File *vf);
 
 extern long ov_bitrate(OggVorbis_File *vf,int i);
@@ -189,8 +192,8 @@ extern vorbis_comment *ov_comment(OggVorbis_File *vf,int link);
 extern long ov_read_float(OggVorbis_File *vf,float ***pcm_channels,int samples,
                           int *bitstream);
 extern long ov_read_filter(OggVorbis_File *vf,char *buffer,int length,
-                          int bigendianp,int word,int sgned,int *bitstream,
-                          void (*filter)(float **pcm,long channels,long samples,void *filter_param),void *filter_param);
+                           int bigendianp,int word,int sgned,int *bitstream,
+                           void (*filter)(float **pcm,long channels,long samples,void *filter_param),void *filter_param);
 extern long ov_read(OggVorbis_File *vf,char *buffer,int length,
                     int bigendianp,int word,int sgned,int *bitstream);
 extern int ov_crosslap(OggVorbis_File *vf1,OggVorbis_File *vf2);

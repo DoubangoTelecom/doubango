@@ -6,12 +6,12 @@
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -50,38 +50,38 @@ static int tsk_objects_count = 0;
 */
 tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...)
 {
-	// Do not check "objdef", let the application die if it's null
-	tsk_object_t *newobj = tsk_calloc(1, objdef->size);
-	if(newobj){
-		(*(const tsk_object_def_t **) newobj) = objdef;
-		TSK_OBJECT_HEADER(newobj)->refCount = 1;
-		if(objdef->constructor){ 
-			va_list ap;
-			tsk_object_t * newobj_ = newobj;// save
-			va_start(ap, objdef);
-			newobj = objdef->constructor(newobj, &ap); // must return new
-			va_end(ap);
+    // Do not check "objdef", let the application die if it's null
+    tsk_object_t *newobj = tsk_calloc(1, objdef->size);
+    if(newobj) {
+        (*(const tsk_object_def_t **) newobj) = objdef;
+        TSK_OBJECT_HEADER(newobj)->refCount = 1;
+        if(objdef->constructor) {
+            va_list ap;
+            tsk_object_t * newobj_ = newobj;// save
+            va_start(ap, objdef);
+            newobj = objdef->constructor(newobj, &ap); // must return new
+            va_end(ap);
 
-			if(!newobj){ // null if constructor failed to initialized the object
-				if(objdef->destructor){
-					objdef->destructor(newobj_);
-				}
-				tsk_free(&newobj_);
-			}
+            if(!newobj) { // null if constructor failed to initialized the object
+                if(objdef->destructor) {
+                    objdef->destructor(newobj_);
+                }
+                tsk_free(&newobj_);
+            }
 
 #if TSK_DEBUG_OBJECTS
-		TSK_DEBUG_INFO("N∞ objects:%d", ++tsk_objects_count);
+            TSK_DEBUG_INFO("N∞ objects:%d", ++tsk_objects_count);
 #endif
-		}
-		else{
-			TSK_DEBUG_WARN("No constructor found.");
-		}
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to create new tsk_object.");
-	}
+        }
+        else {
+            TSK_DEBUG_WARN("No constructor found.");
+        }
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to create new tsk_object.");
+    }
 
-	return newobj;
+    return newobj;
 }
 
 /**@ingroup tsk_object_group
@@ -93,26 +93,26 @@ tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...)
 */
 tsk_object_t* tsk_object_new_2(const tsk_object_def_t *objdef, va_list* ap)
 {
-	tsk_object_t *newobj = tsk_calloc(1, objdef->size);
-	if (newobj) {
-		(*(const tsk_object_def_t **) newobj) = objdef;
-		TSK_OBJECT_HEADER(newobj)->refCount = 1;
-		if (objdef->constructor) { 
-			newobj = objdef->constructor(newobj, ap);
+    tsk_object_t *newobj = tsk_calloc(1, objdef->size);
+    if (newobj) {
+        (*(const tsk_object_def_t **) newobj) = objdef;
+        TSK_OBJECT_HEADER(newobj)->refCount = 1;
+        if (objdef->constructor) {
+            newobj = objdef->constructor(newobj, ap);
 
 #if TSK_DEBUG_OBJECTS
-		TSK_DEBUG_INFO("N∞ objects:%d", ++tsk_objects_count);
+            TSK_DEBUG_INFO("N∞ objects:%d", ++tsk_objects_count);
 #endif
-		}
-		else {
-			TSK_DEBUG_WARN("No constructor found.");
-		}
-	}
-	else {
-		TSK_DEBUG_ERROR("Failed to create new tsk_object.");
-	}
+        }
+        else {
+            TSK_DEBUG_WARN("No constructor found.");
+        }
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to create new tsk_object.");
+    }
 
-	return newobj;
+    return newobj;
 }
 
 /**@ingroup tsk_object_group
@@ -123,14 +123,14 @@ tsk_object_t* tsk_object_new_2(const tsk_object_def_t *objdef, va_list* ap)
 */
 tsk_size_t tsk_object_sizeof(const tsk_object_t *self)
 {
-	const tsk_object_def_t **objdef = (const tsk_object_def_t **)self;
-	if (objdef && *objdef) {
-		return (*objdef)->size;
-	}
-	else {
-		TSK_DEBUG_ERROR("NULL object definition.");
-		return 0;
-	}
+    const tsk_object_def_t **objdef = (const tsk_object_def_t **)self;
+    if (objdef && *objdef) {
+        return (*objdef)->size;
+    }
+    else {
+        TSK_DEBUG_ERROR("NULL object definition.");
+        return 0;
+    }
 }
 
 /**@ingroup tsk_object_group
@@ -143,16 +143,16 @@ tsk_size_t tsk_object_sizeof(const tsk_object_t *self)
 */
 int tsk_object_cmp(const tsk_object_t *object1, const tsk_object_t *object2)
 {
-	const tsk_object_def_t **objdef = (const tsk_object_def_t **)object1;
+    const tsk_object_def_t **objdef = (const tsk_object_def_t **)object1;
 
-	if (objdef && *objdef && (*objdef)->comparator) {
-		return (*objdef)->comparator(object1, object2);
-	}
-	else {
-		int ret;
-		tsk_subsat_int32_ptr(object1, object2, &ret);
-		return ret;
-	}
+    if (objdef && *objdef && (*objdef)->comparator) {
+        return (*objdef)->comparator(object1, object2);
+    }
+    else {
+        int ret;
+        tsk_subsat_int32_ptr(object1, object2, &ret);
+        return ret;
+    }
 }
 
 /**@ingroup tsk_object_group
@@ -165,12 +165,12 @@ int tsk_object_cmp(const tsk_object_t *object1, const tsk_object_t *object2)
 */
 tsk_object_t* tsk_object_ref(tsk_object_t *self)
 {
-	tsk_object_header_t* objhdr = TSK_OBJECT_HEADER(self);
-	if (objhdr && objhdr->refCount > 0) {
-		tsk_atomic_inc(&objhdr->refCount);
-		return self;
-	}
-	return tsk_null;
+    tsk_object_header_t* objhdr = TSK_OBJECT_HEADER(self);
+    if (objhdr && objhdr->refCount > 0) {
+        tsk_atomic_inc(&objhdr->refCount);
+        return self;
+    }
+    return tsk_null;
 }
 
 /**@ingroup tsk_object_group
@@ -184,20 +184,20 @@ tsk_object_t* tsk_object_ref(tsk_object_t *self)
 */
 tsk_object_t* tsk_object_unref(tsk_object_t *self)
 {
-	if (self) {
-		tsk_object_header_t* objhdr = TSK_OBJECT_HEADER(self);
-		if (objhdr->refCount > 0) { // If refCount is == 0 then, nothing should happen.
-			tsk_atomic_dec(&objhdr->refCount);
-			if (objhdr->refCount == 0) {
-				tsk_object_delete(self);
-				return tsk_null;
-			}
-		}
-		else {
-			return tsk_null;
-		}
-	}
-	return self;
+    if (self) {
+        tsk_object_header_t* objhdr = TSK_OBJECT_HEADER(self);
+        if (objhdr->refCount > 0) { // If refCount is == 0 then, nothing should happen.
+            tsk_atomic_dec(&objhdr->refCount);
+            if (objhdr->refCount == 0) {
+                tsk_object_delete(self);
+                return tsk_null;
+            }
+        }
+        else {
+            return tsk_null;
+        }
+    }
+    return self;
 }
 
 /**@ingroup tsk_object_group
@@ -206,7 +206,7 @@ tsk_object_t* tsk_object_unref(tsk_object_t *self)
 */
 tsk_size_t tsk_object_get_refcount(tsk_object_t *self)
 {
-	return self ? TSK_OBJECT_HEADER(self)->refCount : 0;
+    return self ? TSK_OBJECT_HEADER(self)->refCount : 0;
 }
 
 /**@ingroup tsk_object_group
@@ -218,26 +218,26 @@ tsk_size_t tsk_object_get_refcount(tsk_object_t *self)
 */
 void tsk_object_delete(tsk_object_t *self)
 {
-	const tsk_object_def_t ** objdef = (const tsk_object_def_t **)self;
-	if(self && *objdef){
-		if ((*objdef)->destructor) {
-			self = (*objdef)->destructor(self);
+    const tsk_object_def_t ** objdef = (const tsk_object_def_t **)self;
+    if(self && *objdef) {
+        if ((*objdef)->destructor) {
+            self = (*objdef)->destructor(self);
 #if TSK_DEBUG_OBJECTS
-		TSK_DEBUG_INFO("N∞ objects:%d", --tsk_objects_count);
+            TSK_DEBUG_INFO("N∞ objects:%d", --tsk_objects_count);
 #endif
-		}
-		else {
-			TSK_DEBUG_WARN("No destructor found.");
-		}
-		if (self) {
-			free(self);
-		}
-	}
+        }
+        else {
+            TSK_DEBUG_WARN("No destructor found.");
+        }
+        if (self) {
+            free(self);
+        }
+    }
 }
 
 
 /**@page _Page_TinySAK_AnsiC_Object_Programming ANSI-C Object Programming
-* 
+*
 * - @ref _Anchor_TinySAK_Object_Definition "Object Definition"
 * - @ref _Anchor_TinySAK_Object_Constructor "Constructor"
 * - @ref _Anchor_TinySAK_Object_Destructor "Destructor"
@@ -297,14 +297,14 @@ tsk_object_def_t;
 * Below, an example of how to declare an object definition:<br>
 * @code
 * //(Object defnition)
- static const tsk_object_def_t person_def_t = 
+ static const tsk_object_def_t person_def_t =
  {
  	sizeof(person_t),
  	person_ctor,
  	person_dtor,
  	person_cmp
  };
-* @endcode 
+* @endcode
 * <h2>@anchor _Anchor_TinySAK_Object_Constructor Constructor</h2>
 * The constructor is only responsible for the initialization and won’t allocate the object. When passed to the constructor, the object is already allocated.<br>
 * Here is an example:<br>
@@ -318,14 +318,14 @@ static tsk_object_t* person_ctor(tsk_object_t * self, va_list * app)
  	}
  	return self;
  }
-* @endcode 
+* @endcode
 * <h2>@anchor _Anchor_TinySAK_Object_Destructor Destructor</h2>
 * The destructor will free the object’s members and won’t free the object itself (Phase 1). The destructor function must return a pointer to itself to allow the caller to perform the second phase (freeing the object itself).<br>
 * Here is an example:<br>
 * @code
 // (destructor)
  static tsk_object_t * person_dtor(tsk_object_t * self)
- { 
+ {
  	person_t *person = (person_t *)self;
  	if(person){
  		TSK_FREE(person->name);
@@ -333,7 +333,7 @@ static tsk_object_t* person_ctor(tsk_object_t * self, va_list * app)
  	}
  	return self;
  }
-* @endcode 
+* @endcode
 * <h2>@anchor _Anchor_TinySAK_Object_Comparator Comparator</h2>
 * The comparator function is used to compare two <i>"well-defined"</i> objects. The objects to compare shall have the same definition (or type). <br>
 * Here is an example:<br>
@@ -344,7 +344,7 @@ static int person_cmp(const tsk_object_t *_p1, const tsk_object_t *_p2)
  	const person_t *p1 = (const person_t *)_p1;
  	const person_t *p1 = (const person_t *)_p2;
 	int ret;
-	
+
 	// do they have the same name?
 	if((ret = tsk_stricmp(p1->name, p2->name))){
 		return ret;
@@ -353,7 +353,7 @@ static int person_cmp(const tsk_object_t *_p1, const tsk_object_t *_p2)
 	if((ret = tsk_object_cmp(p1->girlfriend, p2->girlfriend))){
 		return ret;
 	}
-	
+
 	// they are the same
 	return 0;
  }
@@ -365,7 +365,7 @@ The comparator function is also used by the linked-list to sort <i>"well-defined
 * When an object is created (see below) the counter value is initialized to 1; this is automatically done and you have nothing to do. The counter is incremented by 1 when you call @ref tsk_object_ref() and decremented (by 1) when you call @ref tsk_object_unref().<br>
 * When the counter value reaches zero then, the object is garbaged (freed).<br>
 * Calling @ref tsk_object_delete() will destroy an object regardless the value of the reference counter. You should never call @ref tsk_object_delete() but @ref tsk_object_unref() instead.
-* 
+*
 * <h2>@anchor _Anchor_TinySAK_Object_Inheritence Inheritence</h2>
 * As you may expect, inheritance is not supported in ANSI-C. <br>
 * As any C Structure could be casted to a pointer to its first element, inheritance could be achieved like this:<br>
@@ -385,7 +385,7 @@ student_t* s = tsk_null;
 // then, cast a "student" as "person" to initialize additional fields
 ((person_t*)s)->name = tsk_strdup("bob");
 * @endcode
-* 
+*
 * As <b>person_t</b> is a well-defined object, then <b>student_t</b> is also well-defined.<br>
 *
 * <h2>@anchor _Anchor_TinySAK_Object_Basic_Usage Basic usage</h2>
@@ -407,7 +407,7 @@ static person_t* person_create(const char* name)
 }
 *
 * @endcode
-* 
+*
 * As the destructor has fixed parameters, there is a common macro to destroy all kind of well-defined objects. <br>
 * @ref TSK_OBJECT_SAFE_FREE() macro is used to destroy any well-defined object. <br>
 * The object will be freed only if; when decremented by 1 the reference count of the object is equal to zero. In all case (freed or not) the pointer value will be set to NULL to avoid trying to free the object again.<br>
@@ -449,7 +449,7 @@ static tsk_object_t* person_ctor(tsk_object_t * self, va_list * app)
 
  // (destructor)
  static tsk_object_t * person_dtor(tsk_object_t * self)
- { 
+ {
  	person_t *person = self;
  	if(person){
  		TSK_FREE(person->name);
@@ -464,7 +464,7 @@ static tsk_object_t* person_ctor(tsk_object_t * self, va_list * app)
  	const person_t *p1 = (const person_t *)_p1;
  	const person_t *p1 = (const person_t *)_p2;
 	int ret;
-	
+
 	// do they have the same name?
 	if((ret = tsk_stricmp(p1->name, p2->name))){
 		return ret;
@@ -473,7 +473,7 @@ static tsk_object_t* person_ctor(tsk_object_t * self, va_list * app)
 	if((ret = tsk_object_cmp(p1->girlfriend, p2->girlfriend))){
 		return ret;
 	}
-	
+
 	// they are the same
 	return 0;
  }
@@ -498,7 +498,7 @@ bob = tsk_object_unref(bob); // refcount = 1
 bob = tsk_object_unref(bob); // refcount = 0 and destroyed
 *
 * @endcode
-* 
+*
 * <h2>@anchor _Anchor_TinySAK_Object_Public_Fuctions Public functions </h2>
 * - @ref tsk_object_cmp
 * - @ref tsk_object_delete

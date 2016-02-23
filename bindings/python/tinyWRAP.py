@@ -151,6 +151,33 @@ class ActionConfig(_object):
 ActionConfig_swigregister = _tinyWRAP.ActionConfig_swigregister
 ActionConfig_swigregister(ActionConfig)
 
+class QoS(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, QoS, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, QoS, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_QoS
+    __del__ = lambda self : None;
+    def getQavg(self): return _tinyWRAP.QoS_getQavg(self)
+    def getQ1(self): return _tinyWRAP.QoS_getQ1(self)
+    def getQ2(self): return _tinyWRAP.QoS_getQ2(self)
+    def getQ3(self): return _tinyWRAP.QoS_getQ3(self)
+    def getQ4(self): return _tinyWRAP.QoS_getQ4(self)
+    def getQ5(self): return _tinyWRAP.QoS_getQ5(self)
+    def getVideoInWidth(self): return _tinyWRAP.QoS_getVideoInWidth(self)
+    def getVideoOutWidth(self): return _tinyWRAP.QoS_getVideoOutWidth(self)
+    def getVideoInHeight(self): return _tinyWRAP.QoS_getVideoInHeight(self)
+    def getVideoOutHeight(self): return _tinyWRAP.QoS_getVideoOutHeight(self)
+    def getBandwidthDownKbps(self): return _tinyWRAP.QoS_getBandwidthDownKbps(self)
+    def getBandwidthUpKbps(self): return _tinyWRAP.QoS_getBandwidthUpKbps(self)
+    def getVideoInAvgFps(self): return _tinyWRAP.QoS_getVideoInAvgFps(self)
+    def getVideoDecAvgTime(self): return _tinyWRAP.QoS_getVideoDecAvgTime(self)
+    def getVideoEncAvgTime(self): return _tinyWRAP.QoS_getVideoEncAvgTime(self)
+QoS_swigregister = _tinyWRAP.QoS_swigregister
+QoS_swigregister(QoS)
+
 class Codec(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, Codec, name, value)
@@ -181,6 +208,7 @@ class MediaSessionMgr(_object):
     __del__ = lambda self : None;
     def sessionSetInt32(self, *args): return _tinyWRAP.MediaSessionMgr_sessionSetInt32(self, *args)
     def sessionGetInt32(self, *args): return _tinyWRAP.MediaSessionMgr_sessionGetInt32(self, *args)
+    def sessionGetQoS(self, *args): return _tinyWRAP.MediaSessionMgr_sessionGetQoS(self, *args)
     def consumerSetInt32(self, *args): return _tinyWRAP.MediaSessionMgr_consumerSetInt32(self, *args)
     def consumerSetInt64(self, *args): return _tinyWRAP.MediaSessionMgr_consumerSetInt64(self, *args)
     def producerSetInt32(self, *args): return _tinyWRAP.MediaSessionMgr_producerSetInt32(self, *args)
@@ -211,6 +239,10 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetBandwidthVideoDownloadMax = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax)
     __swig_getmethods__["defaultsSetPrefVideoSize"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetPrefVideoSize
     if _newclass:defaultsSetPrefVideoSize = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetPrefVideoSize)
+    __swig_getmethods__["defaultsSetPrefVideoSizeOutRange"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetPrefVideoSizeOutRange
+    if _newclass:defaultsSetPrefVideoSizeOutRange = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetPrefVideoSizeOutRange)
+    __swig_getmethods__["defaultsSetAdaptativeVideoSizeOutEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled
+    if _newclass:defaultsSetAdaptativeVideoSizeOutEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled)
     __swig_getmethods__["defaultsSetJbMargin"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetJbMargin
     if _newclass:defaultsSetJbMargin = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetJbMargin)
     __swig_getmethods__["defaultsSetJbMaxLateRate"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetJbMaxLateRate
@@ -373,6 +405,14 @@ MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax = _tinyWRAP.MediaSessionMgr
 def MediaSessionMgr_defaultsSetPrefVideoSize(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetPrefVideoSize(*args)
 MediaSessionMgr_defaultsSetPrefVideoSize = _tinyWRAP.MediaSessionMgr_defaultsSetPrefVideoSize
+
+def MediaSessionMgr_defaultsSetPrefVideoSizeOutRange(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetPrefVideoSizeOutRange(*args)
+MediaSessionMgr_defaultsSetPrefVideoSizeOutRange = _tinyWRAP.MediaSessionMgr_defaultsSetPrefVideoSizeOutRange
+
+def MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled(*args)
+MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled
 
 def MediaSessionMgr_defaultsSetJbMargin(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSetJbMargin(*args)

@@ -35,7 +35,7 @@ TNET_BEGIN_DECLS
 
 typedef struct tnet_proxy_node_s {
     TSK_DECLARE_OBJECT;
-    
+
     enum tnet_proxy_type_e type;
     tsk_bool_t ipv6;
     char* dst_host;
@@ -52,7 +52,7 @@ typedef struct tnet_proxy_node_s {
     CFReadStreamRef cf_read_stream;
     CFWriteStreamRef cf_write_stream;
 #endif /* TNET_UNDER_APPLE */
-    
+
     const struct tnet_proxy_node_plugin_def_s* plugin;
 }
 tnet_proxy_node_t;
@@ -60,8 +60,7 @@ tnet_proxy_node_t;
 #define TNET_PROXY_NODE(self) ((tnet_proxy_node_t*)(self))
 #define TNET_DECLARE_PROXY_NONE tnet_proxy_node_t __node__
 
-typedef enum tnet_proxy_node_param_type_e
-{
+typedef enum tnet_proxy_node_param_type_e {
     tnet_proxy_node_param_type_null = 0,
     tnet_proxy_node_param_type_destination_address,
     tnet_proxy_node_param_type_proxy_address,
@@ -85,17 +84,16 @@ tnet_proxy_node_param_type_t;
 #endif /* TNET_UNDER_APPLE */
 
 /** Virtual table used to define a proxy node plugin */
-typedef struct tnet_proxy_node_plugin_def_s
-{
+typedef struct tnet_proxy_node_plugin_def_s {
     //! object definition used to create an instance of the plugin
     const tsk_object_def_t* objdef;
-    
+
     //! plugin type
     enum tnet_proxy_type_e type;
-    
+
     //! full description (usefull for debugging)
     const char* desc;
-    
+
     int (* configure) (tnet_proxy_node_t* self, ...);
     int (* start_handshaking) (tnet_proxy_node_t* self);
     int (* set_handshaking_data) (tnet_proxy_node_t* self, const void* data_ptr, tsk_size_t data_size);

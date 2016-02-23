@@ -23,26 +23,26 @@
 
 void test_dhcp6_requestinfo(tnet_dhcp6_ctx_t *ctx)
 {
-	tnet_dhcp6_option_orequest_t *orequest = tnet_dhcp6_option_orequest_create_null();
-	tnet_dhcp6_reply_t* reply = 0;
+    tnet_dhcp6_option_orequest_t *orequest = tnet_dhcp6_option_orequest_create_null();
+    tnet_dhcp6_reply_t* reply = 0;
 
-	tnet_dhcp6_option_orequest_add_code(orequest, 24);
-	tnet_dhcp6_option_orequest_add_code(orequest, 23);
-	tnet_dhcp6_option_orequest_add_code(orequest, 21); /* SIP Servers Domain Name List */
-	tnet_dhcp6_option_orequest_add_code(orequest, 22); /* SIP Servers IPv6 Address List */
+    tnet_dhcp6_option_orequest_add_code(orequest, 24);
+    tnet_dhcp6_option_orequest_add_code(orequest, 23);
+    tnet_dhcp6_option_orequest_add_code(orequest, 21); /* SIP Servers Domain Name List */
+    tnet_dhcp6_option_orequest_add_code(orequest, 22); /* SIP Servers IPv6 Address List */
 
-	reply = tnet_dhcp6_requestinfo(ctx, orequest);
+    reply = tnet_dhcp6_requestinfo(ctx, orequest);
 
-	TSK_OBJECT_SAFE_FREE(orequest);
-	TSK_OBJECT_SAFE_FREE(reply);
+    TSK_OBJECT_SAFE_FREE(orequest);
+    TSK_OBJECT_SAFE_FREE(reply);
 }
 
 void test_dhcp6()
 {
-	tnet_dhcp6_ctx_t *ctx = tnet_dhcp6_ctx_create();
-	test_dhcp6_requestinfo(ctx);
+    tnet_dhcp6_ctx_t *ctx = tnet_dhcp6_ctx_create();
+    test_dhcp6_requestinfo(ctx);
 
-	TSK_OBJECT_SAFE_FREE(ctx);
+    TSK_OBJECT_SAFE_FREE(ctx);
 }
 
 #endif /* TNET_TEST_DHCP6_H */

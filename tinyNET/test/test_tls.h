@@ -36,69 +36,66 @@
 
 static int tnet_tls_cb(const tnet_transport_event_t* e)
 {
-	switch(e->type){
-		case event_data:
-			{
-				TSK_DEBUG_INFO("--- TLS ---\n%s\n", (const char*)e->data);
-				break;
-			}
-		case event_closed:
-		case event_connected:
-		default:
-			{
-				break;
-			}
-	}
-	return 0;
+    switch(e->type) {
+    case event_data: {
+        TSK_DEBUG_INFO("--- TLS ---\n%s\n", (const char*)e->data);
+        break;
+    }
+    case event_closed:
+    case event_connected:
+    default: {
+        break;
+    }
+    }
+    return 0;
 }
 
 
 void test_tls()
 {
-	tnet_transport_handle_t *transport = tnet_transport_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_tls_ipv4, "TLS/IPV4 TRANSPORT");
-	
-	tnet_ip_t ip;
-	tnet_port_t port;
-	tnet_fd_t fd = TNET_INVALID_FD;
+    tnet_transport_handle_t *transport = tnet_transport_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_tls_ipv4, "TLS/IPV4 TRANSPORT");
 
-	if(tnet_transport_start(transport)){
-		TSK_DEBUG_ERROR("Failed to create %s.", tnet_transport_get_description(transport));
-		return;
-	}
+    tnet_ip_t ip;
+    tnet_port_t port;
+    tnet_fd_t fd = TNET_INVALID_FD;
 
-	/* Set our callback function */
-	tnet_transport_set_callback(transport, tnet_tls_cb, "callbackdata");
+    if(tnet_transport_start(transport)) {
+        TSK_DEBUG_ERROR("Failed to create %s.", tnet_transport_get_description(transport));
+        return;
+    }
 
-	
+    /* Set our callback function */
+    tnet_transport_set_callback(transport, tnet_tls_cb, "callbackdata");
 
-	/* Connect to the SIP Registrar */
-	if((fd = tnet_transport_connectto_2(transport, TEST_TLS_REMOTE_IP, TEST_TLS_REMOTE_PORT)) == TNET_INVALID_FD){
-		TSK_DEBUG_ERROR("Failed to connect %s.", tnet_transport_get_description(transport));
-		return;
-	}
 
-	if(tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT)){
-		TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
-		tnet_transport_remove_socket(transport, &fd);
-		return;
-	}
 
-	/* Send our SIP message */
-	{
-		char* message = 0;
-		tnet_transport_get_ip_n_port(transport, fd, &ip, &port);
-		tsk_sprintf(&message, TLS_TEST_SIP_MESSAGE, "TLS", ip, port, port, ip, port, "tls");
+    /* Connect to the SIP Registrar */
+    if((fd = tnet_transport_connectto_2(transport, TEST_TLS_REMOTE_IP, TEST_TLS_REMOTE_PORT)) == TNET_INVALID_FD) {
+        TSK_DEBUG_ERROR("Failed to connect %s.", tnet_transport_get_description(transport));
+        return;
+    }
 
-		if(!tnet_transport_send(transport, fd, message, strlen(message)))
-		{
-			TSK_DEBUG_ERROR("Failed to send data using TCP/IPv4 transport.");
-			TSK_FREE(message);
-			return;
-		}
-		TSK_FREE(message);
-	}
+    if(tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT)) {
+        TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
+        tnet_transport_remove_socket(transport, &fd);
+        return;
+    }
 
-	TSK_OBJECT_SAFE_FREE(transport);
+    /* Send our SIP message */
+    {
+        char* message = 0;
+        tnet_transport_get_ip_n_port(transport, fd, &ip, &port);
+        tsk_sprintf(&message, TLS_TEST_SIP_MESSAGE, "TLS", ip, port, port, ip, port, "tls");
+
+        if(!tnet_transport_send(transport, fd, message, strlen(message))) {
+            TSK_DEBUG_ERROR("Failed to send data using TCP/IPv4 transport.");
+            TSK_FREE(message);
+            return;
+        }
+        TSK_FREE(message);
+    }
+
+    TSK_OBJECT_SAFE_FREE(transport);
 }
 
 #endif /* TNET_TEST_TLS_H */

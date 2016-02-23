@@ -1,18 +1,18 @@
 /*
 * Copyright (C) 2010-2015 Mamadou DIOP.
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -39,21 +39,20 @@
 
 THTTP_BEGIN_DECLS
 
-typedef struct thttp_challenge_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct thttp_challenge_s {
+    TSK_DECLARE_OBJECT;
 
-	tsk_bool_t isproxy;
+    tsk_bool_t isproxy;
 
-	char* scheme;
-	char* realm;
-	char* nonce;
-	char* opaque;
-	char* algorithm;
-	const char* qop;
+    char* scheme;
+    char* realm;
+    char* nonce;
+    char* opaque;
+    char* algorithm;
+    const char* qop;
 
-	tsk_md5string_t cnonce;
-	unsigned nc;
+    tsk_md5string_t cnonce;
+    unsigned nc;
 }
 thttp_challenge_t;
 

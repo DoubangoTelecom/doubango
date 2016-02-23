@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -47,24 +47,24 @@
 */
 void* tsk_malloc(tsk_size_t size)
 {
-	void *ret = malloc(size);
-	if(!ret){
-		TSK_DEBUG_ERROR("Memory allocation failed");
-	}
+    void *ret = malloc(size);
+    if(!ret) {
+        TSK_DEBUG_ERROR("Memory allocation failed");
+    }
 
-	return ret;
+    return ret;
 }
 
 /**@ingroup tsk_memory_group
 * Reallocate memory block.
 * In case that ptr is NULL, the function behaves exactly as @a tsk_malloc, assigning a new block of size bytes and returning a pointer to the beginning of it.
-* The function may move the memory block to a new location, in which case the new location is returned. The content of the memory block is preserved up to the lesser of the 
+* The function may move the memory block to a new location, in which case the new location is returned. The content of the memory block is preserved up to the lesser of the
 * new and old sizes, even if the block is moved. If the new size is larger, the value of the newly allocated portion is indeterminate.
 * In case that the size is 0, the memory previously allocated in ptr is deallocated as if a call to free was made, and a NULL pointer is returned.
 * @param ptr Pointer to a memory block previously allocated with malloc, calloc or realloc to be reallocated.
 * If this is NULL, a new block is allocated and a pointer to it is returned by the function.
 * @param size New size for the memory block, in bytes.
-* If it is 0 and ptr points to an existing block of memory, the memory block pointed by ptr is deallocated and a NULL pointer is returned. 
+* If it is 0 and ptr points to an existing block of memory, the memory block pointed by ptr is deallocated and a NULL pointer is returned.
 * @retval A pointer to the reallocated memory block, which may be either the same as the ptr argument or a new location.
 * The type of this pointer is void*, which can be cast to the desired type of data pointer in order to be dereferenceable.
 * If the function failed to allocate the requested block of memory, a NULL pointer is returned.
@@ -72,38 +72,38 @@ void* tsk_malloc(tsk_size_t size)
 */
 void* tsk_realloc (void* ptr, tsk_size_t size)
 {
-	void *ret = tsk_null;
-	
-	if(size) {
-		if(ptr){
-			if(!(ret = realloc(ptr, size))){
-				TSK_DEBUG_ERROR("Memory reallocation failed");
-			}
-		}
-		else{
-			if(!(ret = calloc(size, 1))){
-				TSK_DEBUG_ERROR("Memory allocation (%u) failed", (unsigned)size);
-			}
-		}
-	}
-	else if (ptr) {
-		free(ptr);
-	}
+    void *ret = tsk_null;
 
-	return ret;
+    if(size) {
+        if(ptr) {
+            if(!(ret = realloc(ptr, size))) {
+                TSK_DEBUG_ERROR("Memory reallocation failed");
+            }
+        }
+        else {
+            if(!(ret = calloc(size, 1))) {
+                TSK_DEBUG_ERROR("Memory allocation (%u) failed", (unsigned)size);
+            }
+        }
+    }
+    else if (ptr) {
+        free(ptr);
+    }
+
+    return ret;
 }
 
 /**@ingroup tsk_memory_group
 * Deallocate space in memory.
 * @param ptr Pointer to a memory block previously allocated with @a tsk_malloc, @a tsk_calloc or @a tsk_realloc to be deallocated.
-* If a null pointer is passed as argument, no action occurs. 
+* If a null pointer is passed as argument, no action occurs.
 */
 void tsk_free(void** ptr)
 {
-	if(ptr && *ptr){
-		free(*ptr);
-		*ptr = tsk_null;
-	}
+    if(ptr && *ptr) {
+        free(*ptr);
+        *ptr = tsk_null;
+    }
 }
 
 /**@ingroup tsk_memory_group
@@ -117,60 +117,60 @@ void tsk_free(void** ptr)
 */
 void* tsk_calloc(tsk_size_t num, tsk_size_t size)
 {
-	void* ret = tsk_null;
-	if(num && size){
-		ret = calloc(num, size);
-		if(!ret){
-			TSK_DEBUG_ERROR("Memory allocation failed. num=%u and size=%u", (unsigned)num, (unsigned)size);
-		}
-	}
+    void* ret = tsk_null;
+    if(num && size) {
+        ret = calloc(num, size);
+        if(!ret) {
+            TSK_DEBUG_ERROR("Memory allocation failed. num=%u and size=%u", (unsigned)num, (unsigned)size);
+        }
+    }
 
-	return ret;
+    return ret;
 }
 
 void* tsk_malloc_aligned(tsk_size_t size, tsk_size_t alignment)
 {
 #if TSK_UNDER_WINDOWS && !TSK_UNDER_WINDOWS_CE && !TSK_UNDER_WINDOWS_RT
-	return _aligned_malloc(size, alignment);
+    return _aligned_malloc(size, alignment);
 #else
-	void* ret = malloc(size + alignment);
+    void* ret = malloc(size + alignment);
     if (ret) {
         long pad = ((~(long)ret) % alignment) + 1;
         ret = ((uint8_t*)ret) + pad; // pad
         ((uint8_t*)ret)[-1] = (uint8_t)pad; // store the pad for later use
     }
-	return ret;
+    return ret;
 #endif
 }
 
 void* tsk_realloc_aligned(void * ptr, tsk_size_t size, tsk_size_t alignment)
 {
 #if TSK_UNDER_WINDOWS && !TSK_UNDER_WINDOWS_CE && !TSK_UNDER_WINDOWS_RT
-	return _aligned_realloc(ptr, size, alignment);
+    return _aligned_realloc(ptr, size, alignment);
 #else
-	tsk_free_aligned(ptr);
-	return tsk_malloc_aligned(size, alignment);
+    tsk_free_aligned(ptr);
+    return tsk_malloc_aligned(size, alignment);
 #endif
 }
 
 void tsk_free_aligned(void** ptr)
 {
-	if (ptr && *ptr) {
-		void* ptr_ = *ptr;
+    if (ptr && *ptr) {
+        void* ptr_ = *ptr;
 #if TSK_UNDER_WINDOWS && !TSK_UNDER_WINDOWS_CE && !TSK_UNDER_WINDOWS_RT
-		_aligned_free(ptr_);
+        _aligned_free(ptr_);
 #else
-		free((((uint8_t*)ptr_) - ((uint8_t*)ptr_)[-1]));
+        free((((uint8_t*)ptr_) - ((uint8_t*)ptr_)[-1]));
 #endif
-	*ptr = tsk_null;
-	}
+        *ptr = tsk_null;
+    }
 }
 
 void* tsk_calloc_aligned(tsk_size_t num, tsk_size_t size, tsk_size_t alignment)
 {
-	void* ptr = tsk_malloc_aligned((size * num), alignment);
-	if (ptr) {
-		memset(ptr, 0, (size * num));
-	}
-	return ptr;
+    void* ptr = tsk_malloc_aligned((size * num), alignment);
+    if (ptr) {
+        memset(ptr, 0, (size * num));
+    }
+    return ptr;
 }

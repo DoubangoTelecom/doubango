@@ -8,26 +8,26 @@
  */
 
 /*
- *	
+ *
  * Copyright (c) 2001-2006, Cisco Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   Redistributions in binary form must reproduce the above
  *   copyright notice, this list of conditions and the following
  *   disclaimer in the documentation and/or other materials provided
  *   with the distribution.
- * 
+ *
  *   Neither the name of the Cisco Systems, Inc. nor the names of its
  *   contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -125,7 +125,7 @@ extern uint32_t low32(uint64_t value);
 #define GET_32(addr) ((((unsigned char *) (addr))[0] << 24) |  \
                       (((unsigned char *) (addr))[1] << 16) |  \
                       (((unsigned char *) (addr))[2] << 8)  |  \
-                      (((unsigned char *) (addr))[3])) 
+                      (((unsigned char *) (addr))[3]))
 #else
 #define PUT_32(addr,value) \
     { \
@@ -137,7 +137,7 @@ extern uint32_t low32(uint64_t value);
 #define GET_32(addr) ((((unsigned char *) (addr))[3] << 24) |  \
                       (((unsigned char *) (addr))[2] << 16) |  \
                       (((unsigned char *) (addr))[1] << 8)  |  \
-                      (((unsigned char *) (addr))[0])) 
+                      (((unsigned char *) (addr))[0]))
 #endif // WORDS_BIGENDIAN
 #else
 #define PUT_32(addr,value) *(((uint32_t *) (addr)) = (value)

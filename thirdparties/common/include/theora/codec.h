@@ -16,7 +16,7 @@
  ********************************************************************/
 
 /**\mainpage
- * 
+ *
  * \section intro Introduction
  *
  * This is the documentation for <tt>libtheora</tt> C API.
@@ -32,14 +32,14 @@
  *
  * \subsection Organization
  *
- * The functions documented here are actually subdivided into three 
+ * The functions documented here are actually subdivided into three
  * separate libraries:
  * - <tt>libtheoraenc</tt> contains the encoder interface,
  *   described in \ref encfuncs.
  * - <tt>libtheoradec</tt> contains the decoder interface and
  *   routines shared with the encoder.
  *   You must also link to this if you link to <tt>libtheoraenc</tt>.
- *   The routines in this library are described in \ref decfuncs and 
+ *   The routines in this library are described in \ref decfuncs and
  *   \ref basefuncs.
  * - <tt>libtheora</tt> contains the \ref oldfuncs.
  *
@@ -95,39 +95,40 @@ extern "C" {
  * See <a href="http://www.theora.org/doc/Theora.pdf">the Theora
  *  specification</a>, Chapter 4, for exact details on the meaning
  *  of each of these color spaces.*/
-typedef enum{
-  /**The color space was not specified at the encoder.
-      It may be conveyed by an external means.*/
-  TH_CS_UNSPECIFIED,
-  /**A color space designed for NTSC content.*/
-  TH_CS_ITU_REC_470M,
-  /**A color space designed for PAL/SECAM content.*/
-  TH_CS_ITU_REC_470BG,
-  /**The total number of currently defined color spaces.*/
-  TH_CS_NSPACES
-}th_colorspace;
+typedef enum {
+    /**The color space was not specified at the encoder.
+        It may be conveyed by an external means.*/
+    TH_CS_UNSPECIFIED,
+    /**A color space designed for NTSC content.*/
+    TH_CS_ITU_REC_470M,
+    /**A color space designed for PAL/SECAM content.*/
+    TH_CS_ITU_REC_470BG,
+    /**The total number of currently defined color spaces.*/
+    TH_CS_NSPACES
+}
+th_colorspace;
 
 /**The currently defined pixel format tags.
  * See <a href="http://www.theora.org/doc/Theora.pdf">the Theora
  *  specification</a>, Section 4.4, for details on the precise sample
  *  locations.*/
-typedef enum{
-  /**Chroma decimation by 2 in both the X and Y directions (4:2:0).
-     The Cb and Cr chroma planes are half the width and half the
-      height of the luma plane.*/
-  TH_PF_420,
-  /**Currently reserved.*/
-  TH_PF_RSVD,
-  /**Chroma decimation by 2 in the X direction (4:2:2).
-     The Cb and Cr chroma planes are half the width of the luma plane, but full
-      height.*/
-  TH_PF_422,
-  /**No chroma decimation (4:4:4).
-     The Cb and Cr chroma planes are full width and full height.*/
-  TH_PF_444,
-  /**The total number of currently defined pixel formats.*/
-  TH_PF_NFORMATS
-}th_pixel_fmt;
+typedef enum {
+    /**Chroma decimation by 2 in both the X and Y directions (4:2:0).
+       The Cb and Cr chroma planes are half the width and half the
+        height of the luma plane.*/
+    TH_PF_420,
+    /**Currently reserved.*/
+    TH_PF_RSVD,
+    /**Chroma decimation by 2 in the X direction (4:2:2).
+       The Cb and Cr chroma planes are half the width of the luma plane, but full
+        height.*/
+    TH_PF_422,
+    /**No chroma decimation (4:4:4).
+       The Cb and Cr chroma planes are full width and full height.*/
+    TH_PF_444,
+    /**The total number of currently defined pixel formats.*/
+    TH_PF_NFORMATS
+} th_pixel_fmt;
 
 
 
@@ -139,16 +140,16 @@ typedef enum{
  * The encoder accepts both positive \a stride values (top-down in memory)
  *  and negative (bottom-up in memory).
  * The decoder currently always generates images with positive strides.*/
-typedef struct{
-  /**The width of this plane.*/
-  int            width;
-  /**The height of this plane.*/
-  int            height;
-  /**The offset in bytes between successive rows.*/
-  int            stride;
-  /**A pointer to the beginning of the first row.*/
-  unsigned char *data;
-}th_img_plane;
+typedef struct {
+    /**The width of this plane.*/
+    int            width;
+    /**The height of this plane.*/
+    int            height;
+    /**The offset in bytes between successive rows.*/
+    int            stride;
+    /**A pointer to the beginning of the first row.*/
+    unsigned char *data;
+} th_img_plane;
 
 /**A complete image buffer for an uncompressed frame.
  * The chroma planes may be decimated by a factor of two in either
@@ -168,7 +169,7 @@ typedef struct{
 typedef th_img_plane th_ycbcr_buffer[3];
 
 /**Theora bitstream information.
- * This contains the basic playback parameters for a stream, and corresponds to 
+ * This contains the basic playback parameters for a stream, and corresponds to
  *  the initial 'info' header packet.
  * To initialize an encoder, the application fills in this structure and
  *  passes it to th_encode_alloc().
@@ -201,100 +202,100 @@ typedef th_img_plane th_ycbcr_buffer[3];
  *  the overall frame itself.
  * The frame aspect ratio can be computed from pixel aspect ratio using the
  *  image dimensions.*/
-typedef struct{
-  /**\name Theora version
-   * Bitstream version information.*/
-  /*@{*/
-  unsigned char version_major;
-  unsigned char version_minor;
-  unsigned char version_subminor;
-  /*@}*/
-  /**The encoded frame width.
-   * This must be a multiple of 16, and less than 1048576.*/
-  ogg_uint32_t  frame_width;
-  /**The encoded frame height.
-   * This must be a multiple of 16, and less than 1048576.*/
-  ogg_uint32_t  frame_height;
-  /**The displayed picture width.
-   * This must be no larger than width.*/
-  ogg_uint32_t  pic_width;
-  /**The displayed picture height.
-   * This must be no larger than height.*/
-  ogg_uint32_t  pic_height;
-  /**The X offset of the displayed picture.
-   * This must be no larger than #frame_width-#pic_width or 255, whichever is
-   *  smaller.*/
-  ogg_uint32_t  pic_x;
-  /**The Y offset of the displayed picture.
-   * This must be no larger than #frame_height-#pic_height, and
-   *  #frame_height-#pic_height-#pic_y must be no larger than 255.
-   * This slightly funny restriction is due to the fact that the offset is
-   *  specified from the top of the image for consistency with the standard
-   *  graphics left-handed coordinate system used throughout this API, while
-   *  it is stored in the encoded stream as an offset from the bottom.*/
-  ogg_uint32_t  pic_y;
-  /**\name Frame rate
-   * The frame rate, as a fraction.
-   * If either is 0, the frame rate is undefined.*/
-  /*@{*/
-  ogg_uint32_t  fps_numerator;
-  ogg_uint32_t  fps_denominator;
-  /*@}*/
-  /**\name Aspect ratio
-   * The aspect ratio of the pixels.
-   * If either value is zero, the aspect ratio is undefined.
-   * If not specified by any external means, 1:1 should be assumed.
-   * The aspect ratio of the full picture can be computed as
-   * \code
-   *  aspect_numerator*pic_width/(aspect_denominator*pic_height).
-   * \endcode */
-  /*@{*/
-  ogg_uint32_t  aspect_numerator;
-  ogg_uint32_t  aspect_denominator;
-  /*@}*/
-  /**The color space.*/
-  th_colorspace colorspace;
-  /**The pixel format.*/
-  th_pixel_fmt  pixel_fmt;
-  /**The target bit-rate in bits per second.
-     If initializing an encoder with this struct, set this field to a non-zero
-      value to activate CBR encoding by default.*/
-  int           target_bitrate;
-  /**The target quality level.
-     Valid values range from 0 to 63, inclusive, with higher values giving
-      higher quality.
-     If initializing an encoder with this struct, and #target_bitrate is set
-      to zero, VBR encoding at this quality will be activated by default.*/
-  /*Currently this is set so that a qi of 0 corresponds to distortions of 24
-     times the JND, and each increase by 16 halves that value.
-    This gives us fine discrimination at low qualities, yet effective rate
-     control at high qualities.
-    The qi value 63 is special, however.
-    For this, the highest quality, we use one half of a JND for our threshold.
-    Due to the lower bounds placed on allowable quantizers in Theora, we will
-     not actually be able to achieve quality this good, but this should
-     provide as close to visually lossless quality as Theora is capable of.
-    We could lift the quantizer restrictions without breaking VP3.1
-     compatibility, but this would result in quantized coefficients that are
-     too large for the current bitstream to be able to store.
-    We'd have to redesign the token syntax to store these large coefficients,
-     which would make transcoding complex.*/
-  int           quality;
-  /**The amount to shift to extract the last keyframe number from the granule
-   *  position.
-   * This can be at most 31.
-   * th_info_init() will set this to a default value (currently <tt>6</tt>,
-   *  which is good for streaming applications), but you can set it to 0 to
-   *  make every frame a keyframe.
-   * The maximum distance between key frames is
-   *  <tt>1<<#keyframe_granule_shift</tt>.
-   * The keyframe frequency can be more finely controlled with
-   *  #TH_ENCCTL_SET_KEYFRAME_FREQUENCY_FORCE, which can also be adjusted
-   *  during encoding (for example, to force the next frame to be a keyframe),
-   *  but it cannot be set larger than the amount permitted by this field after
-   *  the headers have been output.*/
-  int           keyframe_granule_shift;
-}th_info;
+typedef struct {
+    /**\name Theora version
+     * Bitstream version information.*/
+    /*@{*/
+    unsigned char version_major;
+    unsigned char version_minor;
+    unsigned char version_subminor;
+    /*@}*/
+    /**The encoded frame width.
+     * This must be a multiple of 16, and less than 1048576.*/
+    ogg_uint32_t  frame_width;
+    /**The encoded frame height.
+     * This must be a multiple of 16, and less than 1048576.*/
+    ogg_uint32_t  frame_height;
+    /**The displayed picture width.
+     * This must be no larger than width.*/
+    ogg_uint32_t  pic_width;
+    /**The displayed picture height.
+     * This must be no larger than height.*/
+    ogg_uint32_t  pic_height;
+    /**The X offset of the displayed picture.
+     * This must be no larger than #frame_width-#pic_width or 255, whichever is
+     *  smaller.*/
+    ogg_uint32_t  pic_x;
+    /**The Y offset of the displayed picture.
+     * This must be no larger than #frame_height-#pic_height, and
+     *  #frame_height-#pic_height-#pic_y must be no larger than 255.
+     * This slightly funny restriction is due to the fact that the offset is
+     *  specified from the top of the image for consistency with the standard
+     *  graphics left-handed coordinate system used throughout this API, while
+     *  it is stored in the encoded stream as an offset from the bottom.*/
+    ogg_uint32_t  pic_y;
+    /**\name Frame rate
+     * The frame rate, as a fraction.
+     * If either is 0, the frame rate is undefined.*/
+    /*@{*/
+    ogg_uint32_t  fps_numerator;
+    ogg_uint32_t  fps_denominator;
+    /*@}*/
+    /**\name Aspect ratio
+     * The aspect ratio of the pixels.
+     * If either value is zero, the aspect ratio is undefined.
+     * If not specified by any external means, 1:1 should be assumed.
+     * The aspect ratio of the full picture can be computed as
+     * \code
+     *  aspect_numerator*pic_width/(aspect_denominator*pic_height).
+     * \endcode */
+    /*@{*/
+    ogg_uint32_t  aspect_numerator;
+    ogg_uint32_t  aspect_denominator;
+    /*@}*/
+    /**The color space.*/
+    th_colorspace colorspace;
+    /**The pixel format.*/
+    th_pixel_fmt  pixel_fmt;
+    /**The target bit-rate in bits per second.
+       If initializing an encoder with this struct, set this field to a non-zero
+        value to activate CBR encoding by default.*/
+    int           target_bitrate;
+    /**The target quality level.
+       Valid values range from 0 to 63, inclusive, with higher values giving
+        higher quality.
+       If initializing an encoder with this struct, and #target_bitrate is set
+        to zero, VBR encoding at this quality will be activated by default.*/
+    /*Currently this is set so that a qi of 0 corresponds to distortions of 24
+       times the JND, and each increase by 16 halves that value.
+      This gives us fine discrimination at low qualities, yet effective rate
+       control at high qualities.
+      The qi value 63 is special, however.
+      For this, the highest quality, we use one half of a JND for our threshold.
+      Due to the lower bounds placed on allowable quantizers in Theora, we will
+       not actually be able to achieve quality this good, but this should
+       provide as close to visually lossless quality as Theora is capable of.
+      We could lift the quantizer restrictions without breaking VP3.1
+       compatibility, but this would result in quantized coefficients that are
+       too large for the current bitstream to be able to store.
+      We'd have to redesign the token syntax to store these large coefficients,
+       which would make transcoding complex.*/
+    int           quality;
+    /**The amount to shift to extract the last keyframe number from the granule
+     *  position.
+     * This can be at most 31.
+     * th_info_init() will set this to a default value (currently <tt>6</tt>,
+     *  which is good for streaming applications), but you can set it to 0 to
+     *  make every frame a keyframe.
+     * The maximum distance between key frames is
+     *  <tt>1<<#keyframe_granule_shift</tt>.
+     * The keyframe frequency can be more finely controlled with
+     *  #TH_ENCCTL_SET_KEYFRAME_FREQUENCY_FORCE, which can also be adjusted
+     *  during encoding (for example, to force the next frame to be a keyframe),
+     *  but it cannot be set larger than the amount permitted by this field after
+     *  the headers have been output.*/
+    int           keyframe_granule_shift;
+} th_info;
 
 /**The comment information.
  *
@@ -320,17 +321,17 @@ typedef struct{
  *  possibly containing null characters, and so the length array should be
  *  treated as their authoritative length.
  */
-typedef struct th_comment{
-  /**The array of comment string vectors.*/
-  char **user_comments;
-  /**An array of the corresponding length of each vector, in bytes.*/
-  int   *comment_lengths;
-  /**The total number of comment strings.*/
-  int    comments;
-  /**The null-terminated vendor string.
-     This identifies the software used to encode the stream.*/
-  char  *vendor;
-}th_comment;
+typedef struct th_comment {
+    /**The array of comment string vectors.*/
+    char **user_comments;
+    /**An array of the corresponding length of each vector, in bytes.*/
+    int   *comment_lengths;
+    /**The total number of comment strings.*/
+    int    comments;
+    /**The null-terminated vendor string.
+       This identifies the software used to encode the stream.*/
+    char  *vendor;
+} th_comment;
 
 
 
@@ -338,16 +339,16 @@ typedef struct th_comment{
 typedef unsigned char th_quant_base[64];
 
 /**A set of \a qi ranges.*/
-typedef struct{
-  /**The number of ranges in the set.*/
-  int                  nranges;
-  /**The size of each of the #nranges ranges.
-     These must sum to 63.*/
-  const int           *sizes;
-  /**#nranges <tt>+1</tt> base matrices.
-     Matrices \a i and <tt>i+1</tt> form the endpoints of range \a i.*/
-  const th_quant_base *base_matrices;
-}th_quant_ranges;
+typedef struct {
+    /**The number of ranges in the set.*/
+    int                  nranges;
+    /**The size of each of the #nranges ranges.
+       These must sum to 63.*/
+    const int           *sizes;
+    /**#nranges <tt>+1</tt> base matrices.
+       Matrices \a i and <tt>i+1</tt> form the endpoints of range \a i.*/
+    const th_quant_base *base_matrices;
+} th_quant_ranges;
 
 /**A complete set of quantization parameters.
    The quantizer for each coefficient is calculated as:
@@ -406,16 +407,16 @@ typedef struct{
    These two conditions ensure that the actual quantizer for a given \a qti,
     \a pli, and \a ci does not increase as \a qi increases.
    This is not required by the decoder.*/
-typedef struct{
-  /**The DC scaling factors.*/
-  ogg_uint16_t    dc_scale[64];
-  /**The AC scaling factors.*/
-  ogg_uint16_t    ac_scale[64];
-  /**The loop filter limit values.*/
-  unsigned char   loop_filter_limits[64];
-  /**The \a qi ranges for each \a ci and \a pli.*/
-  th_quant_ranges qi_ranges[2][3];
-}th_quant_info;
+typedef struct {
+    /**The DC scaling factors.*/
+    ogg_uint16_t    dc_scale[64];
+    /**The AC scaling factors.*/
+    ogg_uint16_t    ac_scale[64];
+    /**The loop filter limit values.*/
+    unsigned char   loop_filter_limits[64];
+    /**The \a qi ranges for each \a ci and \a pli.*/
+    th_quant_ranges qi_ranges[2][3];
+} th_quant_info;
 
 
 
@@ -435,14 +436,14 @@ typedef struct{
  * The complete table in the first group of 16 does not have to be in the same
  *  place as the complete table in the other groups, but the complete tables in
  *  the remaining four groups must all be in the same place.*/
-typedef struct{
-  /**The bit pattern for the code, with the LSbit of the pattern aligned in
-   *   the LSbit of the word.*/
-  ogg_uint32_t pattern;
-  /**The number of bits in the code.
-   * This must be between 0 and 32, inclusive.*/
-  int          nbits;
-}th_huff_code;
+typedef struct {
+    /**The bit pattern for the code, with the LSbit of the pattern aligned in
+     *   the LSbit of the word.*/
+    ogg_uint32_t pattern;
+    /**The number of bits in the code.
+     * This must be between 0 and 32, inclusive.*/
+    int          nbits;
+} th_huff_code;
 
 
 

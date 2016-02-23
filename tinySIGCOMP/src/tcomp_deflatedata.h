@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -116,11 +116,10 @@ TCOMP_BEGIN_DECLS
 #endif /* USE_DICTS_FOR_COMPRESSION */
 
 
-typedef struct tcomp_deflateStream_s
-{
-	z_stream zs;
-	unsigned dataWaitingAck:1;
-	unsigned stateful:1;
+typedef struct tcomp_deflateStream_s {
+    z_stream zs;
+    unsigned dataWaitingAck:1;
+    unsigned stateful:1;
 }
 tcomp_deflateStream_t;
 
@@ -128,25 +127,24 @@ tsk_bool_t tcomp_deflateStream_end(tcomp_deflateStream_t *stream);
 tsk_bool_t tcomp_deflateStream_copy(tcomp_deflateStream_t *stream, tcomp_deflateStream_t *source);
 
 
-typedef struct tcomp_deflatedata_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tcomp_deflatedata_s {
+    TSK_DECLARE_OBJECT;
 
-	tcomp_deflateStream_t stream_1;
-	tcomp_deflateStream_t stream_acked;
-	int zLevel;
-	int zWindowBits;
-	
-	tsk_bool_t isInitialized;
-	
-	uint32_t ghost_copy_offset;
-	tcomp_state_t *ghostState;
+    tcomp_deflateStream_t stream_1;
+    tcomp_deflateStream_t stream_acked;
+    int zLevel;
+    int zWindowBits;
 
-	tsk_bool_t isStream;
+    tsk_bool_t isInitialized;
 
-	tsk_bool_t useOnlyACKedStates;
+    uint32_t ghost_copy_offset;
+    tcomp_state_t *ghostState;
 
-	TSK_DECLARE_SAFEOBJ;
+    tsk_bool_t isStream;
+
+    tsk_bool_t useOnlyACKedStates;
+
+    TSK_DECLARE_SAFEOBJ;
 }
 tcomp_deflatedata_t;
 

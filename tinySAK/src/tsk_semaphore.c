@@ -62,8 +62,7 @@ typedef HANDLE	SEMAPHORE_T;
 #	include <fcntl.h> /* O_CREAT */
 #	include <sys/stat.h> /* S_IRUSR, S_IWUSR*/
 
-typedef struct named_sem_s
-{
+typedef struct named_sem_s {
     sem_t* sem;
     char name [NAME_MAX + 1];
 } named_sem_t;
@@ -100,7 +99,7 @@ tsk_semaphore_handle_t* tsk_semaphore_create()
 tsk_semaphore_handle_t* tsk_semaphore_create_2(int initial_val)
 {
     SEMAPHORE_T handle = tsk_null;
-    
+
 #if TSK_UNDER_WINDOWS
 #	if TSK_UNDER_WINDOWS_RT
     handle = CreateSemaphoreEx(NULL, initial_val, 0x7FFFFFFF, NULL, 0x00000000, SEMAPHORE_ALL_ACCESS);
@@ -109,101 +108,102 @@ tsk_semaphore_handle_t* tsk_semaphore_create_2(int initial_val)
 #	endif
 #else
     handle = tsk_calloc(1, sizeof(SEMAPHORE_S));
-    
+
 #if TSK_USE_NAMED_SEM
     named_sem_t * nsem = (named_sem_t*)handle;
     snprintf(nsem->name, (sizeof(nsem->name)/sizeof(nsem->name[0])) - 1, "/sem/%llu/%d.", tsk_time_epoch(), rand() ^ rand());
     if ((nsem->sem = sem_open(nsem->name, O_CREAT /*| O_EXCL*/, S_IRUSR | S_IWUSR, initial_val)) == SEM_FAILED) {
 #else
-        if (sem_init((SEMAPHORE_T)handle, 0, initial_val)) {
+    if (sem_init((SEMAPHORE_T)handle, 0, initial_val)) {
 #endif
-            TSK_FREE(handle);
-            TSK_DEBUG_ERROR("Failed to initialize the new semaphore (errno=%d).", errno);
-        }
-#endif
-        if (!handle) {
-            TSK_DEBUG_ERROR("Failed to create new semaphore");
-        }
-        return handle;
+        TSK_FREE(handle);
+        TSK_DEBUG_ERROR("Failed to initialize the new semaphore (errno=%d).", errno);
     }
-    
-    /**@ingroup tsk_semaphore_group
-     * Increments a semaphore.
-     * @param handle The semaphore to increment.
-     * @retval Zero if succeed and otherwise the function returns -1 and sets errno to indicate the error.
-     * @sa @ref tsk_semaphore_decrement.
-     */
-    int tsk_semaphore_increment(tsk_semaphore_handle_t* handle)
-    {
-        int ret = EINVAL;
-        if (handle) {
+#endif
+    if (!handle) {
+        TSK_DEBUG_ERROR("Failed to create new semaphore");
+    }
+    return handle;
+}
+
+/**@ingroup tsk_semaphore_group
+ * Increments a semaphore.
+ * @param handle The semaphore to increment.
+ * @retval Zero if succeed and otherwise the function returns -1 and sets errno to indicate the error.
+ * @sa @ref tsk_semaphore_decrement.
+ */
+int tsk_semaphore_increment(tsk_semaphore_handle_t* handle)
+{
+    int ret = EINVAL;
+    if (handle) {
 #if TSK_UNDER_WINDOWS
-            if((ret = ReleaseSemaphore((SEMAPHORE_T)handle, 1L, NULL) ? 0 : -1))
+        if((ret = ReleaseSemaphore((SEMAPHORE_T)handle, 1L, NULL) ? 0 : -1))
 #else
-            if((ret = sem_post((SEMAPHORE_T)GET_SEM(handle))))
+        if((ret = sem_post((SEMAPHORE_T)GET_SEM(handle))))
 #endif
-            {
-                TSK_DEBUG_ERROR("sem_post function failed: %d", ret);
-            }
+        {
+            TSK_DEBUG_ERROR("sem_post function failed: %d", ret);
         }
-        return ret;
     }
-    
-    /**@ingroup tsk_semaphore_group
-     * Decrements a semaphore.
-     * @param handle The semaphore to decrement.
-     * @retval Zero if succeed and otherwise the function returns -1 and sets errno to indicate the error.
-     * @sa @ref tsk_semaphore_increment.
-     */
-    int tsk_semaphore_decrement(tsk_semaphore_handle_t* handle)
-    {
-        int ret = EINVAL;
-        if (handle) {
+    return ret;
+}
+
+/**@ingroup tsk_semaphore_group
+ * Decrements a semaphore.
+ * @param handle The semaphore to decrement.
+ * @retval Zero if succeed and otherwise the function returns -1 and sets errno to indicate the error.
+ * @sa @ref tsk_semaphore_increment.
+ */
+int tsk_semaphore_decrement(tsk_semaphore_handle_t* handle)
+{
+    int ret = EINVAL;
+    if (handle) {
 #if TSK_UNDER_WINDOWS
 #	   if TSK_UNDER_WINDOWS_RT
-            ret = (WaitForSingleObjectEx((SEMAPHORE_T)handle, INFINITE, TRUE) == WAIT_OBJECT_0) ? 0 : -1;
+        ret = (WaitForSingleObjectEx((SEMAPHORE_T)handle, INFINITE, TRUE) == WAIT_OBJECT_0) ? 0 : -1;
 #	   else
-            ret = (WaitForSingleObject((SEMAPHORE_T)handle, INFINITE) == WAIT_OBJECT_0) ? 0 : -1;
+        ret = (WaitForSingleObject((SEMAPHORE_T)handle, INFINITE) == WAIT_OBJECT_0) ? 0 : -1;
 #endif
-            if (ret)	{
-                TSK_DEBUG_ERROR("sem_wait function failed: %d", ret);
-            }
-#else
-            do {
-                ret = sem_wait((SEMAPHORE_T)GET_SEM(handle));
-            }
-            while ( errno == EINTR );
-            if(ret)	TSK_DEBUG_ERROR("sem_wait function failed: %d", errno);
-#endif
+        if (ret)	{
+            TSK_DEBUG_ERROR("sem_wait function failed: %d", ret);
         }
-        
-        return ret;
+#else
+        do {
+            ret = sem_wait((SEMAPHORE_T)GET_SEM(handle));
+        }
+        while ( errno == EINTR );
+        if(ret)	{
+            TSK_DEBUG_ERROR("sem_wait function failed: %d", errno);
+        }
+#endif
     }
-    
-    /**@ingroup tsk_semaphore_group
-     * Destroy a semaphore previously created using @ref tsk_semaphore_create.
-     * @param handle The semaphore to free.
-     * @sa @ref tsk_semaphore_create
-     */
-    void tsk_semaphore_destroy(tsk_semaphore_handle_t** handle)
-    {
-        if(handle && *handle)
-        {
+
+    return ret;
+}
+
+/**@ingroup tsk_semaphore_group
+ * Destroy a semaphore previously created using @ref tsk_semaphore_create.
+ * @param handle The semaphore to free.
+ * @sa @ref tsk_semaphore_create
+ */
+void tsk_semaphore_destroy(tsk_semaphore_handle_t** handle)
+{
+    if(handle && *handle) {
 #if TSK_UNDER_WINDOWS
-            CloseHandle((SEMAPHORE_T)*handle);
-            *handle = tsk_null;
+        CloseHandle((SEMAPHORE_T)*handle);
+        *handle = tsk_null;
 #else
 #	if TSK_USE_NAMED_SEM
-            named_sem_t * nsem = ((named_sem_t*)*handle);
-            sem_close(nsem->sem);
+        named_sem_t * nsem = ((named_sem_t*)*handle);
+        sem_close(nsem->sem);
 #else
-            sem_destroy((SEMAPHORE_T)GET_SEM(*handle));
+        sem_destroy((SEMAPHORE_T)GET_SEM(*handle));
 #endif /* TSK_USE_NAMED_SEM */
-            tsk_free(handle);
+        tsk_free(handle);
 #endif
-        }
-        else{
-            TSK_DEBUG_WARN("Cannot free an uninitialized semaphore object");
-        }
     }
-    
+    else {
+        TSK_DEBUG_WARN("Cannot free an uninitialized semaphore object");
+    }
+}
+

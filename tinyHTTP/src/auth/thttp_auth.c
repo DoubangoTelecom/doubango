@@ -46,21 +46,21 @@
  **/
 tsk_size_t thttp_auth_basic_response(const char* userid, const char* password, char** response)
 {
-	tsk_size_t ret;
+    tsk_size_t ret;
 
-	/* RFC 2617 - 2 Basic Authentication Scheme
+    /* RFC 2617 - 2 Basic Authentication Scheme
 
-	To receive authorization, the client sends the userid and password,
-	separated by a single colon (":") character, within a base64 [7]
-	encoded string in the credentials.
-	*/
+    To receive authorization, the client sends the userid and password,
+    separated by a single colon (":") character, within a base64 [7]
+    encoded string in the credentials.
+    */
 
-	char *res = 0;
-	tsk_sprintf(&res, "%s:%s", userid, password);
-	ret = tsk_base64_encode((const uint8_t*)res, tsk_strlen(res), response);
-	TSK_FREE(res);
+    char *res = 0;
+    tsk_sprintf(&res, "%s:%s", userid, password);
+    ret = tsk_base64_encode((const uint8_t*)res, tsk_strlen(res), response);
+    TSK_FREE(res);
 
-	return ret;
+    return ret;
 }
 
 
@@ -77,17 +77,17 @@ tsk_size_t thttp_auth_basic_response(const char* userid, const char* password, c
  **/
 int thttp_auth_digest_HA1(const char* username, const char* realm, const char* password, tsk_md5string_t* ha1)
 {
-	int ret;
+    int ret;
 
-	/* RFC 2617 - 3.2.2.2 A1
-		A1       = unq(username-value) ":" unq(realm-value) ":" passwd
-		*/
-	char *a1 = tsk_null;
-	tsk_sprintf(&a1, "%s:%s:%s", username, realm, password);
-	ret = tsk_md5compute(a1, tsk_strlen(a1), ha1);
-	TSK_FREE(a1);
+    /* RFC 2617 - 3.2.2.2 A1
+    	A1       = unq(username-value) ":" unq(realm-value) ":" passwd
+    	*/
+    char *a1 = tsk_null;
+    tsk_sprintf(&a1, "%s:%s:%s", username, realm, password);
+    ret = tsk_md5compute(a1, tsk_strlen(a1), ha1);
+    TSK_FREE(a1);
 
-	return ret;
+    return ret;
 }
 
 /**@ingroup thttp_auth_group
@@ -106,20 +106,20 @@ int thttp_auth_digest_HA1(const char* username, const char* realm, const char* p
  **/
 int thttp_auth_digest_HA1sess(const char* username, const char* realm, const char* password, const char* nonce, const char* cnonce, tsk_md5string_t* ha1sess)
 {
-	int ret;
+    int ret;
 
-	/* RFC 2617 - 3.2.2.2 A1
-			A1       = H( unq(username-value) ":" unq(realm-value)
-			":" passwd )
-			":" unq(nonce-value) ":" unq(cnonce-value)
-			*/
+    /* RFC 2617 - 3.2.2.2 A1
+    		A1       = H( unq(username-value) ":" unq(realm-value)
+    		":" passwd )
+    		":" unq(nonce-value) ":" unq(cnonce-value)
+    		*/
 
-	char *a1sess = tsk_null;
-	tsk_sprintf(&a1sess, "%s:%s:%s:%s:%s", username, realm, password, nonce, cnonce);
-	ret = tsk_md5compute(a1sess, tsk_strlen(a1sess), ha1sess);
-	TSK_FREE(a1sess);
+    char *a1sess = tsk_null;
+    tsk_sprintf(&a1sess, "%s:%s:%s:%s:%s", username, realm, password, nonce, cnonce);
+    ret = tsk_md5compute(a1sess, tsk_strlen(a1sess), ha1sess);
+    TSK_FREE(a1sess);
 
-	return ret;
+    return ret;
 }
 
 /**@ingroup thttp_auth_group
@@ -136,42 +136,41 @@ int thttp_auth_digest_HA1sess(const char* username, const char* realm, const cha
  **/
 int thttp_auth_digest_HA2(const char* method, const char* url, const tsk_buffer_t* entity_body, const char* qop, tsk_md5string_t* ha2)
 {
-	int ret;
-	/* RFC 2617 - 3.2.2.3 A2
+    int ret;
+    /* RFC 2617 - 3.2.2.3 A2
 
-	If the "qop" directive's value is "auth" or is unspecified, then A2
-	is:
-	A2       = Method ":" digest-url-value
+    If the "qop" directive's value is "auth" or is unspecified, then A2
+    is:
+    A2       = Method ":" digest-url-value
 
-	If the "qop" value is "auth-int", then A2 is:
-	A2       = Method ":" digest-url-value ":" H(entity-body)
-	*/
+    If the "qop" value is "auth-int", then A2 is:
+    A2       = Method ":" digest-url-value ":" H(entity-body)
+    */
 
-	char *a2 = tsk_null;
+    char *a2 = tsk_null;
 
-	if (!qop || tsk_strempty(qop) || tsk_striequals(qop, "auth")){
-		tsk_sprintf(&a2, "%s:%s", method, url);
-	}
-	else if (tsk_striequals(qop, "auth-int"))
-	{
-		if (entity_body && entity_body->data && entity_body->size){
-			tsk_md5string_t hEntity;
-			if ((ret = tsk_md5compute(entity_body->data, entity_body->size, &hEntity))){
-				goto bail;
-			}
-			tsk_sprintf(&a2, "%s:%s:%s", method, url, hEntity);
-		}
-		else{
-			tsk_sprintf(&a2, "%s:%s:%s", method, url, TSK_MD5_EMPTY);
-		}
-	}
+    if (!qop || tsk_strempty(qop) || tsk_striequals(qop, "auth")) {
+        tsk_sprintf(&a2, "%s:%s", method, url);
+    }
+    else if (tsk_striequals(qop, "auth-int")) {
+        if (entity_body && entity_body->data && entity_body->size) {
+            tsk_md5string_t hEntity;
+            if ((ret = tsk_md5compute(entity_body->data, entity_body->size, &hEntity))) {
+                goto bail;
+            }
+            tsk_sprintf(&a2, "%s:%s:%s", method, url, hEntity);
+        }
+        else {
+            tsk_sprintf(&a2, "%s:%s:%s", method, url, TSK_MD5_EMPTY);
+        }
+    }
 
-	ret = tsk_md5compute(a2, tsk_strlen(a2), ha2);
+    ret = tsk_md5compute(a2, tsk_strlen(a2), ha2);
 
 bail:
-	TSK_FREE(a2);
+    TSK_FREE(a2);
 
-	return ret;
+    return ret;
 }
 
 
@@ -190,43 +189,43 @@ bail:
  * @return	Zero if succeed and non-zero error code otherwise.
  **/
 int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce, const nonce_count_t noncecount, const char* cnonce,
-	const char* qop, const tsk_md5string_t* ha2, tsk_md5string_t* response)
+                               const char* qop, const tsk_md5string_t* ha2, tsk_md5string_t* response)
 {
-	int ret;
+    int ret;
 
-	/* RFC 2617 3.2.2.1 Request-Digest
+    /* RFC 2617 3.2.2.1 Request-Digest
 
-	============ CASE 1 ============
-	If the "qop" value is "auth" or "auth-int":
-	request-digest  = <"> < KD ( H(A1),     unq(nonce-value)
-	":" nc-value
-	":" unq(cnonce-value)
-	":" unq(qop-value)
-	":" H(A2)
-	) <">
-	============ CASE 2 ============
-	If the "qop" directive is not present (this construction is for
-	compatibility with RFC 2069):
-	request-digest  =
-	<"> < KD ( H(A1), unq(nonce-value) ":" H(A2) ) >
-	<">
-	*/
+    ============ CASE 1 ============
+    If the "qop" value is "auth" or "auth-int":
+    request-digest  = <"> < KD ( H(A1),     unq(nonce-value)
+    ":" nc-value
+    ":" unq(cnonce-value)
+    ":" unq(qop-value)
+    ":" H(A2)
+    ) <">
+    ============ CASE 2 ============
+    If the "qop" directive is not present (this construction is for
+    compatibility with RFC 2069):
+    request-digest  =
+    <"> < KD ( H(A1), unq(nonce-value) ":" H(A2) ) >
+    <">
+    */
 
-	char *res = tsk_null;
+    char *res = tsk_null;
 
-	if (tsk_striequals(qop, "auth") || tsk_striequals(qop, "auth-int")){
-		/* CASE 1 */
-		tsk_sprintf(&res, "%s:%s:%s:%s:%s:%s", *ha1, nonce, noncecount, cnonce, qop, *ha2);
-	}
-	else{
-		/* CASE 2 */
-		tsk_sprintf(&res, "%s:%s:%s", *ha1, nonce, *ha2);
-	}
+    if (tsk_striequals(qop, "auth") || tsk_striequals(qop, "auth-int")) {
+        /* CASE 1 */
+        tsk_sprintf(&res, "%s:%s:%s:%s:%s:%s", *ha1, nonce, noncecount, cnonce, qop, *ha2);
+    }
+    else {
+        /* CASE 2 */
+        tsk_sprintf(&res, "%s:%s:%s", *ha1, nonce, *ha2);
+    }
 
-	ret = tsk_md5compute(res, tsk_strlen(res), response);
-	TSK_FREE(res);
+    ret = tsk_md5compute(res, tsk_strlen(res), response);
+    TSK_FREE(res);
 
-	return ret;
+    return ret;
 }
 
 /**@ingroup thttp_auth_group
@@ -239,28 +238,28 @@ int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce, co
  */
 tsk_size_t thttp_auth_ws_response(const char* key, thttp_auth_ws_keystring_t* response)
 {
-	if (!key || !response){
-		TSK_DEBUG_ERROR("invalid parameter");
-		return 0;
-	}
-	else{
-		tsk_sha1string_t sha1result;
-		char* tmp = tsk_null;
-		long ret;
-		tsk_size_t size, i;
-		uint8_t result[21] = { 0 };
+    if (!key || !response) {
+        TSK_DEBUG_ERROR("invalid parameter");
+        return 0;
+    }
+    else {
+        tsk_sha1string_t sha1result;
+        char* tmp = tsk_null;
+        long ret;
+        tsk_size_t size, i;
+        uint8_t result[21] = { 0 };
 
-		tsk_strcat_2(&tmp, "%s258EAFA5-E914-47DA-95CA-C5AB0DC85B11", key);
+        tsk_strcat_2(&tmp, "%s258EAFA5-E914-47DA-95CA-C5AB0DC85B11", key);
 
-		tsk_sha1compute(tmp, tsk_strlen(tmp), &sha1result);
-		size = tsk_strlen((char*)sha1result);
-		for (i = 0; i < size; i += 2){
-			if (sscanf((const char*)&sha1result[i], "%2x", (unsigned int*)&ret) != EOF){
-				;
-				result[i >> 1] = (char)ret;
-			}
-		}
-		TSK_FREE(tmp);
-		return tsk_base64_encode(result, (size >> 1), (char**)&response);
-	}
+        tsk_sha1compute(tmp, tsk_strlen(tmp), &sha1result);
+        size = tsk_strlen((char*)sha1result);
+        for (i = 0; i < size; i += 2) {
+            if (sscanf((const char*)&sha1result[i], "%2x", (unsigned int*)&ret) != EOF) {
+                ;
+                result[i >> 1] = (char)ret;
+            }
+        }
+        TSK_FREE(tmp);
+        return tsk_base64_encode(result, (size >> 1), (char**)&response);
+    }
 }

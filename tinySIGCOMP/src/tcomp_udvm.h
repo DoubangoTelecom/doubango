@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -59,28 +59,27 @@ TCOMP_BEGIN_DECLS
 #define TCOMP_UDVM_GET_BUFFER()				tcomp_buffer_getBuffer(udvm->memory)
 #define TCOMP_UDVM_GET_BUFFER_AT(position)	tcomp_buffer_getBufferAtPos(udvm->memory, position)
 
-typedef struct tcomp_udvm_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tcomp_udvm_s {
+    TSK_DECLARE_OBJECT;
 
-	unsigned isOK:1;
-	tcomp_message_t *sigCompMessage;
-	tcomp_statehandler_t *stateHandler;
-	tcomp_result_t *lpResult;
+    unsigned isOK:1;
+    tcomp_message_t *sigCompMessage;
+    tcomp_statehandler_t *stateHandler;
+    tcomp_result_t *lpResult;
 
-	uint64_t maximum_UDVM_cycles; // RFC3320-Section_8.6
-	uint64_t consumed_cycles;
-	
-	tcomp_buffer_handle_t *memory;
-	//header_udvm_memory memoryHeader; // RFC3320-Section_7.2 - // Default constructor will initial values (sip default)
-	
-	uint32_t executionPointer;
-	uint32_t last_memory_address_of_instruction;
+    uint64_t maximum_UDVM_cycles; // RFC3320-Section_8.6
+    uint64_t consumed_cycles;
 
-	struct{
-		void* ptr;
-		tsk_size_t size;
-	} tmp_buff;
+    tcomp_buffer_handle_t *memory;
+    //header_udvm_memory memoryHeader; // RFC3320-Section_7.2 - // Default constructor will initial values (sip default)
+
+    uint32_t executionPointer;
+    uint32_t last_memory_address_of_instruction;
+
+    struct {
+        void* ptr;
+        tsk_size_t size;
+    } tmp_buff;
 }
 tcomp_udvm_t;
 
@@ -107,8 +106,8 @@ tsk_bool_t tcomp_udvm_bytecopy_from(tcomp_udvm_t *udvm, uint8_t* destination, ui
 * State Management
 */
 int tcomp_udvm_byteCopy_TempStates(tcomp_udvm_t *udvm);
-int tcomp_udvm_createTempState(tcomp_udvm_t *udvm, uint32_t state_length, uint32_t state_address, uint32_t state_instruction, 
-	uint32_t minimum_access_length, uint32_t state_retention_priority, int end_msg);
+int tcomp_udvm_createTempState(tcomp_udvm_t *udvm, uint32_t state_length, uint32_t state_address, uint32_t state_instruction,
+                               uint32_t minimum_access_length, uint32_t state_retention_priority, int end_msg);
 
 /*
 * Nack creation

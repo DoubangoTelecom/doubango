@@ -1,18 +1,18 @@
 /*
 * Copyright (C) 2010-2015 Mamadou DIOP.
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -35,7 +35,7 @@
 TMEDIA_BEGIN_DECLS
 
 /* =====
-* http://www.iana.org/assignments/rtp-parameters 
+* http://www.iana.org/assignments/rtp-parameters
 * http://www.networksorcery.com/enp/protocol/rtp.htm
 =====*/
 /******* Fixed Payload Type *************/
@@ -68,7 +68,7 @@ TMEDIA_BEGIN_DECLS
 #define TMEDIA_CODEC_FORMAT_MP2T						"33"
 #define TMEDIA_CODEC_FORMAT_H263						"34"
 
-/******* Dynamic Payload Type 
+/******* Dynamic Payload Type
 Must starts at 96 to be conform to RFC 5761 (rtcp-mux)
 **********/
 
@@ -115,51 +115,50 @@ Must starts at 96 to be conform to RFC 5761 (rtcp-mux)
 
 
 // @tinyWRAP
-typedef enum tmedia_codec_id_e
-{
-	tmedia_codec_id_none = 0x00000000,
-	
-	tmedia_codec_id_amr_nb_oa = 0x00000001<<0,
-	tmedia_codec_id_amr_nb_be = 0x00000001<<1,
-	tmedia_codec_id_amr_wb_oa = 0x00000001<<2,
-	tmedia_codec_id_amr_wb_be = 0x00000001<<3,
-	tmedia_codec_id_gsm = 0x00000001<<4,
-	tmedia_codec_id_pcma = 0x00000001<<5,
-	tmedia_codec_id_pcmu = 0x00000001<<6,
-	tmedia_codec_id_ilbc = 0x00000001<<7,
-	tmedia_codec_id_speex_nb = 0x00000001<<8,
-	tmedia_codec_id_speex_wb = 0x00000001<<9,
-	tmedia_codec_id_speex_uwb = 0x00000001<<10,
-	tmedia_codec_id_bv16 = 0x00000001<<11,
-	tmedia_codec_id_bv32 = 0x00000001<<12,
-	tmedia_codec_id_opus = 0x00000001<<13,
-	tmedia_codec_id_g729ab = 0x00000001<<14,
-	tmedia_codec_id_g722 = 0x00000001<<15,
-	
-	/* room for new Audio codecs */
-	
-	tmedia_codec_id_h261 = 0x00010000<<0,
-	tmedia_codec_id_h263 = 0x00010000<<1,
-	tmedia_codec_id_h263p = 0x00010000<<2,
-	tmedia_codec_id_h263pp = 0x00010000<<3,
-	tmedia_codec_id_h264_bp = 0x00010000<<4,
-	tmedia_codec_id_h264_mp = 0x00010000<<5,
-	tmedia_codec_id_h264_hp = 0x00010000<<6,
-	tmedia_codec_id_h264_bp10 = tmedia_codec_id_h264_bp, // @deprecated
-	tmedia_codec_id_h264_bp20 = tmedia_codec_id_h264_bp, // @deprecated
-	tmedia_codec_id_h264_bp30 = tmedia_codec_id_h264_bp, // @deprecated
-	tmedia_codec_id_h264_svc = 0x00010000<<7,
-	tmedia_codec_id_theora = 0x00010000<<8,
-	tmedia_codec_id_mp4ves_es = 0x00010000<<9,
-	tmedia_codec_id_vp8 = 0x00010000<<10,
+typedef enum tmedia_codec_id_e {
+    tmedia_codec_id_none = 0x00000000,
 
-	/* room for new Video codecs */
+    tmedia_codec_id_amr_nb_oa = 0x00000001<<0,
+    tmedia_codec_id_amr_nb_be = 0x00000001<<1,
+    tmedia_codec_id_amr_wb_oa = 0x00000001<<2,
+    tmedia_codec_id_amr_wb_be = 0x00000001<<3,
+    tmedia_codec_id_gsm = 0x00000001<<4,
+    tmedia_codec_id_pcma = 0x00000001<<5,
+    tmedia_codec_id_pcmu = 0x00000001<<6,
+    tmedia_codec_id_ilbc = 0x00000001<<7,
+    tmedia_codec_id_speex_nb = 0x00000001<<8,
+    tmedia_codec_id_speex_wb = 0x00000001<<9,
+    tmedia_codec_id_speex_uwb = 0x00000001<<10,
+    tmedia_codec_id_bv16 = 0x00000001<<11,
+    tmedia_codec_id_bv32 = 0x00000001<<12,
+    tmedia_codec_id_opus = 0x00000001<<13,
+    tmedia_codec_id_g729ab = 0x00000001<<14,
+    tmedia_codec_id_g722 = 0x00000001<<15,
 
-	tmedia_codec_id_t140 = 0x00010000<<14,
-	tmedia_codec_id_red = 0x00010000<<15,
+    /* room for new Audio codecs */
+
+    tmedia_codec_id_h261 = 0x00010000<<0,
+    tmedia_codec_id_h263 = 0x00010000<<1,
+    tmedia_codec_id_h263p = 0x00010000<<2,
+    tmedia_codec_id_h263pp = 0x00010000<<3,
+    tmedia_codec_id_h264_bp = 0x00010000<<4,
+    tmedia_codec_id_h264_mp = 0x00010000<<5,
+    tmedia_codec_id_h264_hp = 0x00010000<<6,
+    tmedia_codec_id_h264_bp10 = tmedia_codec_id_h264_bp, // @deprecated
+    tmedia_codec_id_h264_bp20 = tmedia_codec_id_h264_bp, // @deprecated
+    tmedia_codec_id_h264_bp30 = tmedia_codec_id_h264_bp, // @deprecated
+    tmedia_codec_id_h264_svc = 0x00010000<<7,
+    tmedia_codec_id_theora = 0x00010000<<8,
+    tmedia_codec_id_mp4ves_es = 0x00010000<<9,
+    tmedia_codec_id_vp8 = 0x00010000<<10,
+
+    /* room for new Video codecs */
+
+    tmedia_codec_id_t140 = 0x00010000<<14,
+    tmedia_codec_id_red = 0x00010000<<15,
 
 
-	tmedia_codec_id_all = 0xffffffff,
+    tmedia_codec_id_all = 0xffffffff,
 }
 tmedia_codec_id_t;
 
@@ -196,108 +195,105 @@ typedef int (*tmedia_codec_video_dec_cb_f)(const tmedia_video_decode_result_xt* 
 struct tmedia_param_s;
 struct tsdp_header_M_s;
 
-typedef enum tmedia_codec_action_e
-{
-	tmedia_codec_action_encode_idr,
-	tmedia_codec_action_bw_down,
-	tmedia_codec_action_bw_up,
+typedef enum tmedia_codec_action_e {
+    tmedia_codec_action_encode_idr,
+    tmedia_codec_action_bw_down,
+    tmedia_codec_action_bw_up,
 }
 tmedia_codec_action_t;
 
 /** Base object for all Codecs */
-typedef struct tmedia_codec_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tmedia_codec_s {
+    TSK_DECLARE_OBJECT;
 
-	//! the type of the codec
-	tmedia_type_t type;
-	//! the codec identifier
-	tmedia_codec_id_t id;
-	//! whether the codec is opened
-	tsk_bool_t opened;
-	//! whether the pay. type is dyn. or not
-	tsk_bool_t dyn;
-	//! the name of the codec. e.g. "G.711U" or "G.711A" etc used in the sdp
-	char* name;
-	//! full description
-	char* desc;
-	//! the format. e.g. "0" for PCMU or "8" for PCMA or "*" for MSRP.
-	char* format;
-	//! bandwidth level
-	tmedia_bandwidth_level_t bl; // @deprecated
-	//! maximum bandwidth to use for outgoing RTP (INT_MAX or <=0 means undefined)
-	int32_t bandwidth_max_upload;
-	//! maximum bandwidth to use for incoming RTP (INT_MAX or <=0 means undefined)
-	int32_t bandwidth_max_download;
-	//! the negociated format (only useful for codecs with dyn. payload type)
-	char* neg_format;
-	//! whether this is a passthrough codec
-	tsk_bool_t passthrough;
+    //! the type of the codec
+    tmedia_type_t type;
+    //! the codec identifier
+    tmedia_codec_id_t id;
+    //! whether the codec is opened
+    tsk_bool_t opened;
+    //! whether the pay. type is dyn. or not
+    tsk_bool_t dyn;
+    //! the name of the codec. e.g. "G.711U" or "G.711A" etc used in the sdp
+    char* name;
+    //! full description
+    char* desc;
+    //! the format. e.g. "0" for PCMU or "8" for PCMA or "*" for MSRP.
+    char* format;
+    //! bandwidth level
+    tmedia_bandwidth_level_t bl; // @deprecated
+    //! maximum bandwidth to use for outgoing RTP (INT_MAX or <=0 means undefined)
+    int32_t bandwidth_max_upload;
+    //! maximum bandwidth to use for incoming RTP (INT_MAX or <=0 means undefined)
+    int32_t bandwidth_max_download;
+    //! the negociated format (only useful for codecs with dyn. payload type)
+    char* neg_format;
+    //! whether this is a passthrough codec
+    tsk_bool_t passthrough;
 
-	struct{
-		// !negotiated decoding rate (for codecs with dynamic rate, e.g. opus)
-		uint32_t rate;
-	} in; //decoding direction
-	struct{
-		// !negotiated encoding rate (for codecs with dynamic rate, e.g. opus)
-		uint32_t rate;
-	} out; //encoding direction
-	
-	//! plugin used to create the codec
-	const struct tmedia_codec_plugin_def_s* plugin;
+    struct {
+        // !negotiated decoding rate (for codecs with dynamic rate, e.g. opus)
+        uint32_t rate;
+    } in; //decoding direction
+    struct {
+        // !negotiated encoding rate (for codecs with dynamic rate, e.g. opus)
+        uint32_t rate;
+    } out; //encoding direction
+
+    //! plugin used to create the codec
+    const struct tmedia_codec_plugin_def_s* plugin;
 }
 tmedia_codec_t;
 #define TMEDIA_CODEC(self)		((tmedia_codec_t*)(self))
 
 /** Virtual table used to define a codec plugin */
-typedef struct tmedia_codec_plugin_def_s
-{
-	//! object definition used to create an instance of the codec
-	const tsk_object_def_t* objdef;
+typedef struct tmedia_codec_plugin_def_s {
+    //! object definition used to create an instance of the codec
+    const tsk_object_def_t* objdef;
 
-	//! the type of the codec
-	tmedia_type_t type;
-	//! the codec identifier
-	tmedia_codec_id_t codec_id;
-	//! the name of the codec. e.g. "G.711U" or "G.711A" etc using in the sdp.
-	const char* name;
-	//! full description
-	const char* desc;
-	//! the format. e.g. "0" for PCMU or "8" for PCMA or "*" for MSRP.
-	const char* format;
-	//! whether the pay. type is dyn. or not
-	tsk_bool_t dyn;
-	uint32_t rate;
+    //! the type of the codec
+    tmedia_type_t type;
+    //! the codec identifier
+    tmedia_codec_id_t codec_id;
+    //! the name of the codec. e.g. "G.711U" or "G.711A" etc using in the sdp.
+    const char* name;
+    //! full description
+    const char* desc;
+    //! the format. e.g. "0" for PCMU or "8" for PCMA or "*" for MSRP.
+    const char* format;
+    //! whether the pay. type is dyn. or not
+    tsk_bool_t dyn;
+    uint32_t rate;
 
-	/* default values could be updated at any time */
-	struct{
-		int8_t channels;
-		uint8_t ptime;
-		/* ...to be continued */
-	} audio;
+    /* default values could be updated at any time */
+    struct {
+        int8_t channels;
+        uint8_t ptime;
+        /* ...to be continued */
+    } audio;
 
-	/* default values could be updated at any time */
-	struct{
-		unsigned width;
-		unsigned height;
-		unsigned fps;
-		/* ...to be continued */
-	} video;
+    /* default values could be updated at any time */
+    struct {
+        unsigned width;
+        unsigned height;
+        unsigned fps;
+        /* ...to be continued */
+    } video;
 
-	//! set parameters
-	int (*set) (tmedia_codec_t* , const struct tmedia_param_s*);
-	//! open the codec
-	int (*open) (tmedia_codec_t*);
-	//! close the codec
-	int (*close) (tmedia_codec_t*);
-	//! encode data
-	tsk_size_t (*encode) (tmedia_codec_t*, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size);
-	//! decode data
-	tsk_size_t (*decode) (tmedia_codec_t*, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr);
-	//! whether the codec can handle this sdp attribute
-	tsk_bool_t (* sdp_att_match) (const tmedia_codec_t*, const char* att_name, const char* att_value);
-	//! gets sdp attribute value. e.g. "mode-set=0,2,5,7; mode-change-period=2; mode-change-neighbor=1"
-	char* (* sdp_att_get) (const tmedia_codec_t*, const char* att_name);
+    //! set parameters
+    int (*set) (tmedia_codec_t* , const struct tmedia_param_s*);
+    //! open the codec
+    int (*open) (tmedia_codec_t*);
+    //! close the codec
+    int (*close) (tmedia_codec_t*);
+    //! encode data
+    tsk_size_t (*encode) (tmedia_codec_t*, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size);
+    //! decode data
+    tsk_size_t (*decode) (tmedia_codec_t*, const void* in_data, tsk_size_t in_size, void** out_data, tsk_size_t* out_max_size, const tsk_object_t* proto_hdr);
+    //! whether the codec can handle this sdp attribute
+    tsk_bool_t (* sdp_att_match) (const tmedia_codec_t*, const char* att_name, const char* att_value);
+    //! gets sdp attribute value. e.g. "mode-set=0,2,5,7; mode-change-period=2; mode-change-neighbor=1"
+    char* (* sdp_att_get) (const tmedia_codec_t*, const char* att_name);
 }
 tmedia_codec_plugin_def_t;
 
@@ -331,26 +327,25 @@ TINYMEDIA_API int tmedia_codec_parse_fmtp(const char* fmtp, unsigned* maxbr, uns
 TINYMEDIA_API int tmedia_codec_deinit(tmedia_codec_t* self);
 
 /** Audio codec */
-typedef struct tmedia_codec_audio_s
-{
-	TMEDIA_DECLARE_CODEC;
+typedef struct tmedia_codec_audio_s {
+    TMEDIA_DECLARE_CODEC;
 
-	struct{
-		// !negotiated decoding ptime
-		uint8_t ptime;
-		// !negotiated decoding channels
-		int8_t channels;
-		// ! timestamp multiplier
-		float timestamp_multiplier;
-	} in; //decoding direction
-	struct{
-		// !negotiated decoding ptime
-		uint8_t ptime;
-		// !negotiated encoding channels
-		int8_t channels;
-		// ! timestamp multiplier
-		float timestamp_multiplier;
-	} out; //encoding direction
+    struct {
+        // !negotiated decoding ptime
+        uint8_t ptime;
+        // !negotiated decoding channels
+        int8_t channels;
+        // ! timestamp multiplier
+        float timestamp_multiplier;
+    } in; //decoding direction
+    struct {
+        // !negotiated decoding ptime
+        uint8_t ptime;
+        // !negotiated encoding channels
+        int8_t channels;
+        // ! timestamp multiplier
+        float timestamp_multiplier;
+    } out; //encoding direction
 }
 tmedia_codec_audio_t;
 
@@ -373,37 +368,36 @@ tmedia_codec_audio_t;
 TINYMEDIA_API float tmedia_codec_audio_get_timestamp_multiplier(tmedia_codec_id_t id, uint32_t sample_rate);
 
 /** Video codec */
-typedef struct tmedia_codec_video_s
-{
-	TMEDIA_DECLARE_CODEC;
+typedef struct tmedia_codec_video_s {
+    TMEDIA_DECLARE_CODEC;
 
-	struct{
-		unsigned width;
-		unsigned height;
-		unsigned fps;
-		unsigned max_br;
-		unsigned max_mbps;
-		tmedia_chroma_t chroma;
-		tsk_bool_t flip;
+    struct {
+        unsigned width;
+        unsigned height;
+        unsigned fps;
+        unsigned max_br;
+        unsigned max_mbps;
+        tmedia_chroma_t chroma;
+        tsk_bool_t flip;
 
-		tmedia_codec_video_dec_cb_f callback;
-		tmedia_video_decode_result_xt result;
-	}in;// decoded
-	struct{
-		unsigned width;
-		unsigned height;
-		unsigned fps;
-		unsigned max_br;
-		unsigned max_mbps;
-		tmedia_chroma_t chroma;
-		tsk_bool_t flip;
+        tmedia_codec_video_dec_cb_f callback;
+        tmedia_video_decode_result_xt result;
+    } in; // decoded
+    struct {
+        unsigned width;
+        unsigned height;
+        unsigned fps;
+        unsigned max_br;
+        unsigned max_mbps;
+        tmedia_chroma_t chroma;
+        tsk_bool_t flip;
 
-		tmedia_codec_video_enc_cb_f callback;
-		tmedia_video_encode_result_xt result;
-	}out;// encoded
+        tmedia_codec_video_enc_cb_f callback;
+        tmedia_video_encode_result_xt result;
+    } out; // encoded
 
-	//! preferred video size
-	tmedia_pref_video_size_t pref_size;
+    //! preferred video size
+    tmedia_pref_video_size_t pref_size;
 }
 tmedia_codec_video_t;
 
@@ -424,13 +418,13 @@ tmedia_codec_video_t;
 #define tmedia_codec_video_init(self, name, desc, format) tmedia_codec_init(TMEDIA_CODEC(self), tmedia_video, name, desc, format)
 TINYMEDIA_API int tmedia_codec_video_set_enc_callback(tmedia_codec_video_t *self, tmedia_codec_video_enc_cb_f callback, const void* callback_data);
 TINYMEDIA_API int tmedia_codec_video_set_dec_callback(tmedia_codec_video_t *self, tmedia_codec_video_dec_cb_f callback, const void* callback_data);
+TINYMEDIA_API int tmedia_codec_video_clamp_out_size_to_range_max(tmedia_codec_video_t *self);
 #define tmedia_codec_video_deinit(self) tmedia_codec_deinit(TMEDIA_CODEC(self))
 
 
 /** MSRP codec */
-typedef struct tmedia_codec_msrp_s
-{
-	TMEDIA_DECLARE_CODEC;
+typedef struct tmedia_codec_msrp_s {
+    TMEDIA_DECLARE_CODEC;
 }
 tmedia_codec_msrp_t;
 
@@ -453,9 +447,8 @@ tmedia_codec_msrp_t;
 
 
 /** BFCP codec */
-typedef struct tmedia_codec_bfcp_s
-{
-	TMEDIA_DECLARE_CODEC;
+typedef struct tmedia_codec_bfcp_s {
+    TMEDIA_DECLARE_CODEC;
 }
 tmedia_codec_bfcp_t;
 #define TMEDIA_DECLARE_CODEC_BFCP tmedia_codec_bfcp_t __bfcp__

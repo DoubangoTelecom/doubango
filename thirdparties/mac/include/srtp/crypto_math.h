@@ -7,26 +7,26 @@
  * Cisco Systems, Inc.
  */
 /*
- *	
+ *
  * Copyright (c) 2001-2006 Cisco Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   Redistributions in binary form must reproduce the above
  *   copyright notice, this list of conditions and the following
  *   disclaimer in the documentation and/or other materials provided
  *   with the distribution.
- * 
+ *
  *   Neither the name of the Cisco Systems, Inc. nor the names of its
  *   contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -95,7 +95,7 @@ hex_string_to_v64(char *s);
 /* the matrix A[] is stored in column format, i.e., A[i] is
    the ith column of the matrix */
 
-uint8_t 
+uint8_t
 A_times_x_plus_b(uint8_t A[8], uint8_t x, uint8_t b);
 
 void
@@ -118,11 +118,11 @@ octet_string_set_to_zero(uint8_t *s, int len);
 
 
 
-/* 
+/*
  * the matrix A[] is stored in column format, i.e., A[i] is the ith
  * column of the matrix
 */
-uint8_t 
+uint8_t
 A_times_x_plus_b(uint8_t A[8], uint8_t x, uint8_t b);
 
 
@@ -165,8 +165,8 @@ A_times_x_plus_b(uint8_t A[8], uint8_t x, uint8_t b);
        + htonl(tmp >> 32);			\
   z->v32[0] = ntohl((uint32_t) tmp);		\
 }
-						
-#endif /* WORDS_BIGENDIAN */                      
+
+#endif /* WORDS_BIGENDIAN */
 #endif
 
 #ifdef DATATYPES_USE_MACROS  /* little functions are really macros */
@@ -176,7 +176,7 @@ A_times_x_plus_b(uint8_t A[8], uint8_t x, uint8_t b);
 #define v128_xor(z, x, y)         _v128_xor(z, x, y)
 #define v128_and(z, x, y)         _v128_and(z, x, y)
 #define v128_or(z, x, y)          _v128_or(z, x, y)
-#define v128_complement(x)        _v128_complement(x) 
+#define v128_complement(x)        _v128_complement(x)
 #define v128_is_eq(x, y)          _v128_is_eq(x, y)
 #define v128_xor_eq(x, y)         _v128_xor_eq(x, y)
 #define v128_get_bit(x, i)        _v128_get_bit(x, i)
@@ -202,7 +202,7 @@ void
 v128_and(v128_t *z, v128_t *x, v128_t *y);
 
 void
-v128_or(v128_t *z, v128_t *x, v128_t *y); 
+v128_or(v128_t *z, v128_t *x, v128_t *y);
 
 void
 v128_complement(v128_t *x);
@@ -211,10 +211,10 @@ int
 v128_get_bit(const v128_t *x, int i);
 
 void
-v128_set_bit(v128_t *x, int i) ;     
+v128_set_bit(v128_t *x, int i) ;
 
 void
-v128_clear_bit(v128_t *x, int i);    
+v128_clear_bit(v128_t *x, int i);
 
 void
 v128_set_bit_to(v128_t *x, int i, int y);

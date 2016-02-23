@@ -74,7 +74,8 @@ typedef enum {
     XML_SCHEMAS_BASE64BINARY,
     XML_SCHEMAS_ANYTYPE,
     XML_SCHEMAS_ANYSIMPLETYPE
-} xmlSchemaValType;
+}
+xmlSchemaValType;
 
 /*
  * XML Schemas defines multiple type of types.
@@ -104,8 +105,8 @@ typedef enum {
     XML_SCHEMA_TYPE_IDC_UNIQUE,
     XML_SCHEMA_TYPE_IDC_KEY,
     XML_SCHEMA_TYPE_IDC_KEYREF,
-    XML_SCHEMA_TYPE_PARTICLE = 25, 
-    XML_SCHEMA_TYPE_ATTRIBUTE_USE, 
+    XML_SCHEMA_TYPE_PARTICLE = 25,
+    XML_SCHEMA_TYPE_ATTRIBUTE_USE,
     XML_SCHEMA_FACET_MININCLUSIVE = 1000,
     XML_SCHEMA_FACET_MINEXCLUSIVE,
     XML_SCHEMA_FACET_MAXINCLUSIVE,
@@ -698,11 +699,11 @@ struct _xmlSchemaType {
  * references have been resolved.
  */
 #define XML_SCHEMAS_ELEM_INTERNAL_RESOLVED        1 << 8
- /**
- * XML_SCHEMAS_ELEM_CIRCULAR:
- *
- * a helper flag for the search of circular references.
- */
+/**
+* XML_SCHEMAS_ELEM_CIRCULAR:
+*
+* a helper flag for the search of circular references.
+*/
 #define XML_SCHEMAS_ELEM_CIRCULAR        1 << 9
 /**
  * XML_SCHEMAS_ELEM_BLOCK_ABSENT:

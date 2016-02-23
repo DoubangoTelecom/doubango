@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -46,7 +46,7 @@ TSIP_BEGIN_DECLS
 struct tsip_message_s;
 struct tsip_action_s;
 
-typedef uint64_t tsip_ssession_id_t;			
+typedef uint64_t tsip_ssession_id_t;
 #define TSIP_SSESSION_INVALID_ID				0
 #define TSIP_SSESSION_INVALID_HANDLE			tsk_null
 
@@ -59,26 +59,25 @@ typedef uint64_t tsip_ssession_id_t;
 
 #define TSIP_SSESSION(self) ((tsip_ssession_t*)(self))
 
-typedef enum tsip_ssession_param_type_e
-{
-	sstype_null = 0,
-	
-	sstype_header,
-	sstype_caps,
-	sstype_userdata,
-	sstype_to_str,
-	sstype_from_str,
-	sstype_to_obj,
-	sstype_from_obj,
-	sstype_nocontact,
-	sstype_expires,
-	sstype_silent_hangup,
-	sstype_sigcomp_id,
-	sstype_auth_ha1,
-	sstype_auth_impi,
-	sstype_parent_id,
-	sstype_ws_src,
-	sstype_media
+typedef enum tsip_ssession_param_type_e {
+    sstype_null = 0,
+
+    sstype_header,
+    sstype_caps,
+    sstype_userdata,
+    sstype_to_str,
+    sstype_from_str,
+    sstype_to_obj,
+    sstype_from_obj,
+    sstype_nocontact,
+    sstype_expires,
+    sstype_silent_hangup,
+    sstype_sigcomp_id,
+    sstype_auth_ha1,
+    sstype_auth_impi,
+    sstype_parent_id,
+    sstype_ws_src,
+    sstype_media
 }
 tsip_ssession_param_type_t;
 
@@ -105,42 +104,41 @@ tsip_ssession_param_type_t;
 #define TSIP_SSESSION_SET_MEDIA(...)													sstype_media, ##__VA_ARGS__
 #define TSIP_SSESSION_SET_NULL()														sstype_null
 
-typedef enum tsip_msession_param_type_e
-{
-	mstype_null = 0,
+typedef enum tsip_msession_param_type_e {
+    mstype_null = 0,
 
-	mstype_set_profile,
-	mstype_set_srtp_mode,
-	mstype_set_avpf_mode,
+    mstype_set_profile,
+    mstype_set_srtp_mode,
+    mstype_set_avpf_mode,
 
-	mstype_set_100rel,
-	mstype_set_rtcp,
-	mstype_set_rtcpmux,
-	mstype_set_ice,
-	mstype_set_ice_stun,
-	mstype_set_ice_turn,
-	mstype_set_stun_server,
-	mstype_set_stun_cred,
+    mstype_set_100rel,
+    mstype_set_rtcp,
+    mstype_set_rtcpmux,
+    mstype_set_ice,
+    mstype_set_ice_stun,
+    mstype_set_ice_turn,
+    mstype_set_stun_server,
+    mstype_set_stun_cred,
 
-	mstype_set_video_fps,
-	mstype_set_video_bw_up,
-	mstype_set_video_bw_down,
-	mstype_set_video_prefsize,
+    mstype_set_video_fps,
+    mstype_set_video_bw_up,
+    mstype_set_video_bw_down,
+    mstype_set_video_prefsize,
 
-	mstype_set_qos,
-	mstype_unset_qos,
+    mstype_set_qos,
+    mstype_unset_qos,
 
-	mstype_set_timers,
-	mstype_unset_timers,
+    mstype_set_timers,
+    mstype_unset_timers,
 
-	mstype_set_codecs,
+    mstype_set_codecs,
 
-	mstype_set_bypass_encoding,
-	mstype_set_bypass_decoding,
+    mstype_set_bypass_encoding,
+    mstype_set_bypass_decoding,
 
-	mstype_set_rtp_ssrc,
+    mstype_set_rtp_ssrc,
 
-	mstype_set_msrp_cb
+    mstype_set_msrp_cb
 }
 tsip_msession_param_type_t;
 
@@ -175,100 +173,99 @@ tsip_msession_param_type_t;
 
 #define TSIP_MSESSION_SET_NULL()			mstype_null
 
-typedef struct tsip_ssession_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	tsip_ssession_id_t id;
-	tsip_ssession_id_t id_parent; //for call transfer
-	unsigned owner:1;
-	
-	const struct tsip_stack_s* stack;
-	const void* userdata;
+typedef struct tsip_ssession_s {
+    TSK_DECLARE_OBJECT;
 
-	//=======
-	// SIP
-	//=======
-	tsk_params_L_t *caps;
-	tsk_params_L_t *headers;
-	
-	unsigned no_contact:1;
-	struct tsip_uri_s* from;
-	struct tsip_uri_s* to;
-	int64_t expires;
-	tsk_bool_t silent_hangup;
-	char* sigcomp_id;
-	char* auth_ha1;
-	char* auth_impi;
+    tsip_ssession_id_t id;
+    tsip_ssession_id_t id_parent; //for call transfer
+    unsigned owner:1;
 
-	//=======
-	// WebSocket
-	//=======
-	struct{
-		// used when the stack is running in webrtc2sip mode to store the 'origin' (a.k.a 'src')
-		struct{
-			char* host;
-			tsk_istr_t port;
-			char* proto;
-		} src;
-	} ws;
+    const struct tsip_stack_s* stack;
+    const void* userdata;
 
-	//=======
-	// Media
-	//=======
-	struct{
-		tmedia_type_t type;
-		tmedia_profile_t profile;
-		tmedia_srtp_mode_t srtp_mode;
-		tmedia_mode_t avpf_mode;
-		tmedia_codec_id_t codecs;
-		tsk_bool_t bypass_encoding;
-		tsk_bool_t bypass_decoding;
+    //=======
+    // SIP
+    //=======
+    tsk_params_L_t *caps;
+    tsk_params_L_t *headers;
 
-		/* Video */
-		int32_t video_fps;
-		int32_t video_bw_up;
-		int32_t video_bw_down;
-		tmedia_pref_video_size_t video_pref_size;
+    unsigned no_contact:1;
+    struct tsip_uri_s* from;
+    struct tsip_uri_s* to;
+    int64_t expires;
+    tsk_bool_t silent_hangup;
+    char* sigcomp_id;
+    char* auth_ha1;
+    char* auth_impi;
 
-		/* RTP*/
-		struct{
-			struct{
-				uint32_t audio;
-				uint32_t video;
-			}ssrc;
-		} rtp;
+    //=======
+    // WebSocket
+    //=======
+    struct {
+        // used when the stack is running in webrtc2sip mode to store the 'origin' (a.k.a 'src')
+        struct {
+            char* host;
+            tsk_istr_t port;
+            char* proto;
+        } src;
+    } ws;
 
-		/* Session timers */
-		struct{
-			char* refresher;
-			unsigned timeout;
-		} timers;
-		/* QoS */
-		struct{
-			tmedia_qos_stype_t type;
-			tmedia_qos_strength_t strength;
-		} qos;
-		/* MSRP */
-		struct{
-			tmedia_session_msrp_cb_f callback;
-		} msrp;
-		/* STUN */
-		struct{
-			char* username;
-			char* password;
-			char* hostname;
-			uint16_t port;
-		} stun;
+    //=======
+    // Media
+    //=======
+    struct {
+        tmedia_type_t type;
+        tmedia_profile_t profile;
+        tmedia_srtp_mode_t srtp_mode;
+        tmedia_mode_t avpf_mode;
+        tmedia_codec_id_t codecs;
+        tsk_bool_t bypass_encoding;
+        tsk_bool_t bypass_decoding;
 
-		/* Features */
-		unsigned enable_100rel:1;
-		unsigned enable_ice:1;
-		unsigned enable_icestun:1;
-		unsigned enable_iceturn:1;
-		unsigned enable_rtcp:1;
-		unsigned enable_rtcpmux:1;
-	} media;
+        /* Video */
+        int32_t video_fps;
+        int32_t video_bw_up;
+        int32_t video_bw_down;
+        tmedia_pref_video_size_t video_pref_size;
+
+        /* RTP*/
+        struct {
+            struct {
+                uint32_t audio;
+                uint32_t video;
+            } ssrc;
+        } rtp;
+
+        /* Session timers */
+        struct {
+            char* refresher;
+            unsigned timeout;
+        } timers;
+        /* QoS */
+        struct {
+            tmedia_qos_stype_t type;
+            tmedia_qos_strength_t strength;
+        } qos;
+        /* MSRP */
+        struct {
+            tmedia_session_msrp_cb_f callback;
+        } msrp;
+        /* STUN */
+        struct {
+            char* username;
+            char* password;
+            char* hostname;
+            uint16_t port;
+        } stun;
+
+        /* Features */
+        unsigned enable_100rel:1;
+        unsigned enable_ice:1;
+        unsigned enable_icestun:1;
+        unsigned enable_iceturn:1;
+        unsigned enable_rtcp:1;
+        unsigned enable_rtcpmux:1;
+    } media;
 }
 tsip_ssession_t;
 

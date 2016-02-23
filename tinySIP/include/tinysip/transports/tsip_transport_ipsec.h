@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -42,31 +42,29 @@ TSIP_BEGIN_DECLS
 
 #define TSIP_TRANSPORT_IPSEC(self)										((tsip_transport_ipsec_t*)(self))
 
-typedef struct tsip_ipsec_association_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsip_ipsec_association_s {
+    TSK_DECLARE_OBJECT;
 
-	const tsip_transport_t* transport;
+    const tsip_transport_t* transport;
 
-	tipsec_ctx_t* ctx;
-	
-	tnet_socket_t *socket_uc;
-	tnet_socket_t *socket_us;
+    tipsec_ctx_t* ctx;
 
-	tnet_ip_t ip_remote;
-	tnet_ip_t ip_local;
-	tnet_port_t port_local;
+    tnet_socket_t *socket_uc;
+    tnet_socket_t *socket_us;
+
+    tnet_ip_t ip_remote;
+    tnet_ip_t ip_local;
+    tnet_port_t port_local;
 }
 tsip_ipsec_association_t;
 
-typedef struct tsip_transport_ipsec_s
-{
-	TSIP_DECLARE_TRANSPORT;
-	
-	tsip_header_Security_Verifies_L_t* secVerifies;
+typedef struct tsip_transport_ipsec_s {
+    TSIP_DECLARE_TRANSPORT;
 
-	tsip_ipsec_association_t* asso_active;
-	tsip_ipsec_association_t* asso_temporary;
+    tsip_header_Security_Verifies_L_t* secVerifies;
+
+    tsip_ipsec_association_t* asso_active;
+    tsip_ipsec_association_t* asso_temporary;
 }
 tsip_transport_ipsec_t;
 

@@ -34,7 +34,7 @@ typedef enum {
     AV_CRC_32_IEEE,
     AV_CRC_32_IEEE_LE,  /*< reversed bitorder version of AV_CRC_32_IEEE */
     AV_CRC_MAX,         /*< Not part of public API! Do not use outside libavutil. */
-}AVCRCId;
+} AVCRCId;
 
 int av_crc_init(AVCRC *ctx, int le, int bits, uint32_t poly, int ctx_size);
 const AVCRC *av_crc_get_table(AVCRCId crc_id);

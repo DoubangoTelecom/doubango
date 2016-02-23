@@ -2,19 +2,19 @@
 * Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -35,23 +35,21 @@ TRTP_BEGIN_DECLS
 // RFC 3550 12.1 RTCP Packet Types
 // RFC 4585
 // RFC 5104 (FIXME: not supported yet!)
-typedef enum trtp_rtcp_packet_type_e
-{
-	trtp_rtcp_packet_type_sr = 200,
-	trtp_rtcp_packet_type_rr = 201,
-	trtp_rtcp_packet_type_sdes = 202,
-	trtp_rtcp_packet_type_bye = 203,
-	trtp_rtcp_packet_type_app = 204,
-	trtp_rtcp_packet_type_rtpfb = 205,
-	trtp_rtcp_packet_type_psfb = 206
+typedef enum trtp_rtcp_packet_type_e {
+    trtp_rtcp_packet_type_sr = 200,
+    trtp_rtcp_packet_type_rr = 201,
+    trtp_rtcp_packet_type_sdes = 202,
+    trtp_rtcp_packet_type_bye = 203,
+    trtp_rtcp_packet_type_app = 204,
+    trtp_rtcp_packet_type_rtpfb = 205,
+    trtp_rtcp_packet_type_psfb = 206
 }
 trtp_rtcp_packet_type_t;
 
-typedef struct trtp_rtcp_packet_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct trtp_rtcp_packet_s {
+    TSK_DECLARE_OBJECT;
 
-	struct trtp_rtcp_header_s *header;
+    struct trtp_rtcp_header_s *header;
 }
 trtp_rtcp_packet_t;
 

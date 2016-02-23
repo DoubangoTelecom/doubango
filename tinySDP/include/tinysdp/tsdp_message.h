@@ -1,18 +1,18 @@
 /*
 * Copyright (C) 2010-2015 Mamadou DIOP.
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -33,12 +33,11 @@
 
 TSDP_BEGIN_DECLS
 
-typedef struct tsdp_message_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsdp_message_s {
+    TSK_DECLARE_OBJECT;
 
-	//! List of @ref tsdp_header_t elements. 
-	tsdp_headers_L_t* headers;
+    //! List of @ref tsdp_header_t elements.
+    tsdp_headers_L_t* headers;
 }
 tsdp_message_t;
 
@@ -51,19 +50,19 @@ TINYSDP_API int tsdp_message_add_headers(tsdp_message_t *self, ...);
 
 #if defined(__SYMBIAN32__) && 0
 static void TSDP_MESSAGE_ADD_HEADER(tsdp_message_t *self, ...)
-	{
-		va_list ap;
-		tsdp_header_t *header;
-		const tsk_object_def_t *objdef;
-		
-		va_start(ap, self);
-		objdef = va_arg(ap, const tsk_object_def_t*);
-		header = (tsdp_header_t *)tsk_object_new_2(objdef, &ap);
-		va_end(ap);
+{
+    va_list ap;
+    tsdp_header_t *header;
+    const tsk_object_def_t *objdef;
 
-		tsdp_message_add_header(self, header);
-		tsk_object_unref(header);
-	}
+    va_start(ap, self);
+    objdef = va_arg(ap, const tsk_object_def_t*);
+    header = (tsdp_header_t *)tsk_object_new_2(objdef, &ap);
+    va_end(ap);
+
+    tsdp_message_add_header(self, header);
+    tsk_object_unref(header);
+}
 #else
 #define TSDP_MESSAGE_ADD_HEADER(self, objdef, ...)						\
 	{																	\

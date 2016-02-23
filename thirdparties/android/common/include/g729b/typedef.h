@@ -40,7 +40,7 @@ typedef int   Flag;
 #elif defined(__GNUC__) && !defined(__APPLE__)
 #	define G729_INLINE	__inline
 #else
-#	define G729_INLINE	
+#	define G729_INLINE
 #endif
 
 #if ANDROID || TARGET_OS_EMBEDDED || defined(_WIN32_WCE)

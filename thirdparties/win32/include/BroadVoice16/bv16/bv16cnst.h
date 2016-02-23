@@ -37,7 +37,7 @@
 #define MAXPP1 (MAXPP+1)/* MAXimum Pitch Period + 1  	  */
 
 /* Quantization parameters */
-#define VDIM		  4	/* excitation vector dimension */		
+#define VDIM		  4	/* excitation vector dimension */
 #define CBSZ		 16	/* excitation codebook size */
 #define PPCBSZ     32	/* pitch predictor codebook size */
 #define LGPORDER	  8	/* Log-Gain Predictor OODER */
@@ -120,7 +120,7 @@
 #define M2      MAXPPD1
 #define HDECF   (DECF/2)
 
-/* Front-end 150 Hz highpass filter */ 
+/* Front-end 150 Hz highpass filter */
 #define HPO 2 /* High-pass filter order */
 
 /* LPC weighting filter */

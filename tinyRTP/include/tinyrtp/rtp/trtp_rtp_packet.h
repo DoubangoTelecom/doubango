@@ -2,19 +2,19 @@
 * Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -37,23 +37,22 @@
 TRTP_BEGIN_DECLS
 
 
-typedef struct trtp_rtp_packet_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct trtp_rtp_packet_s {
+    TSK_DECLARE_OBJECT;
 
-	trtp_rtp_header_t* header;
+    trtp_rtp_header_t* header;
 
-	struct{
-		void* data;
-		const void* data_const; // never free()d. an alternative to "data"
-		tsk_size_t size;
-	} payload;
-	
-	/* extension header as per RFC 3550 section 5.3.1 */
-	struct{
-		void* data;
-		tsk_size_t size; /* contains the first two 16-bit fields */
-	} extension;
+    struct {
+        void* data;
+        const void* data_const; // never free()d. an alternative to "data"
+        tsk_size_t size;
+    } payload;
+
+    /* extension header as per RFC 3550 section 5.3.1 */
+    struct {
+        void* data;
+        tsk_size_t size; /* contains the first two 16-bit fields */
+    } extension;
 }
 trtp_rtp_packet_t;
 typedef tsk_list_t trtp_rtp_packets_L_t;

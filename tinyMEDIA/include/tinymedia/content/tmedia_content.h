@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -44,27 +44,25 @@ TMEDIA_BEGIN_DECLS
 #define TMEDIA_CONTENT(self)		((tmedia_content_t*)(self))
 
 /** Base object for all contents */
-typedef struct tmedia_content_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tmedia_content_s {
+    TSK_DECLARE_OBJECT;
 
-	const char* type;
-	//! plugin used to create the codec
-	const struct tmedia_content_plugin_def_s* plugin;
+    const char* type;
+    //! plugin used to create the codec
+    const struct tmedia_content_plugin_def_s* plugin;
 }
 tmedia_content_t;
 
 /** Virtual table used to define a content plugin */
-typedef struct tmedia_content_plugin_def_s
-{
-	//! object definition used to create an instance of the codec
-	const tsk_object_def_t* objdef;
+typedef struct tmedia_content_plugin_def_s {
+    //! object definition used to create an instance of the codec
+    const tsk_object_def_t* objdef;
 
-	//! e.g. 'message/CPIM'
-	const char* type;
+    //! e.g. 'message/CPIM'
+    const char* type;
 
-	int (*parse) (tmedia_content_t*, const void* in_data, tsk_size_t in_size);
-	tsk_buffer_t* (*get_data) (tmedia_content_t*);
+    int (*parse) (tmedia_content_t*, const void* in_data, tsk_size_t in_size);
+    tsk_buffer_t* (*get_data) (tmedia_content_t*);
 }
 tmedia_content_plugin_def_t;
 
@@ -86,11 +84,10 @@ TINYMEDIA_API int tmedia_content_deinit(tmedia_content_t* self);
 TINYMEDIA_API tsk_buffer_t* tmedia_content_get_data(tmedia_content_t* self);
 
 /** dummy content */
-typedef struct tmedia_content_dummy_s
-{
-	TMEDIA_DECLARE_CONTENT;
-	
-	tsk_buffer_t* data;
+typedef struct tmedia_content_dummy_s {
+    TMEDIA_DECLARE_CONTENT;
+
+    tsk_buffer_t* data;
 }
 tmedia_content_dummy_t;
 
@@ -101,13 +98,12 @@ TINYMEDIA_GEXTERN const tmedia_content_plugin_def_t *tmedia_content_dummy_plugin
 
 
 /** content header */
-typedef struct tmedia_content_header_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tmedia_content_header_s {
+    TSK_DECLARE_OBJECT;
 
-	char* name;
-	char* value;
-	tsk_params_L_t* params;
+    char* name;
+    char* value;
+    tsk_params_L_t* params;
 }
 tmedia_content_header_t;
 

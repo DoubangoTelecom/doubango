@@ -134,10 +134,12 @@ void av_fifo_drain(AVFifoBuffer *f, int size);
 static inline uint8_t *av_fifo_peek2(const AVFifoBuffer *f, int offs)
 {
     uint8_t *ptr = f->rptr + offs;
-    if (ptr >= f->end)
+    if (ptr >= f->end) {
         ptr = f->buffer + (ptr - f->end);
-    else if (ptr < f->buffer)
+    }
+    else if (ptr < f->buffer) {
         ptr = f->end - (f->buffer - ptr);
+    }
     return ptr;
 }
 

@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -38,18 +38,17 @@ TSIP_BEGIN_DECLS
 
 #define TSIP_EVENT(self)		((tsip_event_t*)(self))
 
-typedef enum tsip_event_type_e
-{	
-	tsip_event_invite,
-	tsip_event_message,
-	tsip_event_info,
-	tsip_event_options,
-	tsip_event_publish,
-	tsip_event_register,
-	tsip_event_subscribe,
-	
-	tsip_event_dialog,
-	tsip_event_stack,
+typedef enum tsip_event_type_e {
+    tsip_event_invite,
+    tsip_event_message,
+    tsip_event_info,
+    tsip_event_options,
+    tsip_event_publish,
+    tsip_event_register,
+    tsip_event_subscribe,
+
+    tsip_event_dialog,
+    tsip_event_stack,
 }
 tsip_event_type_t;
 
@@ -81,20 +80,19 @@ tsip_event_type_t;
 #define tsip_event_code_stack_disconnected			956
 
 
-typedef struct tsip_event_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsip_event_s {
+    TSK_DECLARE_OBJECT;
 
-	tsip_ssession_handle_t* ss;
+    tsip_ssession_handle_t* ss;
 
-	short code;
-	char *phrase;
+    short code;
+    char *phrase;
 
-	tsip_event_type_t type;
-	struct tsip_message_s *sipmessage;
+    tsip_event_type_t type;
+    struct tsip_message_s *sipmessage;
 
-	//! copy of stack user data (needed by sessionless events)
-	const void* userdata;
+    //! copy of stack user data (needed by sessionless events)
+    const void* userdata;
 }
 tsip_event_t;
 #define TSIP_DECLARE_EVENT	tsip_event_t __sipevent__

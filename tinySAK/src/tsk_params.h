@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -45,14 +45,13 @@ TSK_BEGIN_DECLS
 /**@ingroup tsk_params_group
 * Parameter.
 */
-typedef struct tsk_param_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsk_param_s {
+    TSK_DECLARE_OBJECT;
 
-	char *name;/**< The name of the parameter. */
-	char *value;/**< The value of the parameter. */
-	
-	tsk_bool_t tag;/**< tag to be used for any use case (e.g. validity of the parameter, whether to ignore the param., ...). Default value: @ref tsk_false.*/
+    char *name;/**< The name of the parameter. */
+    char *value;/**< The value of the parameter. */
+
+    tsk_bool_t tag;/**< tag to be used for any use case (e.g. validity of the parameter, whether to ignore the param., ...). Default value: @ref tsk_false.*/
 }
 tsk_param_t;
 

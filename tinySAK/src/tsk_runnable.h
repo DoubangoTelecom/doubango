@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -50,29 +50,28 @@ typedef void* (TSK_STDCALL *tsk_runnable_func_run)(void* self);
 /**@ingroup tsk_runnable_group
 * Runnable.
 */
-typedef struct tsk_runnable_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	const tsk_object_def_t *objdef;
-	
-	tsk_thread_handle_t* h_thread[2/*0=default,1=delayed*/];
-	tsk_runnable_func_run run;
-	tsk_thread_id_t id_thread; // no way to get this value from "h_thread" on WINXP
-	tsk_semaphore_handle_t *semaphore;
-	
-	tsk_bool_t running;
-	tsk_bool_t started;
-	tsk_bool_t initialized;
-	/** whether the enqueued data are important or not. 
-	* if yes, the thread will not be joined until all data in the queue have been consumed.
-	* default value: tsk_false
-	*/
-	tsk_bool_t important;
+typedef struct tsk_runnable_s {
+    TSK_DECLARE_OBJECT;
 
-	int32_t priority;
-	
-	tsk_list_t *objects;
+    const tsk_object_def_t *objdef;
+
+    tsk_thread_handle_t* h_thread[2/*0=default,1=delayed*/];
+    tsk_runnable_func_run run;
+    tsk_thread_id_t id_thread; // no way to get this value from "h_thread" on WINXP
+    tsk_semaphore_handle_t *semaphore;
+
+    tsk_bool_t running;
+    tsk_bool_t started;
+    tsk_bool_t initialized;
+    /** whether the enqueued data are important or not.
+    * if yes, the thread will not be joined until all data in the queue have been consumed.
+    * default value: tsk_false
+    */
+    tsk_bool_t important;
+
+    int32_t priority;
+
+    tsk_list_t *objects;
 }
 tsk_runnable_t;
 
@@ -106,7 +105,7 @@ TINYSAK_GEXTERN const tsk_object_def_t *tsk_runnable_def_t;
 		if(!TSK_RUNNABLE(self)->running &&  \
 			(!TSK_RUNNABLE(self)->important || (TSK_RUNNABLE(self)->important && TSK_LIST_IS_EMPTY(TSK_RUNNABLE(self)->objects)))) \
 			break;
-		
+
 
 #define TSK_RUNNABLE_RUN_END(self) \
 	} \
@@ -160,12 +159,13 @@ TINYSAK_GEXTERN const tsk_object_def_t *tsk_runnable_def_t;
 */
 #define TSK_RUNNABLE_POP_FIRST(self) \
 	tsk_list_pop_first_item(TSK_RUNNABLE(self)->objects)
-static tsk_list_item_t* TSK_RUNNABLE_POP_FIRST_SAFE(tsk_runnable_t* self){
-	tsk_list_item_t* item;
-	tsk_list_lock(self->objects);
-	item= tsk_list_pop_first_item(self->objects);
-	tsk_list_unlock(self->objects);
-	return item;
+static tsk_list_item_t* TSK_RUNNABLE_POP_FIRST_SAFE(tsk_runnable_t* self)
+{
+    tsk_list_item_t* item;
+    tsk_list_lock(self->objects);
+    item= tsk_list_pop_first_item(self->objects);
+    tsk_list_unlock(self->objects);
+    return item;
 }
 
 TSK_END_DECLS

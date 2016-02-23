@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -83,13 +83,13 @@
 #	define TDAV_BEGIN_DECLS extern "C" {
 #	define TDAV_END_DECLS }
 #else
-#	define TDAV_BEGIN_DECLS 
+#	define TDAV_BEGIN_DECLS
 #	define TDAV_END_DECLS
 #endif
 
 #ifdef _MSC_VER
 #if HAVE_FFMPEG // FFMPeg warnings (treated as errors)
-#	pragma warning (disable:4244) 
+#	pragma warning (disable:4244)
 #endif
 #	if !defined(__cplusplus)
 #	define inline __inline
@@ -111,7 +111,7 @@
 #endif
 
 #if HAVE_CONFIG_H
-	#include <config.h>
+#include <config.h>
 #endif
 
 #endif // TINYDAV_CONFIG_H

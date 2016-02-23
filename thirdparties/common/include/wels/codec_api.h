@@ -51,85 +51,87 @@ typedef unsigned char bool;
 #endif
 
 #ifdef __cplusplus
-class ISVCEncoder {
- public:
-  /*
-   * return: CM_RETURN: 0 - success; otherwise - failed;
-   */
-  virtual int EXTAPI Initialize (const SEncParamBase* pParam) = 0;
-  virtual int EXTAPI InitializeExt (const SEncParamExt* pParam) = 0;
+class ISVCEncoder
+{
+public:
+    /*
+     * return: CM_RETURN: 0 - success; otherwise - failed;
+     */
+    virtual int EXTAPI Initialize (const SEncParamBase* pParam) = 0;
+    virtual int EXTAPI InitializeExt (const SEncParamExt* pParam) = 0;
 
-  virtual int EXTAPI GetDefaultParams (SEncParamExt* pParam) = 0;
+    virtual int EXTAPI GetDefaultParams (SEncParamExt* pParam) = 0;
 
-  virtual int EXTAPI Uninitialize() = 0;
+    virtual int EXTAPI Uninitialize() = 0;
 
-  /*
-   * return: 0 - success; otherwise -failed;
-   */
-  virtual int EXTAPI EncodeFrame (const SSourcePicture* kpSrcPic, SFrameBSInfo* pBsInfo) = 0;
-  /*
-   * return: 0 - success; otherwise - failed;
-   */
-  virtual int EXTAPI EncodeParameterSets (SFrameBSInfo* pBsInfo) = 0;
+    /*
+     * return: 0 - success; otherwise -failed;
+     */
+    virtual int EXTAPI EncodeFrame (const SSourcePicture* kpSrcPic, SFrameBSInfo* pBsInfo) = 0;
+    /*
+     * return: 0 - success; otherwise - failed;
+     */
+    virtual int EXTAPI EncodeParameterSets (SFrameBSInfo* pBsInfo) = 0;
 
-  /*
-   * return: 0 - success; otherwise - failed;
-   */
-  virtual int EXTAPI PauseFrame (const SSourcePicture* kpSrcPic, SFrameBSInfo* pBsInfo) = 0;
+    /*
+     * return: 0 - success; otherwise - failed;
+     */
+    virtual int EXTAPI PauseFrame (const SSourcePicture* kpSrcPic, SFrameBSInfo* pBsInfo) = 0;
 
-  /*
-   * return: 0 - success; otherwise - failed;
-   */
-  virtual int EXTAPI ForceIntraFrame (bool bIDR) = 0;
+    /*
+     * return: 0 - success; otherwise - failed;
+     */
+    virtual int EXTAPI ForceIntraFrame (bool bIDR) = 0;
 
-  /************************************************************************
-   * InDataFormat, IDRInterval, SVC Encode Param, Frame Rate, Bitrate,..
-   ************************************************************************/
-  /*
-   * return: CM_RETURN: 0 - success; otherwise - failed;
-   */
-  virtual int EXTAPI SetOption (ENCODER_OPTION eOptionId, void* pOption) = 0;
-  virtual int EXTAPI GetOption (ENCODER_OPTION eOptionId, void* pOption) = 0;
-  virtual ~ISVCEncoder() {}
+    /************************************************************************
+     * InDataFormat, IDRInterval, SVC Encode Param, Frame Rate, Bitrate,..
+     ************************************************************************/
+    /*
+     * return: CM_RETURN: 0 - success; otherwise - failed;
+     */
+    virtual int EXTAPI SetOption (ENCODER_OPTION eOptionId, void* pOption) = 0;
+    virtual int EXTAPI GetOption (ENCODER_OPTION eOptionId, void* pOption) = 0;
+    virtual ~ISVCEncoder() {}
 };
 
-class ISVCDecoder {
- public:
-  virtual long EXTAPI Initialize (const SDecodingParam* pParam) = 0;
-  virtual long EXTAPI Uninitialize() = 0;
+class ISVCDecoder
+{
+public:
+    virtual long EXTAPI Initialize (const SDecodingParam* pParam) = 0;
+    virtual long EXTAPI Uninitialize() = 0;
 
-  virtual DECODING_STATE EXTAPI DecodeFrame (const unsigned char* pSrc,
-      const int iSrcLen,
-      unsigned char** ppDst,
-      int* pStride,
-      int& iWidth,
-      int& iHeight) = 0;
-  /*
-   * return: 0 - success; otherwise -failed;
-   */
-  virtual DECODING_STATE EXTAPI DecodeFrame2 (const unsigned char* pSrc,
-      const int iSrcLen,
-      unsigned char** ppDst,
-      SBufferInfo* pDstInfo) = 0;
+    virtual DECODING_STATE EXTAPI DecodeFrame (const unsigned char* pSrc,
+            const int iSrcLen,
+            unsigned char** ppDst,
+            int* pStride,
+            int& iWidth,
+            int& iHeight) = 0;
+    /*
+     * return: 0 - success; otherwise -failed;
+     */
+    virtual DECODING_STATE EXTAPI DecodeFrame2 (const unsigned char* pSrc,
+            const int iSrcLen,
+            unsigned char** ppDst,
+            SBufferInfo* pDstInfo) = 0;
 
-  /*
-   *  this API does not work for now!! This is for future use to support non-I420 color format output.
-   */
-  virtual DECODING_STATE EXTAPI DecodeFrameEx (const unsigned char* pSrc,
-      const int iSrcLen,
-      unsigned char* pDst,
-      int iDstStride,
-      int& iDstLen,
-      int& iWidth,
-      int& iHeight,
-      int& iColorFormat) = 0;
+    /*
+     *  this API does not work for now!! This is for future use to support non-I420 color format output.
+     */
+    virtual DECODING_STATE EXTAPI DecodeFrameEx (const unsigned char* pSrc,
+            const int iSrcLen,
+            unsigned char* pDst,
+            int iDstStride,
+            int& iDstLen,
+            int& iWidth,
+            int& iHeight,
+            int& iColorFormat) = 0;
 
-  /*************************************************************************
-   * OutDataFormat, Eos Flag, EC method, ...
-   *************************************************************************/
-  virtual long EXTAPI SetOption (DECODER_OPTION eOptionId, void* pOption) = 0;
-  virtual long EXTAPI GetOption (DECODER_OPTION eOptionId, void* pOption) = 0;
-  virtual ~ISVCDecoder() {}
+    /*************************************************************************
+     * OutDataFormat, Eos Flag, EC method, ...
+     *************************************************************************/
+    virtual long EXTAPI SetOption (DECODER_OPTION eOptionId, void* pOption) = 0;
+    virtual long EXTAPI GetOption (DECODER_OPTION eOptionId, void* pOption) = 0;
+    virtual ~ISVCDecoder() {}
 };
 
 
@@ -141,53 +143,53 @@ typedef struct ISVCEncoderVtbl ISVCEncoderVtbl;
 typedef const ISVCEncoderVtbl* ISVCEncoder;
 struct ISVCEncoderVtbl {
 
-int (*Initialize) (ISVCEncoder*, const SEncParamBase* pParam);
-int (*InitializeExt) (ISVCEncoder*, const SEncParamExt* pParam);
+    int (*Initialize) (ISVCEncoder*, const SEncParamBase* pParam);
+    int (*InitializeExt) (ISVCEncoder*, const SEncParamExt* pParam);
 
-int (*GetDefaultParams) (ISVCEncoder*, SEncParamExt* pParam);
+    int (*GetDefaultParams) (ISVCEncoder*, SEncParamExt* pParam);
 
-int (*Uninitialize) (ISVCEncoder*);
+    int (*Uninitialize) (ISVCEncoder*);
 
-int (*EncodeFrame) (ISVCEncoder*, const SSourcePicture* kpSrcPic, SFrameBSInfo* pBsInfo);
-int (*EncodeParameterSets) (ISVCEncoder*, SFrameBSInfo* pBsInfo);
+    int (*EncodeFrame) (ISVCEncoder*, const SSourcePicture* kpSrcPic, SFrameBSInfo* pBsInfo);
+    int (*EncodeParameterSets) (ISVCEncoder*, SFrameBSInfo* pBsInfo);
 
-int (*PauseFrame) (ISVCEncoder*, const SSourcePicture* kpSrcPic, SFrameBSInfo* pBsInfo);
+    int (*PauseFrame) (ISVCEncoder*, const SSourcePicture* kpSrcPic, SFrameBSInfo* pBsInfo);
 
-int (*ForceIntraFrame) (ISVCEncoder*, bool bIDR);
+    int (*ForceIntraFrame) (ISVCEncoder*, bool bIDR);
 
-int (*SetOption) (ISVCEncoder*, ENCODER_OPTION eOptionId, void* pOption);
-int (*GetOption) (ISVCEncoder*, ENCODER_OPTION eOptionId, void* pOption);
+    int (*SetOption) (ISVCEncoder*, ENCODER_OPTION eOptionId, void* pOption);
+    int (*GetOption) (ISVCEncoder*, ENCODER_OPTION eOptionId, void* pOption);
 };
 
 typedef struct ISVCDecoderVtbl ISVCDecoderVtbl;
 typedef const ISVCDecoderVtbl* ISVCDecoder;
 struct ISVCDecoderVtbl {
-long (*Initialize) (ISVCDecoder*, const SDecodingParam* pParam);
-long (*Uninitialize) (ISVCDecoder*);
+    long (*Initialize) (ISVCDecoder*, const SDecodingParam* pParam);
+    long (*Uninitialize) (ISVCDecoder*);
 
-DECODING_STATE (*DecodeFrame) (ISVCDecoder*, const unsigned char* pSrc,
-                               const int iSrcLen,
-                               unsigned char** ppDst,
-                               int* pStride,
-                               int* iWidth,
-                               int* iHeight);
+    DECODING_STATE (*DecodeFrame) (ISVCDecoder*, const unsigned char* pSrc,
+                                   const int iSrcLen,
+                                   unsigned char** ppDst,
+                                   int* pStride,
+                                   int* iWidth,
+                                   int* iHeight);
 
-DECODING_STATE (*DecodeFrame2) (ISVCDecoder*, const unsigned char* pSrc,
-                                const int iSrcLen,
-                                unsigned char** ppDst,
-                                SBufferInfo* pDstInfo);
+    DECODING_STATE (*DecodeFrame2) (ISVCDecoder*, const unsigned char* pSrc,
+                                    const int iSrcLen,
+                                    unsigned char** ppDst,
+                                    SBufferInfo* pDstInfo);
 
-DECODING_STATE (*DecodeFrameEx) (ISVCDecoder*, const unsigned char* pSrc,
-                                 const int iSrcLen,
-                                 unsigned char* pDst,
-                                 int iDstStride,
-                                 int* iDstLen,
-                                 int* iWidth,
-                                 int* iHeight,
-                                 int* iColorFormat);
+    DECODING_STATE (*DecodeFrameEx) (ISVCDecoder*, const unsigned char* pSrc,
+                                     const int iSrcLen,
+                                     unsigned char* pDst,
+                                     int iDstStride,
+                                     int* iDstLen,
+                                     int* iWidth,
+                                     int* iHeight,
+                                     int* iColorFormat);
 
-long (*SetOption) (ISVCDecoder*, DECODER_OPTION eOptionId, void* pOption);
-long (*GetOption) (ISVCDecoder*, DECODER_OPTION eOptionId, void* pOption);
+    long (*SetOption) (ISVCDecoder*, DECODER_OPTION eOptionId, void* pOption);
+    long (*GetOption) (ISVCDecoder*, DECODER_OPTION eOptionId, void* pOption);
 };
 #endif
 

@@ -1,17 +1,17 @@
 /* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 */
@@ -72,13 +72,13 @@
 #	define DOUBANGO_AUDIO_WEBRTC_BEGIN_DECLS extern "C" {
 #	define DOUBANGO_AUDIO_WEBRTC_END_DECLS }
 #else
-#	define DOUBANGO_AUDIO_WEBRTC_BEGIN_DECLS 
+#	define DOUBANGO_AUDIO_WEBRTC_BEGIN_DECLS
 #	define DOUBANGO_AUDIO_WEBRTC_END_DECLS
 #endif
 
 #ifdef _MSC_VER
 #if HAVE_FFMPEG // FFMPeg warnings (treated as errors)
-#	pragma warning (disable:4244) 
+#	pragma warning (disable:4244)
 #endif
 #	define inline __inline
 #	define _CRT_SECURE_NO_WARNINGS
@@ -96,7 +96,7 @@
 #endif
 
 #if HAVE_CONFIG_H
-	#include "../config.h"
+#include "../config.h"
 #endif
 
 #if DOUBANGO_AUDIO_WEBRTC_UNDER_WINDOWS
@@ -113,22 +113,30 @@
 #define ANDROID_DEBUG_TAG "plugin_audio_webrtc" // DDMS log tag when using eclise
 static void DOUBANGO_AUDIO_WEBRTC_DEBUG_ANY(int level, const char* fmt, ...)
 {
-	char* message = tsk_null;
-	va_list ap;
-	va_start(ap, fmt);
-	tsk_sprintf_2(&message, fmt, &ap);
+    char* message = tsk_null;
+    va_list ap;
+    va_start(ap, fmt);
+    tsk_sprintf_2(&message, fmt, &ap);
 
-	if(message){
-		switch(level){
-			case DEBUG_LEVEL_INFO: __android_log_write(ANDROID_LOG_INFO, ANDROID_DEBUG_TAG, message); break;
-			case DEBUG_LEVEL_WARN: __android_log_write(ANDROID_LOG_WARN, ANDROID_DEBUG_TAG, message); break;
-			case DEBUG_LEVEL_ERROR: __android_log_write(ANDROID_LOG_ERROR, ANDROID_DEBUG_TAG, message); break;
-			case DEBUG_LEVEL_FATAL: __android_log_write(ANDROID_LOG_FATAL, ANDROID_DEBUG_TAG, message); break;
-		}
-		TSK_FREE(message);
-	}
+    if(message) {
+        switch(level) {
+        case DEBUG_LEVEL_INFO:
+            __android_log_write(ANDROID_LOG_INFO, ANDROID_DEBUG_TAG, message);
+            break;
+        case DEBUG_LEVEL_WARN:
+            __android_log_write(ANDROID_LOG_WARN, ANDROID_DEBUG_TAG, message);
+            break;
+        case DEBUG_LEVEL_ERROR:
+            __android_log_write(ANDROID_LOG_ERROR, ANDROID_DEBUG_TAG, message);
+            break;
+        case DEBUG_LEVEL_FATAL:
+            __android_log_write(ANDROID_LOG_FATAL, ANDROID_DEBUG_TAG, message);
+            break;
+        }
+        TSK_FREE(message);
+    }
 
-	va_end(ap);
+    va_end(ap);
 }
 #define DOUBANGO_AUDIO_WEBRTC_DEBUG_INFO(FMT, ...) DOUBANGO_AUDIO_WEBRTC_DEBUG_ANY(DEBUG_LEVEL_INFO, FMT, ##__VA_ARGS__)
 #define DOUBANGO_AUDIO_WEBRTC_DEBUG_WARN(FMT, ...) DOUBANGO_AUDIO_WEBRTC_DEBUG_ANY(DEBUG_LEVEL_WARN, FMT, ##__VA_ARGS__)

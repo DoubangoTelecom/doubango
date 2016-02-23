@@ -2,19 +2,19 @@
 * Copyright (C) 2009 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -42,12 +42,11 @@ TMSRP_BEGIN_DECLS
 
 /** The type of the authority host.
 */
-typedef enum tmsrp_host_type_e
-{
-	tmsrp_host_unknown,
-	tmsrp_host_hostname,
-	tmsrp_host_ipv4,
-	tmsrp_host_ipv6
+typedef enum tmsrp_host_type_e {
+    tmsrp_host_unknown,
+    tmsrp_host_hostname,
+    tmsrp_host_ipv4,
+    tmsrp_host_ipv6
 }
 tmsrp_host_type_t;
 
@@ -56,21 +55,20 @@ tmsrp_host_type_t;
  *
  * @brief	MSRP/MSRPS/TEL URI.
 **/
-typedef struct tmsrp_uri_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tmsrp_uri_s {
+    TSK_DECLARE_OBJECT;
 
-	char *scheme;
-	struct{
-		char* userinfo;
-		tmsrp_host_type_t host_type; /**< IPv4 or IPv6 or domain name. */
-		char* host;
-		int32_t port;
-	}authority;
-	char* session_id;
-	char* transport;
-	
-	tsk_params_L_t *params; /**< list of @ref tsk_param_t elements containing all parameters. */
+    char *scheme;
+    struct {
+        char* userinfo;
+        tmsrp_host_type_t host_type; /**< IPv4 or IPv6 or domain name. */
+        char* host;
+        int32_t port;
+    } authority;
+    char* session_id;
+    char* transport;
+
+    tsk_params_L_t *params; /**< list of @ref tsk_param_t elements containing all parameters. */
 }
 tmsrp_uri_t;
 

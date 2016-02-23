@@ -27,17 +27,17 @@
 TNET_BEGIN_DECLS
 
 typedef struct tnet_proxyinfo_s {
-	TSK_DECLARE_OBJECT;
+    TSK_DECLARE_OBJECT;
 
-	tnet_proxy_type_t type;
-	char* autoconfig_url;
-	tsk_bool_t autodetect;
-	char* bypass_list;
+    tnet_proxy_type_t type;
+    char* autoconfig_url;
+    tsk_bool_t autodetect;
+    char* bypass_list;
     char* hostname;
     tnet_socket_type_t socket_type;
     tnet_port_t port;
-	char* username;
-	char* password;
+    char* username;
+    char* password;
 }
 tnet_proxyinfo_t;
 

@@ -2,17 +2,17 @@
 * Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * This file is part of Open Source Doubango Framework.
-* 
+*
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-* 
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -40,26 +40,25 @@ TMEDIA_BEGIN_DECLS
 #	define TMED_CONVERTER_VIDEO_MAX_PLUGINS			0x0F
 #endif
 
-typedef struct tmedia_converter_video_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	tsk_size_t srcWidth;
-	tsk_size_t srcHeight;
+typedef struct tmedia_converter_video_s {
+    TSK_DECLARE_OBJECT;
 
-	tsk_size_t dstWidth;
-	tsk_size_t dstHeight;
+    tsk_size_t srcWidth;
+    tsk_size_t srcHeight;
 
-	tmedia_chroma_t srcChroma;
-	tmedia_chroma_t dstChroma;
+    tsk_size_t dstWidth;
+    tsk_size_t dstHeight;
 
-	// one shot parameters
-	int rotation;
-	tsk_bool_t flip;
-	tsk_bool_t mirror;
-	tsk_bool_t scale_rotated_frames;
+    tmedia_chroma_t srcChroma;
+    tmedia_chroma_t dstChroma;
 
-	const struct tmedia_converter_video_plugin_def_s* plugin;
+    // one shot parameters
+    int rotation;
+    tsk_bool_t flip;
+    tsk_bool_t mirror;
+    tsk_bool_t scale_rotated_frames;
+
+    const struct tmedia_converter_video_plugin_def_s* plugin;
 }
 tmedia_converter_video_t;
 
@@ -93,13 +92,12 @@ tmedia_converter_video_t;
 	(_self)->plugin->process((_self), (_buffer), (_size), (_output), (_output_max_size))
 
 /** Virtual table used to define a consumer plugin */
-typedef struct tmedia_converter_video_plugin_def_s
-{
-	//! object definition used to create an instance of the converter
-	const tsk_object_def_t* objdef;
+typedef struct tmedia_converter_video_plugin_def_s {
+    //! object definition used to create an instance of the converter
+    const tsk_object_def_t* objdef;
 
-	int (* init) ( struct tmedia_converter_video_s* self, tsk_size_t srcWidth, tsk_size_t srcHeight, tmedia_chroma_t srcChroma, tsk_size_t dstWidth, tsk_size_t dstHeight, tmedia_chroma_t dstChroma );
-	tsk_size_t (* process) ( struct tmedia_converter_video_s* self, const void* buffer, tsk_size_t buffer_size, void** output, tsk_size_t* output_max_size );
+    int (* init) ( struct tmedia_converter_video_s* self, tsk_size_t srcWidth, tsk_size_t srcHeight, tmedia_chroma_t srcChroma, tsk_size_t dstWidth, tsk_size_t dstHeight, tmedia_chroma_t dstChroma );
+    tsk_size_t (* process) ( struct tmedia_converter_video_s* self, const void* buffer, tsk_size_t buffer_size, void** output, tsk_size_t* output_max_size );
 }
 tmedia_converter_video_plugin_def_t;
 

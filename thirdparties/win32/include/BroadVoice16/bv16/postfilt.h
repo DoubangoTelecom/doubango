@@ -26,9 +26,9 @@
 ******************************************************************************/
 
 void postfilter(
-Word16 *s,    /* input : quantized speech signal         */
-Word16 pp,    /* input : pitch period                    */
-Word16 *ma_a,
-Word16 *b_prv,
-Word16 *pp_prv,
-Word16 *e);   /* output: enhanced speech signal          */
+    Word16 *s,    /* input : quantized speech signal         */
+    Word16 pp,    /* input : pitch period                    */
+    Word16 *ma_a,
+    Word16 *b_prv,
+    Word16 *pp_prv,
+    Word16 *e);   /* output: enhanced speech signal          */

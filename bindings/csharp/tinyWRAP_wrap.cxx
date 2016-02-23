@@ -1488,6 +1488,194 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_ActionConfig_setMediaInt(void * jarg1, int 
 }
 
 
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_QoS(void * jarg1) {
+  QoS *arg1 = (QoS *) 0 ;
+  
+  arg1 = (QoS *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_QoS_getQavg(void * jarg1) {
+  float jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  float result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (float)(arg1)->getQavg();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_QoS_getQ1(void * jarg1) {
+  float jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  float result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (float)(arg1)->getQ1();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_QoS_getQ2(void * jarg1) {
+  float jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  float result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (float)(arg1)->getQ2();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_QoS_getQ3(void * jarg1) {
+  float jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  float result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (float)(arg1)->getQ3();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_QoS_getQ4(void * jarg1) {
+  float jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  float result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (float)(arg1)->getQ4();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT float SWIGSTDCALL CSharp_QoS_getQ5(void * jarg1) {
+  float jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  float result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (float)(arg1)->getQ5();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_QoS_getVideoInWidth(void * jarg1) {
+  unsigned int jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  unsigned int result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (unsigned int)(arg1)->getVideoInWidth();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_QoS_getVideoOutWidth(void * jarg1) {
+  unsigned int jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  unsigned int result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (unsigned int)(arg1)->getVideoOutWidth();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_QoS_getVideoInHeight(void * jarg1) {
+  unsigned int jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  unsigned int result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (unsigned int)(arg1)->getVideoInHeight();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_QoS_getVideoOutHeight(void * jarg1) {
+  unsigned int jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  unsigned int result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (unsigned int)(arg1)->getVideoOutHeight();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_QoS_getBandwidthDownKbps(void * jarg1) {
+  unsigned int jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  unsigned int result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (unsigned int)(arg1)->getBandwidthDownKbps();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_QoS_getBandwidthUpKbps(void * jarg1) {
+  unsigned int jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  unsigned int result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (unsigned int)(arg1)->getBandwidthUpKbps();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_QoS_getVideoInAvgFps(void * jarg1) {
+  unsigned int jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  unsigned int result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (unsigned int)(arg1)->getVideoInAvgFps();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_QoS_getVideoDecAvgTime(void * jarg1) {
+  unsigned int jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  unsigned int result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (unsigned int)(arg1)->getVideoDecAvgTime();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_QoS_getVideoEncAvgTime(void * jarg1) {
+  unsigned int jresult ;
+  QoS *arg1 = (QoS *) 0 ;
+  unsigned int result;
+  
+  arg1 = (QoS *)jarg1; 
+  result = (unsigned int)(arg1)->getVideoEncAvgTime();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void SWIGSTDCALL CSharp_delete_Codec(void * jarg1) {
   Codec *arg1 = (Codec *) 0 ;
   
@@ -1618,6 +1806,20 @@ SWIGEXPORT int SWIGSTDCALL CSharp_MediaSessionMgr_sessionGetInt32(void * jarg1, 
   arg3 = (char *)jarg3; 
   result = (int32_t)(arg1)->sessionGetInt32(arg2,(char const *)arg3);
   jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_MediaSessionMgr_sessionGetQoS(void * jarg1, int jarg2) {
+  void * jresult ;
+  MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+  twrap_media_type_t arg2 ;
+  QoS *result = 0 ;
+  
+  arg1 = (MediaSessionMgr *)jarg1; 
+  arg2 = (twrap_media_type_t)jarg2; 
+  result = (QoS *)(arg1)->sessionGetQoS(arg2);
+  jresult = (void *)result; 
   return jresult;
 }
 
@@ -1873,6 +2075,32 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetPrefVideoS
   
   arg1 = (tmedia_pref_video_size_t)jarg1; 
   result = (bool)MediaSessionMgr::defaultsSetPrefVideoSize(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetPrefVideoSizeOutRange(int jarg1, int jarg2) {
+  unsigned int jresult ;
+  tmedia_pref_video_size_t arg1 ;
+  tmedia_pref_video_size_t arg2 ;
+  bool result;
+  
+  arg1 = (tmedia_pref_video_size_t)jarg1; 
+  arg2 = (tmedia_pref_video_size_t)jarg2; 
+  result = (bool)MediaSessionMgr::defaultsSetPrefVideoSizeOutRange(arg1,arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetAdaptativeVideoSizeOutEnabled(arg1);
   jresult = result; 
   return jresult;
 }

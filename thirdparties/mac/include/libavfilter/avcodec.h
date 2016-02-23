@@ -63,7 +63,7 @@ AVFilterBufferRef *avfilter_get_video_buffer_ref_from_frame(const AVFrame *frame
  * @param perms permissions to assign to the new buffer reference
  */
 AVFilterBufferRef *avfilter_get_audio_buffer_ref_from_frame(const AVFrame *frame,
-                                                            int perms);
+        int perms);
 
 /**
  * Create and return a buffer reference from the data and properties
@@ -72,8 +72,8 @@ AVFilterBufferRef *avfilter_get_audio_buffer_ref_from_frame(const AVFrame *frame
  * @param perms permissions to assign to the new buffer reference
  */
 AVFilterBufferRef *avfilter_get_buffer_ref_from_frame(enum AVMediaType type,
-                                                      const AVFrame *frame,
-                                                      int perms);
+        const AVFrame *frame,
+        int perms);
 
 #ifdef FF_API_FILL_FRAME
 /**
@@ -87,7 +87,7 @@ AVFilterBufferRef *avfilter_get_buffer_ref_from_frame(enum AVMediaType type,
  */
 attribute_deprecated
 int avfilter_fill_frame_from_audio_buffer_ref(AVFrame *frame,
-                                              const AVFilterBufferRef *samplesref);
+        const AVFilterBufferRef *samplesref);
 
 /**
  * Fill an AVFrame with the information stored in picref.
@@ -100,7 +100,7 @@ int avfilter_fill_frame_from_audio_buffer_ref(AVFrame *frame,
  */
 attribute_deprecated
 int avfilter_fill_frame_from_video_buffer_ref(AVFrame *frame,
-                                              const AVFilterBufferRef *picref);
+        const AVFilterBufferRef *picref);
 
 /**
  * Fill an AVFrame with information stored in ref.

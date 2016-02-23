@@ -1,19 +1,19 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 * Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -60,7 +60,7 @@
 	"a=rtpmap:31 H261/90000\r\n" \
 	"a=rtpmap:32 MPV/90000\r\n" \
 	"a=recvonly\r\n"
-	
+
 #define SDP_MSG2 \
 	"v=0\r\n"
 
@@ -96,191 +96,191 @@ void test_M();
 
 void test_parser()
 {
-	tsdp_message_t *message = tsk_null;
-	char* str;
-	
-	//test_caps();
-	//test_holdresume();
-	//test_M();
+    tsdp_message_t *message = tsk_null;
+    char* str;
 
-	//
-	// deserialize/serialize the message
-	//
-	if((message = tsdp_message_parse(SDP_MSG_TO_TEST, strlen(SDP_MSG_TO_TEST)))){
+    //test_caps();
+    //test_holdresume();
+    //test_M();
 
-		/* serialize the message */
-		if((str = tsdp_message_tostring(message))){
-			TSK_DEBUG_INFO("SDP Message=\n%s", str);
-			TSK_FREE(str);
-		}
+    //
+    // deserialize/serialize the message
+    //
+    if((message = tsdp_message_parse(SDP_MSG_TO_TEST, strlen(SDP_MSG_TO_TEST)))) {
 
-		TSK_OBJECT_SAFE_FREE(message);
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to parse SDP message.");
-	}	
+        /* serialize the message */
+        if((str = tsdp_message_tostring(message))) {
+            TSK_DEBUG_INFO("SDP Message=\n%s", str);
+            TSK_FREE(str);
+        }
 
-	//
-	// create empty message
-	//
-	if((message = tsdp_message_create_empty("127.0.0.1", tsk_false, 1))){
+        TSK_OBJECT_SAFE_FREE(message);
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to parse SDP message.");
+    }
 
-		/* add media */
-		tsdp_message_add_media(message, "audio", 8956, "RTP/AVP",
-			TSDP_HEADER_I_VA_ARGS("this is the information line"),
-			
-			// pcmu
-			TSDP_FMT_VA_ARGS("0"),
-			TSDP_HEADER_A_VA_ARGS("rtpmap", "0 pcmu/8000"),
-			TSDP_HEADER_A_VA_ARGS("3gpp_sync_info", "No Sync"),
+    //
+    // create empty message
+    //
+    if((message = tsdp_message_create_empty("127.0.0.1", tsk_false, 1))) {
 
-			// pcma
-			TSDP_FMT_VA_ARGS("8"),
-			TSDP_HEADER_A_VA_ARGS("rtpmap", "8 pcma/8000"),
+        /* add media */
+        tsdp_message_add_media(message, "audio", 8956, "RTP/AVP",
+                               TSDP_HEADER_I_VA_ARGS("this is the information line"),
 
-			// telephone event
-			TSDP_FMT_VA_ARGS("101"),
-			TSDP_HEADER_A_VA_ARGS("rtpmap", "101 telephone-event/8000"),
-			TSDP_HEADER_A_VA_ARGS("fmtp", "101 0-11"),
+                               // pcmu
+                               TSDP_FMT_VA_ARGS("0"),
+                               TSDP_HEADER_A_VA_ARGS("rtpmap", "0 pcmu/8000"),
+                               TSDP_HEADER_A_VA_ARGS("3gpp_sync_info", "No Sync"),
 
-			
-			// common values
-			TSDP_HEADER_A_VA_ARGS("sendrecv", tsk_null),
-			TSDP_HEADER_A_VA_ARGS("ptime", "20"),
-			
-			tsk_null);
+                               // pcma
+                               TSDP_FMT_VA_ARGS("8"),
+                               TSDP_HEADER_A_VA_ARGS("rtpmap", "8 pcma/8000"),
 
-		//tsdp_message_remove_media(message, "video");
-		//tsdp_message_remove_media(message, "audio");
+                               // telephone event
+                               TSDP_FMT_VA_ARGS("101"),
+                               TSDP_HEADER_A_VA_ARGS("rtpmap", "101 telephone-event/8000"),
+                               TSDP_HEADER_A_VA_ARGS("fmtp", "101 0-11"),
 
-		/* serialize the message */
-		if((str = tsdp_message_tostring(message))){
-			TSK_DEBUG_INFO("\n\nEmpty SDP Message=\n%s", str);
-			TSK_FREE(str);
-		}
 
-		TSK_OBJECT_SAFE_FREE(message);
-	}
+                               // common values
+                               TSDP_HEADER_A_VA_ARGS("sendrecv", tsk_null),
+                               TSDP_HEADER_A_VA_ARGS("ptime", "20"),
+
+                               tsk_null);
+
+        //tsdp_message_remove_media(message, "video");
+        //tsdp_message_remove_media(message, "audio");
+
+        /* serialize the message */
+        if((str = tsdp_message_tostring(message))) {
+            TSK_DEBUG_INFO("\n\nEmpty SDP Message=\n%s", str);
+            TSK_FREE(str);
+        }
+
+        TSK_OBJECT_SAFE_FREE(message);
+    }
 }
 
 void test_caps()
 {
-	tsdp_message_t *message = tsk_null;
-	char* str;
-	
-	if((message = tsdp_message_create_empty("100.3.6.6", tsk_false, 1))){
+    tsdp_message_t *message = tsk_null;
+    char* str;
 
-		tsdp_message_add_headers(message,
-			TSDP_HEADER_C_VA_ARGS("IN", "IP4", "192.0.2.4"),
-			TSDP_HEADER_E_VA_ARGS("j.doe@example.com (Jane Doe)"),
-			TSDP_HEADER_P_VA_ARGS("+44 (123)456789"),
+    if((message = tsdp_message_create_empty("100.3.6.6", tsk_false, 1))) {
 
-			tsk_null);
+        tsdp_message_add_headers(message,
+                                 TSDP_HEADER_C_VA_ARGS("IN", "IP4", "192.0.2.4"),
+                                 TSDP_HEADER_E_VA_ARGS("j.doe@example.com (Jane Doe)"),
+                                 TSDP_HEADER_P_VA_ARGS("+44 (123)456789"),
 
-		/* add (audio) media */
-		tsdp_message_add_media(message, "audio", 0, "RTP/AVP",
-			TSDP_HEADER_I_VA_ARGS("this is the (audio)information line"),
-			
-			// PCMU
-			TSDP_FMT_VA_ARGS("0"),
-			TSDP_HEADER_A_VA_ARGS("rtpmap", "0 PCMU/8000"),
+                                 tsk_null);
 
-			// 1016
-			TSDP_FMT_VA_ARGS("1"),
-			TSDP_HEADER_A_VA_ARGS("rtpmap", "1 1016/8000"),
+        /* add (audio) media */
+        tsdp_message_add_media(message, "audio", 0, "RTP/AVP",
+                               TSDP_HEADER_I_VA_ARGS("this is the (audio)information line"),
 
-			// GSM
-			TSDP_FMT_VA_ARGS("3"),
-			TSDP_HEADER_A_VA_ARGS("rtpmap", "3 GSM/8000"),
+                               // PCMU
+                               TSDP_FMT_VA_ARGS("0"),
+                               TSDP_HEADER_A_VA_ARGS("rtpmap", "0 PCMU/8000"),
 
-			tsk_null);
+                               // 1016
+                               TSDP_FMT_VA_ARGS("1"),
+                               TSDP_HEADER_A_VA_ARGS("rtpmap", "1 1016/8000"),
 
-		/* add (video) media */
-		tsdp_message_add_media(message, "video", 0, "RTP/AVP",
-			TSDP_HEADER_I_VA_ARGS("this is the (video)information line"),
-			
-			// H261
-			TSDP_FMT_VA_ARGS("31"),
-			TSDP_HEADER_A_VA_ARGS("rtpmap", "31 H261/90000"),
+                               // GSM
+                               TSDP_FMT_VA_ARGS("3"),
+                               TSDP_HEADER_A_VA_ARGS("rtpmap", "3 GSM/8000"),
 
-			// H263
-			TSDP_FMT_VA_ARGS("34"),
-			TSDP_HEADER_A_VA_ARGS("rtpmap", "34 H263/90000"),
+                               tsk_null);
 
-			tsk_null);
-		
-		/* serialize the message */
-		if((str = tsdp_message_tostring(message))){
-			TSK_DEBUG_INFO("\n\nCapabilities SDP Message=\n%s", str);
-			TSK_FREE(str);
-		}
-		
-		TSK_OBJECT_SAFE_FREE(message);
-	}
+        /* add (video) media */
+        tsdp_message_add_media(message, "video", 0, "RTP/AVP",
+                               TSDP_HEADER_I_VA_ARGS("this is the (video)information line"),
+
+                               // H261
+                               TSDP_FMT_VA_ARGS("31"),
+                               TSDP_HEADER_A_VA_ARGS("rtpmap", "31 H261/90000"),
+
+                               // H263
+                               TSDP_FMT_VA_ARGS("34"),
+                               TSDP_HEADER_A_VA_ARGS("rtpmap", "34 H263/90000"),
+
+                               tsk_null);
+
+        /* serialize the message */
+        if((str = tsdp_message_tostring(message))) {
+            TSK_DEBUG_INFO("\n\nCapabilities SDP Message=\n%s", str);
+            TSK_FREE(str);
+        }
+
+        TSK_OBJECT_SAFE_FREE(message);
+    }
 }
 
 
 void test_holdresume()
 {
-	tsdp_message_t *message = tsk_null;
-	char* str;
+    tsdp_message_t *message = tsk_null;
+    char* str;
 
-	if((message = tsdp_message_parse(SDP_MSG_TO_TEST, strlen(SDP_MSG_TO_TEST)))){		
+    if((message = tsdp_message_parse(SDP_MSG_TO_TEST, strlen(SDP_MSG_TO_TEST)))) {
 
-		// hold audio
-		tsdp_message_hold(message, "audio");
-		tsdp_message_hold(message, "audio");
-		tsdp_message_hold(message, "video");
-		tsdp_message_resume(message, "video");
+        // hold audio
+        tsdp_message_hold(message, "audio");
+        tsdp_message_hold(message, "audio");
+        tsdp_message_hold(message, "video");
+        tsdp_message_resume(message, "video");
 
-		/* serialize the message */
-		if((str = tsdp_message_tostring(message))){
-			TSK_DEBUG_INFO("SDP Message=\n%s", str);
-			TSK_FREE(str);
-		}
+        /* serialize the message */
+        if((str = tsdp_message_tostring(message))) {
+            TSK_DEBUG_INFO("SDP Message=\n%s", str);
+            TSK_FREE(str);
+        }
 
-		TSK_OBJECT_SAFE_FREE(message);
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to parse SDP message.");
-	}	
+        TSK_OBJECT_SAFE_FREE(message);
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to parse SDP message.");
+    }
 }
 
 void test_M()
 {
-	char* rtpmap, *fmtp;
-	const tsk_list_item_t* item;
-	const tsdp_header_M_t* M;
+    char* rtpmap, *fmtp;
+    const tsk_list_item_t* item;
+    const tsdp_header_M_t* M;
 
-	tsdp_message_t *message = tsk_null;
+    tsdp_message_t *message = tsk_null;
 
-	if((message = tsdp_message_parse(SDP_MSG_TO_TEST, strlen(SDP_MSG_TO_TEST)))){
-				
-		tsk_list_foreach(item, message->headers){
-			if(!(item->data) || (TSDP_HEADER(item->data)->type != tsdp_htype_M)){
-				continue;
-			}
-			M = (const tsdp_header_M_t*)(item->data);
+    if((message = tsdp_message_parse(SDP_MSG_TO_TEST, strlen(SDP_MSG_TO_TEST)))) {
 
-			/* get rtpmap */
-			if((rtpmap = tsdp_header_M_get_rtpmap(M, "98"))){
-				TSK_DEBUG_INFO("RTPMAP=%s", rtpmap);
-				TSK_FREE(rtpmap);
-			}
+        tsk_list_foreach(item, message->headers) {
+            if(!(item->data) || (TSDP_HEADER(item->data)->type != tsdp_htype_M)) {
+                continue;
+            }
+            M = (const tsdp_header_M_t*)(item->data);
 
-			/* get fmtp */
-			if((fmtp = tsdp_header_M_get_fmtp(M, "98"))){
-				TSK_DEBUG_INFO("FMTP=%s", fmtp);
-				TSK_FREE(fmtp);
-			}
-		}
+            /* get rtpmap */
+            if((rtpmap = tsdp_header_M_get_rtpmap(M, "98"))) {
+                TSK_DEBUG_INFO("RTPMAP=%s", rtpmap);
+                TSK_FREE(rtpmap);
+            }
 
-		TSK_OBJECT_SAFE_FREE(message);
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to parse SDP message.");
-	}
-	
+            /* get fmtp */
+            if((fmtp = tsdp_header_M_get_fmtp(M, "98"))) {
+                TSK_DEBUG_INFO("FMTP=%s", fmtp);
+                TSK_FREE(fmtp);
+            }
+        }
+
+        TSK_OBJECT_SAFE_FREE(message);
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to parse SDP message.");
+    }
+
 }
 
 #endif /* _TEST_SDPPARSER_H */

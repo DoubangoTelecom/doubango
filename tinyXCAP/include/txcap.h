@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -39,34 +39,32 @@
 
 TXCAP_BEGIN_DECLS
 
-typedef enum txcap_stack_option_e
-{
-	//! request timeout
-	TXCAP_STACK_OPTION_TIMEOUT,
-	//! time to live
-	TXCAP_STACK_OPTION_TTL,
-	
-	//! xcap-root
-	TXCAP_STACK_OPTION_ROOT,
-	//! user's password
-	TXCAP_STACK_OPTION_PASSWORD,
-	//! xcap user indentifier (e.g. sip:bob@example.com)
-	TXCAP_STACK_OPTION_XUI,
-	//! local ip address
-	TXCAP_STACK_OPTION_LOCAL_IP,
-	//! local port
-	TXCAP_STACK_OPTION_LOCAL_PORT,
+typedef enum txcap_stack_option_e {
+    //! request timeout
+    TXCAP_STACK_OPTION_TIMEOUT,
+    //! time to live
+    TXCAP_STACK_OPTION_TTL,
+
+    //! xcap-root
+    TXCAP_STACK_OPTION_ROOT,
+    //! user's password
+    TXCAP_STACK_OPTION_PASSWORD,
+    //! xcap user indentifier (e.g. sip:bob@example.com)
+    TXCAP_STACK_OPTION_XUI,
+    //! local ip address
+    TXCAP_STACK_OPTION_LOCAL_IP,
+    //! local port
+    TXCAP_STACK_OPTION_LOCAL_PORT,
 }
 txcap_stack_option_t;
 
-typedef enum txcap_stack_param_type_e
-{
-	xcapp_null = 0,
+typedef enum txcap_stack_param_type_e {
+    xcapp_null = 0,
 
-	xcapp_option,
-	xcapp_header,
-	xcapp_userdata,
-	xcapp_auid,
+    xcapp_option,
+    xcapp_header,
+    xcapp_userdata,
+    xcapp_auid,
 }
 txcap_stack_param_type_t;
 
@@ -76,7 +74,7 @@ txcap_stack_param_type_t;
 
 /**@ingroup txcap_stack_group
 * @def TXCAP_STACK_SET_OPTION
-* Adds or updates an option. 
+* Adds or updates an option.
 * This is a helper macro for @ref txcap_stack_create() and @ref txcap_stack_set().
 * @param ID_ENUM The id of the option to add/update (@ref txcap_stack_option_t).
 * @param VALUE_STR The new value of the option (<i>const char*</i>).
@@ -84,7 +82,7 @@ txcap_stack_param_type_t;
 * @code
 int ret = txcap_stack_set(stack,
 		// stack-level options
-        TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_TIMEOUT, "6000"),	
+        TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_TIMEOUT, "6000"),
         TXCAP_STACK_SET_NULL());
 * @endcode
 */
@@ -95,7 +93,7 @@ int ret = txcap_stack_set(stack,
 *
 * @code
 int ret = txcap_stack_set(stack,
-        TXCAP_STACK_SET_PASSWORD("mysecret"),	
+        TXCAP_STACK_SET_PASSWORD("mysecret"),
         TXCAP_STACK_SET_NULL());
 * @endcode
 *
@@ -108,7 +106,7 @@ int ret = txcap_stack_set(stack,
 *
 * @code
 int ret = txcap_stack_set(stack,
-        TXCAP_STACK_SET_ROOT("http://192.168.0.10:8080/services"),	
+        TXCAP_STACK_SET_ROOT("http://192.168.0.10:8080/services"),
         TXCAP_STACK_SET_NULL());
 * @endcode
 *
@@ -166,9 +164,9 @@ int ret = txcap_stack_set(stack,
 /**@ingroup txcap_stack_group
 * @def TXCAP_STACK_SET_CONTEXT
 * Sets or updates the user's context. The context will be returned to the application layer
-* throught the callback function. 
+* throught the callback function.
 * @param CTX_PTR A pointer to the context (<i>const void*</i>).
-* 
+*
 * @code
 const struct application_s context;
 int ret = txcap_stack_set(stack,
@@ -213,22 +211,21 @@ int ret = txcap_stack_set(stack,
 #define TXCAP_STACK_SET_NULL()																xcapp_null
 
 
-typedef struct txcap_stack_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct txcap_stack_s {
+    TSK_DECLARE_OBJECT;
 
-	char* xui; /**< user's name as per RFC 4825 subclause 4.Also used to fill @b "X-3GPP-Intended-Identity" header.*/
-	char* password; /**< user's password used to authenticate to the XDMS . */
-	char* xcap_root; /**< xcap-root URI as per RFC 4825 subclause 6.1. MUST be a valid HTPP/HTTPS URL and will be used to build all request-uris. */
-	
-	thttp_session_handle_t* http_session;
-	thttp_stack_handle_t* http_stack; /**< http/https stack */
+    char* xui; /**< user's name as per RFC 4825 subclause 4.Also used to fill @b "X-3GPP-Intended-Identity" header.*/
+    char* password; /**< user's password used to authenticate to the XDMS . */
+    char* xcap_root; /**< xcap-root URI as per RFC 4825 subclause 6.1. MUST be a valid HTPP/HTTPS URL and will be used to build all request-uris. */
 
-	tsk_options_L_t *options; /**< list of user options */
-	const void* context; /**< user's context */
-	txcap_auids_L_t* auids; /**< user's auids */
+    thttp_session_handle_t* http_session;
+    thttp_stack_handle_t* http_stack; /**< http/https stack */
 
-	TSK_DECLARE_SAFEOBJ;
+    tsk_options_L_t *options; /**< list of user options */
+    const void* context; /**< user's context */
+    txcap_auids_L_t* auids; /**< user's auids */
+
+    TSK_DECLARE_SAFEOBJ;
 }
 txcap_stack_t;
 typedef void txcap_stack_handle_t;/**< Pointer to a XCAP stack. Should be created using @ref txcap_stack_create().*/

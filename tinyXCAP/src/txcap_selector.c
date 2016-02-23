@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -38,66 +38,66 @@
  */
 char* __txcap_selector_get_url(const txcap_stack_handle_t* stack, const char* auid_id, va_list* app)
 {
-	char* ret = tsk_null;
-	char* node = tsk_null;
-	if(!stack && !auid_id){
-		goto bail;
-	}
-    
-	/* ==document== */
-	if(!(ret = txcap_selector_get_document(stack, auid_id))){
-		TSK_DEBUG_ERROR("Failed to compute XCAP document URL.");
-		goto bail;
-	}
-    
-	/* ==node== */
-	if((node = txcap_selector_get_node_2(auid_id, app))){
-		/* append node root */
-		char* temp = tsk_null;
-		tsk_sprintf(&temp, "/~~/%s", auid_id);
-		tsk_strcat(&ret, temp);
-		/* append node */
-		tsk_strcat(&ret, node);
-		/* free */
-		TSK_FREE(temp);
-		TSK_FREE(node);
-	}
-	
+    char* ret = tsk_null;
+    char* node = tsk_null;
+    if(!stack && !auid_id) {
+        goto bail;
+    }
+
+    /* ==document== */
+    if(!(ret = txcap_selector_get_document(stack, auid_id))) {
+        TSK_DEBUG_ERROR("Failed to compute XCAP document URL.");
+        goto bail;
+    }
+
+    /* ==node== */
+    if((node = txcap_selector_get_node_2(auid_id, app))) {
+        /* append node root */
+        char* temp = tsk_null;
+        tsk_sprintf(&temp, "/~~/%s", auid_id);
+        tsk_strcat(&ret, temp);
+        /* append node */
+        tsk_strcat(&ret, node);
+        /* free */
+        TSK_FREE(temp);
+        TSK_FREE(node);
+    }
+
 bail:
-	return ret;
+    return ret;
 }
 
 /** Internal function
  */
 char* __txcap_selector_get_url_2(const char* xcap_root, const char* auid_id, const char* xui, const char* doc_name, va_list* app)
 {
-	char* ret = tsk_null;
-	char* node = tsk_null;
-	if(!xcap_root && !auid_id){
-		goto bail;
-	}
-    
-	/* ==document== */
-	if(!(ret = txcap_selector_get_document_2(xcap_root, auid_id, xui, doc_name))){
-		TSK_DEBUG_ERROR("Failed to compute XCAP document URL.");
-		goto bail;
-	}
-    
-	/* ==node== */
-	if((node = txcap_selector_get_node_2(auid_id, app))){
-		/* append node root */
-		char* temp = tsk_null;
-		tsk_sprintf(&temp, "/~~/%s", auid_id);
-		tsk_strcat(&ret, temp);
-		/* append node */
-		tsk_strcat(&ret, node);
-		/* free */
-		TSK_FREE(temp);
-		TSK_FREE(node);
-	}
-	
+    char* ret = tsk_null;
+    char* node = tsk_null;
+    if(!xcap_root && !auid_id) {
+        goto bail;
+    }
+
+    /* ==document== */
+    if(!(ret = txcap_selector_get_document_2(xcap_root, auid_id, xui, doc_name))) {
+        TSK_DEBUG_ERROR("Failed to compute XCAP document URL.");
+        goto bail;
+    }
+
+    /* ==node== */
+    if((node = txcap_selector_get_node_2(auid_id, app))) {
+        /* append node root */
+        char* temp = tsk_null;
+        tsk_sprintf(&temp, "/~~/%s", auid_id);
+        tsk_strcat(&ret, temp);
+        /* append node */
+        tsk_strcat(&ret, node);
+        /* free */
+        TSK_FREE(temp);
+        TSK_FREE(node);
+    }
+
 bail:
-	return ret;
+    return ret;
 }
 
 /**@ingroup txcap_selector_group
@@ -126,14 +126,14 @@ TSK_FREE(urlstring);
 */
 char* txcap_selector_get_url(const txcap_stack_handle_t* stack, const char* auid_id, ...)
 {
-	char* ret;
-	va_list ap;
-	
-	va_start(ap, auid_id);
-	ret = __txcap_selector_get_url(stack, auid_id, &ap);
-	va_end(ap);
+    char* ret;
+    va_list ap;
 
-	return ret;
+    va_start(ap, auid_id);
+    ret = __txcap_selector_get_url(stack, auid_id, &ap);
+    va_end(ap);
+
+    return ret;
 }
 
 /**@ingroup txcap_selector_group
@@ -156,12 +156,12 @@ char* txcap_selector_get_url(const txcap_stack_handle_t* stack, const char* auid
 */
 char* txcap_selector_get_url_2(const char* xcap_root, const char* auid_id, const char* xui, const char* doc_name, ...)
 {
-	char* ret;
-	va_list ap;
-	
-	va_start(ap, doc_name);
-	ret = __txcap_selector_get_url_2(xcap_root, auid_id, xui, doc_name, &ap);
-	va_end(ap);
-    
-	return ret;    
+    char* ret;
+    va_list ap;
+
+    va_start(ap, doc_name);
+    ret = __txcap_selector_get_url_2(xcap_root, auid_id, xui, doc_name, &ap);
+    va_end(ap);
+
+    return ret;
 }

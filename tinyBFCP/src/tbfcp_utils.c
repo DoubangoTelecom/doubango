@@ -95,7 +95,7 @@ int tbfcp_utils_parse_role(const char* pc_role, enum tbfcp_role_e* pe_role)
 
 int tbfcp_utils_get_setup(enum tbfcp_role_e e_setup, const char** ppc_setup)
 {
-	if (!ppc_setup) {
+    if (!ppc_setup) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
@@ -117,7 +117,7 @@ int tbfcp_utils_get_setup(enum tbfcp_role_e e_setup, const char** ppc_setup)
 
 int tbfcp_utils_parse_setup(const char* pc_setup, enum tbfcp_setup_e* pe_setup)
 {
-	if (!pc_setup || !pe_setup) {
+    if (!pc_setup || !pe_setup) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
@@ -139,53 +139,53 @@ int tbfcp_utils_parse_setup(const char* pc_setup, enum tbfcp_setup_e* pe_setup)
 
 int tbfcp_utils_is_role_acceptable(enum tbfcp_role_e e_role_local, enum tbfcp_role_e e_role_proposed, tsk_bool_t *pb_acceptable)
 {
-	if (!pb_acceptable) {
-		TSK_DEBUG_ERROR("Invalid parameter");
+    if (!pb_acceptable) {
+        TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
-	}
-	switch (e_role_local) {
-		case tbfcp_role_c_only:
-			*pb_acceptable = (e_role_proposed == tbfcp_role_s_only || e_role_proposed == tbfcp_role_c_s);
-			break;
-		case tbfcp_role_s_only:
-			*pb_acceptable = (e_role_proposed == tbfcp_role_c_only || e_role_proposed == tbfcp_role_c_s);
-			break;
-		case tbfcp_role_c_s:
-			*pb_acceptable = tsk_true;
-			break;
-		default:
-			*pb_acceptable = tsk_false;
-			break;
-	}
-	return 0;
+    }
+    switch (e_role_local) {
+    case tbfcp_role_c_only:
+        *pb_acceptable = (e_role_proposed == tbfcp_role_s_only || e_role_proposed == tbfcp_role_c_s);
+        break;
+    case tbfcp_role_s_only:
+        *pb_acceptable = (e_role_proposed == tbfcp_role_c_only || e_role_proposed == tbfcp_role_c_s);
+        break;
+    case tbfcp_role_c_s:
+        *pb_acceptable = tsk_true;
+        break;
+    default:
+        *pb_acceptable = tsk_false;
+        break;
+    }
+    return 0;
 }
 
 int tbfcp_utils_is_setup_acceptable(enum tbfcp_setup_e e_setup_local, enum tbfcp_setup_e e_setup_proposed, tsk_bool_t *pb_acceptable)
 {
-	if (!pb_acceptable) {
-		TSK_DEBUG_ERROR("Invalid parameter");
+    if (!pb_acceptable) {
+        TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
-	}
-	switch (e_setup_local) {
-		case tbfcp_setup_active:
-			*pb_acceptable = (e_setup_proposed == tbfcp_setup_passive || e_setup_proposed == tbfcp_setup_actpass);
-			break;
-		case tbfcp_setup_passive:
-			*pb_acceptable = (e_setup_proposed == tbfcp_setup_active || e_setup_proposed == tbfcp_setup_actpass);
-			break;
-		case tbfcp_setup_actpass:
-			*pb_acceptable = tsk_true;
-			break;
-		default:
-			*pb_acceptable = tsk_false;
-			break;
-	}
-	return 0;
+    }
+    switch (e_setup_local) {
+    case tbfcp_setup_active:
+        *pb_acceptable = (e_setup_proposed == tbfcp_setup_passive || e_setup_proposed == tbfcp_setup_actpass);
+        break;
+    case tbfcp_setup_passive:
+        *pb_acceptable = (e_setup_proposed == tbfcp_setup_active || e_setup_proposed == tbfcp_setup_actpass);
+        break;
+    case tbfcp_setup_actpass:
+        *pb_acceptable = tsk_true;
+        break;
+    default:
+        *pb_acceptable = tsk_false;
+        break;
+    }
+    return 0;
 }
 
 uint16_t tbfcp_utils_rand_u16()
 {
-	static long __rand = 0;
-	long num = tsk_atomic_inc(&__rand);
-	return ((num % 0xFF) << 8) | (tsk_time_epoch() % 0xFF);
+    static long __rand = 0;
+    long num = tsk_atomic_inc(&__rand);
+    return ((num % 0xFF) << 8) | (tsk_time_epoch() % 0xFF);
 }

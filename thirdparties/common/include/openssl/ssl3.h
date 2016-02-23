@@ -284,14 +284,14 @@ extern "C" {
 # define SSL3_HM_HEADER_LENGTH                  4
 
 # ifndef SSL3_ALIGN_PAYLOAD
- /*
-  * Some will argue that this increases memory footprint, but it's not
-  * actually true. Point is that malloc has to return at least 64-bit aligned
-  * pointers, meaning that allocating 5 bytes wastes 3 bytes in either case.
-  * Suggested pre-gaping simply moves these wasted bytes from the end of
-  * allocated region to its front, but makes data payload aligned, which
-  * improves performance:-)
-  */
+/*
+ * Some will argue that this increases memory footprint, but it's not
+ * actually true. Point is that malloc has to return at least 64-bit aligned
+ * pointers, meaning that allocating 5 bytes wastes 3 bytes in either case.
+ * Suggested pre-gaping simply moves these wasted bytes from the end of
+ * allocated region to its front, but makes data payload aligned, which
+ * improves performance:-)
+ */
 #  define SSL3_ALIGN_PAYLOAD                     8
 # else
 #  if (SSL3_ALIGN_PAYLOAD&(SSL3_ALIGN_PAYLOAD-1))!=0

@@ -2,19 +2,19 @@
 * Copyright (C) 2009 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -142,148 +142,147 @@ int _tmain(int argc, _TCHAR* argv[])
 int main()
 #endif
 {
-	do
-	{
-		int y, x;
+    do {
+        int y, x;
 
-		for(y = 0; y < 16; ++y){
-			printf("{");
-			for(x = 0; x < 16; ++x){
-				printf("%d, ", (2 * ( y / 8 ) + ( x / 8 )));
-			}
-			printf("}\n");
-		}
+        for(y = 0; y < 16; ++y) {
+            printf("{");
+            for(x = 0; x < 16; ++x) {
+                printf("%d, ", (2 * ( y / 8 ) + ( x / 8 )));
+            }
+            printf("}\n");
+        }
 
 
-		/* Print copyright information */
-		printf("Doubango Project\nCopyright (C) 2009 Mamadou Diop \n\n");
+        /* Print copyright information */
+        printf("Doubango Project\nCopyright (C) 2009 Mamadou Diop \n\n");
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
-		/* linked lists */
-		test_basic_list();
-		printf("\n\n");
-		test_complex_list();
-		printf("\n\n");
-		test_filtered_list();
-		printf("\n\n");
+        /* linked lists */
+        test_basic_list();
+        printf("\n\n");
+        test_complex_list();
+        printf("\n\n");
+        test_filtered_list();
+        printf("\n\n");
 #endif
 
 #if RUN_TEST_HEAP || RUN_TEST_ALL
-		/* heap */
-		test_heap();
-		printf("\n\n");
+        /* heap */
+        test_heap();
+        printf("\n\n");
 #endif
 
 #if RUN_TEST_STRINGS || RUN_TEST_ALL
-		/* strings */
-		test_strings();
-		printf("\n\n");
+        /* strings */
+        test_strings();
+        printf("\n\n");
 #endif
 
 #if RUN_TEST_URL || RUN_TEST_ALL
-		/* url */
-		test_url();
-		printf("\n\n");
+        /* url */
+        test_url();
+        printf("\n\n");
 #endif
 
 #if RUN_TEST_THREADS || RUN_TEST_ALL
-		/* threads */
-		test_threads();
-		printf("\n\n");
+        /* threads */
+        test_threads();
+        printf("\n\n");
 #endif
 
 #if RUN_TEST_MUTEX || RUN_TEST_ALL
-		/* mutex */
-		test_mutex();
-		printf("\n\n");
+        /* mutex */
+        test_mutex();
+        printf("\n\n");
 #endif
 
 #if RUN_TEST_CONDWAIT || RUN_TEST_ALL
-		/* condwait */
-		test_condwait();
-		printf("\n\n");
+        /* condwait */
+        test_condwait();
+        printf("\n\n");
 #endif
 
 #if RUN_TEST_SEMAPHORE || RUN_TEST_ALL
-		/* semaphore */
-		test_semaphore();
-		printf("\n\n");
+        /* semaphore */
+        test_semaphore();
+        printf("\n\n");
 #endif
 
 #if RUN_TEST_SAFEOBJECT || RUN_TEST_ALL
-	/* safe object */
-		//test_safeobject();
-		printf("\n\n");
+        /* safe object */
+        //test_safeobject();
+        printf("\n\n");
 #endif
 
 #if RUN_TEST_OBJECT || RUN_TEST_ALL
-	/* object */
-		//test_object();
-		printf("\n\n");
+        /* object */
+        //test_object();
+        printf("\n\n");
 #endif
 
 #if RUN_TEST_PARAMS || RUN_TEST_ALL
-		/* parameters */
-		test_params();
-		printf("\n\n");
+        /* parameters */
+        test_params();
+        printf("\n\n");
 #endif
 
 #if RUN_TEST_OPTIONS || RUN_TEST_ALL
-		/* options */
-		test_options();
-		printf("\n\n");
+        /* options */
+        test_options();
+        printf("\n\n");
 #endif
 
 #if RUN_TEST_TIMER || RUN_TEST_ALL
-		/* timer */
-		test_timer();
-		printf("\n\n");
+        /* timer */
+        test_timer();
+        printf("\n\n");
 #endif
-		
+
 #if RUN_TEST_RUNNABLE || RUN_TEST_ALL
-		/* test runnable. */
-		test_runnable();
-		printf("\n\n");
+        /* test runnable. */
+        test_runnable();
+        printf("\n\n");
 #endif
 
 
 #if RUN_TEST_BUFFER || RUN_TEST_ALL
-		/* test buffer */
-		test_buffer();
+        /* test buffer */
+        test_buffer();
 #endif
 
 
 #if RUN_TEST_MD5 || RUN_TEST_ALL
-		/* test md5 and hmac_md5 */
-		test_md5();
-		test_hmac_md5();
+        /* test md5 and hmac_md5 */
+        test_md5();
+        test_hmac_md5();
 #endif
 
 #if RUN_TEST_SHA1 || RUN_TEST_ALL
-		/* test sha1 and hmac_sha-1 */
-		test_sha1();
-		test_hmac_sha1();
+        /* test sha1 and hmac_sha-1 */
+        test_sha1();
+        test_hmac_sha1();
 #endif
 
 #if RUN_TEST_BASE64 || RUN_TEST_ALL
-		/* test base64 encoding/decoding */
-		test_base64();
+        /* test base64 encoding/decoding */
+        test_base64();
 #endif
 
 #if RUN_TEST_UUID || RUN_TEST_ALL
-		/* test fake UUID (version5) */
-		test_uuid();
+        /* test fake UUID (version5) */
+        test_uuid();
 #endif
 
 #if RUN_TEST_FSM || RUN_TEST_ALL
-		/* test FSM */
-		test_fsm();
+        /* test FSM */
+        test_fsm();
 #endif
 
-	}
-	while(LOOP);
+    }
+    while(LOOP);
 
-	getchar();
+    getchar();
 
-	return 0;
+    return 0;
 }

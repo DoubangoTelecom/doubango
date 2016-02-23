@@ -41,38 +41,36 @@ TNET_BEGIN_DECLS
 
 #define TNET_TRANSPORT_CB_F(callback)							((tnet_transport_cb_f)callback)
 
-typedef enum tnet_transport_event_type_e
-{
-	event_data,
-	event_closed,
-	event_error,
-	event_removed,
-	event_connected,
-	event_accepted,
+typedef enum tnet_transport_event_type_e {
+    event_data,
+    event_closed,
+    event_error,
+    event_removed,
+    event_connected,
+    event_accepted,
     event_brokenpipe, // iOS: UDP sockets closed, to be restored now that the app is on foreground
 
-	event_dtls_handshake_started,
-	event_dtls_handshake_succeed,
-	event_dtls_handshake_failed,
-	event_dtls_fingerprint_mismatch,
-	event_dtls_srtp_data,
-	event_dtls_srtp_profile_selected,
-	event_dtls_error
+    event_dtls_handshake_started,
+    event_dtls_handshake_succeed,
+    event_dtls_handshake_failed,
+    event_dtls_fingerprint_mismatch,
+    event_dtls_srtp_data,
+    event_dtls_srtp_profile_selected,
+    event_dtls_error
 }
 tnet_transport_event_type_t;
 
-typedef struct tnet_transport_event_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tnet_transport_event_s {
+    TSK_DECLARE_OBJECT;
 
-	tnet_transport_event_type_t type;
+    tnet_transport_event_type_t type;
 
-	void* data;
-	tsk_size_t size;
+    void* data;
+    tsk_size_t size;
 
-	const void* callback_data;
-	tnet_fd_t local_fd;
-	struct sockaddr_storage remote_addr;
+    const void* callback_data;
+    tnet_fd_t local_fd;
+    struct sockaddr_storage remote_addr;
 }
 tnet_transport_event_t;
 
@@ -123,52 +121,51 @@ TINYNET_API tnet_fd_t tnet_transport_get_master_fd(const tnet_transport_handle_t
 TINYNET_API int tnet_transport_get_bytes_count(const tnet_transport_handle_t *handle, uint64_t* bytes_in, uint64_t* bytes_out);
 TINYNET_API int tnet_transport_shutdown(tnet_transport_handle_t* handle);
 
-typedef struct tnet_transport_s
-{
-	TSK_DECLARE_RUNNABLE;
+typedef struct tnet_transport_s {
+    TSK_DECLARE_RUNNABLE;
 
-	tnet_socket_type_t type;
-	char* local_ip;
-	char* local_host;
-	tnet_port_t req_local_port; // user requested local port
-	tnet_port_t bind_local_port; // local port on which we are listening (same as master socket)
-	struct tnet_nat_ctx_s* natt_ctx;
-	tnet_socket_t *master;
+    tnet_socket_type_t type;
+    char* local_ip;
+    char* local_host;
+    tnet_port_t req_local_port; // user requested local port
+    tnet_port_t bind_local_port; // local port on which we are listening (same as master socket)
+    struct tnet_nat_ctx_s* natt_ctx;
+    tnet_socket_t *master;
 
-	tsk_object_t *context;
-	tsk_bool_t prepared;
-    
+    tsk_object_t *context;
+    tsk_bool_t prepared;
+
     uint64_t bytes_out;
     uint64_t bytes_in;
 
-	//unsigned connected:1;
-	void* mainThreadId[1];
+    //unsigned connected:1;
+    void* mainThreadId[1];
 
-	char *description;
+    char *description;
 
-	tnet_transport_cb_f callback;
-	const void* callback_data;
+    tnet_transport_cb_f callback;
+    const void* callback_data;
 
-	/* TLS certs */
-	struct {
-		char* ca;
-		char* pvk;
-		char* pbk;
-		tsk_bool_t enabled;
-		tsk_bool_t verify; // whether to verify client/server certificate
-		struct ssl_ctx_st *ctx_client;
-		struct ssl_ctx_st *ctx_server;
-	}tls;
+    /* TLS certs */
+    struct {
+        char* ca;
+        char* pvk;
+        char* pbk;
+        tsk_bool_t enabled;
+        tsk_bool_t verify; // whether to verify client/server certificate
+        struct ssl_ctx_st *ctx_client;
+        struct ssl_ctx_st *ctx_server;
+    } tls;
 
-	/* DTLS */
-	struct{
-		tsk_bool_t enabled;
-		tsk_bool_t activated;
-		tsk_bool_t use_srtp;
-		struct ssl_ctx_st *ctx;
-		tnet_fingerprint_t fingerprints[TNET_DTLS_HASH_TYPE_MAX];
-	}dtls;
-    
+    /* DTLS */
+    struct {
+        tsk_bool_t enabled;
+        tsk_bool_t activated;
+        tsk_bool_t use_srtp;
+        struct ssl_ctx_st *ctx;
+        tnet_fingerprint_t fingerprints[TNET_DTLS_HASH_TYPE_MAX];
+    } dtls;
+
     /* PROXY */
     struct {
         tsk_bool_t auto_detect;

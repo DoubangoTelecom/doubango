@@ -40,36 +40,36 @@
 
 
 #if defined(__INTEL_COMPILER) && __INTEL_COMPILER < 1110 || defined(__SUNPRO_C)
-    #define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (n))) v
-    #define DECLARE_ASM_CONST(n,t,v)    const t __attribute__ ((aligned (n))) v
+#define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (n))) v
+#define DECLARE_ASM_CONST(n,t,v)    const t __attribute__ ((aligned (n))) v
 #elif defined(__TI_COMPILER_VERSION__)
-    #define DECLARE_ALIGNED(n,t,v)                      \
+#define DECLARE_ALIGNED(n,t,v)                      \
         AV_PRAGMA(DATA_ALIGN(v,n))                      \
         t __attribute__((aligned(n))) v
-    #define DECLARE_ASM_CONST(n,t,v)                    \
+#define DECLARE_ASM_CONST(n,t,v)                    \
         AV_PRAGMA(DATA_ALIGN(v,n))                      \
         static const t __attribute__((aligned(n))) v
 #elif defined(__GNUC__)
-    #define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (n))) v
-    #define DECLARE_ASM_CONST(n,t,v)    static const t av_used __attribute__ ((aligned (n))) v
+#define DECLARE_ALIGNED(n,t,v)      t __attribute__ ((aligned (n))) v
+#define DECLARE_ASM_CONST(n,t,v)    static const t av_used __attribute__ ((aligned (n))) v
 #elif defined(_MSC_VER)
-    #define DECLARE_ALIGNED(n,t,v)      __declspec(align(n)) t v
-    #define DECLARE_ASM_CONST(n,t,v)    __declspec(align(n)) static const t v
+#define DECLARE_ALIGNED(n,t,v)      __declspec(align(n)) t v
+#define DECLARE_ASM_CONST(n,t,v)    __declspec(align(n)) static const t v
 #else
-    #define DECLARE_ALIGNED(n,t,v)      t v
-    #define DECLARE_ASM_CONST(n,t,v)    static const t v
+#define DECLARE_ALIGNED(n,t,v)      t v
+#define DECLARE_ASM_CONST(n,t,v)    static const t v
 #endif
 
 #if AV_GCC_VERSION_AT_LEAST(3,1)
-    #define av_malloc_attrib __attribute__((__malloc__))
+#define av_malloc_attrib __attribute__((__malloc__))
 #else
-    #define av_malloc_attrib
+#define av_malloc_attrib
 #endif
 
 #if AV_GCC_VERSION_AT_LEAST(4,3)
-    #define av_alloc_size(...) __attribute__((alloc_size(__VA_ARGS__)))
+#define av_alloc_size(...) __attribute__((alloc_size(__VA_ARGS__)))
 #else
-    #define av_alloc_size(...)
+#define av_alloc_size(...)
 #endif
 
 /**
@@ -93,8 +93,9 @@ void *av_malloc(size_t size) av_malloc_attrib av_alloc_size(1);
  */
 av_alloc_size(1, 2) static inline void *av_malloc_array(size_t nmemb, size_t size)
 {
-    if (size <= 0 || nmemb >= INT_MAX / size)
+    if (size <= 0 || nmemb >= INT_MAX / size) {
         return NULL;
+    }
     return av_malloc(nmemb * size);
 }
 
@@ -166,8 +167,9 @@ void *av_calloc(size_t nmemb, size_t size) av_malloc_attrib;
  */
 av_alloc_size(1, 2) static inline void *av_mallocz_array(size_t nmemb, size_t size)
 {
-    if (size <= 0 || nmemb >= INT_MAX / size)
+    if (size <= 0 || nmemb >= INT_MAX / size) {
         return NULL;
+    }
     return av_mallocz(nmemb * size);
 }
 
@@ -206,8 +208,9 @@ static inline int av_size_mult(size_t a, size_t b, size_t *r)
     size_t t = a * b;
     /* Hack inspired from glibc: only try the division if nelem and elsize
      * are both greater than sqrt(SIZE_MAX). */
-    if ((a | b) >= ((size_t)1 << (sizeof(size_t) * 4)) && a && t / a != b)
+    if ((a | b) >= ((size_t)1 << (sizeof(size_t) * 4)) && a && t / a != b) {
         return AVERROR(EINVAL);
+    }
     *r = t;
     return 0;
 }

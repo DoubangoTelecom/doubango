@@ -1,6 +1,6 @@
 /*
  * datatypes.h
- * 
+ *
  * data types for bit vectors and finite fields
  *
  * David A. McGrew
@@ -8,26 +8,26 @@
  */
 
 /*
- *	
+ *
  * Copyright (c) 2001-2006, Cisco Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   Redistributions in binary form must reproduce the above
  *   copyright notice, this list of conditions and the following
  *   disclaimer in the documentation and/or other materials provided
  *   with the distribution.
- * 
+ *
  *   Neither the name of the Cisco Systems, Inc. nor the names of its
  *   contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -65,31 +65,31 @@
 
 
 /* if DATATYPES_USE_MACROS is defined, then little functions are macros */
-#define DATATYPES_USE_MACROS  
+#define DATATYPES_USE_MACROS
 
 typedef union {
-  uint8_t  v8[2];
-  uint16_t value;
+    uint8_t  v8[2];
+    uint16_t value;
 } v16_t;
 
 typedef union {
-  uint8_t  v8[4];
-  uint16_t v16[2];
-  uint32_t value;
+    uint8_t  v8[4];
+    uint16_t v16[2];
+    uint32_t value;
 } v32_t;
 
 typedef union {
-  uint8_t  v8[8];
-  uint16_t v16[4];
-  uint32_t v32[2];
-  uint64_t value;
+    uint8_t  v8[8];
+    uint16_t v16[4];
+    uint32_t v32[2];
+    uint64_t value;
 } v64_t;
 
 typedef union {
-  uint8_t  v8[16];
-  uint16_t v16[8];
-  uint32_t v32[4];
-  uint64_t v64[2];
+    uint8_t  v8[16];
+    uint16_t v16[8];
+    uint32_t v32[4];
+    uint64_t v64[2];
 } v128_t;
 
 typedef union {
@@ -168,7 +168,7 @@ v128_right_shift(v128_t *x, int shift_index);
 
 /*
  * the following macros define the data manipulation functions
- * 
+ *
  * If DATATYPES_USE_MACROS is defined, then these macros are used
  * directly (and function call overhead is avoided).  Otherwise,
  * the macros are used through the functions defined in datatypes.c
@@ -315,18 +315,18 @@ v128_right_shift(v128_t *x, int shift_index);
        + htonl(tmp >> 32);			\
   z->v32[0] = ntohl((uint32_t) tmp);		\
 }
-#endif /* WORDS_BIGENDIAN */                      
+#endif /* WORDS_BIGENDIAN */
 #endif /* 0 */
 
 
 #ifdef DATATYPES_USE_MACROS  /* little functions are really macros */
-   
+
 #define v128_set_to_zero(z)       _v128_set_to_zero(z)
 #define v128_copy(z, x)           _v128_copy(z, x)
 #define v128_xor(z, x, y)         _v128_xor(z, x, y)
 #define v128_and(z, x, y)         _v128_and(z, x, y)
 #define v128_or(z, x, y)          _v128_or(z, x, y)
-#define v128_complement(x)        _v128_complement(x) 
+#define v128_complement(x)        _v128_complement(x)
 #define v128_is_eq(x, y)          _v128_is_eq(x, y)
 #define v128_xor_eq(x, y)         _v128_xor_eq(x, y)
 #define v128_get_bit(x, i)        _v128_get_bit(x, i)
@@ -352,7 +352,7 @@ void
 v128_and(v128_t *z, v128_t *x, v128_t *y);
 
 void
-v128_or(v128_t *z, v128_t *x, v128_t *y); 
+v128_or(v128_t *z, v128_t *x, v128_t *y);
 
 void
 v128_complement(v128_t *x);
@@ -361,10 +361,10 @@ int
 v128_get_bit(const v128_t *x, int i);
 
 void
-v128_set_bit(v128_t *x, int i) ;     
+v128_set_bit(v128_t *x, int i) ;
 
 void
-v128_clear_bit(v128_t *x, int i);    
+v128_clear_bit(v128_t *x, int i);
 
 void
 v128_set_bit_to(v128_t *x, int i, int y);
@@ -385,7 +385,7 @@ octet_string_set_to_zero(uint8_t *s, int len);
 
 #ifndef SRTP_KERNEL_LINUX
 
-/* 
+/*
  * Convert big endian integers to CPU byte order.
  */
 #ifdef WORDS_BIGENDIAN
@@ -401,10 +401,11 @@ octet_string_set_to_zero(uint8_t *s, int len);
 
 #if defined(__GNUC__) && defined(HAVE_X86)
 /* Fall back. */
-static __inline uint32_t be32_to_cpu(uint32_t v) {
-   /* optimized for x86. */
-   asm("bswap %0" : "=r" (v) : "0" (v));
-   return v;
+static __inline uint32_t be32_to_cpu(uint32_t v)
+{
+    /* optimized for x86. */
+    asm("bswap %0" : "=r" (v) : "0" (v));
+    return v;
 }
 # else /* HAVE_X86 */
 #  ifdef HAVE_NETINET_IN_H
@@ -415,15 +416,16 @@ static __inline uint32_t be32_to_cpu(uint32_t v) {
 #  define be32_to_cpu(x)	ntohl((x))
 # endif /* HAVE_X86 */
 
-static __inline uint64_t be64_to_cpu(uint64_t v) {
+static __inline uint64_t be64_to_cpu(uint64_t v)
+{
 # ifdef NO_64BIT_MATH
-   /* use the make64 functions to do 64-bit math */
-   v = make64(htonl(low32(v)),htonl(high32(v)));
+    /* use the make64 functions to do 64-bit math */
+    v = make64(htonl(low32(v)),htonl(high32(v)));
 # else
-   /* use the native 64-bit math */
-   v= (uint64_t)((be32_to_cpu((uint32_t)(v >> 32))) | (((uint64_t)be32_to_cpu((uint32_t)v)) << 32));
+    /* use the native 64-bit math */
+    v= (uint64_t)((be32_to_cpu((uint32_t)(v >> 32))) | (((uint64_t)be32_to_cpu((uint32_t)v)) << 32));
 # endif
-   return v;
+    return v;
 }
 
 #endif /* ! SRTP_KERNEL_LINUX */
@@ -431,22 +433,22 @@ static __inline uint64_t be64_to_cpu(uint64_t v) {
 #endif /* WORDS_BIGENDIAN */
 
 /*
- * functions manipulating bitvector_t 
+ * functions manipulating bitvector_t
  *
  * A bitvector_t consists of an array of words and an integer
  * representing the number of significant bits stored in the array.
  * The bits are packed as follows: the least significant bit is that
  * of word[0], while the most significant bit is the nth most
  * significant bit of word[m], where length = bits_per_word * m + n.
- * 
+ *
  */
 
 #define bits_per_word  32
 #define bytes_per_word 4
 
 typedef struct {
-  uint32_t length;   
-  uint32_t *word;
+    uint32_t length;
+    uint32_t *word;
 } bitvector_t;
 
 

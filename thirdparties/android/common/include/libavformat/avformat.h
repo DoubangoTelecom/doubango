@@ -367,9 +367,9 @@ typedef struct AVProbeData {
 #else
 #define AVFMT_TS_NONSTRICT 0x20000
 #endif
-                                   /**< Format does not require strictly
-                                        increasing timestamps, but they must
-                                        still be monotonic */
+/**< Format does not require strictly
+     increasing timestamps, but they must
+     still be monotonic */
 
 #define AVFMT_SEEK_TO_PTS   0x4000000 /**< Seeking is based on PTS */
 
@@ -1378,7 +1378,7 @@ AVProgram *av_new_program(AVFormatContext *s, int id);
 #if FF_API_PKT_DUMP
 attribute_deprecated void av_pkt_dump(FILE *f, AVPacket *pkt, int dump_payload);
 attribute_deprecated void av_pkt_dump_log(void *avcl, int level, AVPacket *pkt,
-                                          int dump_payload);
+        int dump_payload);
 #endif
 
 #if FF_API_ALLOC_OUTPUT_CONTEXT
@@ -1387,8 +1387,8 @@ attribute_deprecated void av_pkt_dump_log(void *avcl, int level, AVPacket *pkt,
  */
 attribute_deprecated
 AVFormatContext *avformat_alloc_output_context(const char *format,
-                                               AVOutputFormat *oformat,
-                                               const char *filename);
+        AVOutputFormat *oformat,
+        const char *filename);
 #endif
 
 /**
@@ -1835,8 +1835,8 @@ AVOutputFormat *av_guess_format(const char *short_name,
  * Guess the codec ID based upon muxer and filename.
  */
 enum AVCodecID av_guess_codec(AVOutputFormat *fmt, const char *short_name,
-                            const char *filename, const char *mime_type,
-                            enum AVMediaType type);
+                              const char *filename, const char *mime_type,
+                              enum AVMediaType type);
 
 /**
  * Get timing information for the data currently output.

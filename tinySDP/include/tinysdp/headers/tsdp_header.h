@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -72,38 +72,36 @@ typedef struct tsdp_header_s* (*tsdp_header_clone_f)(const struct tsdp_header_s*
  *
  * @brief	List of all supported headers.
 **/
-typedef enum tsdp_header_type_e
-{
-	tsdp_htype_A,
-	tsdp_htype_B,
-	tsdp_htype_C,
-	tsdp_htype_Dummy,
-	tsdp_htype_E,
-	tsdp_htype_I,
-	tsdp_htype_K,
-	tsdp_htype_M,
-	tsdp_htype_O,
-	tsdp_htype_P,
-	tsdp_htype_R,
-	tsdp_htype_S,
-	tsdp_htype_T,
-	tsdp_htype_U,
-	tsdp_htype_V,
-	tsdp_htype_Z
+typedef enum tsdp_header_type_e {
+    tsdp_htype_A,
+    tsdp_htype_B,
+    tsdp_htype_C,
+    tsdp_htype_Dummy,
+    tsdp_htype_E,
+    tsdp_htype_I,
+    tsdp_htype_K,
+    tsdp_htype_M,
+    tsdp_htype_O,
+    tsdp_htype_P,
+    tsdp_htype_R,
+    tsdp_htype_S,
+    tsdp_htype_T,
+    tsdp_htype_U,
+    tsdp_htype_V,
+    tsdp_htype_Z
 }
 tsdp_header_type_t;
 
 /*================================
 */
-typedef struct tsdp_header_s
-{
-	TSK_DECLARE_OBJECT;
-	tsdp_header_type_t type;
-	//! Because all SDP headers shall appear in a fixed order, the rank is used to place each header. 
-	// Info: RFC 4566 - 5. SDP Specification.
-	uint8_t rank;
-	tsdp_header_value_tostring_f tostring;
-	tsdp_header_clone_f clone;
+typedef struct tsdp_header_s {
+    TSK_DECLARE_OBJECT;
+    tsdp_header_type_t type;
+    //! Because all SDP headers shall appear in a fixed order, the rank is used to place each header.
+    // Info: RFC 4566 - 5. SDP Specification.
+    uint8_t rank;
+    tsdp_header_value_tostring_f tostring;
+    tsdp_header_clone_f clone;
 }
 tsdp_header_t;
 

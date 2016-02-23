@@ -2,19 +2,19 @@
 * Copyright (C) 2009 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU Lesser General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -85,137 +85,137 @@
 	"a=setup:passive\r\n" \
 	"a=file-transfer-id:wcysyycqpevikeffmznimkkasvwsrenz\r\n" \
 	"a=file-selector:name:\"test.zip\" type:application/octet-stream size:11376 hash:sha-1:8D:55:24:2B:F4:F9:9B:A2:54:A3:5B:91:00:15:9E:A3:D4:48:D7:DF\r\n" \
-
+ 
 static int test_session_msrp_cb(const tmsrp_event_t* _event);
 
 void test_sessions_client()
 {
-	tmedia_session_mgr_t* mgr;
-	const tsdp_message_t* sdp_lo;
-	tsdp_message_t* sdp_ro;
-	char* temp;
-	tmedia_type_t type = tmedia_video/*tmedia_msrp | tmedia_audio*//*| tmedia_video tmedia_msrp*/;
+    tmedia_session_mgr_t* mgr;
+    const tsdp_message_t* sdp_lo;
+    tsdp_message_t* sdp_ro;
+    char* temp;
+    tmedia_type_t type = tmedia_video/*tmedia_msrp | tmedia_audio*//*| tmedia_video tmedia_msrp*/;
 
-	tdav_codec_set_priority(tdav_codec_id_vp8, 0);
+    tdav_codec_set_priority(tdav_codec_id_vp8, 0);
 
-	mgr = tmedia_session_mgr_create(type,
-		"192.168.0.13", tsk_false, tsk_true/* offerer */);
+    mgr = tmedia_session_mgr_create(type,
+                                    "192.168.0.13", tsk_false, tsk_true/* offerer */);
 
-	/* set MSRP callback */
-	//tmedia_session_mgr_set_msrp_cb(mgr, tsk_null, test_session_msrp_cb);
+    /* set MSRP callback */
+    //tmedia_session_mgr_set_msrp_cb(mgr, tsk_null, test_session_msrp_cb);
 
-	/* MSRP File Transfer */
-	/*tmedia_session_mgr_set(mgr,
-		TMEDIA_SESSION_MSRP_SET_STR("file-path", "C:\\avatar.png"),
-		TMEDIA_SESSION_MSRP_SET_STR("accept-types", "message/CPIM application/octet-stream"),
-		TMEDIA_SESSION_MSRP_SET_STR("accept-wrapped-types", "application/octet-stream"),
-		TMEDIA_SESSION_MSRP_SET_STR("accept-wrapped-types", "application/octet-stream"),
-		TMEDIA_SESSION_MSRP_SET_STR("file-selector", "name:\"test.zip\" type:application/octet-stream size:20312 hash:sha-1:27:D0:AE:39:48:77:37:1D:FD:39:7E:2D:78:2F:BC:7B:94:48:29:81"),
-		TMEDIA_SESSION_MSRP_SET_STR("file-disposition", "attachment"),
-		TMEDIA_SESSION_MSRP_SET_STR("file-date", "creation:2010-02-13T17:50:31.763Z"),
-		TMEDIA_SESSION_MSRP_SET_STR("file-icon", "cid:test@doubango.org"),
+    /* MSRP File Transfer */
+    /*tmedia_session_mgr_set(mgr,
+    	TMEDIA_SESSION_MSRP_SET_STR("file-path", "C:\\avatar.png"),
+    	TMEDIA_SESSION_MSRP_SET_STR("accept-types", "message/CPIM application/octet-stream"),
+    	TMEDIA_SESSION_MSRP_SET_STR("accept-wrapped-types", "application/octet-stream"),
+    	TMEDIA_SESSION_MSRP_SET_STR("accept-wrapped-types", "application/octet-stream"),
+    	TMEDIA_SESSION_MSRP_SET_STR("file-selector", "name:\"test.zip\" type:application/octet-stream size:20312 hash:sha-1:27:D0:AE:39:48:77:37:1D:FD:39:7E:2D:78:2F:BC:7B:94:48:29:81"),
+    	TMEDIA_SESSION_MSRP_SET_STR("file-disposition", "attachment"),
+    	TMEDIA_SESSION_MSRP_SET_STR("file-date", "creation:2010-02-13T17:50:31.763Z"),
+    	TMEDIA_SESSION_MSRP_SET_STR("file-icon", "cid:test@doubango.org"),
 
-		TMEDIA_SESSION_SET_NULL());*/
+    	TMEDIA_SESSION_SET_NULL());*/
 
 
-	/* get lo */
-	sdp_lo = tmedia_session_mgr_get_lo(mgr);
-	if((temp = tsdp_message_tostring(sdp_lo))){
-		TSK_DEBUG_INFO("sdp_lo=%s", temp);
-		TSK_FREE(temp);
-	}
+    /* get lo */
+    sdp_lo = tmedia_session_mgr_get_lo(mgr);
+    if((temp = tsdp_message_tostring(sdp_lo))) {
+        TSK_DEBUG_INFO("sdp_lo=%s", temp);
+        TSK_FREE(temp);
+    }
 
-	/* set ro */
-	if((sdp_ro = tsdp_message_parse(SDP_RO, tsk_strlen(SDP_RO)))){
-		tmedia_session_mgr_set_ro(mgr, sdp_ro);
-		TSK_OBJECT_SAFE_FREE(sdp_ro);
-	}
+    /* set ro */
+    if((sdp_ro = tsdp_message_parse(SDP_RO, tsk_strlen(SDP_RO)))) {
+        tmedia_session_mgr_set_ro(mgr, sdp_ro);
+        TSK_OBJECT_SAFE_FREE(sdp_ro);
+    }
 
-	/* start() */
-	tmedia_session_mgr_start(mgr);
+    /* start() */
+    tmedia_session_mgr_start(mgr);
 
-	/* send file */
-	//tmedia_session_mgr_send_file(mgr, "C:\\avatar.png", TMEDIA_SESSION_SET_NULL());
+    /* send file */
+    //tmedia_session_mgr_send_file(mgr, "C:\\avatar.png", TMEDIA_SESSION_SET_NULL());
 
-	//getchar();
+    //getchar();
 
-	/* for fun, send DTMF */
-	//tmedia_session_mgr_send_dtmf(mgr, 1);
-	//tmedia_session_mgr_send_dtmf(mgr, 10);
-	//tmedia_session_mgr_send_dtmf(mgr, 11);
+    /* for fun, send DTMF */
+    //tmedia_session_mgr_send_dtmf(mgr, 1);
+    //tmedia_session_mgr_send_dtmf(mgr, 10);
+    //tmedia_session_mgr_send_dtmf(mgr, 11);
 
-	getchar();
+    getchar();
 
-	/* stop() */
-	//tmedia_session_mgr_stop(mgr);
+    /* stop() */
+    //tmedia_session_mgr_stop(mgr);
 
-	//getchar();
+    //getchar();
 
-	TSK_OBJECT_SAFE_FREE(mgr);
+    TSK_OBJECT_SAFE_FREE(mgr);
 }
 
 void test_sessions_server()
 {
-	tmedia_session_mgr_t* mgr;
-	const tsdp_message_t* sdp_lo;
-	tsdp_message_t* sdp_ro;
-	char* temp;
-	tmedia_type_t type;
+    tmedia_session_mgr_t* mgr;
+    const tsdp_message_t* sdp_lo;
+    tsdp_message_t* sdp_ro;
+    char* temp;
+    tmedia_type_t type;
 
-	/* get ro (INVITE) */
-	if((sdp_ro = tsdp_message_parse(SDP_RO, tsk_strlen(SDP_RO)))){
-		//type = tmedia_type_from_sdp(sdp_ro);
-		type = tmedia_video;
-		mgr = tmedia_session_mgr_create(type,
-			"192.168.0.13", tsk_false, tsk_false/* answerer */);
-		tmedia_session_mgr_set_ro(mgr, sdp_ro);
-		TSK_OBJECT_SAFE_FREE(sdp_ro);
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to deserialize remote sdp");
-		return;
-	}
+    /* get ro (INVITE) */
+    if((sdp_ro = tsdp_message_parse(SDP_RO, tsk_strlen(SDP_RO)))) {
+        //type = tmedia_type_from_sdp(sdp_ro);
+        type = tmedia_video;
+        mgr = tmedia_session_mgr_create(type,
+                                        "192.168.0.13", tsk_false, tsk_false/* answerer */);
+        tmedia_session_mgr_set_ro(mgr, sdp_ro);
+        TSK_OBJECT_SAFE_FREE(sdp_ro);
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to deserialize remote sdp");
+        return;
+    }
 
-	/* get lo (200 OK) */
-	sdp_lo = tmedia_session_mgr_get_lo(mgr);
-	if((temp = tsdp_message_tostring(sdp_lo))){
-		TSK_DEBUG_INFO("sdp_lo=%s", temp);
-		TSK_FREE(temp);
-	}
+    /* get lo (200 OK) */
+    sdp_lo = tmedia_session_mgr_get_lo(mgr);
+    if((temp = tsdp_message_tostring(sdp_lo))) {
+        TSK_DEBUG_INFO("sdp_lo=%s", temp);
+        TSK_FREE(temp);
+    }
 
-	/* ACK */
+    /* ACK */
 
-	/* start() */
-	tmedia_session_mgr_start(mgr);
+    /* start() */
+    tmedia_session_mgr_start(mgr);
 
-	getchar();
+    getchar();
 
-	/* stop() */
-	//tmedia_session_mgr_stop(mgr);
+    /* stop() */
+    //tmedia_session_mgr_stop(mgr);
 
-	//getchar();
+    //getchar();
 
-	TSK_OBJECT_SAFE_FREE(mgr);
+    TSK_OBJECT_SAFE_FREE(mgr);
 }
 
 
 void test_sessions()
-{	
-	test_sessions_client();
-	//test_sessions_server();
+{
+    test_sessions_client();
+    //test_sessions_server();
 }
 
 
 int test_session_msrp_cb(const tmsrp_event_t* _event)
 {
-	if(TMSRP_MESSAGE_IS_REQUEST(_event->message)){
-		TSK_DEBUG_INFO("Received MSRP request");
-	}
-	else{
-		TSK_DEBUG_INFO("Received MSRP response");
-	}
+    if(TMSRP_MESSAGE_IS_REQUEST(_event->message)) {
+        TSK_DEBUG_INFO("Received MSRP request");
+    }
+    else {
+        TSK_DEBUG_INFO("Received MSRP response");
+    }
 
-	return 0;
+    return 0;
 }
 
 #endif /* _TINYDEV_TEST_SESSIONS_H */

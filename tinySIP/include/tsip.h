@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -58,65 +58,63 @@ typedef uint8_t amf_t[2];
 typedef uint8_t operator_id_t[16];
 
 // @tinyWRAP
-typedef enum tsip_stack_mode_e
-{
-	tsip_stack_mode_ua,
-	tsip_stack_mode_p2p,
-	tsip_stack_mode_webrtc2sip,
-	tsip_stack_mode_mcu
+typedef enum tsip_stack_mode_e {
+    tsip_stack_mode_ua,
+    tsip_stack_mode_p2p,
+    tsip_stack_mode_webrtc2sip,
+    tsip_stack_mode_mcu
 }
 tsip_stack_mode_t;
 #define TSIP_STACK_MODE_IS_SERVER(stack) ((stack)->network.mode == tsip_stack_mode_webrtc2sip || (stack)->network.mode == tsip_stack_mode_mcu)
 #define TSIP_STACK_MODE_IS_CLIENT(stack) (!TSIP_STACK_MODE_IS_SERVER((stack)))
 
-typedef enum tsip_stack_param_type_e
-{
-	tsip_pname_null = 0,
-	
-	/* === Identity === */
-	tsip_pname_display_name,
-	tsip_pname_impu,
-	tsip_pname_preferred_id,
-	tsip_pname_impi,
-	tsip_pname_password,
+typedef enum tsip_stack_param_type_e {
+    tsip_pname_null = 0,
 
-	/* === SigComp === */
-	tsip_pname_sigcomp,
-	tsip_pname_sigcomp_add_compartment,
-	tsip_pname_sigcomp_remove_compartment,
+    /* === Identity === */
+    tsip_pname_display_name,
+    tsip_pname_impu,
+    tsip_pname_preferred_id,
+    tsip_pname_impi,
+    tsip_pname_password,
 
-	/* === Network === */
-	tsip_pname_realm,
-	tsip_pname_local_ip,
-	tsip_pname_local_port,
-	tsip_pname_aor,
-	tsip_pname_discovery_naptr,
-	tsip_pname_discovery_dhcp,
-	tsip_pname_proxy_cscf,
-	tsip_pname_dnsserver,
-	tsip_pname_max_fds,
-	tsip_pname_mode,
+    /* === SigComp === */
+    tsip_pname_sigcomp,
+    tsip_pname_sigcomp_add_compartment,
+    tsip_pname_sigcomp_remove_compartment,
 
-	
-	/* === Security === */
-	tsip_pname_early_ims,
-	tsip_pname_secagree_ipsec,
-	tsip_pname_secagree_tls,
-	tsip_pname_amf,
-	tsip_pname_operator_id,
-	tsip_pname_tls_certs,
-	tsip_pname_ipsec_params,
+    /* === Network === */
+    tsip_pname_realm,
+    tsip_pname_local_ip,
+    tsip_pname_local_port,
+    tsip_pname_aor,
+    tsip_pname_discovery_naptr,
+    tsip_pname_discovery_dhcp,
+    tsip_pname_proxy_cscf,
+    tsip_pname_dnsserver,
+    tsip_pname_max_fds,
+    tsip_pname_mode,
 
-	/* === Dummy Headers === */
-	tsip_pname_header,
 
-	/* Nat Traversal */
-	tsip_pname_stun_enabled,
-	tsip_pname_stun_server,
-	tsip_pname_stun_cred,
+    /* === Security === */
+    tsip_pname_early_ims,
+    tsip_pname_secagree_ipsec,
+    tsip_pname_secagree_tls,
+    tsip_pname_amf,
+    tsip_pname_operator_id,
+    tsip_pname_tls_certs,
+    tsip_pname_ipsec_params,
 
-	/* === User Data === */
-	tsip_pname_userdata,
+    /* === Dummy Headers === */
+    tsip_pname_header,
+
+    /* Nat Traversal */
+    tsip_pname_stun_enabled,
+    tsip_pname_stun_server,
+    tsip_pname_stun_cred,
+
+    /* === User Data === */
+    tsip_pname_userdata,
 }
 tsip_stack_param_type_t;
 
@@ -132,7 +130,7 @@ tsip_stack_param_type_t;
 * Sets the user's display name. Used in SIP 'From' and 'To' headers.
 * @param NAME_STR The user's display name.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_DISPLAY_NAME("john doe"),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -142,7 +140,7 @@ tsip_stack_param_type_t;
 * Sets the user's IMPU (IMS Public Identity).
 * @param URI_STR A valid SIP/SIPS/tel URI string.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_IMPU("sip:johndoe@open-ims.test"),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -152,7 +150,7 @@ tsip_stack_param_type_t;
 * Sets the user's Preferred Identity. Used to populate the P-Preferred-Identity header.
 * @param URI_STR A valid SIP/SIPS/tel URI string.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_PREFERRED_IDENTITY("sip:johndoe@open-ims.test"),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -162,7 +160,7 @@ tsip_stack_param_type_t;
 * Sets the user's IMPI (IMS Private Identity).
 * @param IMPI_STR Any string.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_IMPI("johndoe@open-ims.test"),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -172,7 +170,7 @@ tsip_stack_param_type_t;
 * Sets the user's password.
 * @param PASSORD_STR Any string.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_PASSWORD("mysecret"),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -195,7 +193,7 @@ tsip_stack_param_type_t;
 * @param CPB_UINT Cycles Per Bit. Default value is 64.
 * @param PRES_DICT_BOOL Indicates whether to enable Presence dictionary (RFC 5112) or not. Default value is @a tsk_false.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_SIGCOMP(8192, 8192, 64, tsk_true),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -209,7 +207,7 @@ tsip_stack_param_type_t;
 * @sa @ref TSIP_STACK_UNSET_SIGCOMP_COMPARTMENT()
 *
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_NEW_SIGCOMP_COMPARTMENT("urn:uuid:0C67446E-F1A1-11D9-94D3-000A95A0E128"),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -223,7 +221,7 @@ tsip_stack_param_type_t;
 * @sa @ref TSIP_STACK_SET_SIGCOMP_NEW_COMPARTMENT()
 *
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_UNSET_SIGCOMP_COMPARTMENT("urn:uuid:0C67446E-F1A1-11D9-94D3-000A95A0E128"),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -238,7 +236,7 @@ tsip_stack_param_type_t;
 * Sets the domain name.
 * @param URI_STR A valid SIP/SIPS URI string.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_REALM("sip:open-ims.test"),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -248,7 +246,7 @@ tsip_stack_param_type_t;
 * Sets the user's local IP address.
 * @param IP_STR IPv4/IPv6 IP address or FQDN.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_LOCAL_IP("fe80::"),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -260,7 +258,7 @@ tsip_stack_param_type_t;
 * Sets the user's local Port to bind to.
 * @param PORT_UINT Port number. Should be between 0x0400 and 0xFFFF.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_LOCAL_PORT(5060),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -275,7 +273,7 @@ tsip_stack_param_type_t;
 * @param PORT_UINT Port number. Should be between 0x0400 and 0xFFFF.
 * Will be ignored if equals to zero.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_AOR("fe80::", 1234),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -289,7 +287,7 @@ tsip_stack_param_type_t;
 * is missing, then this option will be enabled by default.
 * @param ENABLED_BOOL @a tsk_true (1) or @a tsk_false (0).
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_DISCOVERY_NAPTR(tsk_true),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -302,7 +300,7 @@ tsip_stack_param_type_t;
 * to use will depend on the Proxy-CSCF address type.
 * @param ENABLED_BOOL @a tsk_true (1) or @a tsk_false (0).
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_DISCOVERY_DHCP(tsk_false),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -311,14 +309,14 @@ tsip_stack_param_type_t;
 */
 /**@ingroup tsip_stack_group
 * @def TSIP_STACK_SET_PROXY_CSCF
-* Configures the Proxy-CSCF. 
+* Configures the Proxy-CSCF.
 * @param FQDN_STR The IP address (v4/v6) or FQDN of the Proxy-CSCF.
 * @param PORT_UINT The port.
 * @param TRANSPORT_STR The transport type. Should be: @a "udp" or @a "tcp" or @a "tls" or @a "sctp". Default is @a "udp".
-* @param IP_VERSION_STR The IP version to use. Should be:  @a "ipv4" or @a "ipv6" or @a "ipv46". This parameter is useful when 
+* @param IP_VERSION_STR The IP version to use. Should be:  @a "ipv4" or @a "ipv6" or @a "ipv46". This parameter is useful when
 * @a FQDN_STR parameter is a domain name. default is @a "ipv4".
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_PROXY_CSCF("pcscf-doubango.org", 4060, "tcp", "ipv6"),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -331,7 +329,7 @@ tsip_stack_param_type_t;
 * @param IP_STR The IP address or FQDN of the DNS server to add.
 * @code
  // Add two new DNS servers (IPv6 and IPv4)
-int ret = tsip_stack_set(stack, 
+int ret = tsip_stack_set(stack,
               TSIP_STACK_SET_DNS_SERVER("192.16.16.9"),
 			  TSIP_STACK_SET_DNS_SERVER("fe::"),
               TSIP_STACK_SET_NULL());
@@ -341,7 +339,7 @@ int ret = tsip_stack_set(stack,
 * @def TSIP_STACK_SET_MODE_SERVER
 * Configure the stack to be used as server. Cannot be changed later.
 * @code
-int ret = tsip_stack_set(stack, 
+int ret = tsip_stack_set(stack,
               TSIP_STACK_SET_MODE_SERVER(),
               TSIP_STACK_SET_NULL());
 * @endcode
@@ -363,20 +361,20 @@ int ret = tsip_stack_set(stack,
 /* === Security === */
 /**@ingroup tsip_stack_group
 * @def TSIP_STACK_SET_EARLY_IMS
-* Whether to enable 3GPP Early-IMS Security as per 3GPP TS 33.978. 
+* Whether to enable 3GPP Early-IMS Security as per 3GPP TS 33.978.
 * @param ENABLED_BOOL @a tsk_true (1) or @a tsk_false (0).
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_EARLY_IMS(tsk_false),
 *              TSIP_STACK_SET_NULL());
 * @endcode
 */
 /**@ingroup tsip_stack_group
 * @def TSIP_STACK_SET_SECAGREE_IPSEC
-* Whether to enable IPSec security agreement as per IETF RFC 3329. 
+* Whether to enable IPSec security agreement as per IETF RFC 3329.
 * @param ENABLED_BOOL @a tsk_true (1) or @a tsk_false (0).
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_SECAGREE_IPSEC(tsk_true),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -385,10 +383,10 @@ int ret = tsip_stack_set(stack,
 */
 /**@ingroup tsip_stack_group
 * @def TSIP_STACK_SET_SECAGREE_TLS
-* Whether to enable TLS security agreement as per IETF RFC 3329. 
+* Whether to enable TLS security agreement as per IETF RFC 3329.
 * @param ENABLED_BOOL @a tsk_true (1) or @a tsk_false (0).
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_SECAGREE_TLS(tsk_true),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -400,7 +398,7 @@ int ret = tsip_stack_set(stack,
 * Sets AMF (Authentication Management Field) value to use for IMS-AKA authentication.
 * @param AMF_UINT16 16-bit value.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_IMS_AKA_AMF(0x3FB6),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -413,7 +411,7 @@ int ret = tsip_stack_set(stack,
 * @param OPID_HEX_STR 128-bit value as hex-string. If the length of the value supplied by the user is less than 128 bits,
 * then it will be padded with zeros.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_IMS_AKA_OPERATOR_ID("0x5FABC9"), // Will be padded with zeros
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -428,7 +426,7 @@ int ret = tsip_stack_set(stack,
 * @param MODE_STR Mode. Should be: @a "tun" or @a "trans". Default is @a "trans".
 * @param PROTOCOL_STR Protocol. Should be @a "ah" or @a "esp" or @a "ah/esp". Default is @a "esp".
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_SECAGREE_IPSEC(tsk_true),
                TSIP_STACK_SET_IPSEC_PARAMS("hmac-md5-96", "des-ede3-cbc", "trans", "esp"),
 *              TSIP_STACK_SET_NULL());
@@ -443,7 +441,7 @@ int ret = tsip_stack_set(stack,
 * @param PUB_FILE_STR Public cert. file.
 * @param PRIV_FILE_STR Private cert. file.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_TLS_CERTS("C:\\tls\\ca.pki-crt.pem", "C:\\tls\\pub-crt.pem", "C:\\tls\\priv-key.pem"),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -467,7 +465,7 @@ int ret = tsip_stack_set(stack,
 * @param NAME_STR The name of the header to add or update.
 * @param VALUE_STR The value of the header to add or update.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_HEADER("User-Agent", "IM-client/OMA1.0 doubango/v1.0.0"),
 *              TSIP_STACK_SET_HEADER("Allow", "INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER"),
 *              TSIP_STACK_SET_NULL());
@@ -480,7 +478,7 @@ int ret = tsip_stack_set(stack,
 * Removes a stack-level header.
 * @param NAME_STR The name of the header to remove.
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_UNSET_HEADER("User-Agent"),
 *              TSIP_STACK_UNSET_HEADER("Allow"),
 *              TSIP_STACK_UNSET_HEADER("My_Header"),
@@ -499,7 +497,7 @@ int ret = tsip_stack_set(stack,
 * @param IP_STR The IPv4/IPv6 address for FQDN of the STUN2/TURN address.
 * @param PORT_UINT The server port (default is 3478 for both TCP and UDP, and 5349 for TLS)
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_STUN_SERVER("numb.viagenie.ca", 3478),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -512,7 +510,7 @@ int ret = tsip_stack_set(stack,
 * @param USR_STR The login.
 * @param PASSORD_STR The password
 * @code
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_STUN_CRED("bob@open-ims.test", "mysecret"),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -530,7 +528,7 @@ int ret = tsip_stack_set(stack,
 * @param DATA_PTR Pointer to the user data.
 * @code
 * const void* context;
-* int ret = tsip_stack_set(stack, 
+* int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_USERDATA(context),
 *              TSIP_STACK_SET_NULL());
 * @endcode
@@ -541,131 +539,130 @@ int ret = tsip_stack_set(stack,
 
 
 /* 3GPP IMS/LTE stack (for internal use). only tsip_stack_handle_t should be visible. */
-typedef struct tsip_stack_s
-{
-	TSK_DECLARE_RUNNABLE;
-	TSK_DECLARE_SAFEOBJ;
-	
-	tsk_timer_manager_handle_t* timer_mgr_global;
-	tsk_bool_t started;
-	tsip_stack_callback_f callback;
+typedef struct tsip_stack_s {
+    TSK_DECLARE_RUNNABLE;
+    TSK_DECLARE_SAFEOBJ;
 
-	/* === Identity === */
-	struct{
-		char* display_name;
-		tsip_uri_t *impu;
-		tsip_uri_t *preferred;
-		char *impi;
-		char *password;
-	} identity;
+    tsk_timer_manager_handle_t* timer_mgr_global;
+    tsk_bool_t started;
+    tsip_stack_callback_f callback;
 
-	/* === SigComp === */
-	struct{
-		tsip_sigcomp_handle_t* handle;
+    /* === Identity === */
+    struct {
+        char* display_name;
+        tsip_uri_t *impu;
+        tsip_uri_t *preferred;
+        char *impi;
+        char *password;
+    } identity;
 
-		unsigned dms;
-		unsigned sms;
-		unsigned cpb;
-		tsk_bool_t sip_dict;
-		tsk_bool_t pres_dict;
-	} sigcomp;
+    /* === SigComp === */
+    struct {
+        tsip_sigcomp_handle_t* handle;
 
-	/* === Network === */
-	struct{
-		tsip_stack_mode_t mode;
+        unsigned dms;
+        unsigned sms;
+        unsigned cpb;
+        tsk_bool_t sip_dict;
+        tsk_bool_t pres_dict;
+    } sigcomp;
 
-		char *local_ip[TSIP_TRANSPORT_IDX_MAX];
-		tnet_port_t local_port[TSIP_TRANSPORT_IDX_MAX];
+    /* === Network === */
+    struct {
+        tsip_stack_mode_t mode;
+
+        char *local_ip[TSIP_TRANSPORT_IDX_MAX];
+        tnet_port_t local_port[TSIP_TRANSPORT_IDX_MAX];
         tsk_bool_t local_ip_is_set_by_user[TSIP_TRANSPORT_IDX_MAX]; // whether the address (ip and port) is set by the user or retrieved
 
-		char *proxy_cscf[TSIP_TRANSPORT_IDX_MAX];
-		tnet_port_t proxy_cscf_port[TSIP_TRANSPORT_IDX_MAX];
-		tnet_socket_type_t proxy_cscf_type[TSIP_TRANSPORT_IDX_MAX];
-		tnet_socket_type_t transport_types[TSIP_TRANSPORT_IDX_MAX];
-		int32_t transport_idx_default;
-		
-		tsip_uri_t *realm;
-		
-		//! IP adddress and port to use as AOR (user-defined)
-		struct{
-			char* ip[TSIP_TRANSPORT_IDX_MAX];
-			tnet_port_t port[TSIP_TRANSPORT_IDX_MAX];
-		} aor;
-		
-		tsk_bool_t discovery_naptr;
-		tsk_bool_t discovery_dhcp;
+        char *proxy_cscf[TSIP_TRANSPORT_IDX_MAX];
+        tnet_port_t proxy_cscf_port[TSIP_TRANSPORT_IDX_MAX];
+        tnet_socket_type_t proxy_cscf_type[TSIP_TRANSPORT_IDX_MAX];
+        tnet_socket_type_t transport_types[TSIP_TRANSPORT_IDX_MAX];
+        int32_t transport_idx_default;
 
-		tsk_size_t max_fds;
-	} network;
+        tsip_uri_t *realm;
 
-	/* === Security === */
-	struct{
-		char* secagree_mech;
-		tsk_bool_t earlyIMS;
-		operator_id_t operator_id;
-		amf_t amf;
-		
-		/* IPSec */
-		struct{
-			char* alg;
-			char* ealg;
-			char* mode;
-			char* protocol;
-		} ipsec;
-		tsk_bool_t enable_secagree_ipsec;
-		
-		/* TLS */
-		struct {
-			char* ca;
-			char* pbk;
-			char* pvk;
-			tsk_bool_t verify;
-		}tls;
-		tsk_bool_t enable_secagree_tls;
-	} security;
-	
-	
-	
-	
-	
-	
-	
-	
-	tsip_uris_L_t* paths;
-	tsip_uris_L_t* service_routes;
-	tsip_uris_L_t* associated_uris;
+        //! IP adddress and port to use as AOR (user-defined)
+        struct {
+            char* ip[TSIP_TRANSPORT_IDX_MAX];
+            tnet_port_t port[TSIP_TRANSPORT_IDX_MAX];
+        } aor;
 
-	/* DNS context */
-	tnet_dns_ctx_t *dns_ctx;
+        tsk_bool_t discovery_naptr;
+        tsk_bool_t discovery_dhcp;
 
-	/* NAT Traversal context */
-	struct {
-		// STUN
-		struct{
-			char* ip;
-			tnet_port_t port;
-			char* login;
-			char* pwd;
-			tsk_bool_t enabled;
-		} stun;
-		struct tnet_nat_ctx_s* ctx;
-	} natt;
+        tsk_size_t max_fds;
+    } network;
 
-	/* DHCP context */	
+    /* === Security === */
+    struct {
+        char* secagree_mech;
+        tsk_bool_t earlyIMS;
+        operator_id_t operator_id;
+        amf_t amf;
 
-	/* QoS */
+        /* IPSec */
+        struct {
+            char* alg;
+            char* ealg;
+            char* mode;
+            char* protocol;
+        } ipsec;
+        tsk_bool_t enable_secagree_ipsec;
 
-	/* Internals. */
-	//tsk_timer_manager_handle_t* timer_mgr;
-	tsip_timers_t timers;
-	tsip_ssessions_L_t *ssessions;
-	tsk_params_L_t *headers;
-	const void* userdata;
+        /* TLS */
+        struct {
+            char* ca;
+            char* pbk;
+            char* pvk;
+            tsk_bool_t verify;
+        } tls;
+        tsk_bool_t enable_secagree_tls;
+    } security;
 
-	/* Layers */
-	struct tsip_dialog_layer_s *layer_dialog;
-	struct tsip_transac_layer_s *layer_transac;
-	struct tsip_transport_layer_s *layer_transport;
+
+
+
+
+
+
+
+    tsip_uris_L_t* paths;
+    tsip_uris_L_t* service_routes;
+    tsip_uris_L_t* associated_uris;
+
+    /* DNS context */
+    tnet_dns_ctx_t *dns_ctx;
+
+    /* NAT Traversal context */
+    struct {
+        // STUN
+        struct {
+            char* ip;
+            tnet_port_t port;
+            char* login;
+            char* pwd;
+            tsk_bool_t enabled;
+        } stun;
+        struct tnet_nat_ctx_s* ctx;
+    } natt;
+
+    /* DHCP context */
+
+    /* QoS */
+
+    /* Internals. */
+    //tsk_timer_manager_handle_t* timer_mgr;
+    tsip_timers_t timers;
+    tsip_ssessions_L_t *ssessions;
+    tsk_params_L_t *headers;
+    const void* userdata;
+
+    /* Layers */
+    struct tsip_dialog_layer_s *layer_dialog;
+    struct tsip_transac_layer_s *layer_transac;
+    struct tsip_transport_layer_s *layer_transport;
 }
 tsip_stack_t;
 

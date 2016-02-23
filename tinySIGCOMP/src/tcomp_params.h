@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -41,27 +41,26 @@
 TCOMP_BEGIN_DECLS
 
 
-typedef struct tcomp_params_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tcomp_params_s {
+    TSK_DECLARE_OBJECT;
 
-	uint8_t cpbCode; /**< 'Cycles Per Bit' binary code. You MUST use @ref tcomp_params_setCpbCode to set this value. */
-	uint8_t dmsCode; /**< 'Decompression Memory' Size binary code. You MUST use @ref tcomp_params_setDmsCode to set this value. */
-	uint8_t smsCode; /**< 'State Memory Size' binary code. You MUST use @ref tcomp_params_setSmsCode to set this value.  */
+    uint8_t cpbCode; /**< 'Cycles Per Bit' binary code. You MUST use @ref tcomp_params_setCpbCode to set this value. */
+    uint8_t dmsCode; /**< 'Decompression Memory' Size binary code. You MUST use @ref tcomp_params_setDmsCode to set this value. */
+    uint8_t smsCode; /**< 'State Memory Size' binary code. You MUST use @ref tcomp_params_setSmsCode to set this value.  */
 
-	uint8_t cpbValue;	/**< 'Cycles Per Bit' value. You MUST use @ref tcomp_params_setCpbValue to set this value. */
-	uint32_t dmsValue;	/**< 'Decompression Memory Size' value. You MUST use @ref tcomp_params_setDmsValue to set this value. */
-	uint32_t smsValue;	/**< 'State Memory Size' value You MUST use @ref tcomp_params_setSmsValue to set this value. */
+    uint8_t cpbValue;	/**< 'Cycles Per Bit' value. You MUST use @ref tcomp_params_setCpbValue to set this value. */
+    uint32_t dmsValue;	/**< 'Decompression Memory Size' value. You MUST use @ref tcomp_params_setDmsValue to set this value. */
+    uint32_t smsValue;	/**< 'State Memory Size' value You MUST use @ref tcomp_params_setSmsValue to set this value. */
 
-	uint8_t SigComp_version;	/**< SigComp version. */
-	tcomp_buffers_L_t* returnedStates; /**< List of the returned states. */
+    uint8_t SigComp_version;	/**< SigComp version. */
+    tcomp_buffers_L_t* returnedStates; /**< List of the returned states. */
 }
 tcomp_params_t;
 
 tcomp_params_t* tcomp_params_create();
 
 tsk_bool_t tcomp_params_hasCpbDmsSms(tcomp_params_t*);
-	
+
 void tcomp_params_setCpbCode(tcomp_params_t*, uint8_t _cpbCode);
 int tcomp_params_setCpbValue(tcomp_params_t*, uint8_t _cpbValue);
 

@@ -525,12 +525,12 @@ OPUS_EXPORT void opus_decoder_destroy(OpusDecoder *st);
   * @returns number of frames
   */
 OPUS_EXPORT int opus_packet_parse(
-   const unsigned char *data,
-   opus_int32 len,
-   unsigned char *out_toc,
-   const unsigned char *frames[48],
-   opus_int16 size[48],
-   int *payload_offset
+    const unsigned char *data,
+    opus_int32 len,
+    unsigned char *out_toc,
+    const unsigned char *frames[48],
+    opus_int16 size[48],
+    int *payload_offset
 ) OPUS_ARG_NONNULL(1) OPUS_ARG_NONNULL(4);
 
 /** Gets the bandwidth of an Opus packet.

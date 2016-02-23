@@ -2,19 +2,19 @@
 * Copyright (C) 2009 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -74,68 +74,65 @@ TMSRP_BEGIN_DECLS
 #define TMSRP_RESPONSE_IS_6XX(self)			TMSRP_RESPONSE_IS_NXX(self, 6)
 #define TMSRP_RESPONSE_IS_23456(self)		(TMSRP_MESSAGE_IS_RESPONSE((self)) && 200<= TMSRP_RESPONSE_CODE((self)) && TMSRP_RESPONSE_CODE((self)) <= 699)
 
-/**	Defines the message type (Request or Response). 
+/**	Defines the message type (Request or Response).
 **/
-typedef enum tmsrp_message_type_e
-{
-	tmsrp_unknown,
-	tmsrp_request,
-	tmsrp_response
+typedef enum tmsrp_message_type_e {
+    tmsrp_unknown,
+    tmsrp_request,
+    tmsrp_response
 }
 tmsrp_message_type_t;
 
-typedef enum tmsrp_request_type_e
-{
-	tmsrp_NONE = 0,
+typedef enum tmsrp_request_type_e {
+    tmsrp_NONE = 0,
 
-	tmsrp_SEND,
-	tmsrp_REPORT,
-	tmsrp_AUTH
-	//... 
+    tmsrp_SEND,
+    tmsrp_REPORT,
+    tmsrp_AUTH
+    //...
 }
 tmsrp_request_type_t;
 
-typedef struct tmsrp_message_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	tmsrp_message_type_t type;
-	char* tid;
-	union{
-		struct{
-			char* method;
-			tmsrp_request_type_t type;
-		} request;
+typedef struct tmsrp_message_s {
+    TSK_DECLARE_OBJECT;
 
-		struct{
-			short status;
-			char* comment;
-		} response;
-	} line;
+    tmsrp_message_type_t type;
+    char* tid;
+    union {
+        struct {
+            char* method;
+            tmsrp_request_type_t type;
+        } request;
 
-	// Very common headers
-	tmsrp_header_To_Path_t* To;
-	tmsrp_header_From_Path_t* From;
-	
-	tmsrp_header_Message_ID_t* MessageID;
-	
-	tmsrp_header_Byte_Range_t* ByteRange;
-	tmsrp_header_Failure_Report_t* FailureReport;
-	tmsrp_header_Success_Report_t* SuccessReport;
-	tmsrp_header_Status_t* Status;
+        struct {
+            short status;
+            char* comment;
+        } response;
+    } line;
 
-	//! List of @ref tmsrp_header_t elements.
-	tmsrp_headers_L_t* headers;
+    // Very common headers
+    tmsrp_header_To_Path_t* To;
+    tmsrp_header_From_Path_t* From;
 
-	// Content
-	tmsrp_header_Content_Type_t* ContentType;
-	tsk_buffer_t *Content;
+    tmsrp_header_Message_ID_t* MessageID;
 
-	// End line
-	struct{
-		char* tid;
-		char cflag;
-	}end_line;
+    tmsrp_header_Byte_Range_t* ByteRange;
+    tmsrp_header_Failure_Report_t* FailureReport;
+    tmsrp_header_Success_Report_t* SuccessReport;
+    tmsrp_header_Status_t* Status;
+
+    //! List of @ref tmsrp_header_t elements.
+    tmsrp_headers_L_t* headers;
+
+    // Content
+    tmsrp_header_Content_Type_t* ContentType;
+    tsk_buffer_t *Content;
+
+    // End line
+    struct {
+        char* tid;
+        char cflag;
+    } end_line;
 }
 tmsrp_message_t;
 
@@ -153,19 +150,19 @@ TINYMSRP_API int tmsrp_message_add_headers(tmsrp_message_t *self, ...);
 
 #if 0
 static void TMSRP_MESSAGE_ADD_HEADER(tmsrp_message_t *self, ...)
-	{
-		va_list ap;
-		tmsrp_header_t *header;
-		const tsk_object_def_t *objdef;
-		
-		va_start(ap, self);
-		objdef = va_arg(ap, const tsk_object_def_t*);
-		header = tsk_object_new_2(objdef, &ap);
-		va_end(ap);
+{
+    va_list ap;
+    tmsrp_header_t *header;
+    const tsk_object_def_t *objdef;
 
-		tmsrp_message_add_header(self, header);
-		tsk_object_unref(header);
-	}
+    va_start(ap, self);
+    objdef = va_arg(ap, const tsk_object_def_t*);
+    header = tsk_object_new_2(objdef, &ap);
+    va_end(ap);
+
+    tmsrp_message_add_header(self, header);
+    tsk_object_unref(header);
+}
 #else
 #define TMSRP_MESSAGE_ADD_HEADER(self, objdef, ...)						\
 	{																	\

@@ -123,56 +123,56 @@ __extension__ ({                                                              \
   __attribute__((noinline)) id(void) { __asm__(""); }
 
 _CURL_WARNING(_curl_easy_setopt_err_long,
-  "curl_easy_setopt expects a long argument for this option")
+              "curl_easy_setopt expects a long argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_curl_off_t,
-  "curl_easy_setopt expects a curl_off_t argument for this option")
+              "curl_easy_setopt expects a curl_off_t argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_string,
-  "curl_easy_setopt expects a string (char* or char[]) argument for this option"
-  )
+              "curl_easy_setopt expects a string (char* or char[]) argument for this option"
+             )
 _CURL_WARNING(_curl_easy_setopt_err_write_callback,
-  "curl_easy_setopt expects a curl_write_callback argument for this option")
+              "curl_easy_setopt expects a curl_write_callback argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_read_cb,
-  "curl_easy_setopt expects a curl_read_callback argument for this option")
+              "curl_easy_setopt expects a curl_read_callback argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_ioctl_cb,
-  "curl_easy_setopt expects a curl_ioctl_callback argument for this option")
+              "curl_easy_setopt expects a curl_ioctl_callback argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_sockopt_cb,
-  "curl_easy_setopt expects a curl_sockopt_callback argument for this option")
+              "curl_easy_setopt expects a curl_sockopt_callback argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_opensocket_cb,
-  "curl_easy_setopt expects a curl_opensocket_callback argument for this option"
-  )
+              "curl_easy_setopt expects a curl_opensocket_callback argument for this option"
+             )
 _CURL_WARNING(_curl_easy_setopt_err_progress_cb,
-  "curl_easy_setopt expects a curl_progress_callback argument for this option")
+              "curl_easy_setopt expects a curl_progress_callback argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_debug_cb,
-  "curl_easy_setopt expects a curl_debug_callback argument for this option")
+              "curl_easy_setopt expects a curl_debug_callback argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_ssl_ctx_cb,
-  "curl_easy_setopt expects a curl_ssl_ctx_callback argument for this option")
+              "curl_easy_setopt expects a curl_ssl_ctx_callback argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_conv_cb,
-  "curl_easy_setopt expects a curl_conv_callback argument for this option")
+              "curl_easy_setopt expects a curl_conv_callback argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_seek_cb,
-  "curl_easy_setopt expects a curl_seek_callback argument for this option")
+              "curl_easy_setopt expects a curl_seek_callback argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_cb_data,
-  "curl_easy_setopt expects a private data pointer as argument for this option")
+              "curl_easy_setopt expects a private data pointer as argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_error_buffer,
-  "curl_easy_setopt expects a char buffer of CURL_ERROR_SIZE as argument for this option")
+              "curl_easy_setopt expects a char buffer of CURL_ERROR_SIZE as argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_FILE,
-  "curl_easy_setopt expects a FILE* argument for this option")
+              "curl_easy_setopt expects a FILE* argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_postfields,
-  "curl_easy_setopt expects a void* or char* argument for this option")
+              "curl_easy_setopt expects a void* or char* argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_curl_httpost,
-  "curl_easy_setopt expects a struct curl_httppost* argument for this option")
+              "curl_easy_setopt expects a struct curl_httppost* argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_curl_slist,
-  "curl_easy_setopt expects a struct curl_slist* argument for this option")
+              "curl_easy_setopt expects a struct curl_slist* argument for this option")
 _CURL_WARNING(_curl_easy_setopt_err_CURLSH,
-  "curl_easy_setopt expects a CURLSH* argument for this option")
+              "curl_easy_setopt expects a CURLSH* argument for this option")
 
 _CURL_WARNING(_curl_easy_getinfo_err_string,
-  "curl_easy_getinfo expects a pointer to char * for this info")
+              "curl_easy_getinfo expects a pointer to char * for this info")
 _CURL_WARNING(_curl_easy_getinfo_err_long,
-  "curl_easy_getinfo expects a pointer to long for this info")
+              "curl_easy_getinfo expects a pointer to long for this info")
 _CURL_WARNING(_curl_easy_getinfo_err_double,
-  "curl_easy_getinfo expects a pointer to double for this info")
+              "curl_easy_getinfo expects a pointer to double for this info")
 _CURL_WARNING(_curl_easy_getinfo_err_curl_slist,
-  "curl_easy_getinfo expects a pointer to struct curl_slist * for this info")
+              "curl_easy_getinfo expects a pointer to struct curl_slist * for this info")
 
 /* groups of curl_easy_setops options that take the same type of argument */
 
@@ -457,13 +457,13 @@ typedef int (_curl_sockopt_callback2)(const void *, curl_socket_t,
    _curl_callback_compatible((expr), _curl_opensocket_callback3) ||           \
    _curl_callback_compatible((expr), _curl_opensocket_callback4))
 typedef curl_socket_t (_curl_opensocket_callback1)
-  (void *, curlsocktype, struct curl_sockaddr *);
+(void *, curlsocktype, struct curl_sockaddr *);
 typedef curl_socket_t (_curl_opensocket_callback2)
-  (void *, curlsocktype, const struct curl_sockaddr *);
+(void *, curlsocktype, const struct curl_sockaddr *);
 typedef curl_socket_t (_curl_opensocket_callback3)
-  (const void *, curlsocktype, struct curl_sockaddr *);
+(const void *, curlsocktype, struct curl_sockaddr *);
 typedef curl_socket_t (_curl_opensocket_callback4)
-  (const void *, curlsocktype, const struct curl_sockaddr *);
+(const void *, curlsocktype, const struct curl_sockaddr *);
 
 /* evaluates to true if expr is of type curl_progress_callback or "similar" */
 #define _curl_is_progress_cb(expr)                                      \
@@ -472,9 +472,9 @@ typedef curl_socket_t (_curl_opensocket_callback4)
    _curl_callback_compatible((expr), _curl_progress_callback1) ||             \
    _curl_callback_compatible((expr), _curl_progress_callback2))
 typedef int (_curl_progress_callback1)(void *,
-    double, double, double, double);
+                                       double, double, double, double);
 typedef int (_curl_progress_callback2)(const void *,
-    double, double, double, double);
+                                       double, double, double, double);
 
 /* evaluates to true if expr is of type curl_debug_callback or "similar" */
 #define _curl_is_debug_cb(expr)                                         \
@@ -485,13 +485,13 @@ typedef int (_curl_progress_callback2)(const void *,
    _curl_callback_compatible((expr), _curl_debug_callback3) ||                \
    _curl_callback_compatible((expr), _curl_debug_callback4))
 typedef int (_curl_debug_callback1) (CURL *,
-    curl_infotype, char *, size_t, void *);
+                                     curl_infotype, char *, size_t, void *);
 typedef int (_curl_debug_callback2) (CURL *,
-    curl_infotype, char *, size_t, const void *);
+                                     curl_infotype, char *, size_t, const void *);
 typedef int (_curl_debug_callback3) (CURL *,
-    curl_infotype, const char *, size_t, void *);
+                                     curl_infotype, const char *, size_t, void *);
 typedef int (_curl_debug_callback4) (CURL *,
-    curl_infotype, const char *, size_t, const void *);
+                                     curl_infotype, const char *, size_t, const void *);
 
 /* evaluates to true if expr is of type curl_ssl_ctx_callback or "similar" */
 /* this is getting even messier... */

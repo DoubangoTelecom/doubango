@@ -1,20 +1,20 @@
-/* 
+/*
 * Copyright (C) Microsoft Corporation. All rights reserved.
 * Copyright (C) 2013 Mamadou DIOP
 * Copyright (C) 2013 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 */
@@ -50,10 +50,10 @@ class CMFSource : public IMFMediaSource
 
 public:
     static HRESULT CreateInstance(REFIID iid, void **ppSource);
-	static HRESULT CreateInstanceEx(REFIID iid, void **ppSource, IMFMediaType *pMediaType);
+    static HRESULT CreateInstanceEx(REFIID iid, void **ppSource, IMFMediaType *pMediaType);
 
-	// IMFCustomSource
-	HRESULT CopyVideoBuffer(UINT32 nWidth, UINT32 nHeight, const void* pBufferPtr, UINT32 nBufferSize);
+    // IMFCustomSource
+    HRESULT CopyVideoBuffer(UINT32 nWidth, UINT32 nHeight, const void* pBufferPtr, UINT32 nBufferSize);
 
     // IUnknown
     STDMETHODIMP QueryInterface(REFIID iid, void** ppv);
@@ -80,8 +80,7 @@ public:
 
 private:
 
-    enum State
-    {
+    enum State {
         STATE_STOPPED,
         STATE_PAUSED,
         STATE_STARTED
@@ -92,14 +91,11 @@ private:
     CMFSource(HRESULT &hr, IMFMediaType *pMediaType);
     virtual ~CMFSource();
 
-    HRESULT CheckShutdown() const
-    {
-        if (m_IsShutdown)
-        {
+    HRESULT CheckShutdown() const {
+        if (m_IsShutdown) {
             return MF_E_SHUTDOWN;
         }
-        else
-        {
+        else {
             return S_OK;
         }
     }
@@ -110,7 +106,9 @@ private:
     HRESULT     ValidatePresentationDescriptor(IMFPresentationDescriptor *pPD);
 
     LONGLONG    GetCurrentPosition() const;
-    State       GetState() const { return m_state; }
+    State       GetState() const {
+        return m_state;
+    }
 
     IMFMediaEventQueue          *m_pEventQueue;             // Event generator helper
     IMFPresentationDescriptor   *m_pPresentationDescriptor; // Default presentation
@@ -122,7 +120,7 @@ private:
     BOOL                        m_IsShutdown;               // Flag to indicate if Shutdown() method was called.
     State                       m_state;                    // Current state (running, stopped, paused)
 
-	IMFMediaType				*m_pMediaType;				// The supported mediaType
+    IMFMediaType				*m_pMediaType;				// The supported mediaType
 };
 
 
@@ -131,22 +129,21 @@ class SampleQueue
 protected:
 
     // Nodes in the linked list
-    struct Node
-    {
+    struct Node {
         Node *prev;
         Node *next;
         IMFSample*  item;
 
-        Node() : prev(NULL), next(NULL)
-        {
+        Node() : prev(NULL), next(NULL) {
         }
 
-        Node(IMFSample* item) : prev(NULL), next(NULL)
-        {
+        Node(IMFSample* item) : prev(NULL), next(NULL) {
             this->item = item;
         }
 
-        IMFSample* Item() const { return item; }
+        IMFSample* Item() const {
+            return item;
+        }
     };
 
 
@@ -155,27 +152,22 @@ protected:
 
 public:
 
-    SampleQueue()
-    {
+    SampleQueue() {
         m_anchor.next = &m_anchor;
         m_anchor.prev = &m_anchor;
     }
 
-    virtual ~SampleQueue()
-    {
+    virtual ~SampleQueue() {
         Clear();
     }
 
-    HRESULT Queue(IMFSample* item)
-    {
-        if (item == NULL)
-        {
+    HRESULT Queue(IMFSample* item) {
+        if (item == NULL) {
             return E_POINTER;
         }
 
         Node *pNode = new (std::nothrow) Node(item);
-        if (pNode == NULL)
-        {
+        if (pNode == NULL) {
             return E_OUTOFMEMORY;
         }
 
@@ -195,14 +187,11 @@ public:
 
     }
 
-    HRESULT Dequeue(IMFSample* *ppItem)
-    {
-        if (IsEmpty())
-        {
+    HRESULT Dequeue(IMFSample**ppItem) {
+        if (IsEmpty()) {
             return E_FAIL;
         }
-        if (ppItem == NULL)
-        {
+        if (ppItem == NULL) {
             return E_POINTER;
         }
 
@@ -220,17 +209,16 @@ public:
         return S_OK;
     }
 
-    BOOL IsEmpty() const { return m_anchor.next == &m_anchor; }
+    BOOL IsEmpty() const {
+        return m_anchor.next == &m_anchor;
+    }
 
-    void Clear()
-    {
+    void Clear() {
         Node *n = m_anchor.next;
 
         // Delete the nodes
-        while (n != &m_anchor)
-        {
-            if (n->item)
-            {
+        while (n != &m_anchor) {
+            if (n->item) {
                 n->item->Release();
             }
 
@@ -260,8 +248,8 @@ class CMFStreamSource : public IMFMediaStream
 
 public:
 
-	// IMFCustomSource
-	HRESULT CopyVideoBuffer(UINT32 nWidth, UINT32 nHeight, const void* pBufferPtr, UINT32 nBufferSize);
+    // IMFCustomSource
+    HRESULT CopyVideoBuffer(UINT32 nWidth, UINT32 nHeight, const void* pBufferPtr, UINT32 nBufferSize);
 
     // IUnknown
     STDMETHODIMP QueryInterface(REFIID iid, void** ppv);
@@ -285,26 +273,25 @@ private:
     ~CMFStreamSource();
 
 
-    HRESULT CheckShutdown() const
-    {
-        if (m_IsShutdown)
-        {
+    HRESULT CheckShutdown() const {
+        if (m_IsShutdown) {
             return MF_E_SHUTDOWN;
         }
-        else
-        {
+        else {
             return S_OK;
         }
     }
 
-	HRESULT		InitializeParams();
+    HRESULT		InitializeParams();
     HRESULT     Shutdown();
     HRESULT     CreateSample(IMFSample **pSample);
     HRESULT     DeliverSample(IMFSample *pSample);
     HRESULT     DeliverQueuedSamples();
     HRESULT     Flush();
 
-    LONGLONG    GetCurrentPosition() const { return m_rtCurrentPosition; }
+    LONGLONG    GetCurrentPosition() const {
+        return m_rtCurrentPosition;
+    }
     HRESULT     SetPosition(LONGLONG rtNewPosition);
     HRESULT     CheckEndOfStream();
 
@@ -313,7 +300,7 @@ private:
     CRITICAL_SECTION            m_critSec;
     BOOL                        m_IsShutdown;           // Flag to indicate if source's Shutdown() method was called.
     LONGLONG                    m_rtCurrentPosition;    // Current position in the stream, in 100-ns units
-	UINT64						m_rtDuration;			// Sample duration, in 100-ns units
+    UINT64						m_rtDuration;			// Sample duration, in 100-ns units
     BOOL                        m_discontinuity;        // Is the next sample a discontinuity?
     BOOL                        m_EOS;                  // Did we reach the end of the stream?
 
@@ -322,18 +309,17 @@ private:
     IMFStreamDescriptor         *m_pStreamDescriptor;   // Stream descriptor for this stream.
 
     SampleQueue                  m_sampleQueue;          // Queue for samples while paused.
-	GUID						m_guidMajorType;		// major media type (e.g. MFMediaType_Video or MFMediaType_Audio)
-	GUID						m_guidSubType;			// Media subtype (e.g. MFVideoFormat_RGB32 or MFVideoFormat_H264)
-	IMFMediaBuffer				*m_pMediaBuffer;			// Pointer to the data to deliver
-	UINT32						m_nBufferSize;			// Size of the data to deliver 
-	 
-	struct
-	{
-		UINT32 nWidth;
-		UINT32 nHeigh;
-		UINT32 nFps;
-	} 
-	m_structVideoParams;
+    GUID						m_guidMajorType;		// major media type (e.g. MFMediaType_Video or MFMediaType_Audio)
+    GUID						m_guidSubType;			// Media subtype (e.g. MFVideoFormat_RGB32 or MFVideoFormat_H264)
+    IMFMediaBuffer				*m_pMediaBuffer;			// Pointer to the data to deliver
+    UINT32						m_nBufferSize;			// Size of the data to deliver
+
+    struct {
+        UINT32 nWidth;
+        UINT32 nHeigh;
+        UINT32 nFps;
+    }
+    m_structVideoParams;
 };
 
 

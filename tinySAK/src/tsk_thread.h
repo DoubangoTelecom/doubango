@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -34,7 +34,7 @@
 
 typedef void tsk_thread_handle_t;
 #if TSK_UNDER_WINDOWS
-	typedef unsigned long tsk_thread_id_t;
+typedef unsigned long tsk_thread_id_t;
 #	define TSK_THREAD_PRIORITY_LOW				THREAD_PRIORITY_LOWEST
 #	define TSK_THREAD_PRIORITY_MEDIUM			THREAD_PRIORITY_NORMAL
 #	define TSK_THREAD_PRIORITY_HIGH				THREAD_PRIORITY_HIGHEST
@@ -42,7 +42,7 @@ typedef void tsk_thread_handle_t;
 #else
 #	include <pthread.h>
 #	include <sched.h>
-	typedef pthread_t tsk_thread_id_t;
+typedef pthread_t tsk_thread_id_t;
 #	define TSK_THREAD_PRIORITY_LOW			sched_get_priority_min(SCHED_OTHER)
 #	define TSK_THREAD_PRIORITY_TIME_CRITICAL		sched_get_priority_max(SCHED_OTHER)
 #	define TSK_THREAD_PRIORITY_MEDIUM				((TSK_THREAD_PRIORITY_TIME_CRITICAL - TSK_THREAD_PRIORITY_LOW) >> 1)

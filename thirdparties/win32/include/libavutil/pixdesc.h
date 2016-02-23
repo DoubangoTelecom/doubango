@@ -25,7 +25,7 @@
 #include <inttypes.h>
 #include "pixfmt.h"
 
-typedef struct AVComponentDescriptor{
+typedef struct AVComponentDescriptor {
     uint16_t plane        :2;            ///< which of the 4 planes contains the component
 
     /**
@@ -41,7 +41,7 @@ typedef struct AVComponentDescriptor{
     uint16_t offset_plus1 :3;
     uint16_t shift        :3;            ///< number of least significant bits that must be shifted away to get the value
     uint16_t depth_minus1 :4;            ///< number of bits in the component minus 1
-}AVComponentDescriptor;
+} AVComponentDescriptor;
 
 /**
  * Descriptor that unambiguously describes how the bits of a pixel are
@@ -52,7 +52,7 @@ typedef struct AVComponentDescriptor{
  *       and all the YUV variants) AVPixFmtDescriptor just stores how values
  *       are stored not what these values represent.
  */
-typedef struct AVPixFmtDescriptor{
+typedef struct AVPixFmtDescriptor {
     const char *name;
     uint8_t nb_components;      ///< The number of components each pixel has, (1-4)
 
@@ -84,7 +84,7 @@ typedef struct AVPixFmtDescriptor{
      * otherwise 0 is luma, 1 is chroma-U and 2 is chroma-V.
      */
     AVComponentDescriptor comp[4];
-}AVPixFmtDescriptor;
+} AVPixFmtDescriptor;
 
 #define PIX_FMT_BE        1 ///< Pixel format is big-endian.
 #define PIX_FMT_PAL       2 ///< Pixel format has a palette in data[1], values are indexes in this palette.

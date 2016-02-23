@@ -15,38 +15,38 @@
 #include "cipher.h"
 
 typedef struct {
-  v128_t   state;                  /* cipher chaining state            */
-  v128_t   previous;               /* previous ciphertext block        */
-  uint8_t  key[32];
-  int      key_len;
-  aes_expanded_key_t expanded_key; /* the cipher key                   */
+    v128_t   state;                  /* cipher chaining state            */
+    v128_t   previous;               /* previous ciphertext block        */
+    uint8_t  key[32];
+    int      key_len;
+    aes_expanded_key_t expanded_key; /* the cipher key                   */
 } aes_cbc_ctx_t;
 
 err_status_t
 aes_cbc_set_key(aes_cbc_ctx_t *c,
-		const unsigned char *key); 
+                const unsigned char *key);
 
 err_status_t
-aes_cbc_encrypt(aes_cbc_ctx_t *c, 
-		unsigned char *buf, 
-		unsigned int  *bytes_in_data);
+aes_cbc_encrypt(aes_cbc_ctx_t *c,
+                unsigned char *buf,
+                unsigned int  *bytes_in_data);
 
 err_status_t
-aes_cbc_context_init(aes_cbc_ctx_t *c, const uint8_t *key, 
-		     int key_len);
+aes_cbc_context_init(aes_cbc_ctx_t *c, const uint8_t *key,
+                     int key_len);
 
 err_status_t
 aes_cbc_set_iv(aes_cbc_ctx_t *c, void *iv, int direction);
 
 err_status_t
 aes_cbc_nist_encrypt(aes_cbc_ctx_t *c,
-		     unsigned char *data, 
-		     unsigned int *bytes_in_data);
+                     unsigned char *data,
+                     unsigned int *bytes_in_data);
 
 err_status_t
 aes_cbc_nist_decrypt(aes_cbc_ctx_t *c,
-		     unsigned char *data, 
-		     unsigned int *bytes_in_data);
+                     unsigned char *data,
+                     unsigned int *bytes_in_data);
 
 #endif /* AES_CBC_H */
 

@@ -2,19 +2,19 @@
 * Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -33,17 +33,16 @@ TRTP_BEGIN_DECLS
 #define TRTP_RTCP_RBLOCK(self) ((trtp_rtcp_rblock_t*)(self))
 
 // RFC 3550 6.4.1 SR: Sender Report RTCP Packet => Report block part
-typedef struct trtp_rtcp_rblock_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct trtp_rtcp_rblock_s {
+    TSK_DECLARE_OBJECT;
 
-	uint32_t ssrc;				/* data source being reported */
-	unsigned int fraction:8;	/* fraction lost since last SR/RR */
-	int cumulative_no_lost:24;  /* cumul. no. pkts lost (signed!) */
-	uint32_t last_seq;			/* extended last seq. no. received */
-	uint32_t jitter;			/* interarrival jitter */
-	uint32_t lsr;				/* last SR packet from this source */
-	uint32_t dlsr;				/* delay since last SR packet */
+    uint32_t ssrc;				/* data source being reported */
+    unsigned int fraction:8;	/* fraction lost since last SR/RR */
+    int cumulative_no_lost:24;  /* cumul. no. pkts lost (signed!) */
+    uint32_t last_seq;			/* extended last seq. no. received */
+    uint32_t jitter;			/* interarrival jitter */
+    uint32_t lsr;				/* last SR packet from this source */
+    uint32_t dlsr;				/* delay since last SR packet */
 }
 trtp_rtcp_rblock_t;
 

@@ -324,14 +324,14 @@ int RSA_size(const RSA *rsa);
 /* Deprecated version */
 # ifndef OPENSSL_NO_DEPRECATED
 RSA *RSA_generate_key(int bits, unsigned long e, void
-                       (*callback) (int, int, void *), void *cb_arg);
+                      (*callback) (int, int, void *), void *cb_arg);
 # endif                         /* !defined(OPENSSL_NO_DEPRECATED) */
 
 /* New version */
 int RSA_generate_key_ex(RSA *rsa, int bits, BIGNUM *e, BN_GENCB *cb);
 
 int RSA_check_key(const RSA *);
-        /* next 4 return -1 on error */
+/* next 4 return -1 on error */
 int RSA_public_encrypt(int flen, const unsigned char *from,
                        unsigned char *to, RSA *rsa, int padding);
 int RSA_private_encrypt(int flen, const unsigned char *from,

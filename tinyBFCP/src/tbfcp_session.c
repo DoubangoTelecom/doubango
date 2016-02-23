@@ -28,12 +28,12 @@
 #include "tsk_debug.h"
 
 typedef struct tbfcp_udp_pkt_s {
-	TSK_DECLARE_OBJECT;
-	struct {
-		tsk_timer_id_t u_id;
-		uint64_t u_timeout;
-	} timer;
-	tbfcp_pkt_t *p_pkt;
+    TSK_DECLARE_OBJECT;
+    struct {
+        tsk_timer_id_t u_id;
+        uint64_t u_timeout;
+    } timer;
+    tbfcp_pkt_t *p_pkt;
 } tbfcp_udp_pkt_t;
 typedef tsk_list_t tbfcp_udp_pkts_L_t;
 
@@ -44,26 +44,26 @@ typedef struct tbfcp_session_s {
     tsk_bool_t b_stopping;
     tsk_bool_t b_prepared;
 
-	tbfcp_udp_pkts_L_t *p_list_udp_pkts;
+    tbfcp_udp_pkts_L_t *p_list_udp_pkts;
 
-	struct {
-		tbfcp_session_callback_f f_fun;
-		struct tbfcp_session_event_xs e;
-	} cb;
+    struct {
+        tbfcp_session_callback_f f_fun;
+        struct tbfcp_session_event_xs e;
+    } cb;
 
-	// Values received from the server in the 200 OK. Attributes from rfc4583
-	struct {
-		uint32_t u_conf_id;
-		uint16_t u_user_id;
-		uint16_t u_floor_id;
-	} 
-	conf_ids;
+    // Values received from the server in the 200 OK. Attributes from rfc4583
+    struct {
+        uint32_t u_conf_id;
+        uint16_t u_user_id;
+        uint16_t u_floor_id;
+    }
+    conf_ids;
 
-	enum tbfcp_role_e e_role_local;
-	enum tbfcp_role_e e_role_remote;
+    enum tbfcp_role_e e_role_local;
+    enum tbfcp_role_e e_role_remote;
 
-	enum tbfcp_setup_e e_setup_local;
-	enum tbfcp_setup_e e_setup_remote;
+    enum tbfcp_setup_e e_setup_local;
+    enum tbfcp_setup_e e_setup_remote;
 
     enum tnet_socket_type_e e_socket_type;
     char* p_local_ip;
@@ -76,7 +76,7 @@ typedef struct tbfcp_session_s {
     tnet_port_t u_remote_port;
     struct sockaddr_storage remote_addr;
 
-	struct tnet_nat_ctx_s* p_natt_ctx;
+    struct tnet_nat_ctx_s* p_natt_ctx;
     struct tnet_ice_ctx_s* p_ice_ctx;
     struct tnet_transport_s* p_transport;
 
@@ -125,17 +125,19 @@ static int _tbfcp_session_transport_layer_stream_cb(const tnet_transport_event_t
 #define _tbfcp_session_raise_inf_inc_msg(_p_self, _pc_pkt) _tbfcp_session_raise(_p_self, tbfcp_session_event_type_inf_inc_msg, _pc_pkt)
 #define _tbfcp_session_raise_err_send_timedout(_p_self, _pc_pkt) _tbfcp_session_raise(_p_self, tbfcp_session_event_type_err_send_timedout, _pc_pkt)
 
-static int __pred_find_udp_pkt_by_timer(const tsk_list_item_t *item, const void *u64_id) {
-	if (item && item->data) {
-		return (int)(((const struct tbfcp_udp_pkt_s *)item->data)->timer.u_id - *((const uint64_t*)u64_id));
-	}
-	return -1;
+static int __pred_find_udp_pkt_by_timer(const tsk_list_item_t *item, const void *u64_id)
+{
+    if (item && item->data) {
+        return (int)(((const struct tbfcp_udp_pkt_s *)item->data)->timer.u_id - *((const uint64_t*)u64_id));
+    }
+    return -1;
 }
-static int __pred_find_udp_pkt_by_transac_id(const tsk_list_item_t *item, const void *u16_transac_id) {
-	if (item && item->data) {
-		return (int)(((const struct tbfcp_udp_pkt_s *)item->data)->p_pkt->hdr.transac_id - *((const uint16_t*)u16_transac_id));
-	}
-	return -1;
+static int __pred_find_udp_pkt_by_transac_id(const tsk_list_item_t *item, const void *u16_transac_id)
+{
+    if (item && item->data) {
+        return (int)(((const struct tbfcp_udp_pkt_s *)item->data)->p_pkt->hdr.transac_id - *((const uint16_t*)u16_transac_id));
+    }
+    return -1;
 }
 
 int tbfcp_session_create(tnet_socket_type_t e_socket_type, const char* pc_local_ip, tbfcp_session_t** pp_self)
@@ -191,13 +193,13 @@ int tbfcp_session_create_2(struct tnet_ice_ctx_s* p_ice_ctx, tbfcp_session_t** p
 
 int tbfcp_session_set_callback(struct tbfcp_session_s* p_self, tbfcp_session_callback_f f_fun, const void* pc_usr_data)
 {
-	if (!p_self) {
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	p_self->cb.f_fun = f_fun;
-	p_self->cb.e.pc_usr_data = pc_usr_data;
-	return 0;
+    if (!p_self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    p_self->cb.f_fun = f_fun;
+    p_self->cb.e.pc_usr_data = pc_usr_data;
+    return 0;
 }
 
 int tbfcp_session_set_ice_ctx(tbfcp_session_t* p_self, struct tnet_ice_ctx_s* p_ice_ctx)
@@ -251,7 +253,7 @@ int tbfcp_session_prepare(tbfcp_session_t* p_self)
             return -3;
         }
         // set transport callback
-		if ((ret = tnet_transport_set_callback(p_self->p_transport, TNET_SOCKET_TYPE_IS_DGRAM(p_self->e_socket_type) ? _tbfcp_session_transport_layer_dgram_cb : _tbfcp_session_transport_layer_stream_cb, p_self))) {
+        if ((ret = tnet_transport_set_callback(p_self->p_transport, TNET_SOCKET_TYPE_IS_DGRAM(p_self->e_socket_type) ? _tbfcp_session_transport_layer_dgram_cb : _tbfcp_session_transport_layer_stream_cb, p_self))) {
             goto bail;
         }
         bfcp_local_ip = p_self->p_transport->master->ip;
@@ -318,10 +320,10 @@ int tbfcp_session_start(tbfcp_session_t* p_self)
         TSK_DEBUG_ERROR("Invalid BFCP host:port [%s:%u]", p_self->p_remote_ip, p_self->u_remote_port);
         goto bail;
     }
-	if ((ret = tnet_transport_set_natt_ctx(p_self->p_transport, p_self->p_natt_ctx))) {
-		TSK_DEBUG_ERROR("Failed to start to set NATT ctx for the %s transport", kBfcpTransportFriendlyName);
-		goto bail;
-	}
+    if ((ret = tnet_transport_set_natt_ctx(p_self->p_transport, p_self->p_natt_ctx))) {
+        TSK_DEBUG_ERROR("Failed to start to set NATT ctx for the %s transport", kBfcpTransportFriendlyName);
+        goto bail;
+    }
 
     // start the transport
     if ((ret = tnet_transport_start(p_self->p_transport))) {
@@ -331,12 +333,12 @@ int tbfcp_session_start(tbfcp_session_t* p_self)
 
     p_self->b_started = tsk_true;
 
-	// Send hello now if UDP/DTLS. Otherwise (TCP/TLS), wait for the connection to complete.
-	//if (TNET_SOCKET_TYPE_IS_DGRAM(p_self->e_socket_type)) {
-	//	if ((ret = _tbfcp_session_send_Hello(p_self))) {
-	//		goto bail;
-	//	}
-	//}
+    // Send hello now if UDP/DTLS. Otherwise (TCP/TLS), wait for the connection to complete.
+    //if (TNET_SOCKET_TYPE_IS_DGRAM(p_self->e_socket_type)) {
+    //	if ((ret = _tbfcp_session_send_Hello(p_self))) {
+    //		goto bail;
+    //	}
+    //}
 
 bail:
     // unlock()
@@ -346,19 +348,19 @@ bail:
 
 int tbfcp_session_pause(tbfcp_session_t* p_self)
 {
-	int ret = 0;
+    int ret = 0;
     if (!p_self) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
 
-	// lock()
+    // lock()
     tsk_safeobj_lock(p_self);
 
-	goto bail;
+    goto bail;
 
 bail:
-	// unlock()
+    // unlock()
     tsk_safeobj_unlock(p_self);
     return ret;
 }
@@ -371,7 +373,7 @@ int tbfcp_session_stop(tbfcp_session_t* p_self)
         return -1;
     }
 
-	// FIXME: send FloorRelease if a FloorRequest is pending
+    // FIXME: send FloorRelease if a FloorRequest is pending
 
     // lock()
     tsk_safeobj_lock(p_self);
@@ -382,8 +384,8 @@ int tbfcp_session_stop(tbfcp_session_t* p_self)
         goto bail;
     }
 
-	// remove all pending udp packets
-	tsk_list_clear_items(p_self->p_list_udp_pkts);
+    // remove all pending udp packets
+    tsk_list_clear_items(p_self->p_list_udp_pkts);
 
     p_self->b_stopping = tsk_true;
     // this is a global timer shared by many components -> stopping it won't remove
@@ -409,7 +411,7 @@ int tbfcp_session_stop(tbfcp_session_t* p_self)
 
     p_self->b_started = tsk_false;
     p_self->b_stopping = tsk_false;
-	p_self->b_prepared = tsk_false;
+    p_self->b_prepared = tsk_false;
 
 bail:
     // unlock()
@@ -419,13 +421,13 @@ bail:
 
 int tbfcp_session_set_natt_ctx(tbfcp_session_t* p_self, struct tnet_nat_ctx_s* p_natt_ctx)
 {
-	if (!p_self) {
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	TSK_OBJECT_SAFE_FREE(p_self->p_natt_ctx);
-	p_self->p_natt_ctx = tsk_object_ref(p_natt_ctx);
-	return 0;
+    if (!p_self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    TSK_OBJECT_SAFE_FREE(p_self->p_natt_ctx);
+    p_self->p_natt_ctx = tsk_object_ref(p_natt_ctx);
+    return 0;
 }
 
 int tbfcp_session_set_remote_address(tbfcp_session_t* p_self, const char* pc_ip, tnet_port_t u_port)
@@ -442,52 +444,52 @@ int tbfcp_session_set_remote_address(tbfcp_session_t* p_self, const char* pc_ip,
 
 int tbfcp_session_set_remote_role(tbfcp_session_t* p_self, enum tbfcp_role_e e_role_remote)
 {
-	tsk_bool_t b_is_role_acceptable;
-	int ret;
-	if (!p_self) {
+    tsk_bool_t b_is_role_acceptable;
+    int ret;
+    if (!p_self) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-	if ((ret = tbfcp_utils_is_role_acceptable(p_self->e_role_local, e_role_remote, &b_is_role_acceptable))) {
-		return ret;
-	}
-	if (!b_is_role_acceptable) {
-		TSK_DEBUG_ERROR("%d not acceptable as remote role because local role = %d", e_role_remote, p_self->e_role_local);
-		return -2;
-	}
-	p_self->e_role_remote = e_role_remote;
-	return 0;
+    if ((ret = tbfcp_utils_is_role_acceptable(p_self->e_role_local, e_role_remote, &b_is_role_acceptable))) {
+        return ret;
+    }
+    if (!b_is_role_acceptable) {
+        TSK_DEBUG_ERROR("%d not acceptable as remote role because local role = %d", e_role_remote, p_self->e_role_local);
+        return -2;
+    }
+    p_self->e_role_remote = e_role_remote;
+    return 0;
 }
 
 int tbfcp_session_set_remote_setup(struct tbfcp_session_s* p_self, enum tbfcp_setup_e e_setup_remote)
 {
-	tsk_bool_t b_is_setup_acceptable;
-	int ret;
-	if (!p_self) {
+    tsk_bool_t b_is_setup_acceptable;
+    int ret;
+    if (!p_self) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-	if ((ret = tbfcp_utils_is_setup_acceptable(p_self->e_setup_local, e_setup_remote, &b_is_setup_acceptable))) {
-		return ret;
-	}
-	if (!b_is_setup_acceptable) {
-		TSK_DEBUG_ERROR("%d not acceptable as remote setup because local setup = %d", e_setup_remote, p_self->e_setup_local);
-		return -2;
-	}
-	p_self->e_setup_remote = e_setup_remote;
-	return 0;
+    if ((ret = tbfcp_utils_is_setup_acceptable(p_self->e_setup_local, e_setup_remote, &b_is_setup_acceptable))) {
+        return ret;
+    }
+    if (!b_is_setup_acceptable) {
+        TSK_DEBUG_ERROR("%d not acceptable as remote setup because local setup = %d", e_setup_remote, p_self->e_setup_local);
+        return -2;
+    }
+    p_self->e_setup_remote = e_setup_remote;
+    return 0;
 }
 
 int tbfcp_session_set_conf_ids(tbfcp_session_t* p_self, uint32_t u_conf_id, uint16_t u_user_id, uint16_t u_floor_id)
 {
-	if (!p_self) {
+    if (!p_self) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-	p_self->conf_ids.u_conf_id = u_conf_id;
-	p_self->conf_ids.u_user_id = u_user_id;
-	p_self->conf_ids.u_floor_id = u_floor_id;
-	return 0;
+    p_self->conf_ids.u_conf_id = u_conf_id;
+    p_self->conf_ids.u_user_id = u_user_id;
+    p_self->conf_ids.u_floor_id = u_floor_id;
+    return 0;
 }
 
 int tbfcp_session_get_profile(const tbfcp_session_t* pc_self, const char** ppc_profile)
@@ -501,90 +503,90 @@ int tbfcp_session_get_profile(const tbfcp_session_t* pc_self, const char** ppc_p
 
 int tbfcp_session_get_local_role(const tbfcp_session_t* pc_self, enum tbfcp_role_e *pe_role_local)
 {
-	if (!pc_self || !pe_role_local) {
+    if (!pc_self || !pe_role_local) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-	*pe_role_local = pc_self->e_role_local;
-	return 0;
+    *pe_role_local = pc_self->e_role_local;
+    return 0;
 }
 
 int tbfcp_session_get_local_setup(const struct tbfcp_session_s* pc_self, enum tbfcp_setup_e *pe_setup_local)
 {
-	if (!pc_self || !pe_setup_local) {
+    if (!pc_self || !pe_setup_local) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-	*pe_setup_local = pc_self->e_setup_local;
-	return 0;
+    *pe_setup_local = pc_self->e_setup_local;
+    return 0;
 }
 
 int tbfcp_session_get_local_address(const tbfcp_session_t* pc_self, const char** ppc_ip, tnet_port_t *pu_port)
 {
-	if (!pc_self || !ppc_ip || !pu_port) {
+    if (!pc_self || !ppc_ip || !pu_port) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-	*ppc_ip = pc_self->p_local_public_ip;
-	*pu_port = pc_self->u_local_public_port;
-	return 0;
+    *ppc_ip = pc_self->p_local_public_ip;
+    *pu_port = pc_self->u_local_public_port;
+    return 0;
 }
 
 int tbfcp_session_create_pkt_Hello(struct tbfcp_session_s* p_self, struct tbfcp_pkt_s** pp_pkt)
 {
-	int ret;
-	if (!p_self || !pp_pkt) {
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	// lock()
+    int ret;
+    if (!p_self || !pp_pkt) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    // lock()
     tsk_safeobj_lock(p_self);
-	if ((ret = tbfcp_pkt_create_Hello(p_self->conf_ids.u_conf_id, tbfcp_utils_rand_u16(), p_self->conf_ids.u_user_id, pp_pkt))) {
-		goto bail;
-	}
+    if ((ret = tbfcp_pkt_create_Hello(p_self->conf_ids.u_conf_id, tbfcp_utils_rand_u16(), p_self->conf_ids.u_user_id, pp_pkt))) {
+        goto bail;
+    }
 
 bail:
-	// lock()
+    // lock()
     tsk_safeobj_unlock(p_self);
-	return ret;
+    return ret;
 }
 
 int tbfcp_session_create_pkt_FloorRequest(struct tbfcp_session_s* p_self, struct tbfcp_pkt_s** pp_pkt)
 {
-	int ret;
-	if (!p_self || !pp_pkt) {
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	// lock()
+    int ret;
+    if (!p_self || !pp_pkt) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    // lock()
     tsk_safeobj_lock(p_self);
-	if ((ret = tbfcp_pkt_create_FloorRequest_2(p_self->conf_ids.u_conf_id, tbfcp_utils_rand_u16(), p_self->conf_ids.u_user_id, p_self->conf_ids.u_floor_id, pp_pkt))) {
-		goto bail;
-	}
+    if ((ret = tbfcp_pkt_create_FloorRequest_2(p_self->conf_ids.u_conf_id, tbfcp_utils_rand_u16(), p_self->conf_ids.u_user_id, p_self->conf_ids.u_floor_id, pp_pkt))) {
+        goto bail;
+    }
 
 bail:
-	// lock()
+    // lock()
     tsk_safeobj_unlock(p_self);
-	return ret;
+    return ret;
 }
 
 int tbfcp_session_create_pkt_FloorRelease(struct tbfcp_session_s* p_self, struct tbfcp_pkt_s** pp_pkt)
 {
-		int ret;
-	if (!p_self || !pp_pkt) {
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	// lock()
+    int ret;
+    if (!p_self || !pp_pkt) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    // lock()
     tsk_safeobj_lock(p_self);
-	if ((ret = tbfcp_pkt_create_FloorRelease_2(p_self->conf_ids.u_conf_id, tbfcp_utils_rand_u16(), p_self->conf_ids.u_user_id, p_self->conf_ids.u_floor_id, pp_pkt))) {
-		goto bail;
-	}
+    if ((ret = tbfcp_pkt_create_FloorRelease_2(p_self->conf_ids.u_conf_id, tbfcp_utils_rand_u16(), p_self->conf_ids.u_user_id, p_self->conf_ids.u_floor_id, pp_pkt))) {
+        goto bail;
+    }
 
 bail:
-	// lock()
+    // lock()
     tsk_safeobj_unlock(p_self);
-	return ret;
+    return ret;
 }
 
 static int _tbfcp_session_send_buff(tbfcp_session_t* p_self, const void* pc_buff_ptr, tsk_size_t u_buff_size)
@@ -609,9 +611,9 @@ static int _tbfcp_session_send_buff(tbfcp_session_t* p_self, const void* pc_buff
         u_sent_bytes = tnet_transport_sendto(p_self->p_transport, p_self->p_transport->master->fd, (const struct sockaddr *)&p_self->remote_addr, pc_buff_ptr, u_buff_size);
     }
     else {
-		TSK_DEBUG_ERROR("Not implemented yet");
-		ret = -3;
-		goto bail;
+        TSK_DEBUG_ERROR("Not implemented yet");
+        ret = -3;
+        goto bail;
     }
 
     if (u_sent_bytes != u_buff_size) {
@@ -629,7 +631,7 @@ bail:
 int tbfcp_session_send_pkt(tbfcp_session_t* p_self, const tbfcp_pkt_t* pc_pkt)
 {
     int ret = 0;
-	tbfcp_udp_pkt_t *p_udp_pkt = tsk_null;
+    tbfcp_udp_pkt_t *p_udp_pkt = tsk_null;
     if (!p_self || !pc_pkt) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
@@ -639,31 +641,32 @@ int tbfcp_session_send_pkt(tbfcp_session_t* p_self, const tbfcp_pkt_t* pc_pkt)
     tsk_safeobj_lock(p_self);
 
     if (TNET_SOCKET_TYPE_IS_DGRAM(p_self->e_socket_type)) {
-		const tsk_list_item_t* pc_item = tsk_list_find_item_by_pred(p_self->p_list_udp_pkts, __pred_find_udp_pkt_by_transac_id, &pc_pkt->hdr.transac_id);
-		if (pc_item) {
-			p_udp_pkt = tsk_object_ref(TSK_OBJECT(pc_item->data));
-		} else {
-			tbfcp_udp_pkt_t *_p_udp_pkt = tsk_null;
-			if ((ret = _tbfcp_udp_pkt_create(pc_pkt, &_p_udp_pkt))) {
-				goto bail;
-			}
-			p_udp_pkt = tsk_object_ref(_p_udp_pkt);
-			tsk_list_push_back_data(p_self->p_list_udp_pkts, (void**)&_p_udp_pkt);
-		}
-	}
-	else {
-	}
+        const tsk_list_item_t* pc_item = tsk_list_find_item_by_pred(p_self->p_list_udp_pkts, __pred_find_udp_pkt_by_transac_id, &pc_pkt->hdr.transac_id);
+        if (pc_item) {
+            p_udp_pkt = tsk_object_ref(TSK_OBJECT(pc_item->data));
+        }
+        else {
+            tbfcp_udp_pkt_t *_p_udp_pkt = tsk_null;
+            if ((ret = _tbfcp_udp_pkt_create(pc_pkt, &_p_udp_pkt))) {
+                goto bail;
+            }
+            p_udp_pkt = tsk_object_ref(_p_udp_pkt);
+            tsk_list_push_back_data(p_self->p_list_udp_pkts, (void**)&_p_udp_pkt);
+        }
+    }
+    else {
+    }
 
-	if ((ret = _tbfcp_session_send_pkt(p_self, pc_pkt))) {
-		goto bail;
-	}
-	if (p_udp_pkt) {
-		p_udp_pkt->timer.u_id = tsk_timer_manager_schedule(p_self->timer.ph_global, p_udp_pkt->timer.u_timeout, _tbfcp_session_timer_callback, p_self);
-		p_udp_pkt->timer.u_timeout += kBfcpTimerT1;
-	}
+    if ((ret = _tbfcp_session_send_pkt(p_self, pc_pkt))) {
+        goto bail;
+    }
+    if (p_udp_pkt) {
+        p_udp_pkt->timer.u_id = tsk_timer_manager_schedule(p_self->timer.ph_global, p_udp_pkt->timer.u_timeout, _tbfcp_session_timer_callback, p_self);
+        p_udp_pkt->timer.u_timeout += kBfcpTimerT1;
+    }
 
 bail:
-	TSK_OBJECT_SAFE_FREE(p_udp_pkt);
+    TSK_OBJECT_SAFE_FREE(p_udp_pkt);
     // unlock()
     tsk_safeobj_unlock(p_self);
     return ret;
@@ -715,67 +718,67 @@ bail:
 
 int _tbfcp_session_send_Hello(tbfcp_session_t* p_self)
 {
-	tbfcp_pkt_t* p_pkt = tsk_null;
-	int ret;
-	if (!p_self) {
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	if ((ret = tbfcp_pkt_create_Hello(p_self->conf_ids.u_conf_id, tbfcp_utils_rand_u16(), p_self->conf_ids.u_user_id, &p_pkt))) {
-		goto bail;
-	}
-	if ((ret = tbfcp_session_send_pkt(p_self, p_pkt))) {
-		goto bail;
-	}
-	
+    tbfcp_pkt_t* p_pkt = tsk_null;
+    int ret;
+    if (!p_self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    if ((ret = tbfcp_pkt_create_Hello(p_self->conf_ids.u_conf_id, tbfcp_utils_rand_u16(), p_self->conf_ids.u_user_id, &p_pkt))) {
+        goto bail;
+    }
+    if ((ret = tbfcp_session_send_pkt(p_self, p_pkt))) {
+        goto bail;
+    }
+
 bail:
-	TSK_OBJECT_SAFE_FREE(p_pkt);
-	return ret;
+    TSK_OBJECT_SAFE_FREE(p_pkt);
+    return ret;
 }
 
 int _tbfcp_session_send_HelloAck(tbfcp_session_t* p_self, const tbfcp_pkt_t *pc_hello)
 {
-	tbfcp_pkt_t* p_pkt = tsk_null;
-	int ret;
-	if (!p_self || !pc_hello) {
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	if ((ret = tbfcp_pkt_create_HelloAck_2(pc_hello->hdr.conf_id, pc_hello->hdr.transac_id, pc_hello->hdr.user_id, &p_pkt))) {
-		goto bail;
-	}
-	if ((ret = _tbfcp_session_send_pkt(p_self, p_pkt))) {
-		goto bail;
-	}
-	
+    tbfcp_pkt_t* p_pkt = tsk_null;
+    int ret;
+    if (!p_self || !pc_hello) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    if ((ret = tbfcp_pkt_create_HelloAck_2(pc_hello->hdr.conf_id, pc_hello->hdr.transac_id, pc_hello->hdr.user_id, &p_pkt))) {
+        goto bail;
+    }
+    if ((ret = _tbfcp_session_send_pkt(p_self, p_pkt))) {
+        goto bail;
+    }
+
 bail:
-	TSK_OBJECT_SAFE_FREE(p_pkt);
-	return ret;
+    TSK_OBJECT_SAFE_FREE(p_pkt);
+    return ret;
 }
 
 static int _tbfcp_session_send_FloorRequest(tbfcp_session_t* p_self)
 {
-	tbfcp_pkt_t* p_pkt = tsk_null;
-	int ret;
-	if (!p_self) {
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	if ((ret = tbfcp_pkt_create_FloorRequest_2(p_self->conf_ids.u_conf_id, tbfcp_utils_rand_u16(), p_self->conf_ids.u_user_id, p_self->conf_ids.u_floor_id, &p_pkt))) {
-		goto bail;
-	}
-	if ((ret = tbfcp_session_send_pkt(p_self, p_pkt))) {
-		goto bail;
-	}
-	
+    tbfcp_pkt_t* p_pkt = tsk_null;
+    int ret;
+    if (!p_self) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    if ((ret = tbfcp_pkt_create_FloorRequest_2(p_self->conf_ids.u_conf_id, tbfcp_utils_rand_u16(), p_self->conf_ids.u_user_id, p_self->conf_ids.u_floor_id, &p_pkt))) {
+        goto bail;
+    }
+    if ((ret = tbfcp_session_send_pkt(p_self, p_pkt))) {
+        goto bail;
+    }
+
 bail:
-	TSK_OBJECT_SAFE_FREE(p_pkt);
-	return ret;
+    TSK_OBJECT_SAFE_FREE(p_pkt);
+    return ret;
 }
 
 static int _tbfcp_session_process_incoming_pkt(tbfcp_session_t* p_self, const tbfcp_pkt_t *pc_pkt)
 {
-	int ret = 0;
+    int ret = 0;
     if (!p_self || !pc_pkt) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
@@ -784,21 +787,21 @@ static int _tbfcp_session_process_incoming_pkt(tbfcp_session_t* p_self, const tb
     // lock()
     tsk_safeobj_lock(p_self);
 
-	switch (pc_pkt->hdr.primitive) {
-		case tbfcp_primitive_Hello:
-			if ((ret = _tbfcp_session_send_HelloAck(p_self, pc_pkt))) {
-				goto bail;
-			}
-			break;
-		case tbfcp_primitive_HelloAck:
-        default:
-			break;
-	}
+    switch (pc_pkt->hdr.primitive) {
+    case tbfcp_primitive_Hello:
+        if ((ret = _tbfcp_session_send_HelloAck(p_self, pc_pkt))) {
+            goto bail;
+        }
+        break;
+    case tbfcp_primitive_HelloAck:
+    default:
+        break;
+    }
 
-	// raise event
-	_tbfcp_session_raise_inf_inc_msg(p_self, pc_pkt);
-	// remove request
-	tsk_list_remove_item_by_pred(p_self->p_list_udp_pkts, __pred_find_udp_pkt_by_transac_id, &pc_pkt->hdr.transac_id);
+    // raise event
+    _tbfcp_session_raise_inf_inc_msg(p_self, pc_pkt);
+    // remove request
+    tsk_list_remove_item_by_pred(p_self->p_list_udp_pkts, __pred_find_udp_pkt_by_transac_id, &pc_pkt->hdr.transac_id);
 
 bail:
     // unlock()
@@ -871,22 +874,24 @@ static int _tbfcp_session_timer_schedule(tbfcp_session_t* p_self, _bfcp_timer_ty
 static int _tbfcp_session_timer_callback(const void* pc_arg, tsk_timer_id_t timer_id)
 {
     tbfcp_session_t* p_session = (tbfcp_session_t*)pc_arg;
-	const tsk_list_item_t* pc_item;
+    const tsk_list_item_t* pc_item;
     tsk_safeobj_lock(p_session); // must
-	if (!p_session->b_started) goto bail;
-	pc_item = tsk_list_find_item_by_pred(p_session->p_list_udp_pkts, __pred_find_udp_pkt_by_timer, &timer_id);
-	if (pc_item) {
-		tbfcp_udp_pkt_t* pc_udp_pkt = (tbfcp_udp_pkt_t*)pc_item->data;
-		if (pc_udp_pkt->timer.u_timeout <= kBfcpTimerT1Max) {
-			tbfcp_session_send_pkt(p_session, pc_udp_pkt->p_pkt);
-		}
-		else {
-			// raise event
-			_tbfcp_session_raise_err_send_timedout(p_session, pc_udp_pkt->p_pkt);
-			// remove pkt
-			tsk_list_remove_item_by_pred(p_session->p_list_udp_pkts, __pred_find_udp_pkt_by_timer, &timer_id);
-		}
-	}
+    if (!p_session->b_started) {
+        goto bail;
+    }
+    pc_item = tsk_list_find_item_by_pred(p_session->p_list_udp_pkts, __pred_find_udp_pkt_by_timer, &timer_id);
+    if (pc_item) {
+        tbfcp_udp_pkt_t* pc_udp_pkt = (tbfcp_udp_pkt_t*)pc_item->data;
+        if (pc_udp_pkt->timer.u_timeout <= kBfcpTimerT1Max) {
+            tbfcp_session_send_pkt(p_session, pc_udp_pkt->p_pkt);
+        }
+        else {
+            // raise event
+            _tbfcp_session_raise_err_send_timedout(p_session, pc_udp_pkt->p_pkt);
+            // remove pkt
+            tsk_list_remove_item_by_pred(p_session->p_list_udp_pkts, __pred_find_udp_pkt_by_timer, &timer_id);
+        }
+    }
 #if 0
     if (p_session->timer.id_T1 == timer_id) {
         p_session->timer.id_T1 = TSK_INVALID_TIMER_ID;
@@ -905,36 +910,36 @@ bail:
 static int _tbfcp_session_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 {
     tbfcp_session_t* p_session = (tbfcp_session_t*)e->callback_data;
-	int ret;
-	tbfcp_pkt_t* p_pkt = tsk_null;
-	switch(e->type){
-		case event_data: {
-				break;
-			}
-		case event_closed:
-		case event_connected:
-		default:{
-				return 0;
-			}
-	}
+    int ret;
+    tbfcp_pkt_t* p_pkt = tsk_null;
+    switch(e->type) {
+    case event_data: {
+        break;
+    }
+    case event_closed:
+    case event_connected:
+    default: {
+        return 0;
+    }
+    }
 
-	if ((ret = tbfcp_pkt_read(e->data, e->size, &p_pkt))) {
-		goto bail;
-	}
-	if ((ret = _tbfcp_session_process_incoming_pkt(p_session, p_pkt))) {
-		goto bail;
-	}
+    if ((ret = tbfcp_pkt_read(e->data, e->size, &p_pkt))) {
+        goto bail;
+    }
+    if ((ret = _tbfcp_session_process_incoming_pkt(p_session, p_pkt))) {
+        goto bail;
+    }
 
 bail:
-	TSK_OBJECT_SAFE_FREE(p_pkt);
+    TSK_OBJECT_SAFE_FREE(p_pkt);
     return ret;
 }
 
 static int _tbfcp_session_transport_layer_stream_cb(const tnet_transport_event_t* e)
 {
-	// tbfcp_session_t* p_session = (tbfcp_session_t*)e->callback_data;
-	TSK_DEBUG_ERROR("Not implemented yet");
-	return -1;
+    // tbfcp_session_t* p_session = (tbfcp_session_t*)e->callback_data;
+    TSK_DEBUG_ERROR("Not implemented yet");
+    return -1;
 }
 
 static tsk_object_t* tbfcp_session_ctor(tsk_object_t * self, va_list * app)
@@ -943,18 +948,18 @@ static tsk_object_t* tbfcp_session_ctor(tsk_object_t * self, va_list * app)
     if (p_session) {
         p_session->timer.id_T1 = TSK_INVALID_TIMER_ID;
         p_session->timer.id_T2 = TSK_INVALID_TIMER_ID;
-		if (!(p_session->p_list_udp_pkts = tsk_list_create())) {
-			TSK_DEBUG_ERROR("Failed to create en empty list");
-			return tsk_null;
-		}
+        if (!(p_session->p_list_udp_pkts = tsk_list_create())) {
+            TSK_DEBUG_ERROR("Failed to create en empty list");
+            return tsk_null;
+        }
         // get a handle for the global timer manager
         if (!(p_session->timer.ph_global = tsk_timer_mgr_global_ref())) {
             TSK_DEBUG_ERROR("Failed to get a reference to the global timer");
             return tsk_null;
         }
         p_session->u_local_port = TNET_SOCKET_PORT_ANY;
-		p_session->e_role_local = kBfcpRoleDefault;
-		p_session->e_setup_local = kBfcpSetupDefault;
+        p_session->e_role_local = kBfcpRoleDefault;
+        p_session->e_setup_local = kBfcpSetupDefault;
         tsk_safeobj_init(p_session);
     }
     return self;
@@ -968,15 +973,15 @@ static tsk_object_t* tbfcp_session_dtor(tsk_object_t * self)
         tbfcp_session_stop(p_session);
         // release the handle for the global timer manager
         tsk_timer_mgr_global_unref(&p_session->timer.ph_global);
-        
+
         TSK_FREE(p_session->p_local_ip);
         TSK_FREE(p_session->p_local_public_ip);
         TSK_FREE(p_session->p_remote_ip);
         TSK_FREE(p_session->p_buff_send_ptr);
-		TSK_OBJECT_SAFE_FREE(p_session->p_natt_ctx);
+        TSK_OBJECT_SAFE_FREE(p_session->p_natt_ctx);
         TSK_OBJECT_SAFE_FREE(p_session->p_ice_ctx);
         TSK_OBJECT_SAFE_FREE(p_session->p_transport);
-		TSK_OBJECT_SAFE_FREE(p_session->p_list_udp_pkts);
+        TSK_OBJECT_SAFE_FREE(p_session->p_list_udp_pkts);
         tsk_safeobj_deinit(p_session);
     }
 
@@ -1000,18 +1005,18 @@ const tsk_object_def_t *tbfcp_session_def_t = &tbfcp_session_def_s;
 
 static int _tbfcp_udp_pkt_create(const tbfcp_pkt_t *pc_pkt, tbfcp_udp_pkt_t** pp_pkt)
 {
-	extern const tsk_object_def_t *tbfcp_udp_pkt_def_t;
-	if (!pc_pkt || !pp_pkt) {
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	*pp_pkt = tsk_object_new(tbfcp_udp_pkt_def_t);
-	if (!(*pp_pkt)) {
-		TSK_DEBUG_ERROR("Failed to create object with type= 'tbfcp_udp_pkt_def_t'");
-		return -2;
-	}
-	(*pp_pkt)->p_pkt = tsk_object_ref(TSK_OBJECT(pc_pkt));
-	return 0;
+    extern const tsk_object_def_t *tbfcp_udp_pkt_def_t;
+    if (!pc_pkt || !pp_pkt) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    *pp_pkt = tsk_object_new(tbfcp_udp_pkt_def_t);
+    if (!(*pp_pkt)) {
+        TSK_DEBUG_ERROR("Failed to create object with type= 'tbfcp_udp_pkt_def_t'");
+        return -2;
+    }
+    (*pp_pkt)->p_pkt = tsk_object_ref(TSK_OBJECT(pc_pkt));
+    return 0;
 }
 
 static tsk_object_t* tbfcp_udp_pkt_ctor(tsk_object_t * self, va_list * app)
@@ -1019,7 +1024,7 @@ static tsk_object_t* tbfcp_udp_pkt_ctor(tsk_object_t * self, va_list * app)
     tbfcp_udp_pkt_t *p_udp_pkt = (tbfcp_udp_pkt_t *)self;
     if (p_udp_pkt) {
         p_udp_pkt->timer.u_timeout = kBfcpTimerT1;
-		p_udp_pkt->timer.u_id = TSK_INVALID_TIMER_ID;
+        p_udp_pkt->timer.u_id = TSK_INVALID_TIMER_ID;
     }
     return self;
 }
@@ -1027,8 +1032,8 @@ static tsk_object_t* tbfcp_udp_pkt_dtor(tsk_object_t * self)
 {
     tbfcp_udp_pkt_t *p_udp_pkt = (tbfcp_udp_pkt_t *)self;
     if (p_udp_pkt) {
-		TSK_OBJECT_SAFE_FREE(p_udp_pkt->p_pkt);
-		TSK_DEBUG_INFO("*** tbfcp_udp_pkt_t destroyed ***");
+        TSK_OBJECT_SAFE_FREE(p_udp_pkt->p_pkt);
+        TSK_DEBUG_INFO("*** tbfcp_udp_pkt_t destroyed ***");
     }
     return self;
 }

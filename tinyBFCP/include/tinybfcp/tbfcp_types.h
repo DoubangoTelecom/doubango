@@ -101,9 +101,9 @@ typedef enum tbfcp_role_e {
 } tbfcp_role_t;
 
 typedef enum tbfcp_setup_e {
-	tbfcp_setup_active = (1 << 0),
-	tbfcp_setup_passive = (1 << 1),
-	tbfcp_setup_actpass = (tbfcp_setup_active | tbfcp_setup_passive),
+    tbfcp_setup_active = (1 << 0),
+    tbfcp_setup_passive = (1 << 1),
+    tbfcp_setup_actpass = (tbfcp_setup_active | tbfcp_setup_passive),
 } tbfcp_setup_t;
 #if !defined(kBfcpSetupDefault)
 #	define kBfcpSetupDefault tbfcp_setup_actpass

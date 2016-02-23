@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -61,7 +61,7 @@ TSIP_BEGIN_DECLS
 
 // TX MUST be in seconds
 #define TSIP_DIALOG_TIMER_SCHEDULE(name, TX)								\
-	self->timer##TX.id = tsk_timer_mgr_global_schedule(self->timer##TX.timeout, TSK_TIMER_CALLBACK_F(tsip_dialog_##name##_timer_callback), self)	
+	self->timer##TX.id = tsk_timer_mgr_global_schedule(self->timer##TX.timeout, TSK_TIMER_CALLBACK_F(tsip_dialog_##name##_timer_callback), self)
 
 #define TSIP_DIALOG_SIGNAL(self, code, phrase)	\
 	tsip_event_signal(tsip_event_dialog, TSIP_DIALOG(self)->ss, code, phrase)
@@ -79,38 +79,35 @@ TSIP_BEGIN_DECLS
 
 typedef uint64_t tsip_dialog_id_t;
 
-typedef enum tsip_dialog_state_e
-{
-	tsip_initial,
-	tsip_early,
-	tsip_established,
-	tsip_terminated
+typedef enum tsip_dialog_state_e {
+    tsip_initial,
+    tsip_early,
+    tsip_established,
+    tsip_terminated
 }
 tsip_dialog_state_t;
 
-typedef enum tsip_dialog_type_e
-{
-	tsip_dialog_unknown,
-	tsip_dialog_INVITE,
-	tsip_dialog_MESSAGE,
-	tsip_dialog_INFO,
-	tsip_dialog_OPTIONS,
-	tsip_dialog_PUBLISH,
-	tsip_dialog_REGISTER,
-	tsip_dialog_SUBSCRIBE,
+typedef enum tsip_dialog_type_e {
+    tsip_dialog_unknown,
+    tsip_dialog_INVITE,
+    tsip_dialog_MESSAGE,
+    tsip_dialog_INFO,
+    tsip_dialog_OPTIONS,
+    tsip_dialog_PUBLISH,
+    tsip_dialog_REGISTER,
+    tsip_dialog_SUBSCRIBE,
 }
 tsip_dialog_type_t;
 
-typedef enum tsip_dialog_event_type_e
-{
-	tsip_dialog_i_msg,
-	tsip_dialog_o_msg,
-	tsip_dialog_transac_ok,
-	tsip_dialog_canceled,
-	tsip_dialog_terminated,
-	tsip_dialog_timedout,
-	tsip_dialog_error,
-	tsip_dialog_transport_error,
+typedef enum tsip_dialog_event_type_e {
+    tsip_dialog_i_msg,
+    tsip_dialog_o_msg,
+    tsip_dialog_transac_ok,
+    tsip_dialog_canceled,
+    tsip_dialog_terminated,
+    tsip_dialog_timedout,
+    tsip_dialog_error,
+    tsip_dialog_transport_error,
 }
 tsip_dialog_event_type_t;
 
@@ -119,53 +116,52 @@ typedef int (*tsip_dialog_event_callback_f)(const void *arg, tsip_dialog_event_t
 
 /*================================
 */
-typedef struct tsip_dialog_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	tsip_dialog_type_t type;
-	tsip_dialog_id_t id;
+typedef struct tsip_dialog_s {
+    TSK_DECLARE_OBJECT;
 
-	tsk_fsm_t* fsm;
-	
-	tsip_ssession_t* ss;
-	tsip_action_t* curr_action;
-	
-	tsip_dialog_state_t state;
-	
-	tsk_bool_t initialized;
-	tsk_bool_t running;
+    tsip_dialog_type_t type;
+    tsip_dialog_id_t id;
 
-	tnet_fd_t connected_fd;
+    tsk_fsm_t* fsm;
 
-	struct{
-		char* phrase;
-		short code;
-		tsip_message_t* message;
-	} last_error;
-	
-	char* tag_local;
-	tsip_uri_t* uri_local;
-	char* tag_remote;
-	tsip_uri_t* uri_remote;
-	
-	tsip_uri_t* uri_remote_target;
-	struct sockaddr_storage remote_addr; // Only valid for Dgram
+    tsip_ssession_t* ss;
+    tsip_action_t* curr_action;
 
-	uint32_t cseq_value;
-	char* cseq_method;
-	
-	int64_t expires; /* in milliseconds */
-	
-	char* callid;
-	
-	tsip_header_Record_Routes_L_t *record_routes;
-	
-	tsip_challenges_L_t *challenges;
+    tsip_dialog_state_t state;
 
-	tsip_dialog_event_callback_f callback;
+    tsk_bool_t initialized;
+    tsk_bool_t running;
 
-	TSK_DECLARE_SAFEOBJ;
+    tnet_fd_t connected_fd;
+
+    struct {
+        char* phrase;
+        short code;
+        tsip_message_t* message;
+    } last_error;
+
+    char* tag_local;
+    tsip_uri_t* uri_local;
+    char* tag_remote;
+    tsip_uri_t* uri_remote;
+
+    tsip_uri_t* uri_remote_target;
+    struct sockaddr_storage remote_addr; // Only valid for Dgram
+
+    uint32_t cseq_value;
+    char* cseq_method;
+
+    int64_t expires; /* in milliseconds */
+
+    char* callid;
+
+    tsip_header_Record_Routes_L_t *record_routes;
+
+    tsip_challenges_L_t *challenges;
+
+    tsip_dialog_event_callback_f callback;
+
+    TSK_DECLARE_SAFEOBJ;
 }
 tsip_dialog_t;
 

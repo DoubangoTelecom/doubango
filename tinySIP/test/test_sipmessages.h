@@ -2,19 +2,19 @@
 * Copyright (C) 2009 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -78,8 +78,8 @@
 	"Subscription-State: active;reason=deactivated;expires=507099;retry-after=145;test=jk\r\n"\
 	"\r\n"
 
-	//"Via: SIP/2.0/UDP 192.168.0.11:64163;rport=4;branch=z9hG4bK1262758946486\r\n" \
-	//"Via: SIP/2.0/UDP 192.168.0.11:59265;rport=59265;branch=z9hG4bK1263064096664\r\n" \
+//"Via: SIP/2.0/UDP 192.168.0.11:64163;rport=4;branch=z9hG4bK1262758946486\r\n" \
+//"Via: SIP/2.0/UDP 192.168.0.11:59265;rport=59265;branch=z9hG4bK1263064096664\r\n" \
 
 #define SIP_MESSAGE \
 	"MESSAGE sip:mamadou@open-ims.test SIP/2.0\r\n" \
@@ -148,7 +148,7 @@
 "Content-Length: 0\r\n" \
 "Warning: 392 10.19.3.160:6060 \"Noisy feedback tells:  pid=30444 req_src_ip=10.19.3.160 req_src_port=5060 in_uri=sip:scscf.open-ims.test:6060 out_uri=sip:scscf.open-ims.test:6060 via_cnt==3\"\r\n" \
 "\r\n" \
-
+ 
 
 #define SIP_OPTIONS \
 "SIP/2.0 200 OK\r\n" \
@@ -186,79 +186,79 @@
 
 void test_parser()
 {
-	tsk_ragel_state_t state;
-	tsip_message_t *message = tsk_null;
-	tsk_buffer_t *buffer = tsk_buffer_create_null();
-	const tsip_header_Contact_t* header_contact;
-	tsk_size_t i;
+    tsk_ragel_state_t state;
+    tsip_message_t *message = tsk_null;
+    tsk_buffer_t *buffer = tsk_buffer_create_null();
+    const tsip_header_Contact_t* header_contact;
+    tsk_size_t i;
 
-	tsk_ragel_state_init(&state, SIP_MSG_2_TEST, tsk_strlen(SIP_MSG_2_TEST));
-	tsip_message_parse(&state, &message, tsk_true);
+    tsk_ragel_state_init(&state, SIP_MSG_2_TEST, tsk_strlen(SIP_MSG_2_TEST));
+    tsip_message_parse(&state, &message, tsk_true);
 
-	for(i = 0; (header_contact = (const tsip_header_Contact_t*)tsip_message_get_headerAt(message, tsip_htype_Contact, i)); ++i){
-		const char* pub_gruu = TSIP_HEADER_GET_PARAM_VALUE(header_contact, "pub-gruu");
-		TSK_DEBUG_INFO("pub-gruu for contact header at index %d = %s", i, (pub_gruu ? pub_gruu : "null"));
-	}
-	
-	tsip_message_tostring(message, buffer);
-	TSK_DEBUG_INFO("Buffer=\n%s", TSK_BUFFER_TO_STRING(buffer));
+    for(i = 0; (header_contact = (const tsip_header_Contact_t*)tsip_message_get_headerAt(message, tsip_htype_Contact, i)); ++i) {
+        const char* pub_gruu = TSIP_HEADER_GET_PARAM_VALUE(header_contact, "pub-gruu");
+        TSK_DEBUG_INFO("pub-gruu for contact header at index %d = %s", i, (pub_gruu ? pub_gruu : "null"));
+    }
 
-	TSK_OBJECT_SAFE_FREE(message);
-	TSK_OBJECT_SAFE_FREE(buffer);
+    tsip_message_tostring(message, buffer);
+    TSK_DEBUG_INFO("Buffer=\n%s", TSK_BUFFER_TO_STRING(buffer));
+
+    TSK_OBJECT_SAFE_FREE(message);
+    TSK_OBJECT_SAFE_FREE(buffer);
 }
 
 
 void test_requests()
 {
-	tsk_buffer_t *buffer = tsk_buffer_create_null();
-	tsip_uri_t *from = tsip_uri_parse("sip:mamadou@open-ims.test", tsk_strlen("sip:mamadou@open-ims.test"));
-	tsip_uri_t *request_uri = tsip_uri_parse("sip:open-ims.test", tsk_strlen("sip:open-ims.test"));
-	
+    tsk_buffer_t *buffer = tsk_buffer_create_null();
+    tsip_uri_t *from = tsip_uri_parse("sip:mamadou@open-ims.test", tsk_strlen("sip:mamadou@open-ims.test"));
+    tsip_uri_t *request_uri = tsip_uri_parse("sip:open-ims.test", tsk_strlen("sip:open-ims.test"));
 
-	tsip_request_t *request = tsip_request_new("REGISTER", request_uri, from, from, "ABCDEFGHIJKLMOPQRSTUVWXYZ", 4521);
-	
-	tsip_message_tostring(request, buffer);
-	TSK_DEBUG_INFO("Buffer=\n%s", TSK_BUFFER_TO_STRING(buffer));
-	
 
-	TSK_OBJECT_SAFE_FREE(from);
-	TSK_OBJECT_SAFE_FREE(request_uri);
-	TSK_OBJECT_SAFE_FREE(request);
-	TSK_OBJECT_SAFE_FREE(buffer);
+    tsip_request_t *request = tsip_request_new("REGISTER", request_uri, from, from, "ABCDEFGHIJKLMOPQRSTUVWXYZ", 4521);
+
+    tsip_message_tostring(request, buffer);
+    TSK_DEBUG_INFO("Buffer=\n%s", TSK_BUFFER_TO_STRING(buffer));
+
+
+    TSK_OBJECT_SAFE_FREE(from);
+    TSK_OBJECT_SAFE_FREE(request_uri);
+    TSK_OBJECT_SAFE_FREE(request);
+    TSK_OBJECT_SAFE_FREE(buffer);
 }
 
 void test_responses()
 {
-	tsk_ragel_state_t state;
-	tsip_request_t *request = 0;
-	tsip_request_t *response = 0;
+    tsk_ragel_state_t state;
+    tsip_request_t *request = 0;
+    tsip_request_t *response = 0;
 
-	tsk_ragel_state_init(&state, SIP_MSG_2_TEST, tsk_strlen(SIP_MSG_2_TEST));
-	tsip_message_parse(&state, &request, tsk_true);
+    tsk_ragel_state_init(&state, SIP_MSG_2_TEST, tsk_strlen(SIP_MSG_2_TEST));
+    tsip_message_parse(&state, &request, tsk_true);
 
-	/* Create the response and destroy the request */
-	response = tsip_response_new(200, "OK you can move forward", request);
-	TSK_OBJECT_SAFE_FREE(request);
+    /* Create the response and destroy the request */
+    response = tsip_response_new(200, "OK you can move forward", request);
+    TSK_OBJECT_SAFE_FREE(request);
 
-	{
-		/* DUMP the response */
-		tsk_buffer_t *buffer = tsk_buffer_create_null();
+    {
+        /* DUMP the response */
+        tsk_buffer_t *buffer = tsk_buffer_create_null();
 
-		tsip_message_tostring(response, buffer);
-		TSK_DEBUG_INFO("Response=\n%s", TSK_BUFFER_TO_STRING(buffer));
+        tsip_message_tostring(response, buffer);
+        TSK_DEBUG_INFO("Response=\n%s", TSK_BUFFER_TO_STRING(buffer));
 
-		TSK_OBJECT_SAFE_FREE(buffer);
-	}
-	
+        TSK_OBJECT_SAFE_FREE(buffer);
+    }
 
-	TSK_OBJECT_SAFE_FREE(response);
+
+    TSK_OBJECT_SAFE_FREE(response);
 }
 
 void test_messages()
 {
-	test_parser();
-	//test_requests();
-	//test_responses();
+    test_parser();
+    //test_requests();
+    //test_responses();
 }
 
 

@@ -20,28 +20,28 @@
 
 
 /*****************************************************************************
-  bv16.h : 
+  bv16.h :
 
   $Log$
 ******************************************************************************/
 
 void Reset_BV16_Encoder(
-struct BV16_Encoder_State *cs);
+    struct BV16_Encoder_State *cs);
 
 void BV16_Encode(
-struct BV16_Bit_Stream *bs,
-struct BV16_Encoder_State *cs,
-Word16 *inx);
+    struct BV16_Bit_Stream *bs,
+    struct BV16_Encoder_State *cs,
+    Word16 *inx);
 
 void Reset_BV16_Decoder(
-struct BV16_Decoder_State *ds);
+    struct BV16_Decoder_State *ds);
 
 void BV16_Decode(
-struct BV16_Bit_Stream     *bs,
-struct BV16_Decoder_State  *ds,
-Word16 *xq);
+    struct BV16_Bit_Stream     *bs,
+    struct BV16_Decoder_State  *ds,
+    Word16 *xq);
 
 void BV16_PLC(
-struct BV16_Decoder_State   *ds,
-Word16 *x);
+    struct BV16_Decoder_State   *ds,
+    Word16 *x);
 

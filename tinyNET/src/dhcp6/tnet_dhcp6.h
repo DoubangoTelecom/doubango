@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -61,7 +61,7 @@ TNET_BEGIN_DECLS
 #define TNET_DHCP6_All_DHCP_Servers					"FF05::1:3"
 
 /*== RFC 3315 - 5.5. Transmission and Retransmission Parameters
- * This section presents a table of values used to describe the message 
+ * This section presents a table of values used to describe the message
  *	transmission behavior of clients and servers.
 */
 #define TNET_DHCP6_RT_SOL_MAX_DELAY		1   /**< 1 sec   Max delay of first Solicit */
@@ -100,20 +100,19 @@ TNET_BEGIN_DECLS
 /**@ingroup tnet_dhcpv_group
 * DHCPv6 context.
 */
-typedef struct tnet_dhcp6_ctx_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	uint16_t pen; /**< Private Enterprise Number assigned by the IANA. Default= @ref TNET_IANA_PEN.*/
-	char* vendor_class_data;
+typedef struct tnet_dhcp6_ctx_s {
+    TSK_DECLARE_OBJECT;
 
-	uint64_t timeout;
+    uint16_t pen; /**< Private Enterprise Number assigned by the IANA. Default= @ref TNET_IANA_PEN.*/
+    char* vendor_class_data;
 
-	tnet_port_t port_client; /**< Local port to bind to for incloming DHCPv6 messages. Default: 546 */
-	tnet_port_t server_port; /**< Destination port for outgoing DHCPv6 messages. Default: 547 */
-	tnet_interfaces_L_t *interfaces;
-	
-	TSK_DECLARE_SAFEOBJ;
+    uint64_t timeout;
+
+    tnet_port_t port_client; /**< Local port to bind to for incloming DHCPv6 messages. Default: 546 */
+    tnet_port_t server_port; /**< Destination port for outgoing DHCPv6 messages. Default: 547 */
+    tnet_interfaces_L_t *interfaces;
+
+    TSK_DECLARE_SAFEOBJ;
 }
 tnet_dhcp6_ctx_t;
 

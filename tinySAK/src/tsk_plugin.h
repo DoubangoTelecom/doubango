@@ -1,17 +1,17 @@
 /* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -25,29 +25,27 @@
 
 TSK_BEGIN_DECLS
 
-typedef enum tsk_plugin_def_type_e
-{
-	tsk_plugin_def_type_none = 0,
-	tsk_plugin_def_type_consumer = (1 << 0),
-	tsk_plugin_def_type_producer = (1 << 1),
-	tsk_plugin_def_type_session = (1 << 2),
-	tsk_plugin_def_type_codec = (1 << 3),
-	tsk_plugin_def_type_resampler = (1 << 4),
-	tsk_plugin_def_type_jb = (1 << 5),
-	tsk_plugin_def_type_denoiser = (1 << 6),
-	tsk_plugin_def_type_converter = (1 << 7),
-	tsk_plugin_def_type_ipsec = (1 << 8),
-	tsk_plugin_def_type_all = (~0)
+typedef enum tsk_plugin_def_type_e {
+    tsk_plugin_def_type_none = 0,
+    tsk_plugin_def_type_consumer = (1 << 0),
+    tsk_plugin_def_type_producer = (1 << 1),
+    tsk_plugin_def_type_session = (1 << 2),
+    tsk_plugin_def_type_codec = (1 << 3),
+    tsk_plugin_def_type_resampler = (1 << 4),
+    tsk_plugin_def_type_jb = (1 << 5),
+    tsk_plugin_def_type_denoiser = (1 << 6),
+    tsk_plugin_def_type_converter = (1 << 7),
+    tsk_plugin_def_type_ipsec = (1 << 8),
+    tsk_plugin_def_type_all = (~0)
 }
 tsk_plugin_def_type_t;
 
-typedef enum tsk_plugin_def_media_type_e
-{
-	tsk_plugin_def_media_type_none = 0,
-	tsk_plugin_def_media_type_audio = (1 << 0),
-	tsk_plugin_def_media_type_video = (1 << 1),
-	tsk_plugin_def_media_type_screencast = (1 << 2),
-	tsk_plugin_def_media_type_all = (~0)
+typedef enum tsk_plugin_def_media_type_e {
+    tsk_plugin_def_media_type_none = 0,
+    tsk_plugin_def_media_type_audio = (1 << 0),
+    tsk_plugin_def_media_type_video = (1 << 1),
+    tsk_plugin_def_media_type_screencast = (1 << 2),
+    tsk_plugin_def_media_type_all = (~0)
 }
 tsk_plugin_def_media_type_t;
 

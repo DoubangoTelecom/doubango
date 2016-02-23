@@ -14,7 +14,7 @@
 #include "datatypes.h"
 #include "err.h"
 
-/* #define ROC_TEST */  
+/* #define ROC_TEST */
 
 #ifndef ROC_TEST
 
@@ -33,7 +33,7 @@ typedef uint16_t rollover_counter_t;   /* 16 bit rollover counter */
 
 /*
  * An xtd_seq_num_t is a 64-bit unsigned integer used as an 'extended'
- * sequence number.  
+ * sequence number.
  */
 
 typedef uint64_t xtd_seq_num_t;
@@ -45,8 +45,8 @@ typedef uint64_t xtd_seq_num_t;
  */
 
 typedef struct {
-  xtd_seq_num_t index;
-  bitvector_t bitmask;
+    xtd_seq_num_t index;
+    bitvector_t bitmask;
 } rdbx_t;
 
 
@@ -73,7 +73,7 @@ rdbx_dealloc(rdbx_t *rdbx);
 
 /*
  * rdbx_estimate_index(rdbx, guess, s)
- * 
+ *
  * given an rdbx and a sequence number s (from a newly arrived packet),
  * sets the contents of *guess to contain the best guess of the packet
  * index to which s corresponds, and returns the difference between
@@ -82,8 +82,8 @@ rdbx_dealloc(rdbx_t *rdbx);
 
 int
 rdbx_estimate_index(const rdbx_t *rdbx,
-		    xtd_seq_num_t *guess,
-		    sequence_number_t s);
+                    xtd_seq_num_t *guess,
+                    sequence_number_t s);
 
 /*
  * rdbx_check(rdbx, delta);
@@ -98,7 +98,7 @@ rdbx_check(const rdbx_t *rdbx, int difference);
 
 /*
  * replay_add_index(rdbx, delta)
- * 
+ *
  * adds the xtd_seq_num_t at rdbx->window_start + delta to replay_db
  * (and does *not* check if that xtd_seq_num_t appears in db)
  *
@@ -116,7 +116,7 @@ rdbx_add_index(rdbx_t *rdbx, int delta);
  * to have the rollover counter value roc.  If that value is less than
  * the current rollover counter value, then the function returns
  * err_status_replay_old; otherwise, err_status_ok is returned.
- * 
+ *
  */
 
 err_status_t
@@ -125,7 +125,7 @@ rdbx_set_roc(rdbx_t *rdbx, uint32_t roc);
 /*
  * rdbx_get_roc(rdbx) returns the value of the rollover counter for
  * the rdbx_t pointed to by rdbx
- * 
+ *
  */
 
 xtd_seq_num_t
@@ -160,7 +160,7 @@ index_advance(xtd_seq_num_t *pi, sequence_number_t s);
 
 /*
  * index_guess(local, guess, s)
- * 
+ *
  * given a xtd_seq_num_t local (which represents the highest
  * known-to-be-good index) and a sequence number s (from a newly
  * arrived packet), sets the contents of *guess to contain the best
@@ -170,8 +170,8 @@ index_advance(xtd_seq_num_t *pi, sequence_number_t s);
 
 int
 index_guess(const xtd_seq_num_t *local,
-		   xtd_seq_num_t *guess,
-		   sequence_number_t s);
+            xtd_seq_num_t *guess,
+            sequence_number_t s);
 
 
 #endif /* RDBX_H */

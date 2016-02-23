@@ -7,12 +7,12 @@
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -37,20 +37,18 @@ THTTP_BEGIN_DECLS
 
 /** Url type.
 */
-typedef enum thttp_url_type_e
-{
-	thttp_url_unknown,
-	thttp_url_http,
-	thttp_url_https,
+typedef enum thttp_url_type_e {
+    thttp_url_unknown,
+    thttp_url_http,
+    thttp_url_https,
 }
 thttp_url_type_t;
 
-typedef enum thttp_host_type_e
-{
-	thttp_host_unknown,
-	thttp_host_hostname,
-	thttp_host_ipv4,
-	thttp_host_ipv6
+typedef enum thttp_host_type_e {
+    thttp_host_unknown,
+    thttp_host_hostname,
+    thttp_host_ipv4,
+    thttp_host_ipv6
 }
 thttp_host_type_t;
 
@@ -64,17 +62,16 @@ thttp_host_type_t;
 /// hsegment       = *[ uchar | ";" | ":" | "@" | "&" | "=" ]
 /// search         = *[ uchar | ";" | ":" | "@" | "&" | "=" ]
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-typedef struct thttp_url_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct thttp_url_s {
+    TSK_DECLARE_OBJECT;
 
-	thttp_url_type_t type;
-	char *scheme;
-	char *host; /**< Host name. Hostname or IPv4address or IPv6address. */
-	char *hpath;
-	char *search;
-	thttp_host_type_t host_type; /**< IPv4 or IPv6 or domain name. */
-	uint16_t port;
+    thttp_url_type_t type;
+    char *scheme;
+    char *host; /**< Host name. Hostname or IPv4address or IPv6address. */
+    char *hpath;
+    char *search;
+    thttp_host_type_t host_type; /**< IPv4 or IPv6 or domain name. */
+    uint16_t port;
 }
 thttp_url_t;
 

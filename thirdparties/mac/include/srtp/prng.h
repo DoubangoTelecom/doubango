@@ -8,26 +8,26 @@
  */
 
 /*
- *	
+ *
  * Copyright (c) 2001-2006, Cisco Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   Redistributions in binary form must reproduce the above
  *   copyright notice, this list of conditions and the following
  *   disclaimer in the documentation and/or other materials provided
  *   with the distribution.
- * 
+ *
  *   Neither the name of the Cisco Systems, Inc. nor the names of its
  *   contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -62,10 +62,10 @@
  */
 
 typedef struct {
-  v128_t   state;          /* state data                              */
-  aes_expanded_key_t key;  /* secret key                              */
-  uint32_t octet_count;    /* number of octets output since last init */
-  rand_source_func_t rand; /* random source for re-initialization     */
+    v128_t   state;          /* state data                              */
+    aes_expanded_key_t key;  /* secret key                              */
+    uint32_t octet_count;    /* number of octets output since last init */
+    rand_source_func_t rand; /* random source for re-initialization     */
 } x917_prng_t;
 
 err_status_t
@@ -80,9 +80,9 @@ x917_prng_get_octet_string(uint8_t *dest, uint32_t len);
  */
 
 typedef struct {
-  uint32_t octet_count;    /* number of octets output since last init */
-  aes_icm_ctx_t   state;   /* state data                              */
-  rand_source_func_t rand; /* random source for re-initialization     */
+    uint32_t octet_count;    /* number of octets output since last init */
+    aes_icm_ctx_t   state;   /* state data                              */
+    rand_source_func_t rand; /* random source for re-initialization     */
 } ctr_prng_t;
 
 err_status_t

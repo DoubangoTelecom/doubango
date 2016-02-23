@@ -9,26 +9,26 @@
 
 
 /*
- *	
+ *
  * Copyright (c) 2001-2006, Cisco Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   Redistributions in binary form must reproduce the above
  *   copyright notice, this list of conditions and the following
  *   disclaimer in the documentation and/or other materials provided
  *   with the distribution.
- * 
+ *
  *   Neither the name of the Cisco Systems, Inc. nor the names of its
  *   contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -57,11 +57,11 @@
  */
 
 typedef struct {
-  uint32_t window_start;   /* packet index of the first bit in bitmask */
-  v128_t bitmask;  
+    uint32_t window_start;   /* packet index of the first bit in bitmask */
+    v128_t bitmask;
 } rdb_t;
 
-#define rdb_bits_in_bitmask (8*sizeof(v128_t))   
+#define rdb_bits_in_bitmask (8*sizeof(v128_t))
 
 /*
  * rdb init
@@ -85,7 +85,7 @@ rdb_init(rdb_t *rdb);
  */
 
 err_status_t
-rdb_check(const rdb_t *rdb, uint32_t rdb_index);  
+rdb_check(const rdb_t *rdb, uint32_t rdb_index);
 
 /*
  * rdb_add_index
@@ -100,18 +100,18 @@ err_status_t
 rdb_add_index(rdb_t *rdb, uint32_t rdb_index);
 
 /*
- * the functions rdb_increment() and rdb_get_value() are for use by 
+ * the functions rdb_increment() and rdb_get_value() are for use by
  * senders, not receivers - DO NOT use these functions on the same
  * rdb_t upon which rdb_add_index is used!
  */
 
 
 /*
- * rdb_increment(db) increments the sequence number in db, if it is 
+ * rdb_increment(db) increments the sequence number in db, if it is
  * not too high
  *
  * return values:
- * 
+ *
  *    err_status_ok            no problem
  *    err_status_key_expired   sequence number too high
  *
@@ -127,4 +127,4 @@ uint32_t
 rdb_get_value(const rdb_t *rdb);
 
 
-#endif /* REPLAY_DB_H */ 
+#endif /* REPLAY_DB_H */

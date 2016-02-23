@@ -48,12 +48,12 @@
 #	define PLUGIN_WIN_DD_UNDER_X86				1
 #endif
 
-// Guards against C++ name mangling 
+// Guards against C++ name mangling
 #ifdef __cplusplus
 #	define PLUGIN_WIN_DD_BEGIN_DECLS extern "C" {
 #	define PLUGIN_WIN_DD_END_DECLS }
 #else
-#	define PLUGIN_WIN_DD_BEGIN_DECLS 
+#	define PLUGIN_WIN_DD_BEGIN_DECLS
 #	define PLUGIN_WIN_DD_END_DECLS
 #endif
 

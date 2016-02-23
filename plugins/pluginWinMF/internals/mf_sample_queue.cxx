@@ -1,18 +1,18 @@
 /* Copyright (C) 2013 Mamadou DIOP
 * Copyright (C) 2013 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 */
@@ -21,39 +21,38 @@
 #include <assert.h>
 
 MFSampleQueue::MFSampleQueue()
-: m_nRefCount(1)
-, m_nCount(0)
+    : m_nRefCount(1)
+    , m_nCount(0)
 {
-	InitializeCriticalSection(&m_critSec);
+    InitializeCriticalSection(&m_critSec);
 
-	 m_anchor.next = &m_anchor;
-     m_anchor.prev = &m_anchor;
+    m_anchor.next = &m_anchor;
+    m_anchor.prev = &m_anchor;
 }
 
 MFSampleQueue::~MFSampleQueue()
 {
-	assert(m_nRefCount == 0);
+    assert(m_nRefCount == 0);
 
-	Clear();
+    Clear();
 
-	DeleteCriticalSection(&m_critSec);
+    DeleteCriticalSection(&m_critSec);
 }
 
 STDMETHODIMP MFSampleQueue::QueryInterface(REFIID iid, void** ppv)
 {
-	return E_NOTIMPL;
+    return E_NOTIMPL;
 }
 
 STDMETHODIMP_(ULONG) MFSampleQueue::AddRef()
 {
-	return InterlockedIncrement(&m_nRefCount);
+    return InterlockedIncrement(&m_nRefCount);
 }
 
 STDMETHODIMP_(ULONG) MFSampleQueue::Release()
 {
-	ULONG uCount = InterlockedDecrement(&m_nRefCount);
-    if (uCount == 0)
-    {
+    ULONG uCount = InterlockedDecrement(&m_nRefCount);
+    if (uCount == 0) {
         delete this;
     }
     // For thread safety, return a temporary variable.
@@ -62,20 +61,18 @@ STDMETHODIMP_(ULONG) MFSampleQueue::Release()
 
 HRESULT MFSampleQueue::Queue(IMFSample* item)
 {
-	if (item == NULL)
-    {
+    if (item == NULL) {
         return E_POINTER;
     }
 
     Node *pNode = new (std::nothrow) Node(item);
-    if (pNode == NULL)
-    {
+    if (pNode == NULL) {
         return E_OUTOFMEMORY;
     }
 
     item->AddRef();
 
-	EnterCriticalSection(&m_critSec);
+    EnterCriticalSection(&m_critSec);
 
     Node *pBefore = m_anchor.prev;
 
@@ -87,25 +84,23 @@ HRESULT MFSampleQueue::Queue(IMFSample* item)
     pNode->prev = pBefore;
     pNode->next = pAfter;
 
-	m_nCount++;
+    m_nCount++;
 
-	LeaveCriticalSection(&m_critSec);
+    LeaveCriticalSection(&m_critSec);
 
     return S_OK;
 }
 
-HRESULT MFSampleQueue::Dequeue(IMFSample* *ppItem)
+HRESULT MFSampleQueue::Dequeue(IMFSample**ppItem)
 {
-	if (ppItem == NULL)
-    {
+    if (ppItem == NULL) {
         return E_POINTER;
     }
 
-	EnterCriticalSection(&m_critSec);
+    EnterCriticalSection(&m_critSec);
 
-	if (IsEmpty())
-    {
-		LeaveCriticalSection(&m_critSec);
+    if (IsEmpty()) {
+        LeaveCriticalSection(&m_critSec);
         return E_FAIL;
     }
 
@@ -120,24 +115,22 @@ HRESULT MFSampleQueue::Dequeue(IMFSample* *ppItem)
     *ppItem = pNode->item;
     delete pNode;
 
-	m_nCount--;
+    m_nCount--;
 
-	LeaveCriticalSection(&m_critSec);
+    LeaveCriticalSection(&m_critSec);
 
     return S_OK;
 }
 
 HRESULT MFSampleQueue::Clear()
 {
-	EnterCriticalSection(&m_critSec);
+    EnterCriticalSection(&m_critSec);
 
-	Node *n = m_anchor.next;
+    Node *n = m_anchor.next;
 
     // Delete the nodes
-    while (n != &m_anchor)
-    {
-        if (n->item)
-        {
+    while (n != &m_anchor) {
+        if (n->item) {
             n->item->Release();
         }
 
@@ -150,9 +143,9 @@ HRESULT MFSampleQueue::Clear()
     m_anchor.next = &m_anchor;
     m_anchor.prev = &m_anchor;
 
-	m_nCount = 0;
+    m_nCount = 0;
 
-	LeaveCriticalSection(&m_critSec);
+    LeaveCriticalSection(&m_critSec);
 
-	return S_OK;
+    return S_OK;
 }

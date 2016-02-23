@@ -714,7 +714,7 @@ int avfilter_config_links(AVFilterContext *filter);
  */
 AVFilterBufferRef *
 avfilter_get_video_buffer_ref_from_arrays(uint8_t * const data[4], const int linesize[4], int perms,
-                                          int w, int h, enum AVPixelFormat format);
+        int w, int h, enum AVPixelFormat format);
 
 /**
  * Create an audio buffer reference wrapped around an already
@@ -731,11 +731,11 @@ avfilter_get_video_buffer_ref_from_arrays(uint8_t * const data[4], const int lin
  * @param channel_layout the channel layout of the buffer
  */
 AVFilterBufferRef *avfilter_get_audio_buffer_ref_from_arrays(uint8_t **data,
-                                                             int linesize,
-                                                             int perms,
-                                                             int nb_samples,
-                                                             enum AVSampleFormat sample_fmt,
-                                                             uint64_t channel_layout);
+        int linesize,
+        int perms,
+        int nb_samples,
+        enum AVSampleFormat sample_fmt,
+        uint64_t channel_layout);
 /**
  * Create an audio buffer reference wrapped around an already
  * allocated samples buffer.
@@ -750,12 +750,12 @@ AVFilterBufferRef *avfilter_get_audio_buffer_ref_from_arrays(uint8_t **data,
  *                       must be either 0 or consistent with channels
  */
 AVFilterBufferRef *avfilter_get_audio_buffer_ref_from_arrays_channels(uint8_t **data,
-                                                                      int linesize,
-                                                                      int perms,
-                                                                      int nb_samples,
-                                                                      enum AVSampleFormat sample_fmt,
-                                                                      int channels,
-                                                                      uint64_t channel_layout);
+        int linesize,
+        int perms,
+        int nb_samples,
+        enum AVSampleFormat sample_fmt,
+        int channels,
+        uint64_t channel_layout);
 
 
 

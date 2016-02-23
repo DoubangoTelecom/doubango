@@ -22,11 +22,12 @@ HBITMAP CopyScreenToBitmap(LPRECT lpRect, BYTE *pData, BITMAPINFO *pHeader)
     int         xScrn, yScrn;           // screen resolution
 
     // check for an empty rectangle
-    if (IsRectEmpty(lpRect))
-      return NULL;
+    if (IsRectEmpty(lpRect)) {
+        return NULL;
+    }
 
     // create a DC for the screen and create
-    // a memory DC compatible to screen DC   
+    // a memory DC compatible to screen DC
     hScrDC = CreateDC(TEXT("DISPLAY"), NULL, NULL, NULL);
     hMemDC = CreateCompatibleDC(hScrDC);
 
@@ -41,14 +42,18 @@ HBITMAP CopyScreenToBitmap(LPRECT lpRect, BYTE *pData, BITMAPINFO *pHeader)
     yScrn = GetDeviceCaps(hScrDC, VERTRES);
 
     //make sure bitmap rectangle is visible
-    if (nX < 0)
+    if (nX < 0) {
         nX = 0;
-    if (nY < 0)
+    }
+    if (nY < 0) {
         nY = 0;
-    if (nX2 > xScrn)
+    }
+    if (nX2 > xScrn) {
         nX2 = xScrn;
-    if (nY2 > yScrn)
+    }
+    if (nY2 > yScrn) {
         nY2 = yScrn;
+    }
 
     nWidth  = nX2 - nX;
     nHeight = nY2 - nY;
@@ -63,7 +68,7 @@ HBITMAP CopyScreenToBitmap(LPRECT lpRect, BYTE *pData, BITMAPINFO *pHeader)
     BitBlt(hMemDC, 0, 0, nWidth, nHeight, hScrDC, nX, nY, SRCCOPY);
 
     // select old bitmap back into memory DC and get handle to
-    // bitmap of the screen   
+    // bitmap of the screen
     hBitmap = (HBITMAP)  SelectObject(hMemDC, hOldBitmap);
 
     // Copy the bitmap data into the provided BYTE buffer

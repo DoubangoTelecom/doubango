@@ -95,7 +95,7 @@ DECLARE_STACK_OF(SRP_user_pwd)
 typedef struct SRP_VBASE_st {
     STACK_OF(SRP_user_pwd) *users_pwd;
     STACK_OF(SRP_gN_cache) *gN_cache;
-/* to simulate a user */
+    /* to simulate a user */
     char *seed_key;
     BIGNUM *default_g;
     BIGNUM *default_N;

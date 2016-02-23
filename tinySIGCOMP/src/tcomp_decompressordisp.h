@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -42,25 +42,23 @@
 
 TCOMP_BEGIN_DECLS
 
-typedef struct tcomp_stream_buffer_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tcomp_stream_buffer_s {
+    TSK_DECLARE_OBJECT;
 
-	uint64_t	id;						/**< Buffer identifier */
-	tcomp_buffer_handle_t *buffer;		/**< Buffer handle */
+    uint64_t	id;						/**< Buffer identifier */
+    tcomp_buffer_handle_t *buffer;		/**< Buffer handle */
 
-	TSK_DECLARE_SAFEOBJ;
+    TSK_DECLARE_SAFEOBJ;
 }
 tcomp_stream_buffer_t;
 
-typedef struct tcomp_decompressordisp_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tcomp_decompressordisp_s {
+    TSK_DECLARE_OBJECT;
 
-	const tcomp_statehandler_t* stateHandler;
-	tcomp_stream_buffer_L_t *streamBuffers;
+    const tcomp_statehandler_t* stateHandler;
+    tcomp_stream_buffer_L_t *streamBuffers;
 
-	TSK_DECLARE_SAFEOBJ;
+    TSK_DECLARE_SAFEOBJ;
 }
 tcomp_decompressordisp_t;
 

@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -42,7 +42,7 @@
  *
  *  This has been coded for clarity, not necessarily for efficiency.
  *
- *  The functions f2, f3, f4 and f5 share the same inputs and have 
+ *  The functions f2, f3, f4 and f5 share the same inputs and have
  *  been coded together as a single function.  f1, f1* and f5* are
  *  all coded separately.
  *
@@ -59,7 +59,7 @@
 #include "tinysip_config.h"
 
 /**@def AKA_AK_SIZE
- * a 48-bit anonymity key that is the output of either of the functions f5 and f5*. 
+ * a 48-bit anonymity key that is the output of either of the functions f5 and f5*.
  * Defined in 3GPP TS 35.206 subclause 2.3.
  */
 
@@ -97,7 +97,7 @@ typedef uint8_t AKA_IK_T[AKA_IK_SIZE + 1];
 typedef uint8_t AKA_K_T[AKA_K_SIZE + 1];
 
 /**@def AKA_MAC_A_SIZE
- * a 64-bit network authentication code that is the output of the function f1. 
+ * a 64-bit network authentication code that is the output of the function f1.
  * Defined in 3GPP TS 35.206 subclause 2.3.
  */
 #define AKA_MAC_A_SIZE 8
@@ -137,7 +137,7 @@ typedef uint8_t AKA_RAND_T[AKA_RAND_SIZE + 1];
  */
 #define AKA_RES_SIZE 8
 typedef uint8_t AKA_RES_T[AKA_RES_SIZE + 1];
-	
+
 /**@def AKA_SQN_SIZE
  * a 48-bit sequence number that is an input to either of the functions f1 and f1*.  (For f1* this input is more precisely called SQNMS.)
  * Defined in 3GPP TS 35.206 subclause 2.3.
@@ -175,7 +175,7 @@ void f1    ( uint8_t k[16], uint8_t rand[16], uint8_t sqn[6], uint8_t amf[2],
              uint8_t mac_a[8] );
 void f2345 ( uint8_t k[16], uint8_t rand[16],
              uint8_t res[8], uint8_t ck[16], uint8_t ik[16], uint8_t ak[6] );
-void f1star( uint8_t k[16], uint8_t rand[16], uint8_t sqn[6], uint8_t amf[2], 
+void f1star( uint8_t k[16], uint8_t rand[16], uint8_t sqn[6], uint8_t amf[2],
              uint8_t mac_s[8] );
 void f5star( uint8_t k[16], uint8_t rand[16],
              uint8_t ak[6] );

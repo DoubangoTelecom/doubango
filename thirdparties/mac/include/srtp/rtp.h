@@ -1,6 +1,6 @@
 /*
  * rtp.h
- * 
+ *
  * rtp interface for srtp reference implementation
  *
  * David A. McGrew
@@ -15,26 +15,26 @@
  */
 
 /*
- *	
+ *
  * Copyright (c) 2001-2006, Cisco Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   Redistributions in binary form must reproduce the above
  *   copyright notice, this list of conditions and the following
  *   disclaimer in the documentation and/or other materials provided
  *   with the distribution.
- * 
+ *
  *   Neither the name of the Cisco Systems, Inc. nor the names of its
  *   contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -73,12 +73,12 @@ int
 rtp_recvfrom(rtp_receiver_t receiver, void *msg, int *len);
 
 int
-rtp_receiver_init(rtp_receiver_t rcvr, int sock, 
-		  struct sockaddr_in addr, unsigned int ssrc);
+rtp_receiver_init(rtp_receiver_t rcvr, int sock,
+                  struct sockaddr_in addr, unsigned int ssrc);
 
 int
-rtp_sender_init(rtp_sender_t sender, int sock, 
-		struct sockaddr_in addr, unsigned int ssrc);
+rtp_sender_init(rtp_sender_t sender, int sock,
+                struct sockaddr_in addr, unsigned int ssrc);
 
 /*
  * srtp_sender_init(...) initializes an rtp_sender_t
@@ -86,17 +86,17 @@ rtp_sender_init(rtp_sender_t sender, int sock,
 
 int
 srtp_sender_init(rtp_sender_t rtp_ctx,          /* structure to be init'ed */
-		 struct sockaddr_in name,       /* socket name             */
-		 sec_serv_t security_services,  /* sec. servs. to be used  */
-		 unsigned char *input_key       /* master key/salt in hex  */
-		 );
+                 struct sockaddr_in name,       /* socket name             */
+                 sec_serv_t security_services,  /* sec. servs. to be used  */
+                 unsigned char *input_key       /* master key/salt in hex  */
+                );
 
 int
 srtp_receiver_init(rtp_receiver_t rtp_ctx,       /* structure to be init'ed */
-		   struct sockaddr_in name, 	 /* socket name             */
-		   sec_serv_t security_services, /* sec. servs. to be used  */
-		   unsigned char *input_key	 /* master key/salt in hex  */
-		   );
+                   struct sockaddr_in name, 	 /* socket name             */
+                   sec_serv_t security_services, /* sec. servs. to be used  */
+                   unsigned char *input_key	 /* master key/salt in hex  */
+                  );
 
 
 int
@@ -112,13 +112,13 @@ int
 rtp_receiver_deinit_srtp(rtp_receiver_t sender);
 
 
-rtp_sender_t 
+rtp_sender_t
 rtp_sender_alloc(void);
 
 void
 rtp_sender_dealloc(rtp_sender_t rtp_ctx);
 
-rtp_receiver_t 
+rtp_receiver_t
 rtp_receiver_alloc(void);
 
 void
@@ -130,7 +130,7 @@ rtp_receiver_dealloc(rtp_receiver_t rtp_ctx);
  */
 #define RTP_HEADER_LEN   12
 
-/* 
+/*
  * RTP_MAX_BUF_LEN defines the largest RTP packet in the rtp.c implementation
  */
 #define RTP_MAX_BUF_LEN  16384

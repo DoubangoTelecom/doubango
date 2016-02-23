@@ -1,18 +1,18 @@
 /*
 * Copyright (C) 2010-2015 Mamadou DIOP.
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -40,33 +40,31 @@ TNET_BEGIN_DECLS
 
 /**Interface.
 */
-typedef struct tnet_interface_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	unsigned index;
+typedef struct tnet_interface_s {
+    TSK_DECLARE_OBJECT;
 
-	char* description;
-	uint8_t* mac_address;
-	tsk_size_t mac_address_length;
+    unsigned index;
+
+    char* description;
+    uint8_t* mac_address;
+    tsk_size_t mac_address_length;
 }
 tnet_interface_t;
 
 
 /**Address.
 */
-typedef struct tnet_address_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tnet_address_s {
+    TSK_DECLARE_OBJECT;
 
-	tnet_family_t family;
+    tnet_family_t family;
 
-	unsigned unicast:1;
-	unsigned anycast:1;
-	unsigned multicast:1;
-	unsigned dnsserver:1;
+    unsigned unicast:1;
+    unsigned anycast:1;
+    unsigned multicast:1;
+    unsigned dnsserver:1;
 
-	char* ip;
+    char* ip;
 }
 tnet_address_t;
 

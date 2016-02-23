@@ -59,10 +59,9 @@
 "Proxy-Connection: keep-Alive\r\n" \
 "Pragma: no-cache\r\n"
 
-typedef struct thttp_proxy_node_plugin_s
-{
+typedef struct thttp_proxy_node_plugin_s {
     TNET_DECLARE_PROXY_NONE;
-    
+
     struct {
         tsk_bool_t completed;
         tsk_bool_t started;
@@ -76,7 +75,7 @@ typedef struct thttp_proxy_node_plugin_s
         struct thttp_proxy_auth_cache_s* proxy_auth_cache;
 #endif
     } handshacking;
-    
+
     TSK_DECLARE_SAFEOBJ;
 }
 thttp_proxy_node_plugin_t;
@@ -103,7 +102,7 @@ static int _thttp_proxy_node_plugin_configure(tnet_proxy_node_t* self, ...)
     int ret = 0;
     thttp_proxy_node_plugin_t* node = (thttp_proxy_node_plugin_t*)self;
     // input parameters already checked by the caller
-    
+
     va_start(ap, self);
     tsk_safeobj_lock(node);
     ret = tnet_proxy_node_configure_2(self, &ap);
@@ -118,7 +117,7 @@ static int _thttp_proxy_node_plugin_start_handshaking(tnet_proxy_node_t* self)
     int ret = 0;
 #define kConnectContentData tsk_null
     // input parameters already checked by the caller
-    
+
     if (tsk_strnullORempty(self->dst_host) || !self->dst_port) {
         TSK_DEBUG_ERROR("Invalid destination address for HTTP proxy node: %s:%d", self->dst_host, self->dst_port);
         return -1;
@@ -129,11 +128,11 @@ static int _thttp_proxy_node_plugin_start_handshaking(tnet_proxy_node_t* self)
         TSK_DEBUG_ERROR("handshaking already started");
         goto bail;
     }
-    
+
     TSK_OBJECT_SAFE_FREE(node->handshacking.req_connect);
     TSK_FREE(node->handshacking.pending_data_ptr);
     node->handshacking.pending_data_len = 0;
-    
+
     /* Build the HTTP(S) CONNECT Request */
 #if BUILD_USING_PARSE
     {
@@ -155,7 +154,7 @@ static int _thttp_proxy_node_plugin_start_handshaking(tnet_proxy_node_t* self)
             TSK_OBJECT_SAFE_FREE(auth_hdr);
         }
         tsk_strcat((char**)&node->handshacking.pending_data_ptr, ONE_CRLF);
-        
+
         node->handshacking.pending_data_len = (int)tsk_strlen(node->handshacking.pending_data_ptr);
         tsk_ragel_state_init(&state, node->handshacking.pending_data_ptr, node->handshacking.pending_data_len);
         if ((ret = thttp_message_parse(&state, &node->handshacking.req_connect, tsk_false/* do not extract the content */)) != 0) {
@@ -193,7 +192,7 @@ static int _thttp_proxy_node_plugin_start_handshaking(tnet_proxy_node_t* self)
                                           THTTP_HEADER_DUMMY_VA_ARGS("Connection", "keep-Alive"),
                                           THTTP_HEADER_DUMMY_VA_ARGS("Pragma", "no-cache"),
                                           END_OF_ADD_HEADERS()
-                                          );
+                                         );
 #   if THTTP_PROXY_AUTH_CACHE
         tsk_sprintf(&uristring, "%s:%d", self->dst_host, self->dst_port);
         auth_hdr = _thttp_proxy_auth_cache_create_header_authorization(node->handshacking.proxy_auth_cache, self->proxy_host, self->proxy_port, self->login, self->password, uristring);
@@ -210,19 +209,19 @@ static int _thttp_proxy_node_plugin_start_handshaking(tnet_proxy_node_t* self)
         }
     }
 #endif
-    
+
     /* Parse the connect method */
     if (!node->handshacking.pending_data_ptr) { // see "BUILD_USING_PARSE"
         node->handshacking.pending_data_ptr = thttp_message_tostring(node->handshacking.req_connect);
         node->handshacking.pending_data_len = (int)tsk_strlen((const char*)node->handshacking.pending_data_ptr);
     }
-    
+
     if (!(node->handshacking.started = (node->handshacking.pending_data_len > 0))) {
         TSK_DEBUG_ERROR("Failed to parse HTTP connect data");
         ret = -3;
         goto bail;
     }
-    
+
 bail:
     tsk_safeobj_unlock(node);
     return ret;
@@ -235,19 +234,19 @@ static int _thttp_proxy_node_plugin_set_handshaking_data(tnet_proxy_node_t* self
     thttp_message_t *message = tsk_null;
     tsk_bool_t have_all_content = tsk_false;
     thttp_proxy_node_plugin_t* node = (thttp_proxy_node_plugin_t*)self;
-    
+
     // input parameters already checked by the caller
-    
+
     TSK_DEBUG_INFO("HTTP(s) incoming proxy handshaking data:%.*s", (int)data_size, data_ptr);
-    
+
     tsk_safeobj_lock(node);
-    
+
     if (!node->handshacking.started) {
         TSK_DEBUG_ERROR("handshaking not started");
         ret = -3;
         goto bail;
     }
-    
+
     if (!node->handshacking.buff) {
         if (!(node->handshacking.buff = tsk_buffer_create(data_ptr, data_size))) {
             ret = -2;
@@ -259,27 +258,27 @@ static int _thttp_proxy_node_plugin_set_handshaking_data(tnet_proxy_node_t* self
             goto bail;
         }
     }
-    
+
     /* Check if we have all HTTP headers. */
 parse_buffer:
     if ((endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(node->handshacking.buff), TSK_BUFFER_SIZE(node->handshacking.buff), TWO_CRLF)) < 0) {
         TSK_DEBUG_INFO("No all HTTP headers in the TCP buffer.");
         goto bail;
     }
-    
+
     /* If we are here this mean that we have all HTTP headers.
      *	==> Parse the HTTP message without the content.
      */
     tsk_ragel_state_init(&state, TSK_BUFFER_DATA(node->handshacking.buff), endOfheaders + TWO_CRLF_LEN);
     if ((ret = thttp_message_parse(&state, &message, tsk_false/* do not extract the content */)) == 0) {
         const thttp_header_Transfer_Encoding_t* transfer_Encoding;
-        
+
         /* chunked? */
         if ((transfer_Encoding = (const thttp_header_Transfer_Encoding_t*)thttp_message_get_header(message, thttp_htype_Transfer_Encoding)) && tsk_striequals(transfer_Encoding->encoding, "chunked")) {
             const char* start = (const char*)(TSK_BUFFER_TO_U8(node->handshacking.buff) + (endOfheaders + TWO_CRLF_LEN));
             const char* end = (const char*)(TSK_BUFFER_TO_U8(node->handshacking.buff) + TSK_BUFFER_SIZE(node->handshacking.buff));
             int index;
-            
+
             TSK_DEBUG_INFO("CHUNKED transfer.");
             while (start < end) {
                 /* RFC 2616 - 19.4.6 Introduction of Transfer-Encoding */
@@ -292,14 +291,14 @@ parse_buffer:
                     TSK_DEBUG_ERROR("Parsing chunked data has failed.");
                     break;
                 }
-                
+
                 if (chunk_size == 0 && ((start + 2) <= end) && *start == '\r' && *(start+ 1) == '\n') {
                     int parsed_len = (int)(start - (const char*)(TSK_BUFFER_TO_U8(node->handshacking.buff))) + TWO_CRLF_LEN;
                     tsk_buffer_remove(node->handshacking.buff, 0, parsed_len);
                     have_all_content = tsk_true;
                     break;
                 }
-                
+
                 thttp_message_append_content(message, start, chunk_size);
                 start += chunk_size + ONE_CRLF_LEN;
             }
@@ -325,7 +324,7 @@ parse_buffer:
             }
         }
     }
-    
+
     /* Alert the dialog (FSM) */
     if (message) {
         if (have_all_content) { /* only if we have all data */
@@ -373,11 +372,11 @@ parse_buffer:
                             tsk_object_unref(auth_hdr), auth_hdr = tsk_null;
                         }
                         TSK_FREE(uristring);
-                        
+
 #if BUILD_USING_PARSE
                         tsk_strcat((char**)&node->handshacking.pending_data_ptr, ONE_CRLF);
 #endif /* BUILD_USING_PARSE */
-                        
+
                         // update pending handshaking data
                         if (!node->handshacking.pending_data_ptr && !(node->handshacking.pending_data_ptr = thttp_message_tostring(node->handshacking.req_connect))) {
                             TSK_DEBUG_ERROR("Breaking HTTP(s) handshaking process (failed to parse request)");
@@ -400,7 +399,7 @@ parse_buffer:
                 ret = -4;
                 goto bail;
             }
-            
+
             /* Parse next chunck */
             if (TSK_BUFFER_SIZE(node->handshacking.buff) > 0) {
                 TSK_OBJECT_SAFE_FREE(message);
@@ -408,7 +407,7 @@ parse_buffer:
             }
         }
     }
-    
+
 bail:
     tsk_safeobj_unlock(node);
     TSK_OBJECT_SAFE_FREE(message);
@@ -419,10 +418,10 @@ static int _thttp_proxy_node_plugin_get_handshaking_pending_data(tnet_proxy_node
 {
     thttp_proxy_node_plugin_t* node = (thttp_proxy_node_plugin_t*)self;
     int ret = -1;
-    
+
     // input parameters already checked by the caller
     tsk_safeobj_lock(node);
-    
+
     if (node->handshacking.pending_data_ptr && node->handshacking.pending_data_len > 0) {
         if ((*data_pptr = tsk_realloc(*data_pptr, node->handshacking.pending_data_len))) {
             memcpy(*data_pptr, node->handshacking.pending_data_ptr, (tsk_size_t) node->handshacking.pending_data_len);
@@ -433,7 +432,7 @@ static int _thttp_proxy_node_plugin_get_handshaking_pending_data(tnet_proxy_node
         TSK_FREE(node->handshacking.pending_data_ptr);
         node->handshacking.pending_data_len = 0;
     }
-    
+
     tsk_safeobj_unlock(node);
     return ret;
 }
@@ -441,11 +440,11 @@ static int _thttp_proxy_node_plugin_get_handshaking_pending_data(tnet_proxy_node
 static int _thttp_proxy_node_plugin_get_handshaking_completed(tnet_proxy_node_t* self, tsk_bool_t* completed)
 {
     thttp_proxy_node_plugin_t* node = (thttp_proxy_node_plugin_t*)self;
-    
+
     tsk_safeobj_lock(node);
     *completed = node->handshacking.completed;
     tsk_safeobj_unlock(node);
-    
+
     return 0;
 }
 
@@ -457,25 +456,25 @@ static int _thttp_proxy_node_plugin_update_challenge(thttp_proxy_node_plugin_t *
 #endif
     int ret = 0;
     const thttp_header_Proxy_Authenticate_t *Proxy_Authenticate;
-    
+
     if (!self) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
 #define kIsProxyYes tsk_true
-    
+
     tsk_safeobj_lock(self);
 #if THTTP_PROXY_AUTH_CACHE
     _thttp_proxy_auth_cache_lock(self->handshacking.proxy_auth_cache);
 #endif
-    
+
     /* RFC 2617 - Digest Operation
-     
+
      *	(A) The client response to a WWW-Authenticate challenge for a protection
      space starts an authentication session with that protection space.
      The authentication session lasts until the client receives another
      WWW-Authenticate challenge from any server in the protection space.
-     
+
      (B) The server may return a 401 response with a new nonce value, causing the client
      to retry the request; by specifying stale=TRUE with this response,
      the server tells the client to retry with the new nonce, but without
@@ -491,14 +490,14 @@ static int _thttp_proxy_node_plugin_update_challenge(thttp_proxy_node_plugin_t *
 #if THTTP_PROXY_AUTH_CACHE
                 TSK_OBJECT_SAFE_FREE(self->handshacking.challenge);
                 self->handshacking.challenge = _thttp_proxy_auth_cache_challenge_get(self->handshacking.proxy_auth_cache,
-                                                                                     base->proxy_host,
-                                                                                     base->proxy_port,
-                                                                                     Proxy_Authenticate->scheme,
-                                                                                     Proxy_Authenticate->realm,
-                                                                                     Proxy_Authenticate->nonce,
-                                                                                     Proxy_Authenticate->opaque,
-                                                                                     Proxy_Authenticate->algorithm,
-                                                                                     Proxy_Authenticate->qop);
+                                               base->proxy_host,
+                                               base->proxy_port,
+                                               Proxy_Authenticate->scheme,
+                                               Proxy_Authenticate->realm,
+                                               Proxy_Authenticate->nonce,
+                                               Proxy_Authenticate->opaque,
+                                               Proxy_Authenticate->algorithm,
+                                               Proxy_Authenticate->qop);
 #else
                 ret = thttp_challenge_update(self->handshacking.challenge,
                                              Proxy_Authenticate->scheme,
@@ -521,22 +520,22 @@ static int _thttp_proxy_node_plugin_update_challenge(thttp_proxy_node_plugin_t *
         else {
 #if THTTP_PROXY_AUTH_CACHE
             self->handshacking.challenge = _thttp_proxy_auth_cache_challenge_get(self->handshacking.proxy_auth_cache,
-                                                                                 base->proxy_host,
-                                                                                 base->proxy_port,
-                                                                                 Proxy_Authenticate->scheme,
-                                                                                 Proxy_Authenticate->realm,
-                                                                                 Proxy_Authenticate->nonce,
-                                                                                 Proxy_Authenticate->opaque,
-                                                                                 Proxy_Authenticate->algorithm,
-                                                                                 Proxy_Authenticate->qop);
+                                           base->proxy_host,
+                                           base->proxy_port,
+                                           Proxy_Authenticate->scheme,
+                                           Proxy_Authenticate->realm,
+                                           Proxy_Authenticate->nonce,
+                                           Proxy_Authenticate->opaque,
+                                           Proxy_Authenticate->algorithm,
+                                           Proxy_Authenticate->qop);
 #else
             self->handshacking.challenge = thttp_challenge_create(kIsProxyYes,
-                                                                  Proxy_Authenticate->scheme,
-                                                                  Proxy_Authenticate->realm,
-                                                                  Proxy_Authenticate->nonce,
-                                                                  Proxy_Authenticate->opaque,
-                                                                  Proxy_Authenticate->algorithm,
-                                                                  Proxy_Authenticate->qop);
+                                           Proxy_Authenticate->scheme,
+                                           Proxy_Authenticate->realm,
+                                           Proxy_Authenticate->nonce,
+                                           Proxy_Authenticate->opaque,
+                                           Proxy_Authenticate->algorithm,
+                                           Proxy_Authenticate->qop);
 #endif /* THTTP_PROXY_AUTH_CACHE */
             if (!self->handshacking.challenge) {
                 ret = -1;
@@ -549,14 +548,14 @@ static int _thttp_proxy_node_plugin_update_challenge(thttp_proxy_node_plugin_t *
         ret = -1;
         goto bail;
     }
-    
+
 bail:
 #if THTTP_PROXY_AUTH_CACHE
     _thttp_proxy_auth_cache_unlock(self->handshacking.proxy_auth_cache);
 #endif
     tsk_safeobj_unlock(self);
     return ret;
-    
+
 }
 
 
@@ -591,31 +590,29 @@ static tsk_object_t* thttp_proxy_node_plugin_dtor(tsk_object_t * self)
 #if THTTP_PROXY_AUTH_CACHE
         TSK_OBJECT_SAFE_FREE(node->handshacking.proxy_auth_cache);
 #endif
-        
+
         tsk_safeobj_deinit(node);
-        
+
         TSK_DEBUG_INFO("*** HTTP proxy node destroyed ***");
     }
     return self;
 }
 
 /* object definition */
-static const tsk_object_def_t thttp_proxy_node_def_s =
-{
+static const tsk_object_def_t thttp_proxy_node_def_s = {
     sizeof(thttp_proxy_node_plugin_t),
     thttp_proxy_node_plugin_ctor,
     thttp_proxy_node_plugin_dtor,
     tsk_null,
 };
 /* plugin definition*/
-static const struct tnet_proxy_node_plugin_def_s thttp_proxy_node_plugin_def_s =
-{
+static const struct tnet_proxy_node_plugin_def_s thttp_proxy_node_plugin_def_s = {
     &thttp_proxy_node_def_s,
-    
+
     tnet_proxy_type_http | tnet_proxy_type_https,
-    
+
     "HTTP(s) proxy node plugin",
-    
+
     _thttp_proxy_node_plugin_configure,
     _thttp_proxy_node_plugin_start_handshaking,
     _thttp_proxy_node_plugin_set_handshaking_data,
@@ -633,7 +630,7 @@ extern const tsk_object_def_t* thttp_proxy_auth_def_t;
 
 typedef struct thttp_proxy_auth_s {
     TSK_DECLARE_OBJECT;
-    
+
     char* hostname;
     tnet_port_t port;
     struct {
@@ -653,7 +650,7 @@ typedef tsk_list_t thttp_proxy_auths_L_t;
 
 typedef struct thttp_proxy_auth_cache_s {
     TSK_DECLARE_OBJECT;
-    
+
     thttp_proxy_auths_L_t* auths_list;
     TSK_DECLARE_SAFEOBJ;
 }
@@ -710,7 +707,7 @@ static thttp_challenge_t* _thttp_proxy_auth_cache_challenge_get(thttp_proxy_auth
                 ((thttp_proxy_auth_t*)proxy_auth)->challenge.nc = 1;
                 tsk_strrandom(&istr);
                 tsk_md5compute(istr, tsk_strlen(istr), &((thttp_proxy_auth_t*)proxy_auth)->challenge.cnonce);
-                
+
                 ((thttp_proxy_auth_t*)proxy_auth)->challenge.is_active = tsk_true;
             }
         }
@@ -736,7 +733,7 @@ static thttp_header_t * _thttp_proxy_auth_cache_create_header_authorization(stru
 {
     thttp_challenge_t* challenge = tsk_null;
     thttp_header_t * header = tsk_null;
-    
+
     if (!self || !uristring) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return tsk_null;
@@ -825,11 +822,10 @@ static tsk_object_t* _thttp_proxy_auth_cache_dtor(tsk_object_t * self)
         TSK_OBJECT_SAFE_FREE(cache->auths_list);
         tsk_safeobj_deinit(cache);
     }
-    
+
     return self;
 }
-static const tsk_object_def_t thttp_proxy_auth_cache_def_s =
-{
+static const tsk_object_def_t thttp_proxy_auth_cache_def_s = {
     sizeof(thttp_proxy_auth_cache_t),
     _thttp_proxy_auth_cache_ctor,
     _thttp_proxy_auth_cache_dtor,
@@ -845,7 +841,7 @@ static tsk_object_t* _thttp_proxy_auth_ctor(tsk_object_t * self, va_list * app)
 {
     thttp_proxy_auth_t *auth = (thttp_proxy_auth_t *)self;
     if (auth) {
-        
+
     }
     return self;
 }
@@ -861,11 +857,10 @@ static tsk_object_t* _thttp_proxy_auth_dtor(tsk_object_t * self)
         TSK_FREE(auth->challenge.qop);
         TSK_FREE(auth->hostname);
     }
-    
+
     return self;
 }
-static const tsk_object_def_t thttp_proxy_auth_def_s =
-{
+static const tsk_object_def_t thttp_proxy_auth_def_s = {
     sizeof(thttp_proxy_auth_t),
     _thttp_proxy_auth_ctor,
     _thttp_proxy_auth_dtor,

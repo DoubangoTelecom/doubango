@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -55,14 +55,14 @@ char* node = txcap_selector_get_node("resource-lists",
 */
 char* txcap_selector_get_node(const char* auid_id, ...)
 {
-	char* ret = tsk_null;
-	va_list ap;
+    char* ret = tsk_null;
+    va_list ap;
 
-	va_start(ap, auid_id);
-	ret = txcap_selector_get_node_2(auid_id, &ap);
-	va_end(ap);
+    va_start(ap, auid_id);
+    ret = txcap_selector_get_node_2(auid_id, &ap);
+    va_end(ap);
 
-	return ret;
+    return ret;
 }
 
 /**@ingroup txcap_selector_group
@@ -79,77 +79,76 @@ char* txcap_selector_get_node(const char* auid_id, ...)
 */
 char* txcap_selector_get_node_2(const char* auid_id, va_list* app)
 {
-	char* ret = tsk_null;
-	char* namespace = tsk_null;
-	tsk_buffer_t* buffer = tsk_buffer_create_null();
-	txcap_selector_param_type_t step;
+    char* ret = tsk_null;
+    char* namespace = tsk_null;
+    tsk_buffer_t* buffer = tsk_buffer_create_null();
+    txcap_selector_param_type_t step;
 
-	while((step = va_arg(*app, txcap_selector_param_type_t)) != xcapp_node_null){
-		switch(step){
-			case xcapp_node_name:
-				{	/* (const char*)QNAME_STR */
-					const char* QNAME_STR = va_arg(*app, const char*);
-					if(tsk_buffer_append_2(buffer, "/%s", QNAME_STR)){
-						goto bail;
-					}
-					break;
-				}
-			case xcapp_node_pos:
-				{	/* (const char*)QNAME_STR, (unsigned int)POS_UINT */
-					const char* QNAME_STR = va_arg(*app, const char*);
-					unsigned int POS_UINT = va_arg(*app, unsigned int);
-					tsk_buffer_append_2(buffer, "/%s%%5B%u%%5D", 
-						QNAME_STR, POS_UINT);
-					break;
-				}
-			case xcapp_node_attribute:
-				{	/* (const char*)QNAME_STR, (const char*)ATT_QNAME_STR, (const char*)ATT_VALUE_STR */
-					const char* QNAME_STR = va_arg(*app, const char*); 
-					const char* ATT_QNAME_STR = va_arg(*app, const char*); 
-					const char* ATT_VALUE_STR = va_arg(*app, const char*);
-					tsk_buffer_append_2(buffer, "/%s%%5B@%s=%%22%s%%22%%5D", 
-						QNAME_STR, ATT_QNAME_STR, ATT_VALUE_STR);
-					break;
-				}
-			case xcapp_node_pos_n_attribute:
-				{	/* (const char*)QNAME_STR, (unsigned int)POS_UINT, (const char*)ATT_QNAME_STR, (const char*)ATT_VALUE_STR */
-					const char* QNAME_STR = va_arg(*app, const char*); 
-					unsigned int POS_UINT = va_arg(*app, unsigned int);
-					const char* ATT_QNAME_STR = va_arg(*app, const char*);
-					const char* ATT_VALUE_STR = va_arg(*app, const char*);
-					tsk_buffer_append_2(buffer, "/%s%%5B%u%%5D%%5B@%s=%%22%s%%22%%5D", 
-						QNAME_STR, POS_UINT, ATT_QNAME_STR, ATT_VALUE_STR);
-					break;
-				}
-			case xcapp_node_namespace:
-				{	/* (const char*)PREFIX_STR, (const char*)VALUE_STR */
-					const char* PREFIX_STR = va_arg(*app, const char*); 
-					const char* VALUE_STR = va_arg(*app, const char*);
-					char* temp = tsk_null;
-					tsk_sprintf(&temp, "%sxmlns(%s=%%22%s%%22)", 
-						namespace?"":"%3F",PREFIX_STR, VALUE_STR);
-					tsk_strcat(&namespace, temp);
-					TSK_FREE(temp);
-					break;
-				}
-			default:
-				{
-					TSK_DEBUG_ERROR("NOT SUPPORTED.");
-					goto bail;
-				}
-		} /* switch */
-	} /* while */
+    while((step = va_arg(*app, txcap_selector_param_type_t)) != xcapp_node_null) {
+        switch(step) {
+        case xcapp_node_name: {
+            /* (const char*)QNAME_STR */
+            const char* QNAME_STR = va_arg(*app, const char*);
+            if(tsk_buffer_append_2(buffer, "/%s", QNAME_STR)) {
+                goto bail;
+            }
+            break;
+        }
+        case xcapp_node_pos: {
+            /* (const char*)QNAME_STR, (unsigned int)POS_UINT */
+            const char* QNAME_STR = va_arg(*app, const char*);
+            unsigned int POS_UINT = va_arg(*app, unsigned int);
+            tsk_buffer_append_2(buffer, "/%s%%5B%u%%5D",
+                                QNAME_STR, POS_UINT);
+            break;
+        }
+        case xcapp_node_attribute: {
+            /* (const char*)QNAME_STR, (const char*)ATT_QNAME_STR, (const char*)ATT_VALUE_STR */
+            const char* QNAME_STR = va_arg(*app, const char*);
+            const char* ATT_QNAME_STR = va_arg(*app, const char*);
+            const char* ATT_VALUE_STR = va_arg(*app, const char*);
+            tsk_buffer_append_2(buffer, "/%s%%5B@%s=%%22%s%%22%%5D",
+                                QNAME_STR, ATT_QNAME_STR, ATT_VALUE_STR);
+            break;
+        }
+        case xcapp_node_pos_n_attribute: {
+            /* (const char*)QNAME_STR, (unsigned int)POS_UINT, (const char*)ATT_QNAME_STR, (const char*)ATT_VALUE_STR */
+            const char* QNAME_STR = va_arg(*app, const char*);
+            unsigned int POS_UINT = va_arg(*app, unsigned int);
+            const char* ATT_QNAME_STR = va_arg(*app, const char*);
+            const char* ATT_VALUE_STR = va_arg(*app, const char*);
+            tsk_buffer_append_2(buffer, "/%s%%5B%u%%5D%%5B@%s=%%22%s%%22%%5D",
+                                QNAME_STR, POS_UINT, ATT_QNAME_STR, ATT_VALUE_STR);
+            break;
+        }
+        case xcapp_node_namespace: {
+            /* (const char*)PREFIX_STR, (const char*)VALUE_STR */
+            const char* PREFIX_STR = va_arg(*app, const char*);
+            const char* VALUE_STR = va_arg(*app, const char*);
+            char* temp = tsk_null;
+            tsk_sprintf(&temp, "%sxmlns(%s=%%22%s%%22)",
+                        namespace?"":"%3F",PREFIX_STR, VALUE_STR);
+            tsk_strcat(&namespace, temp);
+            TSK_FREE(temp);
+            break;
+        }
+        default: {
+            TSK_DEBUG_ERROR("NOT SUPPORTED.");
+            goto bail;
+        }
+        } /* switch */
+    } /* while */
 
-	/* append the namespace */
-	if(namespace){
-		tsk_buffer_append(buffer, namespace, tsk_strlen(namespace));
-		TSK_FREE(namespace);
-	}
+    /* append the namespace */
+    if(namespace) {
+        tsk_buffer_append(buffer, namespace, tsk_strlen(namespace));
+        TSK_FREE(namespace);
+    }
 
 bail:
-	if(TSK_BUFFER_DATA(buffer) && TSK_BUFFER_SIZE(buffer)){
-		ret = tsk_strndup(TSK_BUFFER_DATA(buffer), TSK_BUFFER_SIZE(buffer));
-	}
-	TSK_OBJECT_SAFE_FREE(buffer);
-	return ret;
+    if(TSK_BUFFER_DATA(buffer) && TSK_BUFFER_SIZE(buffer)) {
+        ret = tsk_strndup(TSK_BUFFER_DATA(buffer), TSK_BUFFER_SIZE(buffer));
+    }
+    TSK_OBJECT_SAFE_FREE(buffer);
+    return ret;
 }

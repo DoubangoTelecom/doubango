@@ -46,8 +46,7 @@
 #define SHORTCTL_NOLONG    2
 
 #pragma pack(push, 1)
-typedef struct faacEncConfiguration
-{
+typedef struct faacEncConfiguration {
     /* config version */
     int version;
 
@@ -91,29 +90,29 @@ typedef struct faacEncConfiguration
     unsigned int psymodelidx;
 
     /*
-		PCM Sample Input Format
-		0	FAAC_INPUT_NULL			invalid, signifies a misconfigured config
-		1	FAAC_INPUT_16BIT		native endian 16bit
-		2	FAAC_INPUT_24BIT		native endian 24bit in 24 bits		(not implemented)
-		3	FAAC_INPUT_32BIT		native endian 24bit in 32 bits		(DEFAULT)
-		4	FAAC_INPUT_FLOAT		32bit floating point
+    	PCM Sample Input Format
+    	0	FAAC_INPUT_NULL			invalid, signifies a misconfigured config
+    	1	FAAC_INPUT_16BIT		native endian 16bit
+    	2	FAAC_INPUT_24BIT		native endian 24bit in 24 bits		(not implemented)
+    	3	FAAC_INPUT_32BIT		native endian 24bit in 32 bits		(DEFAULT)
+    	4	FAAC_INPUT_FLOAT		32bit floating point
     */
     unsigned int inputFormat;
 
     /* block type enforcing (SHORTCTL_NORMAL/SHORTCTL_NOSHORT/SHORTCTL_NOLONG) */
     int shortctl;
-	
-	/*
-		Channel Remapping
 
-		Default			0, 1, 2, 3 ... 63  (64 is MAX_CHANNELS in coder.h)
+    /*
+    	Channel Remapping
 
-		WAVE 4.0		2, 0, 1, 3
-		WAVE 5.0		2, 0, 1, 3, 4
-		WAVE 5.1		2, 0, 1, 4, 5, 3
-		AIFF 5.1		2, 0, 3, 1, 4, 5 
-	*/
-	int channel_map[64];	
+    	Default			0, 1, 2, 3 ... 63  (64 is MAX_CHANNELS in coder.h)
+
+    	WAVE 4.0		2, 0, 1, 3
+    	WAVE 5.0		2, 0, 1, 3, 4
+    	WAVE 5.1		2, 0, 1, 4, 5, 3
+    	AIFF 5.1		2, 0, 3, 1, 4, 5
+    */
+    int channel_map[64];
 
 } faacEncConfiguration, *faacEncConfigurationPtr;
 

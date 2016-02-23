@@ -6,12 +6,12 @@
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -40,10 +40,10 @@ typedef void tsk_object_t;
 /**@ingroup tsk_object_group
 * @def TSK_OBJECT_SAFE_FREE
 * Safely free any well-defined object. If the reference count of the object was equal to 1 then this
- * 	object will be freed otherwise the refrence counter will be decremented. 
+ * 	object will be freed otherwise the refrence counter will be decremented.
  *	In all case this operation will set the pointer (the object itself) to NULL.<br>
  * <b>Very Important</b>: Mutexes, Semaphores and CondVars are not well-defined objects. You should never use this macro to destroy them.
- * @param	self	The object to free or unref. 
+ * @param	self	The object to free or unref.
 **/
 #define TSK_OBJECT_SAFE_FREE(self)		if((self)) tsk_object_unref((self)), (self) = tsk_null
 
@@ -86,8 +86,8 @@ typedef void tsk_object_t;
 #define TSK_OBJECT_DEF(self)			((const tsk_object_def_t*)self)
 
 /** Object meta-data (definition) */
-typedef struct tsk_object_header_s{
-	TSK_DECLARE_OBJECT;
+typedef struct tsk_object_header_s {
+    TSK_DECLARE_OBJECT;
 }
 tsk_object_header_t;
 #define TSK_OBJECT_HEADER(object)	((tsk_object_header_t*)object)
@@ -110,10 +110,10 @@ tsk_object_header_t;
 * 	}
 * 	return self;
 * }
-* 
+*
 * // destructor
 * static void* person_destroy(tsk_object_t * self)
-* { 
+* {
 * 	person_t *person = self;
 * 	if(person){
 * 		TSK_FREE(person->firstName);
@@ -121,25 +121,25 @@ tsk_object_header_t;
 * 	}
 * 	return self;
 * }
-* 
+*
 * // comparator
 * static int person_cmp(const tsk_object_t *object1, const tsk_object_t *object1)
 * {
 * 	const person_t *person1 = object1;
 * 	const person_t *person2 = object2;
-* 
+*
 * 	return (person1 && person2) ? (person1->id - person2->id) : -1;
 * }
 *
 * // Meta-data (Object defnition)
-* static const tsk_object_def_t person_def_s = 
+* static const tsk_object_def_t person_def_s =
 * {
 * 	sizeof(person_t),
 * 	person_create,
 * 	person_destroy,
-* 	person_cmp, 
+* 	person_cmp,
 * }person_def_t;
-* 
+*
 * @endcode
 * Now, to create your object:
 * @code
@@ -155,16 +155,15 @@ tsk_object_header_t;
 * TSK_OBJECT_SAFE_FREE(person); // Will call "person_destroy" function.
 * @endcode
 */
-typedef struct tsk_object_def_s
-{
-	//! The size of the object.
-	tsk_size_t size;
-	//! Pointer to the constructor.
-	tsk_object_t*	(* constructor) (tsk_object_t *, va_list *);
-	//! Pointer to the destructor.
-	tsk_object_t*	(* destructor) (tsk_object_t *);
-	//! Pointer to the comparator.
-	int		(* comparator) (const tsk_object_t *, const tsk_object_t *);
+typedef struct tsk_object_def_s {
+    //! The size of the object.
+    tsk_size_t size;
+    //! Pointer to the constructor.
+    tsk_object_t*	(* constructor) (tsk_object_t *, va_list *);
+    //! Pointer to the destructor.
+    tsk_object_t*	(* destructor) (tsk_object_t *);
+    //! Pointer to the comparator.
+    int		(* comparator) (const tsk_object_t *, const tsk_object_t *);
 }
 tsk_object_def_t;
 

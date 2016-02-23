@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -37,36 +37,36 @@
 * support for 3GPP IMS and OMA networks.
 * This API is designed to efficiently work on embedded systems whith limited memory and low computing power.
 *
-* As many operators have begun to commercially deploy IMS, the relevance of using SigComp to lower bandwidth usage will come quickly. 
-* In my own opinion I think that most operators (especially those using RCS) will question how to reduce SIP signaling (registration, billing, presence, messaging …) 
-* bandwidth usage (who will pay bits?). 
-* These questions will especially concern using SIP (or all other text-based protocols) in wireless handsets as part of 2.5G, 3G and 4G cellular networks. 
+* As many operators have begun to commercially deploy IMS, the relevance of using SigComp to lower bandwidth usage will come quickly.
+* In my own opinion I think that most operators (especially those using RCS) will question how to reduce SIP signaling (registration, billing, presence, messaging …)
+* bandwidth usage (who will pay bits?).
+* These questions will especially concern using SIP (or all other text-based protocols) in wireless handsets as part of 2.5G, 3G and 4G cellular networks.
 *
 * SigComp stands for Signaling Compression and has been defined in <a href="http://www.ietf.org/rfc/rfc3320.txt">RFC 3320</a> by the Internet Engineering Task Force (IETF) ROHC working group.
 * <br> <br>
 *
 * @image html SigComp_Architecture.png "SigComp Architecture"
 *
-* Many application protocols used for multimedia communications are text-based and engineered for bandwidth rich links. As a result the messages have not been optimized in 
-* terms of size. For example, typical IMS/SIP messages range from a few hundred bytes up to two thousand bytes or more. For this reason, SigComp is mandatory for 
-* 3GPP IMS netwoks and <a href="http://en.wikipedia.org/wiki/Push_to_Talk_over_Cellular">PoC systems</a>. 
+* Many application protocols used for multimedia communications are text-based and engineered for bandwidth rich links. As a result the messages have not been optimized in
+* terms of size. For example, typical IMS/SIP messages range from a few hundred bytes up to two thousand bytes or more. For this reason, SigComp is mandatory for
+* 3GPP IMS netwoks and <a href="http://en.wikipedia.org/wiki/Push_to_Talk_over_Cellular">PoC systems</a>.
 *
-* SigComp could also be useful for RCS (Rich Communication Suite) networks because of the size of the SIP packets (more than three thousand bytes for presence publication). 
+* SigComp could also be useful for RCS (Rich Communication Suite) networks because of the size of the SIP packets (more than three thousand bytes for presence publication).
 * Using SigComp in IMS/RCS context will reduce the round-trip over slow radio links.
 *
 * @par Supported OS
 *
-* - Windows XX/Vista (Visual Studio 2005/2008 or Mingw32) 
-* - Windows Mobile 5 and later (Visual Studio 2005/2008 or Mingw32ce/cegcc toolchain) 
+* - Windows XX/Vista (Visual Studio 2005/2008 or Mingw32)
+* - Windows Mobile 5 and later (Visual Studio 2005/2008 or Mingw32ce/cegcc toolchain)
 * - Symbian S60 (Carbide.c++ v2.0 with S60_3rd_FP2_SDK_v1.1)
 * - Google Android
 * - Mac OS X, iPhone (Xcode)
-* - All Linux, FreeBSD, ... (GCC 4.x) 
+* - All Linux, FreeBSD, ... (GCC 4.x)
 *
 *
 * @par FEATURES
 *
-* The goal of this project is to provide a SigComp framework which: 
+* The goal of this project is to provide a SigComp framework which:
 *
 * - Could be used as an external API or Framework
 * - Highly portable (Coded in ANSI-C without any external dependencies)
@@ -116,19 +116,19 @@
 *
 * Compartment Identifier: Used in SIP messages (sigomp-id) and tinySigComp to allocate/deallocate memory associated
 * to a compartment.
-* @code 
+* @code
 * #define COMPARTMENT_ID		"urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a475"
 * @endcode
 *
 * Preparation:
 * @code
 * #define MAX_BUFFER_SIZE 0xFFFF
-* 
+*
 * int i = 0;
 * tsk_size_t outLen = 0;
 * tcomp_result_t *result = 0;
-* char outputBuffer[MAX_BUFFER_SIZE]; 
-* 
+* char outputBuffer[MAX_BUFFER_SIZE];
+*
 * tcomp_manager_handle_t *manager = 0;
 
 * // Create SigComp manager
@@ -151,13 +151,13 @@
 * Compress one or several messages using the code below:
 * @code
 * // Compress the SIP message
-* outLen = tcomp_manager_compress(manager, 
+* outLen = tcomp_manager_compress(manager,
 * COMPARTMENT_ID, strlen(COMPARTMENT_ID), // Compartment
 * "REGISTER ...", strlen("REGISTER ..."), // Sip message to compress and it's size
 * outputBuffer, sizeof(outputBuffer), // The ouptut buffer and it's size
 * FALSE // Indicates whether to compress as stream (SCTP, TCP...) message or not
 * );
-* 
+*
 * if(outLen){
 * 		// send SigComp message over UDP connection
 * 		sendto(sock, outputBuffer, outLen , 0, (SOCKADDR *)address, sizeof(address));

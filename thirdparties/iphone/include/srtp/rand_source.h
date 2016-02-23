@@ -7,26 +7,26 @@
  * Cisco Systems, Inc.
  */
 /*
- *	
+ *
  * Copyright(c) 2001-2006 Cisco Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   Redistributions in binary form must reproduce the above
  *   copyright notice, this list of conditions and the following
  *   disclaimer in the documentation and/or other materials provided
  *   with the distribution.
- * 
+ *
  *   Neither the name of the Cisco Systems, Inc. nor the names of its
  *   contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -60,7 +60,7 @@ rand_source_init(void);
  * and returns an error code.  This error code should be checked,
  * and if a failure is reported, the data in the buffer MUST NOT
  * be used.
- * 
+ *
  * warning: If the return code is not checked, then non-random
  *          data may inadvertently be used.
  *
@@ -77,7 +77,7 @@ rand_source_get_octet_string(void *dest, uint32_t length);
 err_status_t
 rand_source_deinit(void);
 
-/* 
+/*
  * function prototype for a random source function
  *
  * A rand_source_func_t writes num_octets at the location indicated by
@@ -86,6 +86,6 @@ rand_source_deinit(void);
  */
 
 typedef err_status_t (*rand_source_func_t)
-     (void *dest, uint32_t num_octets);
+(void *dest, uint32_t num_octets);
 
 #endif /* RAND_SOURCE */

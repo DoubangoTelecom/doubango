@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // File: WinCtrl.h
 //
-// Desc: DirectShow base classes - defines classes for video control 
+// Desc: DirectShow base classes - defines classes for video control
 //       interfaces.
 //
 // Copyright (c) 1992-2001 Microsoft Corporation.  All rights reserved.
@@ -36,13 +36,20 @@ public:
 
     HRESULT DoSetWindowStyle(long Style,long WindowLong);
     HRESULT DoGetWindowStyle(__out long *pStyle,long WindowLong);
-    BOOL IsAutoShowEnabled() { return m_bAutoShow; };
-    COLORREF GetBorderColour() { return m_BorderColour; };
-    HWND GetOwnerWindow() { return m_hwndOwner; };
-    BOOL IsCursorHidden() { return m_bCursorHidden; };
+    BOOL IsAutoShowEnabled() {
+        return m_bAutoShow;
+    };
+    COLORREF GetBorderColour() {
+        return m_BorderColour;
+    };
+    HWND GetOwnerWindow() {
+        return m_hwndOwner;
+    };
+    BOOL IsCursorHidden() {
+        return m_bCursorHidden;
+    };
 
-    inline BOOL PossiblyEatMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
-    {
+    inline BOOL PossiblyEatMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
         return ::PossiblyEatMessage(m_hwndDrain, uMsg, wParam, lParam);
     }
 
@@ -106,7 +113,7 @@ public:
     STDMETHODIMP SetWindowPosition(long Left,long Top,long Width,long Height);
     STDMETHODIMP GetWindowPosition(__out long *pLeft,__out long *pTop,__out long *pWidth,__out long *pHeight);
     STDMETHODIMP GetRestorePosition(__out long *pLeft,__out long *pTop,__out long *pWidth,__out long *pHeight);
-	STDMETHODIMP HideCursor(long HideCursor);
+    STDMETHODIMP HideCursor(long HideCursor);
     STDMETHODIMP IsCursorHidden(__out long *CursorHidden);
 };
 
@@ -156,7 +163,9 @@ public:
                       __in RECT *pSourceRect);
 
     // Override this if you want notifying when the rectangles change
-    virtual HRESULT OnUpdateRectangles() { return NOERROR; };
+    virtual HRESULT OnUpdateRectangles() {
+        return NOERROR;
+    };
     virtual HRESULT OnVideoSizeChange();
 
     // Derived classes must call this to set the pin the filter is using

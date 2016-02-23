@@ -26,10 +26,10 @@
  */
 
 typedef struct {
-  v128_t   state;          /* state data                              */
-  aes_expanded_key_t key;  /* secret key                              */
-  uint32_t octet_count;    /* number of octets output since last init */
-  rand_source_func_t rand; /* random source for re-initialization     */
+    v128_t   state;          /* state data                              */
+    aes_expanded_key_t key;  /* secret key                              */
+    uint32_t octet_count;    /* number of octets output since last init */
+    rand_source_func_t rand; /* random source for re-initialization     */
 } x917_prng_t;
 
 err_status_t
@@ -44,9 +44,9 @@ x917_prng_get_octet_string(uint8_t *dest, uint32_t len);
  */
 
 typedef struct {
-  uint32_t octet_count;    /* number of octets output since last init */
-  aes_icm_ctx_t   state;   /* state data                              */
-  rand_source_func_t rand; /* random source for re-initialization     */
+    uint32_t octet_count;    /* number of octets output since last init */
+    aes_icm_ctx_t   state;   /* state data                              */
+    rand_source_func_t rand; /* random source for re-initialization     */
 } ctr_prng_t;
 
 err_status_t

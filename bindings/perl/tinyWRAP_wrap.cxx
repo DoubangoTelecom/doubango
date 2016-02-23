@@ -1549,70 +1549,71 @@ SWIG_Perl_SetModule(swig_module_info *module) {
 #define SWIGTYPE_p_ProxyVideoProducerCallback swig_types[32]
 #define SWIGTYPE_p_PublicationEvent swig_types[33]
 #define SWIGTYPE_p_PublicationSession swig_types[34]
-#define SWIGTYPE_p_RPMessage swig_types[35]
-#define SWIGTYPE_p_RegistrationEvent swig_types[36]
-#define SWIGTYPE_p_RegistrationSession swig_types[37]
-#define SWIGTYPE_p_SMSData swig_types[38]
-#define SWIGTYPE_p_SMSEncoder swig_types[39]
-#define SWIGTYPE_p_SafeObject swig_types[40]
-#define SWIGTYPE_p_SdpMessage swig_types[41]
-#define SWIGTYPE_p_SipCallback swig_types[42]
-#define SWIGTYPE_p_SipEvent swig_types[43]
-#define SWIGTYPE_p_SipMessage swig_types[44]
-#define SWIGTYPE_p_SipSession swig_types[45]
-#define SWIGTYPE_p_SipStack swig_types[46]
-#define SWIGTYPE_p_SipUri swig_types[47]
-#define SWIGTYPE_p_StackEvent swig_types[48]
-#define SWIGTYPE_p_SubscriptionEvent swig_types[49]
-#define SWIGTYPE_p_SubscriptionSession swig_types[50]
-#define SWIGTYPE_p_T140Callback swig_types[51]
-#define SWIGTYPE_p_T140CallbackData swig_types[52]
-#define SWIGTYPE_p_XcapCallback swig_types[53]
-#define SWIGTYPE_p_XcapEvent swig_types[54]
-#define SWIGTYPE_p_XcapMessage swig_types[55]
-#define SWIGTYPE_p_XcapSelector swig_types[56]
-#define SWIGTYPE_p_XcapStack swig_types[57]
-#define SWIGTYPE_p_char swig_types[58]
-#define SWIGTYPE_p_int swig_types[59]
-#define SWIGTYPE_p_long_long swig_types[60]
-#define SWIGTYPE_p_short swig_types[61]
-#define SWIGTYPE_p_signed_char swig_types[62]
-#define SWIGTYPE_p_tdav_codec_id_e swig_types[63]
-#define SWIGTYPE_p_thttp_event_type_e swig_types[64]
-#define SWIGTYPE_p_tmedia_bandwidth_level_e swig_types[65]
-#define SWIGTYPE_p_tmedia_chroma_e swig_types[66]
-#define SWIGTYPE_p_tmedia_codec_id_e swig_types[67]
-#define SWIGTYPE_p_tmedia_mode_e swig_types[68]
-#define SWIGTYPE_p_tmedia_pref_video_size_s swig_types[69]
-#define SWIGTYPE_p_tmedia_profile_e swig_types[70]
-#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[71]
-#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[72]
-#define SWIGTYPE_p_tmedia_srtp_mode_e swig_types[73]
-#define SWIGTYPE_p_tmedia_srtp_type_e swig_types[74]
-#define SWIGTYPE_p_tmedia_t140_data_type_e swig_types[75]
-#define SWIGTYPE_p_tmsrp_event_type_e swig_types[76]
-#define SWIGTYPE_p_tmsrp_request_type_e swig_types[77]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[78]
-#define SWIGTYPE_p_tsip_info_event_type_e swig_types[79]
-#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[80]
-#define SWIGTYPE_p_tsip_message_event_type_e swig_types[81]
-#define SWIGTYPE_p_tsip_options_event_type_e swig_types[82]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[83]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[84]
-#define SWIGTYPE_p_tsip_request_type_e swig_types[85]
-#define SWIGTYPE_p_tsip_stack_mode_e swig_types[86]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[87]
-#define SWIGTYPE_p_tsk_list_t swig_types[88]
-#define SWIGTYPE_p_twrap_media_type_e swig_types[89]
-#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[90]
-#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[91]
-#define SWIGTYPE_p_twrap_sms_type_e swig_types[92]
-#define SWIGTYPE_p_unsigned_char swig_types[93]
-#define SWIGTYPE_p_unsigned_int swig_types[94]
-#define SWIGTYPE_p_unsigned_long_long swig_types[95]
-#define SWIGTYPE_p_unsigned_short swig_types[96]
-static swig_type_info *swig_types[98];
-static swig_module_info swig_module = {swig_types, 97, 0, 0, 0, 0};
+#define SWIGTYPE_p_QoS swig_types[35]
+#define SWIGTYPE_p_RPMessage swig_types[36]
+#define SWIGTYPE_p_RegistrationEvent swig_types[37]
+#define SWIGTYPE_p_RegistrationSession swig_types[38]
+#define SWIGTYPE_p_SMSData swig_types[39]
+#define SWIGTYPE_p_SMSEncoder swig_types[40]
+#define SWIGTYPE_p_SafeObject swig_types[41]
+#define SWIGTYPE_p_SdpMessage swig_types[42]
+#define SWIGTYPE_p_SipCallback swig_types[43]
+#define SWIGTYPE_p_SipEvent swig_types[44]
+#define SWIGTYPE_p_SipMessage swig_types[45]
+#define SWIGTYPE_p_SipSession swig_types[46]
+#define SWIGTYPE_p_SipStack swig_types[47]
+#define SWIGTYPE_p_SipUri swig_types[48]
+#define SWIGTYPE_p_StackEvent swig_types[49]
+#define SWIGTYPE_p_SubscriptionEvent swig_types[50]
+#define SWIGTYPE_p_SubscriptionSession swig_types[51]
+#define SWIGTYPE_p_T140Callback swig_types[52]
+#define SWIGTYPE_p_T140CallbackData swig_types[53]
+#define SWIGTYPE_p_XcapCallback swig_types[54]
+#define SWIGTYPE_p_XcapEvent swig_types[55]
+#define SWIGTYPE_p_XcapMessage swig_types[56]
+#define SWIGTYPE_p_XcapSelector swig_types[57]
+#define SWIGTYPE_p_XcapStack swig_types[58]
+#define SWIGTYPE_p_char swig_types[59]
+#define SWIGTYPE_p_int swig_types[60]
+#define SWIGTYPE_p_long_long swig_types[61]
+#define SWIGTYPE_p_short swig_types[62]
+#define SWIGTYPE_p_signed_char swig_types[63]
+#define SWIGTYPE_p_tdav_codec_id_e swig_types[64]
+#define SWIGTYPE_p_thttp_event_type_e swig_types[65]
+#define SWIGTYPE_p_tmedia_bandwidth_level_e swig_types[66]
+#define SWIGTYPE_p_tmedia_chroma_e swig_types[67]
+#define SWIGTYPE_p_tmedia_codec_id_e swig_types[68]
+#define SWIGTYPE_p_tmedia_mode_e swig_types[69]
+#define SWIGTYPE_p_tmedia_pref_video_size_s swig_types[70]
+#define SWIGTYPE_p_tmedia_profile_e swig_types[71]
+#define SWIGTYPE_p_tmedia_qos_strength_e swig_types[72]
+#define SWIGTYPE_p_tmedia_qos_stype_e swig_types[73]
+#define SWIGTYPE_p_tmedia_srtp_mode_e swig_types[74]
+#define SWIGTYPE_p_tmedia_srtp_type_e swig_types[75]
+#define SWIGTYPE_p_tmedia_t140_data_type_e swig_types[76]
+#define SWIGTYPE_p_tmsrp_event_type_e swig_types[77]
+#define SWIGTYPE_p_tmsrp_request_type_e swig_types[78]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[79]
+#define SWIGTYPE_p_tsip_info_event_type_e swig_types[80]
+#define SWIGTYPE_p_tsip_invite_event_type_e swig_types[81]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[82]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[83]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[84]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[85]
+#define SWIGTYPE_p_tsip_request_type_e swig_types[86]
+#define SWIGTYPE_p_tsip_stack_mode_e swig_types[87]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[88]
+#define SWIGTYPE_p_tsk_list_t swig_types[89]
+#define SWIGTYPE_p_twrap_media_type_e swig_types[90]
+#define SWIGTYPE_p_twrap_proxy_plugin_type_e swig_types[91]
+#define SWIGTYPE_p_twrap_rpmessage_type_e swig_types[92]
+#define SWIGTYPE_p_twrap_sms_type_e swig_types[93]
+#define SWIGTYPE_p_unsigned_char swig_types[94]
+#define SWIGTYPE_p_unsigned_int swig_types[95]
+#define SWIGTYPE_p_unsigned_long_long swig_types[96]
+#define SWIGTYPE_p_unsigned_short swig_types[97]
+static swig_type_info *swig_types[99];
+static swig_module_info swig_module = {swig_types, 98, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -1996,6 +1997,20 @@ SWIG_AsVal_short SWIG_PERL_DECL_ARGS_2(SV * obj, short *val)
 
 
 SWIGINTERNINLINE SV *
+SWIG_From_double  SWIG_PERL_DECL_ARGS_1(double value)
+{
+  return sv_2mortal(newSVnv(value));
+}
+
+
+SWIGINTERNINLINE SV *
+SWIG_From_float  SWIG_PERL_DECL_ARGS_1(float value)
+{    
+  return SWIG_From_double  SWIG_PERL_CALL_ARGS_1(value);
+}
+
+
+SWIGINTERNINLINE SV *
 SWIG_FromCharPtrAndSize(const char* carray, size_t size)
 {
   SV *obj = sv_newmortal();
@@ -2146,20 +2161,6 @@ SWIG_AsVal_float SWIG_PERL_DECL_ARGS_2(SV * obj, float *val)
     }
   }  
   return res;
-}
-
-
-SWIGINTERNINLINE SV *
-SWIG_From_double  SWIG_PERL_DECL_ARGS_1(double value)
-{
-  return sv_2mortal(newSVnv(value));
-}
-
-
-SWIGINTERNINLINE SV *
-SWIG_From_float  SWIG_PERL_DECL_ARGS_1(float value)
-{    
-  return SWIG_From_double  SWIG_PERL_CALL_ARGS_1(value);
 }
 
 
@@ -3110,6 +3111,453 @@ XS(_wrap_ActionConfig_setMediaInt) {
 }
 
 
+XS(_wrap_delete_QoS) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: delete_QoS(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_QoS" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    delete arg1;
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getQavg) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    float result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getQavg(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getQavg" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (float)(arg1)->getQavg();
+    ST(argvi) = SWIG_From_float  SWIG_PERL_CALL_ARGS_1(static_cast< float >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getQ1) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    float result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getQ1(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getQ1" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (float)(arg1)->getQ1();
+    ST(argvi) = SWIG_From_float  SWIG_PERL_CALL_ARGS_1(static_cast< float >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getQ2) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    float result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getQ2(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getQ2" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (float)(arg1)->getQ2();
+    ST(argvi) = SWIG_From_float  SWIG_PERL_CALL_ARGS_1(static_cast< float >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getQ3) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    float result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getQ3(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getQ3" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (float)(arg1)->getQ3();
+    ST(argvi) = SWIG_From_float  SWIG_PERL_CALL_ARGS_1(static_cast< float >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getQ4) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    float result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getQ4(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getQ4" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (float)(arg1)->getQ4();
+    ST(argvi) = SWIG_From_float  SWIG_PERL_CALL_ARGS_1(static_cast< float >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getQ5) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    float result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getQ5(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getQ5" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (float)(arg1)->getQ5();
+    ST(argvi) = SWIG_From_float  SWIG_PERL_CALL_ARGS_1(static_cast< float >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getVideoInWidth) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    unsigned int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getVideoInWidth(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getVideoInWidth" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (unsigned int)(arg1)->getVideoInWidth();
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getVideoOutWidth) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    unsigned int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getVideoOutWidth(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getVideoOutWidth" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (unsigned int)(arg1)->getVideoOutWidth();
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getVideoInHeight) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    unsigned int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getVideoInHeight(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getVideoInHeight" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (unsigned int)(arg1)->getVideoInHeight();
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getVideoOutHeight) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    unsigned int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getVideoOutHeight(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getVideoOutHeight" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (unsigned int)(arg1)->getVideoOutHeight();
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getBandwidthDownKbps) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    unsigned int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getBandwidthDownKbps(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getBandwidthDownKbps" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (unsigned int)(arg1)->getBandwidthDownKbps();
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getBandwidthUpKbps) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    unsigned int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getBandwidthUpKbps(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getBandwidthUpKbps" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (unsigned int)(arg1)->getBandwidthUpKbps();
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getVideoInAvgFps) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    unsigned int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getVideoInAvgFps(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getVideoInAvgFps" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (unsigned int)(arg1)->getVideoInAvgFps();
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getVideoDecAvgTime) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    unsigned int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getVideoDecAvgTime(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getVideoDecAvgTime" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (unsigned int)(arg1)->getVideoDecAvgTime();
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_QoS_getVideoEncAvgTime) {
+  {
+    QoS *arg1 = (QoS *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    unsigned int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: QoS_getVideoEncAvgTime(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_QoS, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "QoS_getVideoEncAvgTime" "', argument " "1"" of type '" "QoS *""'"); 
+    }
+    arg1 = reinterpret_cast< QoS * >(argp1);
+    result = (unsigned int)(arg1)->getVideoEncAvgTime();
+    ST(argvi) = SWIG_From_unsigned_SS_int  SWIG_PERL_CALL_ARGS_1(static_cast< unsigned int >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_delete_Codec) {
   {
     Codec *arg1 = (Codec *) 0 ;
@@ -3463,6 +3911,44 @@ XS(_wrap_MediaSessionMgr_sessionGetInt32) {
     
     
     if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_sessionGetQoS) {
+  {
+    MediaSessionMgr *arg1 = (MediaSessionMgr *) 0 ;
+    twrap_media_type_t arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    QoS *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: MediaSessionMgr_sessionGetQoS(self,media);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_MediaSessionMgr, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MediaSessionMgr_sessionGetQoS" "', argument " "1"" of type '" "MediaSessionMgr *""'"); 
+    }
+    arg1 = reinterpret_cast< MediaSessionMgr * >(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_sessionGetQoS" "', argument " "2"" of type '" "twrap_media_type_t""'");
+    } 
+    arg2 = static_cast< twrap_media_type_t >(val2);
+    result = (QoS *)(arg1)->sessionGetQoS(arg2);
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_QoS, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
     SWIG_croak_null();
   }
 }
@@ -4135,6 +4621,72 @@ XS(_wrap_MediaSessionMgr_defaultsSetPrefVideoSize) {
     } 
     arg1 = static_cast< tmedia_pref_video_size_t >(val1);
     result = (bool)MediaSessionMgr::defaultsSetPrefVideoSize(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetPrefVideoSizeOutRange) {
+  {
+    tmedia_pref_video_size_t arg1 ;
+    tmedia_pref_video_size_t arg2 ;
+    int val1 ;
+    int ecode1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetPrefVideoSizeOutRange(min,max);");
+    }
+    ecode1 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetPrefVideoSizeOutRange" "', argument " "1"" of type '" "tmedia_pref_video_size_t""'");
+    } 
+    arg1 = static_cast< tmedia_pref_video_size_t >(val1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MediaSessionMgr_defaultsSetPrefVideoSizeOutRange" "', argument " "2"" of type '" "tmedia_pref_video_size_t""'");
+    } 
+    arg2 = static_cast< tmedia_pref_video_size_t >(val2);
+    result = (bool)MediaSessionMgr::defaultsSetPrefVideoSizeOutRange(arg1,arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled) {
+  {
+    bool arg1 ;
+    bool val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled(enabled);");
+    }
+    ecode1 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled" "', argument " "1"" of type '" "bool""'");
+    } 
+    arg1 = static_cast< bool >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetAdaptativeVideoSizeOutEnabled(arg1);
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     
     XSRETURN(argvi);
@@ -27523,6 +28075,7 @@ static swig_type_info _swigt__p_ProxyVideoProducer = {"_p_ProxyVideoProducer", "
 static swig_type_info _swigt__p_ProxyVideoProducerCallback = {"_p_ProxyVideoProducerCallback", "ProxyVideoProducerCallback *", 0, 0, (void*)"tinyWRAP::ProxyVideoProducerCallback", 0};
 static swig_type_info _swigt__p_PublicationEvent = {"_p_PublicationEvent", "PublicationEvent *", 0, 0, (void*)"tinyWRAP::PublicationEvent", 0};
 static swig_type_info _swigt__p_PublicationSession = {"_p_PublicationSession", "PublicationSession *", 0, 0, (void*)"tinyWRAP::PublicationSession", 0};
+static swig_type_info _swigt__p_QoS = {"_p_QoS", "QoS *", 0, 0, (void*)"tinyWRAP::QoS", 0};
 static swig_type_info _swigt__p_RPMessage = {"_p_RPMessage", "RPMessage *", 0, 0, (void*)"tinyWRAP::RPMessage", 0};
 static swig_type_info _swigt__p_RegistrationEvent = {"_p_RegistrationEvent", "RegistrationEvent *", 0, 0, (void*)"tinyWRAP::RegistrationEvent", 0};
 static swig_type_info _swigt__p_RegistrationSession = {"_p_RegistrationSession", "RegistrationSession *", 0, 0, (void*)"tinyWRAP::RegistrationSession", 0};
@@ -27622,6 +28175,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_ProxyVideoProducerCallback,
   &_swigt__p_PublicationEvent,
   &_swigt__p_PublicationSession,
+  &_swigt__p_QoS,
   &_swigt__p_RPMessage,
   &_swigt__p_RegistrationEvent,
   &_swigt__p_RegistrationSession,
@@ -27721,6 +28275,7 @@ static swig_cast_info _swigc__p_ProxyVideoProducer[] = {  {&_swigt__p_ProxyVideo
 static swig_cast_info _swigc__p_ProxyVideoProducerCallback[] = {  {&_swigt__p_ProxyVideoProducerCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationEvent[] = {  {&_swigt__p_PublicationEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationSession[] = {  {&_swigt__p_PublicationSession, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_QoS[] = {  {&_swigt__p_QoS, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_RPMessage[] = {  {&_swigt__p_RPMessage, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_RegistrationEvent[] = {  {&_swigt__p_RegistrationEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_RegistrationSession[] = {  {&_swigt__p_RegistrationSession, 0, 0, 0},{0, 0, 0, 0}};
@@ -27820,6 +28375,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_ProxyVideoProducerCallback,
   _swigc__p_PublicationEvent,
   _swigc__p_PublicationSession,
+  _swigc__p_QoS,
   _swigc__p_RPMessage,
   _swigc__p_RegistrationEvent,
   _swigc__p_RegistrationSession,
@@ -27917,6 +28473,22 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::ActionConfig_setResponseLine", _wrap_ActionConfig_setResponseLine},
 {"tinyWRAPc::ActionConfig_setMediaString", _wrap_ActionConfig_setMediaString},
 {"tinyWRAPc::ActionConfig_setMediaInt", _wrap_ActionConfig_setMediaInt},
+{"tinyWRAPc::delete_QoS", _wrap_delete_QoS},
+{"tinyWRAPc::QoS_getQavg", _wrap_QoS_getQavg},
+{"tinyWRAPc::QoS_getQ1", _wrap_QoS_getQ1},
+{"tinyWRAPc::QoS_getQ2", _wrap_QoS_getQ2},
+{"tinyWRAPc::QoS_getQ3", _wrap_QoS_getQ3},
+{"tinyWRAPc::QoS_getQ4", _wrap_QoS_getQ4},
+{"tinyWRAPc::QoS_getQ5", _wrap_QoS_getQ5},
+{"tinyWRAPc::QoS_getVideoInWidth", _wrap_QoS_getVideoInWidth},
+{"tinyWRAPc::QoS_getVideoOutWidth", _wrap_QoS_getVideoOutWidth},
+{"tinyWRAPc::QoS_getVideoInHeight", _wrap_QoS_getVideoInHeight},
+{"tinyWRAPc::QoS_getVideoOutHeight", _wrap_QoS_getVideoOutHeight},
+{"tinyWRAPc::QoS_getBandwidthDownKbps", _wrap_QoS_getBandwidthDownKbps},
+{"tinyWRAPc::QoS_getBandwidthUpKbps", _wrap_QoS_getBandwidthUpKbps},
+{"tinyWRAPc::QoS_getVideoInAvgFps", _wrap_QoS_getVideoInAvgFps},
+{"tinyWRAPc::QoS_getVideoDecAvgTime", _wrap_QoS_getVideoDecAvgTime},
+{"tinyWRAPc::QoS_getVideoEncAvgTime", _wrap_QoS_getVideoEncAvgTime},
 {"tinyWRAPc::delete_Codec", _wrap_delete_Codec},
 {"tinyWRAPc::Codec_getMediaType", _wrap_Codec_getMediaType},
 {"tinyWRAPc::Codec_getName", _wrap_Codec_getName},
@@ -27928,6 +28500,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::delete_MediaSessionMgr", _wrap_delete_MediaSessionMgr},
 {"tinyWRAPc::MediaSessionMgr_sessionSetInt32", _wrap_MediaSessionMgr_sessionSetInt32},
 {"tinyWRAPc::MediaSessionMgr_sessionGetInt32", _wrap_MediaSessionMgr_sessionGetInt32},
+{"tinyWRAPc::MediaSessionMgr_sessionGetQoS", _wrap_MediaSessionMgr_sessionGetQoS},
 {"tinyWRAPc::MediaSessionMgr_consumerSetInt32", _wrap_MediaSessionMgr_consumerSetInt32},
 {"tinyWRAPc::MediaSessionMgr_consumerSetInt64", _wrap_MediaSessionMgr_consumerSetInt64},
 {"tinyWRAPc::MediaSessionMgr_producerSetInt32", _wrap_MediaSessionMgr_producerSetInt32},
@@ -27947,6 +28520,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoUploadMax", _wrap_MediaSessionMgr_defaultsSetBandwidthVideoUploadMax},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax", _wrap_MediaSessionMgr_defaultsSetBandwidthVideoDownloadMax},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetPrefVideoSize", _wrap_MediaSessionMgr_defaultsSetPrefVideoSize},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetPrefVideoSizeOutRange", _wrap_MediaSessionMgr_defaultsSetPrefVideoSizeOutRange},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled", _wrap_MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetJbMargin", _wrap_MediaSessionMgr_defaultsSetJbMargin},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetJbMaxLateRate", _wrap_MediaSessionMgr_defaultsSetJbMaxLateRate},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetEchoTail", _wrap_MediaSessionMgr_defaultsSetEchoTail},
@@ -28765,6 +29340,7 @@ XS(SWIG_init) {
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   SWIG_TypeClientData(SWIGTYPE_p_ActionConfig, (void*) "tinyWRAP::ActionConfig");
+  SWIG_TypeClientData(SWIGTYPE_p_QoS, (void*) "tinyWRAP::QoS");
   SWIG_TypeClientData(SWIGTYPE_p_Codec, (void*) "tinyWRAP::Codec");
   SWIG_TypeClientData(SWIGTYPE_p_MediaSessionMgr, (void*) "tinyWRAP::MediaSessionMgr");
   SWIG_TypeClientData(SWIGTYPE_p_MediaContent, (void*) "tinyWRAP::MediaContent");

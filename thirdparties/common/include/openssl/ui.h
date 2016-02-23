@@ -329,18 +329,18 @@ int UI_method_set_reader(UI_METHOD *method,
 int UI_method_set_closer(UI_METHOD *method, int (*closer) (UI *ui));
 int UI_method_set_prompt_constructor(UI_METHOD *method,
                                      char *(*prompt_constructor) (UI *ui,
-                                                                  const char
-                                                                  *object_desc,
-                                                                  const char
-                                                                  *object_name));
+                                             const char
+                                             *object_desc,
+                                             const char
+                                             *object_name));
 int (*UI_method_get_opener(UI_METHOD *method)) (UI *);
 int (*UI_method_get_writer(UI_METHOD *method)) (UI *, UI_STRING *);
 int (*UI_method_get_flusher(UI_METHOD *method)) (UI *);
 int (*UI_method_get_reader(UI_METHOD *method)) (UI *, UI_STRING *);
 int (*UI_method_get_closer(UI_METHOD *method)) (UI *);
 char *(*UI_method_get_prompt_constructor(UI_METHOD *method)) (UI *,
-                                                              const char *,
-                                                              const char *);
+        const char *,
+        const char *);
 
 /*
  * The following functions are helpers for method writers to access relevant

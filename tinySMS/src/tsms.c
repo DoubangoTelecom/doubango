@@ -2,19 +2,19 @@
 * Copyright (C) 2009 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -50,7 +50,7 @@
 *
 *
 * @image html SMS_Architecture.png "Protocol layer overview for the Short Message Service"
-* 
+*
 * <h2>18.1 Modes</h2>
 * In real world, there are two ways to receive or send SMS messages over mobile networks: Binary (PDU) and Text mode.
 *
@@ -77,7 +77,7 @@
 /**@defgroup tsms_tpdu_group Service provided by the SM-TL (Transport)
 * The Short Message Transfer Layer (SM TL) provides a service to the Short Message Application Layer (SM AL).
 *
-* This service enables the SM AL to transfer short messages to its peer entity, receive short messages from its 
+* This service enables the SM AL to transfer short messages to its peer entity, receive short messages from its
 * peer entity and receive reports about earlier requests for short messages to be transferred.
 *
 * ======
@@ -177,7 +177,7 @@ TSK_OBJECT_SAFE_FREE(buffer);
 * <i>SMS-STATUS-REPORT</i> messages are used to convey status reports from the SC (Service Center) to the MS (Mobile Station).<br>
 * For more information, please refer to 3GPP TS 23.040 section 9.2.2.3.<br>
 * The code below shows how to receive a <i>SMS-STATUS-REPORT</i> message, sent from the SC to the MS (MT).<br>
-* 
+*
 * @code
 #include "tsk.h"
 #include "tinysms.h"
@@ -216,7 +216,7 @@ uint8_t mr = 0xF5;
 uint8_t message_number = 0xF8;
 
 command = tsms_tpdu_command_create(mr, smsc, destination, message_number, tsms_tpdu_cmd_delete);
-		
+
 if((hex = tsms_tpdu_command_tohexastring(command))){
 	TSK_DEBUG_INFO("SMS-COMMAND=%s", hex);
 	TSK_FREE(hex);
@@ -319,7 +319,7 @@ TSK_OBJECT_SAFE_FREE(buffer);
 *
 * A SC receiving binary <i>RP-DATA</i> message (or any other <i>RP-*</i>) from the network should use tsms_rpdu_message_deserialize() function to deserialize the content.<br>
 * The code below shows how to receive a <i>RP-DATA</i> message with a <i>RP-User-Data</i> (see 3GPP TS 23.011 section 8.2.5.3) information element which includes <i>SMS-DELIVER</i> as type indicator (this use case comes from 3GPP TS 24.341 chapter B.6). <br>
-* 
+*
 * @code
 #include "tsk.h"
 #include "tinysms.h"
@@ -383,7 +383,7 @@ TSK_OBJECT_SAFE_FREE(rp_smma);
 * This message is sent between the MSC and the mobile station in both directions and used to relay the acknowledgement of a <i>RP-DATA</i> or <i>RP-SMMA</i> message reception.<br>
 * For more information, please refer to 3GPP TS 24.011 section 7.3.2.3.<br>
 * The code below shows how to send a <i>RP-ACK</i> message with a <i>RP-User-Data</i> (see 3GPP TS 23.011 section 8.2.5.3) information element which includes <i>SMS-DELIVER-REPORT</i> as type indicator (this use case comes from 3GPP TS 24.341 chapter B.6 section 8). <br>
-* 
+*
 * @code
 #include "tsk.h"
 #include "tinysms.h"
@@ -419,7 +419,7 @@ TSK_OBJECT_SAFE_FREE(rp_ack);
 * This message is sent between the MSC and the mobile station in both directions and used to relay an error cause from an erroneous short message or notification transfer attempt.<br>
 * For more information, please refer to 3GPP TS 24.011 section7.3.2.4.<br>
 * The code below shows how to send a <i>RP-ERROR</i> message with a <i>RP-User-Data</i> (see 3GPP TS 23.011 section 8.2.5.3) information element which includes <i>SMS-DELIVER-REPORT</i> as type indicator. In this example, the error message is sent because the “call is barred”. For more information about the cause values that may be contained in an <i>RP-ERROR</i> message, please refer to 3GPP TS 24.011 section 8.2.5.4.<br>
-* 
+*
 * @code
 #include "tsk.h"
 #include "tinysms.h"
@@ -436,7 +436,7 @@ uint8_t mr = 0xF5;
 // create SMS-DELIVER-REPORT message
 sms_report = tsms_tpdu_report_create(smsc, isSUBMIT, isERROR);
 // create RP-ERROR message
-rp_error = tsms_rpdu_error_create_mo(mr, TSMS_TPDU_MESSAGE(sms_report), 
+rp_error = tsms_rpdu_error_create_mo(mr, TSMS_TPDU_MESSAGE(sms_report),
 0x0A//call barred
 );
 // serialize

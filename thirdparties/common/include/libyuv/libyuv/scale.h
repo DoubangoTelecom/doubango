@@ -14,15 +14,16 @@
 #include "libyuv/basic_types.h"
 
 #ifdef __cplusplus
-namespace libyuv {
+namespace libyuv
+{
 extern "C" {
 #endif
 
 // Supported filtering
 enum FilterMode {
-  kFilterNone = 0,  // Point sample; Fastest
-  kFilterBilinear = 1,  // Faster than box, but lower quality scaling down.
-  kFilterBox = 2  // Highest quality
+    kFilterNone = 0,  // Point sample; Fastest
+    kFilterBilinear = 1,  // Faster than box, but lower quality scaling down.
+    kFilterBox = 2  // Highest quality
 };
 
 // Scale a YUV plane.

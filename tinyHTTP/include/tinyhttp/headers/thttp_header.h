@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -58,32 +58,30 @@ typedef int (*thttp_header_value_tostring_f)(const struct thttp_header_s* header
  *
  * @brief	List of all supported headers.
 **/
-typedef enum thttp_header_type_e
-{
-	thttp_htype_Authorization,
-	thttp_htype_Content_Length,
-	thttp_htype_Content_Type,
-	thttp_htype_Dummy,
-	thttp_htype_ETag,
-	thttp_htype_Proxy_Authenticate,
-	thttp_htype_Proxy_Authorization,
-	thttp_htype_Sec_WebSocket_Accept,
-	thttp_htype_Sec_WebSocket_Protocol,
-	thttp_htype_Sec_WebSocket_Key,
-	thttp_htype_Sec_WebSocket_Version,
-	thttp_htype_Transfer_Encoding,
-	thttp_htype_WWW_Authenticate,
+typedef enum thttp_header_type_e {
+    thttp_htype_Authorization,
+    thttp_htype_Content_Length,
+    thttp_htype_Content_Type,
+    thttp_htype_Dummy,
+    thttp_htype_ETag,
+    thttp_htype_Proxy_Authenticate,
+    thttp_htype_Proxy_Authorization,
+    thttp_htype_Sec_WebSocket_Accept,
+    thttp_htype_Sec_WebSocket_Protocol,
+    thttp_htype_Sec_WebSocket_Key,
+    thttp_htype_Sec_WebSocket_Version,
+    thttp_htype_Transfer_Encoding,
+    thttp_htype_WWW_Authenticate,
 }
 thttp_header_type_t;
 
 /*================================
 */
-typedef struct thttp_header_s
-{
-	TSK_DECLARE_OBJECT;
-	thttp_header_type_t type;
-	thttp_header_value_tostring_f tostring;
-	tsk_params_L_t *params;
+typedef struct thttp_header_s {
+    TSK_DECLARE_OBJECT;
+    thttp_header_type_t type;
+    thttp_header_value_tostring_f tostring;
+    tsk_params_L_t *params;
 }
 thttp_header_t;
 

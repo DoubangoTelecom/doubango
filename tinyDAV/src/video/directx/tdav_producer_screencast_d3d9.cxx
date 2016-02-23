@@ -22,10 +22,10 @@
 
 #include <windows.h>
 #if TDAV_UNDER_WINDOWS_CE
-	// Direct3D Mobile (D3DM) was removed from Windows CE in version 7. 
-	// Only include that header if running version 5 or 6. (When this 
-	// class's implementation is complete, we'll need to revisit how 
-	// this entire file is compiled.)
+// Direct3D Mobile (D3DM) was removed from Windows CE in version 7.
+// Only include that header if running version 5 or 6. (When this
+// class's implementation is complete, we'll need to revisit how
+// this entire file is compiled.)
 #	if _WIN32_WCE >= 0x0500 && _WIN32_WCE < 0x0700
 #		include <D3dm.h>
 #	endif
@@ -55,60 +55,59 @@
 #define D3D9_DEBUG_ERROR(FMT, ...) TSK_DEBUG_ERROR("[D3D9 Producer] " FMT, ##__VA_ARGS__)
 #define D3D9_DEBUG_FATAL(FMT, ...) TSK_DEBUG_FATAL("[D3D9 Producer] " FMT, ##__VA_ARGS__)
 
-typedef struct tdav_producer_screencast_d3d9_s
-{
-	TMEDIA_DECLARE_PRODUCER;
+typedef struct tdav_producer_screencast_d3d9_s {
+    TMEDIA_DECLARE_PRODUCER;
 
-	HWND hwnd_preview;
-	HWND hwnd_src;
+    HWND hwnd_preview;
+    HWND hwnd_src;
 
-	tsk_thread_handle_t* tid[1];
+    tsk_thread_handle_t* tid[1];
 
-	void* p_buff_src; // must use VirtualAlloc()
-	tsk_size_t n_buff_src;
-	void* p_buff_neg; // must use VirtualAlloc()
-	tsk_size_t n_buff_neg;
+    void* p_buff_src; // must use VirtualAlloc()
+    tsk_size_t n_buff_src;
+    void* p_buff_neg; // must use VirtualAlloc()
+    tsk_size_t n_buff_neg;
 
-	tsk_bool_t b_started;
-	tsk_bool_t b_paused;
-	tsk_bool_t b_muted;
+    tsk_bool_t b_started;
+    tsk_bool_t b_paused;
+    tsk_bool_t b_muted;
 
-	RECT rcScreen;
+    RECT rcScreen;
 
-	TSK_DECLARE_SAFEOBJ;
+    TSK_DECLARE_SAFEOBJ;
 }
 tdav_producer_screencast_d3d9_t;
 
 /* ============ Media Producer Interface ================= */
 static int _tdav_producer_screencast_d3d9_set(tmedia_producer_t *p_self, const tmedia_param_t* pc_param)
 {
-	D3D9_DEBUG_ERROR("Not implemented");
-	return -1;
+    D3D9_DEBUG_ERROR("Not implemented");
+    return -1;
 }
 
 
 static int _tdav_producer_screencast_d3d9_prepare(tmedia_producer_t* p_self, const tmedia_codec_t* pc_codec)
 {
-	D3D9_DEBUG_ERROR("Not implemented");
-	return -1;
+    D3D9_DEBUG_ERROR("Not implemented");
+    return -1;
 }
 
 static int _tdav_producer_screencast_d3d9_start(tmedia_producer_t* p_self)
 {
-	D3D9_DEBUG_ERROR("Not implemented");
-	return -1;
+    D3D9_DEBUG_ERROR("Not implemented");
+    return -1;
 }
 
 static int _tdav_producer_screencast_d3d9_pause(tmedia_producer_t* p_self)
 {
-	D3D9_DEBUG_ERROR("Not implemented");
-	return -1;
+    D3D9_DEBUG_ERROR("Not implemented");
+    return -1;
 }
 
 static int _tdav_producer_screencast_d3d9_stop(tmedia_producer_t* p_self)
 {
-	D3D9_DEBUG_ERROR("Not implemented");
-	return -1;
+    D3D9_DEBUG_ERROR("Not implemented");
+    return -1;
 }
 
 //
@@ -117,68 +116,66 @@ static int _tdav_producer_screencast_d3d9_stop(tmedia_producer_t* p_self)
 /* constructor */
 static tsk_object_t* _tdav_producer_screencast_d3d9_ctor(tsk_object_t *self, va_list * app)
 {
-	tdav_producer_screencast_d3d9_t *p_d3d9 = (tdav_producer_screencast_d3d9_t *)self;
-	if (p_d3d9) {
-		/* init base */
-		tmedia_producer_init(TMEDIA_PRODUCER(p_d3d9));
-		TMEDIA_PRODUCER(p_d3d9)->video.chroma = tmedia_chroma_bgr24; // RGB24 on x86 (little endians) stored as BGR24
-		/* init self with default values*/
-		TMEDIA_PRODUCER(p_d3d9)->video.fps = 15;
-		TMEDIA_PRODUCER(p_d3d9)->video.width = 352;
-		TMEDIA_PRODUCER(p_d3d9)->video.height = 288;
+    tdav_producer_screencast_d3d9_t *p_d3d9 = (tdav_producer_screencast_d3d9_t *)self;
+    if (p_d3d9) {
+        /* init base */
+        tmedia_producer_init(TMEDIA_PRODUCER(p_d3d9));
+        TMEDIA_PRODUCER(p_d3d9)->video.chroma = tmedia_chroma_bgr24; // RGB24 on x86 (little endians) stored as BGR24
+        /* init self with default values*/
+        TMEDIA_PRODUCER(p_d3d9)->video.fps = 15;
+        TMEDIA_PRODUCER(p_d3d9)->video.width = 352;
+        TMEDIA_PRODUCER(p_d3d9)->video.height = 288;
 
-		tsk_safeobj_init(p_d3d9);
-	}
-	return self;
+        tsk_safeobj_init(p_d3d9);
+    }
+    return self;
 }
 /* destructor */
 static tsk_object_t* _tdav_producer_screencast_d3d9_dtor(tsk_object_t * self)
 {
-	tdav_producer_screencast_d3d9_t *p_d3d9 = (tdav_producer_screencast_d3d9_t *)self;
-	if (p_d3d9) {
-		/* stop */
-		if (p_d3d9->b_started) {
-			_tdav_producer_screencast_d3d9_stop((tmedia_producer_t*)p_d3d9);
-		}
+    tdav_producer_screencast_d3d9_t *p_d3d9 = (tdav_producer_screencast_d3d9_t *)self;
+    if (p_d3d9) {
+        /* stop */
+        if (p_d3d9->b_started) {
+            _tdav_producer_screencast_d3d9_stop((tmedia_producer_t*)p_d3d9);
+        }
 
-		/* deinit base */
-		tmedia_producer_deinit(TMEDIA_PRODUCER(p_d3d9));
-		/* deinit self */
-		if (p_d3d9->p_buff_neg) {
-			VirtualFree(p_d3d9->p_buff_neg, 0, MEM_RELEASE);
-			p_d3d9->p_buff_neg = NULL;
-		}
-		if (p_d3d9->p_buff_src) {
-			VirtualFree(p_d3d9->p_buff_src, 0, MEM_RELEASE);
-			p_d3d9->p_buff_src = NULL;
-		}
-		tsk_safeobj_deinit(p_d3d9);
+        /* deinit base */
+        tmedia_producer_deinit(TMEDIA_PRODUCER(p_d3d9));
+        /* deinit self */
+        if (p_d3d9->p_buff_neg) {
+            VirtualFree(p_d3d9->p_buff_neg, 0, MEM_RELEASE);
+            p_d3d9->p_buff_neg = NULL;
+        }
+        if (p_d3d9->p_buff_src) {
+            VirtualFree(p_d3d9->p_buff_src, 0, MEM_RELEASE);
+            p_d3d9->p_buff_src = NULL;
+        }
+        tsk_safeobj_deinit(p_d3d9);
 
-		TSK_DEBUG_INFO("*** d3d9 Screencast producer destroyed ***");
-	}
+        TSK_DEBUG_INFO("*** d3d9 Screencast producer destroyed ***");
+    }
 
-	return self;
+    return self;
 }
 /* object definition */
-static const tsk_object_def_t tdav_producer_screencast_d3d9_def_s =
-{
-	sizeof(tdav_producer_screencast_d3d9_t),
-	_tdav_producer_screencast_d3d9_ctor,
-	_tdav_producer_screencast_d3d9_dtor,
-	tsk_null,
+static const tsk_object_def_t tdav_producer_screencast_d3d9_def_s = {
+    sizeof(tdav_producer_screencast_d3d9_t),
+    _tdav_producer_screencast_d3d9_ctor,
+    _tdav_producer_screencast_d3d9_dtor,
+    tsk_null,
 };
 /* plugin definition*/
-static const tmedia_producer_plugin_def_t tdav_producer_screencast_d3d9_plugin_def_s =
-{
-	&tdav_producer_screencast_d3d9_def_s,
-	tmedia_bfcp_video,
-	"Microsoft Direct3D screencast producer",
+static const tmedia_producer_plugin_def_t tdav_producer_screencast_d3d9_plugin_def_s = {
+    &tdav_producer_screencast_d3d9_def_s,
+    tmedia_bfcp_video,
+    "Microsoft Direct3D screencast producer",
 
-	_tdav_producer_screencast_d3d9_set,
-	_tdav_producer_screencast_d3d9_prepare,
-	_tdav_producer_screencast_d3d9_start,
-	_tdav_producer_screencast_d3d9_pause,
-	_tdav_producer_screencast_d3d9_stop
+    _tdav_producer_screencast_d3d9_set,
+    _tdav_producer_screencast_d3d9_prepare,
+    _tdav_producer_screencast_d3d9_start,
+    _tdav_producer_screencast_d3d9_pause,
+    _tdav_producer_screencast_d3d9_stop
 };
 const tmedia_producer_plugin_def_t *tdav_producer_screencast_d3d9_plugin_def_t = &tdav_producer_screencast_d3d9_plugin_def_s;
 

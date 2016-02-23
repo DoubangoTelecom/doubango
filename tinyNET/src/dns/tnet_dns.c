@@ -158,7 +158,7 @@ TSK_OBJECT_SAFE_FREE(ctx);
 */
 tnet_dns_ctx_t* tnet_dns_ctx_create()
 {
-	return tsk_object_new(tnet_dns_ctx_def_t);
+    return tsk_object_new(tnet_dns_ctx_def_t);
 }
 
 /**@ingroup tnet_dns_group
@@ -166,7 +166,7 @@ tnet_dns_ctx_t* tnet_dns_ctx_create()
 */
 tnet_dns_cache_entry_t* tnet_dns_cache_entry_create(const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype, tnet_dns_response_t* answer)
 {
-	return tsk_object_new(tnet_dns_cache_entry_def_t, qname, qclass, qtype, answer);
+    return tsk_object_new(tnet_dns_cache_entry_def_t, qname, qclass, qtype, answer);
 }
 
 
@@ -178,14 +178,14 @@ tnet_dns_cache_entry_t* tnet_dns_cache_entry_create(const char* qname, tnet_dns_
 */
 int tnet_dns_cache_clear(tnet_dns_ctx_t* ctx)
 {
-	if (ctx){
-		tsk_safeobj_lock(ctx);
-		tsk_list_clear_items(ctx->cache);
-		tsk_safeobj_unlock(ctx);
+    if (ctx) {
+        tsk_safeobj_lock(ctx);
+        tsk_list_clear_items(ctx->cache);
+        tsk_safeobj_unlock(ctx);
 
-		return 0;
-	}
-	return -1;
+        return 0;
+    }
+    return -1;
 }
 
 /**@ingroup tnet_dns_group
@@ -208,274 +208,275 @@ int tnet_dns_cache_clear(tnet_dns_ctx_t* ctx)
 tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
 {
 #if HAVE_DNS_H
-	struct sockaddr_storage result;
-	struct sockaddr *from;
-	uint32_t fromlen;
-	char buf[TNET_DNS_DGRAM_SIZE_DEFAULT];
-	int32_t ret;
+    struct sockaddr_storage result;
+    struct sockaddr *from;
+    uint32_t fromlen;
+    char buf[TNET_DNS_DGRAM_SIZE_DEFAULT];
+    int32_t ret;
 
-	tnet_dns_response_t *response = tsk_null;
+    tnet_dns_response_t *response = tsk_null;
 
-	tnet_socket_t *localsocket4 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4);
-	tnet_socket_t *localsocket6 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv6);
+    tnet_socket_t *localsocket4 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4);
+    tnet_socket_t *localsocket6 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv6);
 
-	tsk_safeobj_lock(ctx);
+    tsk_safeobj_lock(ctx);
 
-	// First, try with IPv4
-	if(TNET_SOCKET_IS_VALID(localsocket4)){
-		if((ret = tnet_getsockname(localsocket4->fd, &result))){
-			TNET_PRINT_LAST_ERROR("tnet_getsockname() failed.");
-			goto ipv6;
-		}
-		from = (struct sockaddr *) &result;
-		fromlen = tnet_get_sockaddr_size(from);
+    // First, try with IPv4
+    if(TNET_SOCKET_IS_VALID(localsocket4)) {
+        if((ret = tnet_getsockname(localsocket4->fd, &result))) {
+            TNET_PRINT_LAST_ERROR("tnet_getsockname() failed.");
+            goto ipv6;
+        }
+        from = (struct sockaddr *) &result;
+        fromlen = tnet_get_sockaddr_size(from);
 
-		if ((ret = dns_search(ctx->resolv_handle, qname, qclass, qtype, buf, TNET_DNS_DGRAM_SIZE_DEFAULT, from, &fromlen)) > 0) {
-			response = tnet_dns_message_deserialize((uint8_t *) buf, ret);
-			goto done;
-		}
-		else{
-			TNET_PRINT_LAST_ERROR("dns_search_v4()");
-		}
-	}
+        if ((ret = dns_search(ctx->resolv_handle, qname, qclass, qtype, buf, TNET_DNS_DGRAM_SIZE_DEFAULT, from, &fromlen)) > 0) {
+            response = tnet_dns_message_deserialize((uint8_t *) buf, ret);
+            goto done;
+        }
+        else {
+            TNET_PRINT_LAST_ERROR("dns_search_v4()");
+        }
+    }
 ipv6:
-	// Then, try with IPv6
-	if(TNET_SOCKET_IS_VALID(localsocket6)){
-		if((ret = tnet_getsockname(localsocket6->fd, &result))){
-			TNET_PRINT_LAST_ERROR("tnet_getsockname() failed.");
-			goto done;
-		}
-		from = (struct sockaddr *) &result;
-		fromlen = tnet_get_sockaddr_size(from);
+    // Then, try with IPv6
+    if(TNET_SOCKET_IS_VALID(localsocket6)) {
+        if((ret = tnet_getsockname(localsocket6->fd, &result))) {
+            TNET_PRINT_LAST_ERROR("tnet_getsockname() failed.");
+            goto done;
+        }
+        from = (struct sockaddr *) &result;
+        fromlen = tnet_get_sockaddr_size(from);
 
-		if((ret = dns_search(ctx->resolv_handle, qname, qclass, qtype, buf, TNET_DNS_DGRAM_SIZE_DEFAULT, from, &fromlen)) > 0){
-			response = tnet_dns_message_deserialize((uint8_t *) buf, ret);
-			goto done;
-		}
-		else{
-			TNET_PRINT_LAST_ERROR("dns_search_v6()");
-		}
-	}
+        if((ret = dns_search(ctx->resolv_handle, qname, qclass, qtype, buf, TNET_DNS_DGRAM_SIZE_DEFAULT, from, &fromlen)) > 0) {
+            response = tnet_dns_message_deserialize((uint8_t *) buf, ret);
+            goto done;
+        }
+        else {
+            TNET_PRINT_LAST_ERROR("dns_search_v6()");
+        }
+    }
 
 done:
-	tsk_safeobj_unlock(ctx);
+    tsk_safeobj_unlock(ctx);
 
-	TSK_OBJECT_SAFE_FREE(localsocket4);
-	TSK_OBJECT_SAFE_FREE(localsocket6);
+    TSK_OBJECT_SAFE_FREE(localsocket4);
+    TSK_OBJECT_SAFE_FREE(localsocket6);
 
-	return response;
+    return response;
 #else
-	tsk_buffer_t *output = tsk_null;
-	tnet_dns_query_t* query = tnet_dns_query_create(qname, qclass, qtype);
-	tnet_dns_response_t *response = tsk_null;
-	tsk_bool_t from_cache = tsk_false;
+    tsk_buffer_t *output = tsk_null;
+    tnet_dns_query_t* query = tnet_dns_query_create(qname, qclass, qtype);
+    tnet_dns_response_t *response = tsk_null;
+    tsk_bool_t from_cache = tsk_false;
 
-	/* Check validity */
-	if (!ctx || !query){
-		goto bail;
-	}
+    /* Check validity */
+    if (!ctx || !query) {
+        goto bail;
+    }
 
-	/* Is there any DNS Server? */
-	if (TSK_LIST_IS_EMPTY(ctx->servers)){
-		TSK_DEBUG_ERROR("Failed to load DNS Servers. You can add new DNS servers by using \"tnet_dns_add_server\".");
-		goto bail;
-	}
+    /* Is there any DNS Server? */
+    if (TSK_LIST_IS_EMPTY(ctx->servers)) {
+        TSK_DEBUG_ERROR("Failed to load DNS Servers. You can add new DNS servers by using \"tnet_dns_add_server\".");
+        goto bail;
+    }
 
-	/* Cache maintenance */
-	if (!TSK_LIST_IS_EMPTY(ctx->cache)){
-		/* Only do maintenance if the cache is not empty */
-		tnet_dns_cache_maintenance(ctx);
-	}
+    /* Cache maintenance */
+    if (!TSK_LIST_IS_EMPTY(ctx->cache)) {
+        /* Only do maintenance if the cache is not empty */
+        tnet_dns_cache_maintenance(ctx);
+    }
 
-	/* Retrieve data from cache. */
-	if (ctx->caching){
-		const tnet_dns_cache_entry_t *entry = tnet_dns_cache_entry_get(ctx, qname, qclass, qtype);
-		if (entry){
-			response = tsk_object_ref(((tnet_dns_cache_entry_t*)entry)->response);
-			from_cache = tsk_true;
-			goto bail;
-		}
-	}
+    /* Retrieve data from cache. */
+    if (ctx->caching) {
+        const tnet_dns_cache_entry_t *entry = tnet_dns_cache_entry_get(ctx, qname, qclass, qtype);
+        if (entry) {
+            response = tsk_object_ref(((tnet_dns_cache_entry_t*)entry)->response);
+            from_cache = tsk_true;
+            goto bail;
+        }
+    }
 
-	/* Set user preference */
-	query->Header.RD = ctx->recursion;
+    /* Set user preference */
+    query->Header.RD = ctx->recursion;
 
-	/* EDNS0 */
-	if (ctx->edns0){
-		tnet_dns_opt_t *rr_opt = tnet_dns_opt_create(TNET_DNS_DGRAM_SIZE_DEFAULT);
-		if (!query->Additionals){
-			query->Additionals = tsk_list_create();
-		}
-		tsk_list_push_back_data(query->Additionals, (void**)&rr_opt);
-		query->Header.ARCOUNT++;
-	}
+    /* EDNS0 */
+    if (ctx->edns0) {
+        tnet_dns_opt_t *rr_opt = tnet_dns_opt_create(TNET_DNS_DGRAM_SIZE_DEFAULT);
+        if (!query->Additionals) {
+            query->Additionals = tsk_list_create();
+        }
+        tsk_list_push_back_data(query->Additionals, (void**)&rr_opt);
+        query->Header.ARCOUNT++;
+    }
 
-	/* Serialize and send to the server. */
-	if (!(output = tnet_dns_message_serialize(query))){
-		TSK_DEBUG_ERROR("Failed to serialize the DNS message.");
-		goto bail;
-	}
+    /* Serialize and send to the server. */
+    if (!(output = tnet_dns_message_serialize(query))) {
+        TSK_DEBUG_ERROR("Failed to serialize the DNS message.");
+        goto bail;
+    }
 
-	/* ============================ */
-	//	Send and Recaive data
-	/* ============================ */
-	{
-		int ret = -1;
-		struct timeval tv;
-		fd_set set;
-		tnet_fd_t maxFD;
-		uint64_t timeout = 0;
-		tsk_list_item_t *item;
-		const tnet_address_t *address;
-		struct sockaddr_storage server;
-		tnet_socket_t *localsocket4 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4);
-		tnet_socket_t *localsocket6 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv6);
-		tsk_bool_t useIPv6 = TNET_SOCKET_IS_VALID(localsocket6);
+    /* ============================ */
+    //	Send and Recaive data
+    /* ============================ */
+    {
+        int ret = -1;
+        struct timeval tv;
+        fd_set set;
+        tnet_fd_t maxFD;
+        uint64_t timeout = 0;
+        tsk_list_item_t *item;
+        const tnet_address_t *address;
+        struct sockaddr_storage server;
+        tnet_socket_t *localsocket4 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4);
+        tnet_socket_t *localsocket6 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv6);
+        tsk_bool_t useIPv6 = TNET_SOCKET_IS_VALID(localsocket6);
 
-		tsk_safeobj_lock(ctx);
+        tsk_safeobj_lock(ctx);
 
-		/* Check socket validity */
-		if (!TNET_SOCKET_IS_VALID(localsocket4)){
-			goto done;
-		}
+        /* Check socket validity */
+        if (!TNET_SOCKET_IS_VALID(localsocket4)) {
+            goto done;
+        }
 
-		/* Always wait 500ms before retransmission */
-		tv.tv_sec = 0;
-		tv.tv_usec = (500 * 1000);
+        /* Always wait 500ms before retransmission */
+        tv.tv_sec = 0;
+        tv.tv_usec = (500 * 1000);
 
-		do
-		{
-			//
-			//	Send data (loop through all intefaces)
-			//
-			tsk_list_foreach(item, ctx->servers)
-			{
-				address = item->data;
-				if (!address->ip ||
-					(address->family != AF_INET && address->family != AF_INET6) ||
-					(address->family == AF_INET6 && !TNET_SOCKET_IS_VALID(localsocket6))){
-					continue;
-				}
+        do {
+            //
+            //	Send data (loop through all intefaces)
+            //
+            tsk_list_foreach(item, ctx->servers) {
+                address = item->data;
+                if (!address->ip ||
+                        (address->family != AF_INET && address->family != AF_INET6) ||
+                        (address->family == AF_INET6 && !TNET_SOCKET_IS_VALID(localsocket6))) {
+                    continue;
+                }
 
-				if (tnet_sockaddr_init(address->ip, ctx->server_port, (address->family == AF_INET ? tnet_socket_type_udp_ipv4 : tnet_socket_type_udp_ipv6), &server)){
-					TSK_DEBUG_ERROR("Failed to initialize the DNS server address: \"%s\"", address->ip);
-					continue;
-				}
+                if (tnet_sockaddr_init(address->ip, ctx->server_port, (address->family == AF_INET ? tnet_socket_type_udp_ipv4 : tnet_socket_type_udp_ipv6), &server)) {
+                    TSK_DEBUG_ERROR("Failed to initialize the DNS server address: \"%s\"", address->ip);
+                    continue;
+                }
 
-				TSK_DEBUG_INFO("Sending DNS query to \"%s\"", address->ip);
+                TSK_DEBUG_INFO("Sending DNS query to \"%s\"", address->ip);
 
-				if (address->family == AF_INET6){
-					if ((ret = tnet_sockfd_sendto(localsocket6->fd, (const struct sockaddr*)&server, output->data, output->size))){
-						// succeed?
-						break;
-					}
-				}
-				else{
-					if ((ret = tnet_sockfd_sendto(localsocket4->fd, (const struct sockaddr*)&server, output->data, output->size))){
-						// succeed?
-						break;
-					}
-				}
-			}
+                if (address->family == AF_INET6) {
+                    if ((ret = tnet_sockfd_sendto(localsocket6->fd, (const struct sockaddr*)&server, output->data, output->size))) {
+                        // succeed?
+                        break;
+                    }
+                }
+                else {
+                    if ((ret = tnet_sockfd_sendto(localsocket4->fd, (const struct sockaddr*)&server, output->data, output->size))) {
+                        // succeed?
+                        break;
+                    }
+                }
+            }
 
-			//
-			//	Received data
-			//
-			/* First time? ==> set timeout value */
-			if (!timeout){
-				timeout = tsk_time_epoch() + ctx->timeout;
-			}
+            //
+            //	Received data
+            //
+            /* First time? ==> set timeout value */
+            if (!timeout) {
+                timeout = tsk_time_epoch() + ctx->timeout;
+            }
 
-			/* Set FDs */
-			FD_ZERO(&set);
-			FD_SET(localsocket4->fd, &set);
-			if (useIPv6){
-				FD_SET(localsocket6->fd, &set);
-				maxFD = TSK_MAX(localsocket4->fd, localsocket6->fd);
-			}
-			else{
-				maxFD = localsocket4->fd;
-			}
+            /* Set FDs */
+            FD_ZERO(&set);
+            FD_SET(localsocket4->fd, &set);
+            if (useIPv6) {
+                FD_SET(localsocket6->fd, &set);
+                maxFD = TSK_MAX(localsocket4->fd, localsocket6->fd);
+            }
+            else {
+                maxFD = localsocket4->fd;
+            }
 
-			/* wait for response */
-			if ((ret = select(maxFD + 1, &set, NULL, NULL, &tv)) < 0){ /* Error */
-				TNET_PRINT_LAST_ERROR("Select failed.");
-				goto done;
-			}
-			else if (ret == 0){ /* timeout ==> do nothing */
+            /* wait for response */
+            if ((ret = select(maxFD + 1, &set, NULL, NULL, &tv)) < 0) { /* Error */
+                TNET_PRINT_LAST_ERROR("Select failed.");
+                goto done;
+            }
+            else if (ret == 0) { /* timeout ==> do nothing */
 
-			}
-			else{ /* there is data to read */
-				unsigned int len = 0;
-				void* data = 0;
-				tnet_fd_t active_fd;
+            }
+            else { /* there is data to read */
+                unsigned int len = 0;
+                void* data = 0;
+                tnet_fd_t active_fd;
 
-				/* Find active file descriptor */
-				if (FD_ISSET(localsocket4->fd, &set)){
-					active_fd = localsocket4->fd;
-				}
-				else if (FD_ISSET(localsocket6->fd, &set)){
-					active_fd = localsocket4->fd;
-				}
-				else{
-					TSK_DEBUG_ERROR("FD_ISSET ==> Invalid file descriptor.");
-					continue;
-				}
+                /* Find active file descriptor */
+                if (FD_ISSET(localsocket4->fd, &set)) {
+                    active_fd = localsocket4->fd;
+                }
+                else if (FD_ISSET(localsocket6->fd, &set)) {
+                    active_fd = localsocket4->fd;
+                }
+                else {
+                    TSK_DEBUG_ERROR("FD_ISSET ==> Invalid file descriptor.");
+                    continue;
+                }
 
-				/* Check how how many bytes are pending */
-				if ((ret = tnet_ioctlt(active_fd, FIONREAD, &len)) < 0){
-					TSK_DEBUG_ERROR("tnet_ioctlt failed with error code:%d", tnet_geterrno());
-					goto done;
-				}
+                /* Check how how many bytes are pending */
+                if ((ret = tnet_ioctlt(active_fd, FIONREAD, &len)) < 0) {
+                    TSK_DEBUG_ERROR("tnet_ioctlt failed with error code:%d", tnet_geterrno());
+                    goto done;
+                }
 
-				/* Receive pending data */
-				data = tsk_calloc(len, sizeof(uint8_t));
-				if ((ret = tnet_sockfd_recv(active_fd, data, len, 0)) < 0){
-					TSK_FREE(data);
+                /* Receive pending data */
+                data = tsk_calloc(len, sizeof(uint8_t));
+                if ((ret = tnet_sockfd_recv(active_fd, data, len, 0)) < 0) {
+                    TSK_FREE(data);
 
-					TSK_DEBUG_ERROR("tnet_sockfd_recv failed with error code:%d", tnet_geterrno());
-					goto done;
-				}
+                    TSK_DEBUG_ERROR("tnet_sockfd_recv failed with error code:%d", tnet_geterrno());
+                    goto done;
+                }
 
-				/* Parse the incoming response. */
-				response = tnet_dns_message_deserialize(data, (tsk_size_t)ret);
-				TSK_FREE(data);
+                /* Parse the incoming response. */
+                response = tnet_dns_message_deserialize(data, (tsk_size_t)ret);
+                TSK_FREE(data);
 
-				if (response)
-				{	/* response successfuly parsed */
-					if (query->Header.ID != response->Header.ID || !TNET_DNS_MESSAGE_IS_RESPONSE(response)){
-						/* Not same transaction id ==> continue*/
-						TSK_OBJECT_SAFE_FREE(response);
-					}
-					else goto done;
-				}
-			}
-		} while (timeout > tsk_time_epoch());
+                if (response) {
+                    /* response successfuly parsed */
+                    if (query->Header.ID != response->Header.ID || !TNET_DNS_MESSAGE_IS_RESPONSE(response)) {
+                        /* Not same transaction id ==> continue*/
+                        TSK_OBJECT_SAFE_FREE(response);
+                    }
+                    else {
+                        goto done;
+                    }
+                }
+            }
+        }
+        while (timeout > tsk_time_epoch());
 
-	done:
-		tsk_safeobj_unlock(ctx);
+done:
+        tsk_safeobj_unlock(ctx);
 
-		TSK_OBJECT_SAFE_FREE(localsocket4);
-		TSK_OBJECT_SAFE_FREE(localsocket6);
-		goto bail;
-	}
+        TSK_OBJECT_SAFE_FREE(localsocket4);
+        TSK_OBJECT_SAFE_FREE(localsocket6);
+        goto bail;
+    }
 
 
 bail:
-	TSK_OBJECT_SAFE_FREE(query);
-	TSK_OBJECT_SAFE_FREE(output);
+    TSK_OBJECT_SAFE_FREE(query);
+    TSK_OBJECT_SAFE_FREE(output);
 
-	/* Add the result to the cache. */
-	if (response){
-		if (!from_cache && ctx->caching){
-			tnet_dns_cache_entry_add(ctx, qname, qclass, qtype, response);
-		}
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to contact the DNS server.");
-	}
+    /* Add the result to the cache. */
+    if (response) {
+        if (!from_cache && ctx->caching) {
+            tnet_dns_cache_entry_add(ctx, qname, qclass, qtype, response);
+        }
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to contact the DNS server.");
+    }
 
-	return response;
+    return response;
 #endif
 }
 
@@ -491,65 +492,65 @@ bail:
 */
 tnet_dns_response_t* tnet_dns_enum(tnet_dns_ctx_t* ctx, const char* e164num, const char* domain)
 {
-	char e164domain[255];
-	tnet_dns_response_t* ret = tsk_null;
-	int e164size;
-	int i, j; // must be signed
+    char e164domain[255];
+    tnet_dns_response_t* ret = tsk_null;
+    int e164size;
+    int i, j; // must be signed
 
-	e164size = (int)tsk_strlen(e164num);
+    e164size = (int)tsk_strlen(e164num);
 
-	if (!ctx || !e164num || !e164size){
-		goto bail;
-	}
+    if (!ctx || !e164num || !e164size) {
+        goto bail;
+    }
 
-	if (e164size /* max=15 digits + ".e164.arpa" + '+' */ >= (sizeof(e164domain) - 1)){
-		TSK_DEBUG_ERROR("%s is an invalid E.164 number.", e164num);
-		goto bail;
-	}
+    if (e164size /* max=15 digits + ".e164.arpa" + '+' */ >= (sizeof(e164domain) - 1)) {
+        TSK_DEBUG_ERROR("%s is an invalid E.164 number.", e164num);
+        goto bail;
+    }
 
-	memset(e164domain, '\0', sizeof(e164domain));
+    memset(e164domain, '\0', sizeof(e164domain));
 
-	/*	RFC 3761 - 2.4.  Valid Databases
-		1. Remove all characters with the exception of the digits.  For
-		example, the First Well Known Rule produced the Key
-		"+442079460148".  This step would simply remove the leading "+",
-		producing "442079460148".
+    /*	RFC 3761 - 2.4.  Valid Databases
+    	1. Remove all characters with the exception of the digits.  For
+    	example, the First Well Known Rule produced the Key
+    	"+442079460148".  This step would simply remove the leading "+",
+    	producing "442079460148".
 
-		2. Put dots (".") between each digit.  Example:
-		4.4.2.0.7.9.4.6.0.1.4.8
+    	2. Put dots (".") between each digit.  Example:
+    	4.4.2.0.7.9.4.6.0.1.4.8
 
-		3. Reverse the order of the digits.  Example:
-		8.4.1.0.6.4.9.7.0.2.4.4
+    	3. Reverse the order of the digits.  Example:
+    	8.4.1.0.6.4.9.7.0.2.4.4
 
-		4. Append the string ".e164.arpa" to the end.  Example:
-		8.4.1.0.6.4.9.7.0.2.4.4.e164.arpa
+    	4. Append the string ".e164.arpa" to the end.  Example:
+    	8.4.1.0.6.4.9.7.0.2.4.4.e164.arpa
 
-		This domain-name is used to request NAPTR records which may contain
-		the end result or, if the flags field is blank, produces new keys in
-		the form of domain-names from the DNS.
-		*/
-	for (i = e164size - 1, j = 0; i >= 0; i--){
-		if (!isdigit(e164num[i])){
-			continue;
-		}
-		e164domain[j++] = e164num[i];
-		e164domain[j++] = '.';
-	}
+    	This domain-name is used to request NAPTR records which may contain
+    	the end result or, if the flags field is blank, produces new keys in
+    	the form of domain-names from the DNS.
+    	*/
+    for (i = e164size - 1, j = 0; i >= 0; i--) {
+        if (!isdigit(e164num[i])) {
+            continue;
+        }
+        e164domain[j++] = e164num[i];
+        e164domain[j++] = '.';
+    }
 
-	// append domain name
-	if (domain){
-		memcpy(&e164domain[j], domain, ((tsk_strlen(domain) + j) >= sizeof(e164domain) - 1) ? (sizeof(e164domain) - j - 1) : tsk_strlen(domain));
-	}
-	else{
-		memcpy(&e164domain[j], "e164.arpa", 9);
-	}
+    // append domain name
+    if (domain) {
+        memcpy(&e164domain[j], domain, ((tsk_strlen(domain) + j) >= sizeof(e164domain) - 1) ? (sizeof(e164domain) - j - 1) : tsk_strlen(domain));
+    }
+    else {
+        memcpy(&e164domain[j], "e164.arpa", 9);
+    }
 
-	/* == Performs DNS (NAPTR) lookup  == */
-	ret = tnet_dns_resolve(ctx, e164domain, qclass_in, qtype_naptr);
+    /* == Performs DNS (NAPTR) lookup  == */
+    ret = tnet_dns_resolve(ctx, e164domain, qclass_in, qtype_naptr);
 
 bail:
 
-	return ret;
+    return ret;
 }
 
 /**@ingroup tnet_dns_group
@@ -568,48 +569,48 @@ bail:
 */
 char* tnet_dns_enum_2(tnet_dns_ctx_t* ctx, const char* service, const char* e164num, const char* domain)
 {
-	tnet_dns_response_t* response;
-	const tsk_list_item_t* item;
-	char* ret = tsk_null;
-	const tnet_dns_rr_t* rr;
+    tnet_dns_response_t* response;
+    const tsk_list_item_t* item;
+    char* ret = tsk_null;
+    const tnet_dns_rr_t* rr;
 
-	if ((response = tnet_dns_enum(ctx, e164num, domain))){
-		if (TNET_DNS_RESPONSE_IS_SUCCESS(response)){
-			tsk_list_foreach(item, response->Answers){
-				rr = item->data;
-				if (rr->qtype == qtype_naptr){
-					const tnet_dns_naptr_t *naptr = (const tnet_dns_naptr_t*)rr;
-					/*	RFC 3403 - 6.2 E164 Example
-						Both the ENUM [18] and URI  Resolution [4] Applications use the 'u'
-						flag.  This flag states that the Rule is terminal and that the output
-						is a URI which contains the information needed to contact that
-						telephone service.
-						*/
-					if (tsk_striequals(naptr->flags, "u") && tsk_striequals(naptr->services, service)){
-						/* RFC 3403 - 4.1 Packet Format
-							The fields (replacement and regexp) are also mutually exclusive.  If a record is
-							returned that has values for both fields then it is considered to
-							be in error and SHOULD be either ignored or an error returned.
-							*/
-						if (naptr->regexp && naptr->replacement){
-							continue;
-						}
+    if ((response = tnet_dns_enum(ctx, e164num, domain))) {
+        if (TNET_DNS_RESPONSE_IS_SUCCESS(response)) {
+            tsk_list_foreach(item, response->Answers) {
+                rr = item->data;
+                if (rr->qtype == qtype_naptr) {
+                    const tnet_dns_naptr_t *naptr = (const tnet_dns_naptr_t*)rr;
+                    /*	RFC 3403 - 6.2 E164 Example
+                    	Both the ENUM [18] and URI  Resolution [4] Applications use the 'u'
+                    	flag.  This flag states that the Rule is terminal and that the output
+                    	is a URI which contains the information needed to contact that
+                    	telephone service.
+                    	*/
+                    if (tsk_striequals(naptr->flags, "u") && tsk_striequals(naptr->services, service)) {
+                        /* RFC 3403 - 4.1 Packet Format
+                        	The fields (replacement and regexp) are also mutually exclusive.  If a record is
+                        	returned that has values for both fields then it is considered to
+                        	be in error and SHOULD be either ignored or an error returned.
+                        	*/
+                        if (naptr->regexp && naptr->replacement) {
+                            continue;
+                        }
 
-						if ((ret = tnet_dns_regex_parse(e164num, naptr->regexp))){
-							break;
-						}
-					}
-				}
-			}
-		}
-		else{
-			TSK_DEBUG_ERROR("We got an error response from the DNS server. Error code: %u", response->Header.RCODE);
-		}
+                        if ((ret = tnet_dns_regex_parse(e164num, naptr->regexp))) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            TSK_DEBUG_ERROR("We got an error response from the DNS server. Error code: %u", response->Header.RCODE);
+        }
 
-		TSK_OBJECT_SAFE_FREE(response);
-	}
+        TSK_OBJECT_SAFE_FREE(response);
+    }
 
-	return ret;
+    return ret;
 }
 
 /**@ingroup tnet_dns_group
@@ -637,33 +638,31 @@ char* tnet_dns_enum_2(tnet_dns_ctx_t* ctx, const char* service, const char* e164
 */
 int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname, tnet_port_t* port)
 {
-	tnet_dns_response_t *response;
+    tnet_dns_response_t *response;
 
-	if (!ctx){
-		return -1;
-	}
+    if (!ctx) {
+        return -1;
+    }
 
-	// tnet_dns_resolve is thread-safe
-	if ((response = tnet_dns_resolve(ctx, service, qclass_in, qtype_srv)))
-	{
-		const tsk_list_item_t *item;
-		const tnet_dns_rr_t* rr;
-		tsk_list_foreach(item, response->Answers) /* Already Filtered ==> Peek the first One */
-		{
-			rr = item->data;
-			if (rr->qtype == qtype_srv){
-				const tnet_dns_srv_t *srv = (const tnet_dns_srv_t*)rr;
+    // tnet_dns_resolve is thread-safe
+    if ((response = tnet_dns_resolve(ctx, service, qclass_in, qtype_srv))) {
+        const tsk_list_item_t *item;
+        const tnet_dns_rr_t* rr;
+        tsk_list_foreach(item, response->Answers) { /* Already Filtered ==> Peek the first One */
+            rr = item->data;
+            if (rr->qtype == qtype_srv) {
+                const tnet_dns_srv_t *srv = (const tnet_dns_srv_t*)rr;
 
-				tsk_strupdate(hostname, srv->target);
-				*port = srv->port;
-				break;
-			}
-		}
-	}
+                tsk_strupdate(hostname, srv->target);
+                *port = srv->port;
+                break;
+            }
+        }
+    }
 
-	TSK_OBJECT_SAFE_FREE(response);
+    TSK_OBJECT_SAFE_FREE(response);
 
-	return (hostname && !tsk_strnullORempty(*hostname)) ? 0 : -2;
+    return (hostname && !tsk_strnullORempty(*hostname)) ? 0 : -2;
 }
 
 /**@ingroup tnet_dns_group
@@ -692,157 +691,152 @@ int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname
 */
 int tnet_dns_query_naptr_srv(tnet_dns_ctx_t *ctx, const char* domain, const char* service, char** hostname, tnet_port_t* port)
 {
-	tnet_dns_response_t *response;
+    tnet_dns_response_t *response;
 
-	if (!ctx || !hostname){
-		TSK_DEBUG_ERROR("Invalid parameters.");
-		return -1;
-	}
+    if (!ctx || !hostname) {
+        TSK_DEBUG_ERROR("Invalid parameters.");
+        return -1;
+    }
 
-	/* reset (do not free the user supplied value). trying to free dummy value will cause access violation error ==> zero. */
-	*hostname = tsk_null;
+    /* reset (do not free the user supplied value). trying to free dummy value will cause access violation error ==> zero. */
+    *hostname = tsk_null;
 
-	// tnet_dns_resolve is thread-safe
-	if ((response = tnet_dns_resolve(ctx, domain, qclass_in, qtype_naptr))){
-		const tsk_list_item_t *item;
-		const tnet_dns_rr_t* rr;
+    // tnet_dns_resolve is thread-safe
+    if ((response = tnet_dns_resolve(ctx, domain, qclass_in, qtype_naptr))) {
+        const tsk_list_item_t *item;
+        const tnet_dns_rr_t* rr;
 
-		char* replacement = tsk_null; /* e.g. _sip._udp.example.com */
-		char* flags = tsk_null;/* e.g. S, A, AAAA, A6, U, P ... */
+        char* replacement = tsk_null; /* e.g. _sip._udp.example.com */
+        char* flags = tsk_null;/* e.g. S, A, AAAA, A6, U, P ... */
 
-		tsk_list_foreach(item, response->Answers) /* Already Filtered ==> Peek the first One */
-		{
-			rr = item->data;
-			if (rr->qtype == qtype_naptr){
-				tnet_dns_naptr_t *naptr = (tnet_dns_naptr_t*)rr;
+        tsk_list_foreach(item, response->Answers) { /* Already Filtered ==> Peek the first One */
+            rr = item->data;
+            if (rr->qtype == qtype_naptr) {
+                tnet_dns_naptr_t *naptr = (tnet_dns_naptr_t*)rr;
 
-				if (tsk_striequals(service, naptr->services)){
-					tsk_strupdate(&replacement, naptr->replacement);
-					tsk_strupdate(&flags, naptr->flags);
+                if (tsk_striequals(service, naptr->services)) {
+                    tsk_strupdate(&replacement, naptr->replacement);
+                    tsk_strupdate(&flags, naptr->flags);
 
-					break;
-				}
-			}
-		}
+                    break;
+                }
+            }
+        }
 
-		if (flags && replacement){
-			if (tsk_striequals(flags, "S")){
-				tnet_dns_query_srv(ctx, replacement, hostname, port);
-			}
-			else if (tsk_striequals(flags, "A") || tsk_striequals(flags, "AAAA") || tsk_striequals(flags, "A6")){
-				TSK_DEBUG_WARN("Defaulting port value.");
-				tsk_strupdate(hostname, replacement);
-				*port = 5060;
-			}
-			else{
-				TSK_DEBUG_ERROR("DNS NAPTR query returned invalid flags");
-			}
-		}
-		else{
-			TSK_DEBUG_INFO("DNS NAPTR (%s) query returned zero result", domain);
-		}
+        if (flags && replacement) {
+            if (tsk_striequals(flags, "S")) {
+                tnet_dns_query_srv(ctx, replacement, hostname, port);
+            }
+            else if (tsk_striequals(flags, "A") || tsk_striequals(flags, "AAAA") || tsk_striequals(flags, "A6")) {
+                TSK_DEBUG_WARN("Defaulting port value.");
+                tsk_strupdate(hostname, replacement);
+                *port = 5060;
+            }
+            else {
+                TSK_DEBUG_ERROR("DNS NAPTR query returned invalid flags");
+            }
+        }
+        else {
+            TSK_DEBUG_INFO("DNS NAPTR (%s) query returned zero result", domain);
+        }
 
-		TSK_FREE(flags);
-		TSK_FREE(replacement);
-	}
+        TSK_FREE(flags);
+        TSK_FREE(replacement);
+    }
 
-	TSK_OBJECT_SAFE_FREE(response);
+    TSK_OBJECT_SAFE_FREE(response);
 
-	return (hostname && *hostname && !tsk_strempty(*hostname)) ? 0 : -2;
+    return (hostname && *hostname && !tsk_strempty(*hostname)) ? 0 : -2;
 }
 
 // remove timedout entries
 int tnet_dns_cache_maintenance(tnet_dns_ctx_t *ctx)
 {
 
-	if (ctx)
-	{
-		tsk_list_item_t *item;
-		tsk_safeobj_lock(ctx);
-	again:
+    if (ctx) {
+        tsk_list_item_t *item;
+        tsk_safeobj_lock(ctx);
+again:
 
-		tsk_list_foreach(item, ctx->cache)
-		{
-			// FIXME: ttl should be from RR::ttl
-			tnet_dns_cache_entry_t *entry = (tnet_dns_cache_entry_t*)item->data;
-			if ((entry->epoch + ctx->cache_ttl) < tsk_time_epoch()){
-				tsk_list_remove_item_by_data(ctx->cache, entry);
-				goto again; /* Do not delete data while looping */
-			}
-		}
+        tsk_list_foreach(item, ctx->cache) {
+            // FIXME: ttl should be from RR::ttl
+            tnet_dns_cache_entry_t *entry = (tnet_dns_cache_entry_t*)item->data;
+            if ((entry->epoch + ctx->cache_ttl) < tsk_time_epoch()) {
+                tsk_list_remove_item_by_data(ctx->cache, entry);
+                goto again; /* Do not delete data while looping */
+            }
+        }
 
-		tsk_safeobj_unlock(ctx);
+        tsk_safeobj_unlock(ctx);
 
-		return 0;
-	}
-	return -1;
+        return 0;
+    }
+    return -1;
 }
 
 // add an entry to the cache
 int tnet_dns_cache_entry_add(tnet_dns_ctx_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype, tnet_dns_response_t* response)
 {
-	int ret = -1;
+    int ret = -1;
 
-	if (ctx)
-	{
-		tnet_dns_cache_entry_t *entry;
+    if (ctx) {
+        tnet_dns_cache_entry_t *entry;
 
-		tsk_safeobj_lock(ctx);
+        tsk_safeobj_lock(ctx);
 
-		entry = 0;
+        entry = 0;
 
-		/* Retrieve from cache */
-		entry = (tnet_dns_cache_entry_t*)tnet_dns_cache_entry_get(ctx, qname, qclass, qtype);
+        /* Retrieve from cache */
+        entry = (tnet_dns_cache_entry_t*)tnet_dns_cache_entry_get(ctx, qname, qclass, qtype);
 
-		if (entry){
-			/* UPDATE */
-			TSK_OBJECT_SAFE_FREE(entry->response);
-			entry->response = tsk_object_ref(response);
-			entry->epoch = tsk_time_epoch();
-			ret = 0;
-			goto done;
-		}
-		else{
-			/* CREATE */
-			entry = tnet_dns_cache_entry_create(qname, qclass, qtype, response);
-			if (entry){
-				tsk_list_push_back_data(ctx->cache, (void**)&entry);
-				ret = 0;
-				goto done;
-			}
-			else{
-				ret = -2;
-				goto done;
-			}
-		}
-	done:
-		tsk_safeobj_unlock(ctx);
-	}
-	return ret;
+        if (entry) {
+            /* UPDATE */
+            TSK_OBJECT_SAFE_FREE(entry->response);
+            entry->response = tsk_object_ref(response);
+            entry->epoch = tsk_time_epoch();
+            ret = 0;
+            goto done;
+        }
+        else {
+            /* CREATE */
+            entry = tnet_dns_cache_entry_create(qname, qclass, qtype, response);
+            if (entry) {
+                tsk_list_push_back_data(ctx->cache, (void**)&entry);
+                ret = 0;
+                goto done;
+            }
+            else {
+                ret = -2;
+                goto done;
+            }
+        }
+done:
+        tsk_safeobj_unlock(ctx);
+    }
+    return ret;
 }
 
 // get an entry from the cache
 const tnet_dns_cache_entry_t* tnet_dns_cache_entry_get(tnet_dns_ctx_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
 {
-	tnet_dns_cache_entry_t *ret = tsk_null;
-	if (ctx)
-	{
-		tsk_list_item_t *item;
+    tnet_dns_cache_entry_t *ret = tsk_null;
+    if (ctx) {
+        tsk_list_item_t *item;
 
-		tsk_safeobj_lock(ctx);
+        tsk_safeobj_lock(ctx);
 
-		tsk_list_foreach(item, ctx->cache){
-			tnet_dns_cache_entry_t *entry = (tnet_dns_cache_entry_t*)item->data;
-			if (entry->qtype == qtype && entry->qclass == qclass && tsk_strequals(entry->qname, qname)){
-				ret = entry;
-				break;
-			}
-		}
+        tsk_list_foreach(item, ctx->cache) {
+            tnet_dns_cache_entry_t *entry = (tnet_dns_cache_entry_t*)item->data;
+            if (entry->qtype == qtype && entry->qclass == qclass && tsk_strequals(entry->qname, qname)) {
+                ret = entry;
+                break;
+            }
+        }
 
-		tsk_safeobj_unlock(ctx);
-	}
+        tsk_safeobj_unlock(ctx);
+    }
 
-	return ret;
+    return ret;
 }
 
 
@@ -854,25 +848,25 @@ const tnet_dns_cache_entry_t* tnet_dns_cache_entry_get(tnet_dns_ctx_t *ctx, cons
 */
 int tnet_dns_add_server(tnet_dns_ctx_t *ctx, const char* host)
 {
-	tnet_address_t *address;
+    tnet_address_t *address;
 
-	if (!ctx || !host){
-		return -1;
-	}
+    if (!ctx || !host) {
+        return -1;
+    }
 
-	if (!ctx->servers){
-		ctx->servers = tsk_list_create();
-	}
+    if (!ctx->servers) {
+        ctx->servers = tsk_list_create();
+    }
 
-	if ((address = tnet_address_create(host))){
-		address->family = tnet_get_family(host, TNET_DNS_SERVER_PORT_DEFAULT);
-		address->dnsserver = 1;
-		tsk_list_push_ascending_data(ctx->servers, (void**)&address);
+    if ((address = tnet_address_create(host))) {
+        address->family = tnet_get_family(host, TNET_DNS_SERVER_PORT_DEFAULT);
+        address->dnsserver = 1;
+        tsk_list_push_ascending_data(ctx->servers, (void**)&address);
 
-		return 0;
-	}
+        return 0;
+    }
 
-	return -2;
+    return -2;
 }
 
 //=================================================================================================
@@ -880,33 +874,32 @@ int tnet_dns_add_server(tnet_dns_ctx_t *ctx, const char* host)
 //
 static tsk_object_t* tnet_dns_cache_entry_ctor(tsk_object_t * self, va_list * app)
 {
-	tnet_dns_cache_entry_t *entry = self;
-	if (entry){
-		entry->qname = tsk_strdup(va_arg(*app, const char*));
-		entry->qclass = va_arg(*app, tnet_dns_qclass_t);
-		entry->qtype = va_arg(*app, tnet_dns_qtype_t);
-		entry->response = tsk_object_ref(va_arg(*app, tnet_dns_response_t*));
+    tnet_dns_cache_entry_t *entry = self;
+    if (entry) {
+        entry->qname = tsk_strdup(va_arg(*app, const char*));
+        entry->qclass = va_arg(*app, tnet_dns_qclass_t);
+        entry->qtype = va_arg(*app, tnet_dns_qtype_t);
+        entry->response = tsk_object_ref(va_arg(*app, tnet_dns_response_t*));
 
-		entry->epoch = tsk_time_epoch();
-	}
-	return self;
+        entry->epoch = tsk_time_epoch();
+    }
+    return self;
 }
 
 static tsk_object_t* tnet_dns_cache_entry_dtor(tsk_object_t * self)
 {
-	tnet_dns_cache_entry_t *entry = self;
-	if (entry){
-		TSK_OBJECT_SAFE_FREE(entry->response);
-	}
-	return self;
+    tnet_dns_cache_entry_t *entry = self;
+    if (entry) {
+        TSK_OBJECT_SAFE_FREE(entry->response);
+    }
+    return self;
 }
 
-static const tsk_object_def_t tnet_dns_cache_entry_def_s =
-{
-	sizeof(tnet_dns_cache_entry_t),
-	tnet_dns_cache_entry_ctor,
-	tnet_dns_cache_entry_dtor,
-	tsk_null,
+static const tsk_object_def_t tnet_dns_cache_entry_def_s = {
+    sizeof(tnet_dns_cache_entry_t),
+    tnet_dns_cache_entry_ctor,
+    tnet_dns_cache_entry_dtor,
+    tsk_null,
 };
 const tsk_object_def_t *tnet_dns_cache_entry_def_t = &tnet_dns_cache_entry_def_s;
 
@@ -916,52 +909,51 @@ const tsk_object_def_t *tnet_dns_cache_entry_def_t = &tnet_dns_cache_entry_def_s
 //
 static tsk_object_t* tnet_dns_ctx_ctor(tsk_object_t * self, va_list * app)
 {
-	tnet_dns_ctx_t *ctx = self;
-	if (ctx){
-		ctx->timeout = TNET_DNS_TIMEOUT_DEFAULT;
-		ctx->recursion = tsk_true;
-		ctx->edns0 = tsk_true;
-		ctx->caching = tsk_false;
+    tnet_dns_ctx_t *ctx = self;
+    if (ctx) {
+        ctx->timeout = TNET_DNS_TIMEOUT_DEFAULT;
+        ctx->recursion = tsk_true;
+        ctx->edns0 = tsk_true;
+        ctx->caching = tsk_false;
 
-		ctx->cache_ttl = TNET_DNS_CACHE_TTL;
+        ctx->cache_ttl = TNET_DNS_CACHE_TTL;
 
-		ctx->server_port = TNET_DNS_SERVER_PORT_DEFAULT;
+        ctx->server_port = TNET_DNS_SERVER_PORT_DEFAULT;
 
-		/* Gets all dns servers. */
-		ctx->servers = tnet_get_addresses_all_dnsservers();
-		/* Creates empty cache. */
-		ctx->cache = tsk_list_create();
+        /* Gets all dns servers. */
+        ctx->servers = tnet_get_addresses_all_dnsservers();
+        /* Creates empty cache. */
+        ctx->cache = tsk_list_create();
 
 #if HAVE_DNS_H
-		ctx->resolv_handle = dns_open(NULL);
+        ctx->resolv_handle = dns_open(NULL);
 #endif
 
-		tsk_safeobj_init(ctx);
-	}
-	return self;
-	}
+        tsk_safeobj_init(ctx);
+    }
+    return self;
+}
 
 static tsk_object_t* tnet_dns_ctx_dtor(tsk_object_t * self)
 {
-	tnet_dns_ctx_t *ctx = self;
-	if (ctx){
-		tsk_safeobj_deinit(ctx);
+    tnet_dns_ctx_t *ctx = self;
+    if (ctx) {
+        tsk_safeobj_deinit(ctx);
 
-		TSK_OBJECT_SAFE_FREE(ctx->servers);
-		TSK_OBJECT_SAFE_FREE(ctx->cache);
+        TSK_OBJECT_SAFE_FREE(ctx->servers);
+        TSK_OBJECT_SAFE_FREE(ctx->cache);
 
 #if HAVE_DNS_H
-		dns_free(ctx->resolv_handle);
+        dns_free(ctx->resolv_handle);
 #endif
-	}
-	return self;
+    }
+    return self;
 }
 
-static const tsk_object_def_t tnet_dns_ctx_def_s =
-{
-	sizeof(tnet_dns_ctx_t),
-	tnet_dns_ctx_ctor,
-	tnet_dns_ctx_dtor,
-	tsk_null,
+static const tsk_object_def_t tnet_dns_ctx_def_s = {
+    sizeof(tnet_dns_ctx_t),
+    tnet_dns_ctx_ctor,
+    tnet_dns_ctx_dtor,
+    tsk_null,
 };
 const tsk_object_def_t *tnet_dns_ctx_def_t = &tnet_dns_ctx_def_s;

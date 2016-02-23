@@ -83,9 +83,9 @@ static int _tbfcp_attr_get_size_in_octetunits(const tbfcp_attr_t* pc_self, tsk_b
     }
     case tbfcp_attribute_format_OctetString: {
         *p_size = (TBFCP_ATTR_HDR_SIZE_IN_OCTETS + ((const tbfcp_attr_octetstring_t*)pc_self)->OctetStringLength);
-		if (with_padding) {
-			ALIGN_ON_32BITS(*p_size);
-		}
+        if (with_padding) {
+            ALIGN_ON_32BITS(*p_size);
+        }
         return 0;
     }
     case tbfcp_attribute_format_Grouped: {
@@ -621,25 +621,25 @@ int tbfcp_attr_grouped_add_attr(tbfcp_attr_grouped_t* p_self, tbfcp_attr_t** p_a
 
 int tbfcp_attr_grouped_find_at(const struct tbfcp_attr_grouped_s* pc_self, enum tbfcp_attribute_format_e e_format, tsk_size_t u_index, const struct tbfcp_attr_s** ppc_attr)
 {
-	tsk_size_t _u_index = 0;
-	const tsk_list_item_t *pc_item;
-	const struct tbfcp_attr_s* pc_attr;
-	if (!pc_self || !ppc_attr) {
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	*ppc_attr = tsk_null;
-	tsk_list_foreach(pc_item, pc_self->p_list_attrs) {
-		pc_attr = (const struct tbfcp_attr_s*)pc_item->data;
-		if (!pc_attr || pc_attr->format != e_format) {
-			continue;
-		}
-		if (_u_index++ >= u_index) {
-			*ppc_attr = pc_attr;
-			break;
-		}
-	}
-	return 0;
+    tsk_size_t _u_index = 0;
+    const tsk_list_item_t *pc_item;
+    const struct tbfcp_attr_s* pc_attr;
+    if (!pc_self || !ppc_attr) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    *ppc_attr = tsk_null;
+    tsk_list_foreach(pc_item, pc_self->p_list_attrs) {
+        pc_attr = (const struct tbfcp_attr_s*)pc_item->data;
+        if (!pc_attr || pc_attr->format != e_format) {
+            continue;
+        }
+        if (_u_index++ >= u_index) {
+            *ppc_attr = pc_attr;
+            break;
+        }
+    }
+    return 0;
 }
 
 static tsk_object_t* tbfcp_attr_grouped_ctor(tsk_object_t * self, va_list * app)

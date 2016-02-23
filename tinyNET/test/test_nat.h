@@ -27,55 +27,55 @@
 
 void test_nat_stun()
 {
-	tnet_socket_t *socket1 = 0, *socket2 = 0;
-	struct tnet_nat_ctx_s *context = 0;
+    tnet_socket_t *socket1 = 0, *socket2 = 0;
+    struct tnet_nat_ctx_s *context = 0;
 
-	tnet_stun_binding_id_t bind_id1, bind_id2;
+    tnet_stun_binding_id_t bind_id1, bind_id2;
 
-	char* public_ip1 = 0, *public_ip2 = 0;
-	tnet_port_t public_port1 = 0, public_port2 = 0;
-	
-	if(!(socket1 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO))
-		|| !(socket2 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO))) {
-		goto bail;
-	}
+    char* public_ip1 = 0, *public_ip2 = 0;
+    tnet_port_t public_port1 = 0, public_port2 = 0;
 
-	context = tnet_nat_context_create(STUN_SERVER_PROTO, STUN_USERNAME, STUN_PASSWORD);
+    if(!(socket1 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO))
+            || !(socket2 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO))) {
+        goto bail;
+    }
 
-	if(tnet_nat_set_server_address(context, STUN_SERVER_IP)) {
-		TSK_DEBUG_ERROR("Failed to set STUN/TURN address.");
-		goto bail;
-	}
+    context = tnet_nat_context_create(STUN_SERVER_PROTO, STUN_USERNAME, STUN_PASSWORD);
 
-	// == BIND == //
-	bind_id1 = tnet_nat_stun_bind(context, socket1->fd);
-	bind_id2 = tnet_nat_stun_bind(context, socket2->fd);
+    if(tnet_nat_set_server_address(context, STUN_SERVER_IP)) {
+        TSK_DEBUG_ERROR("Failed to set STUN/TURN address.");
+        goto bail;
+    }
 
-	if(!bind_id1 || !bind_id2) {
-		TSK_DEBUG_ERROR("Failed to get public IP/port using stun");
-		goto bail;
-	}
+    // == BIND == //
+    bind_id1 = tnet_nat_stun_bind(context, socket1->fd);
+    bind_id2 = tnet_nat_stun_bind(context, socket2->fd);
 
-	if (tnet_nat_stun_get_reflexive_address(context, bind_id1, &public_ip1, &public_port1) == 0) {
-		TSK_DEBUG_INFO("Public IP1/Port1 ==> %s:%u", public_ip1, public_port1);
-	}
+    if(!bind_id1 || !bind_id2) {
+        TSK_DEBUG_ERROR("Failed to get public IP/port using stun");
+        goto bail;
+    }
 
-	if (tnet_nat_stun_get_reflexive_address(context, bind_id2, &public_ip2, &public_port2) == 0) {
-		TSK_DEBUG_INFO("Public IP2/Port2 ==> %s:%u", public_ip2, public_port2);
-	}
+    if (tnet_nat_stun_get_reflexive_address(context, bind_id1, &public_ip1, &public_port1) == 0) {
+        TSK_DEBUG_INFO("Public IP1/Port1 ==> %s:%u", public_ip1, public_port1);
+    }
 
-	// == UNBIND == //
-	tnet_nat_stun_unbind(context, bind_id1);
-	tnet_nat_stun_unbind(context, bind_id2);
+    if (tnet_nat_stun_get_reflexive_address(context, bind_id2, &public_ip2, &public_port2) == 0) {
+        TSK_DEBUG_INFO("Public IP2/Port2 ==> %s:%u", public_ip2, public_port2);
+    }
+
+    // == UNBIND == //
+    tnet_nat_stun_unbind(context, bind_id1);
+    tnet_nat_stun_unbind(context, bind_id2);
 
 bail:
-	TSK_OBJECT_SAFE_FREE(socket1);
-	TSK_OBJECT_SAFE_FREE(socket2);
+    TSK_OBJECT_SAFE_FREE(socket1);
+    TSK_OBJECT_SAFE_FREE(socket2);
 
-	TSK_FREE(public_ip1);
-	TSK_FREE(public_ip1);
+    TSK_FREE(public_ip1);
+    TSK_FREE(public_ip1);
 
-	TSK_OBJECT_SAFE_FREE(context);
+    TSK_OBJECT_SAFE_FREE(context);
 }
 
 void test_nat_turn()
@@ -90,7 +90,7 @@ void test_nat_turn()
 //	tnet_turn_channel_binding_id_t channel_id;
 //
 //	int ret;
-//	
+//
 //	if(!(socket1 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO))
 //		|| !(socket2 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO)))
 //	{
@@ -201,9 +201,9 @@ void test_nat_turn()
 
 void test_nat()
 {
-	test_nat_stun();
-	//test_nat_turn();
-	//tsk_thread_sleep(1000);
+    test_nat_stun();
+    //test_nat_turn();
+    //tsk_thread_sleep(1000);
 }
 
 

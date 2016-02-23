@@ -7,8 +7,8 @@
 */
 
 /* Definition for Octet Transmission mode */
-/* When Annex B is used for transmission systems that operate on octet boundary, 
-   an extra bit (with value zero) will be packed at the end of a SID bit stream. 
+/* When Annex B is used for transmission systems that operate on octet boundary,
+   an extra bit (with value zero) will be packed at the end of a SID bit stream.
    This will change the number of bits in a SID bit stream from 15 bits to
    16 bits (i.e., 2 bytes).
 */

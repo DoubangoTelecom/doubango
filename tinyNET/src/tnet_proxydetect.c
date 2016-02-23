@@ -29,29 +29,28 @@ static tsk_object_t* _tnet_proxyinfo_ctor(tsk_object_t * self, va_list * app)
 {
     tnet_proxyinfo_t *info = (tnet_proxyinfo_t *)self;
     if (info) {
-        
+
     }
     return self;
 }
 static tsk_object_t* _tnet_proxyinfo_dtor(tsk_object_t * self)
 {
     tnet_proxyinfo_t *info = (tnet_proxyinfo_t *)self;
-    if (info){
+    if (info) {
         TSK_FREE(info->autoconfig_url);
         TSK_FREE(info->bypass_list);
         TSK_FREE(info->hostname);
         TSK_FREE(info->username);
         TSK_FREE(info->password);
     }
-    
+
     return self;
 }
-static const tsk_object_def_t tnet_proxyinfo_def_s =
-{
+static const tsk_object_def_t tnet_proxyinfo_def_s = {
     sizeof(tnet_proxyinfo_t),
     _tnet_proxyinfo_ctor,
     _tnet_proxyinfo_dtor,
-    tsk_null, 
+    tsk_null,
 };
 const tsk_object_def_t *tnet_proxyinfo_def_t = &tnet_proxyinfo_def_s;
 
@@ -62,7 +61,7 @@ tnet_proxyinfo_t* tnet_proxyinfo_create()
         TSK_DEBUG_ERROR("Failed to creatr 'tnet_proxyinfo_t' instance");
         return info;
     }
-    
+
     return info;
 }
 
@@ -121,7 +120,7 @@ tnet_proxyinfo_t* tnet_proxydetect_get_info(const char* url, tnet_socket_type_t 
         TSK_DEBUG_ERROR("CFNetworkCopySystemProxySettings returned nil");
         goto resolve_done;
     }
-    
+
     cfProxies = CFNetworkCopyProxiesForURL(cfTargetUrl, cfProxySettings);
     if (!cfProxies) {
         TSK_DEBUG_ERROR("CFNetworkCopyProxiesForURL returned 0-array");
@@ -129,8 +128,8 @@ tnet_proxyinfo_t* tnet_proxydetect_get_info(const char* url, tnet_socket_type_t 
     }
     // find best proxy
     _appl_find_best_proxy(cfTargetUrl, cfProxies, &_info);
-    
-    
+
+
 resolve_done:
     if (cfUrl) {
         CFRelease(cfUrl);
@@ -144,7 +143,7 @@ resolve_done:
     if (cfProxies) {
         CFRelease(cfProxies);
     }
-    
+
     if (_appl_proxyinfo_is_valid(&_info)) {
         info = tnet_proxyinfo_create();
         if (info) {
@@ -157,7 +156,7 @@ resolve_done:
         }
     }
     _appl_proxyinfo_release(&_info);
-    
+
     return info;
 }
 
@@ -165,8 +164,8 @@ static tsk_bool_t _appl_proxyinfo_is_valid(const appl_proxyinfo_xt * info)
 {
     if (info) {
         return info->port
-        && info->type && !CFEqual(info->type, kCFProxyTypeNone)
-        && info->host && CFStringGetLength(info->host) > 0 && CFStringCompare(info->host, CFSTR("127.0.0.1"), 0) != kCFCompareEqualTo;
+               && info->type && !CFEqual(info->type, kCFProxyTypeNone)
+               && info->host && CFStringGetLength(info->host) > 0 && CFStringCompare(info->host, CFSTR("127.0.0.1"), 0) != kCFCompareEqualTo;
     }
     return tsk_false;
 }
@@ -201,7 +200,8 @@ static void _ProxyAutoConfigurationResultCallback(void *client, CFArrayRef proxy
     CFTypeRef* cfResult = (CFTypeRef*)client;
     if (error != NULL) {
         *cfResult = CFRetain(error);
-    } else {
+    }
+    else {
         *cfResult = CFRetain(proxyList);
     }
     CFRunLoopStop(CFRunLoopGetCurrent());
@@ -212,14 +212,14 @@ static void _appl_find_best_proxy(CFURLRef cfTargetURL, CFArrayRef _cfProxies, a
     CFDictionaryRef cfProxy;
     CFIndex index = 0;
     CFIndex count = CFArrayGetCount(_cfProxies);
-    
+
     while (index < count && (cfProxy = CFArrayGetValueAtIndex(_cfProxies, index++)) && !_appl_proxyinfo_is_valid(_proxyInfo)) {
         _appl_proxyinfo_release(_proxyInfo);
         CFStringRef cfProxyType = CFDictionaryGetValue(cfProxy, (const void*)kCFProxyTypeKey);
         if (!cfProxyType) {
             continue;
         }
-        
+
         TSK_DEBUG_INFO("Found at %li proxy type = %s", (index - 1), CFStringGetCStringPtr(cfProxyType, kCFStringEncodingUTF8));
         if (CFEqual(cfProxyType, kCFProxyTypeNone)) {
             continue;
@@ -255,9 +255,9 @@ static void _appl_find_best_proxy(CFURLRef cfTargetURL, CFArrayRef _cfProxies, a
                 CFTypeRef cfResult = NULL;
                 CFStreamClientContext context = { 0, &cfResult, NULL, NULL, NULL };
                 CFRunLoopSourceRef cfrunLoop = CFNetworkExecuteProxyAutoConfigurationURL(cfPACUrl,
-                                                                                         cfTargetURL,
-                                                                                         _ProxyAutoConfigurationResultCallback,
-                                                                                         &context);
+                                               cfTargetURL,
+                                               _ProxyAutoConfigurationResultCallback,
+                                               &context);
                 if (!cfrunLoop) {
                     TSK_DEBUG_ERROR("CFNetworkExecuteProxyAutoConfigurationURL(%li, %s) failed", (index - 1), CFStringGetCStringPtr(CFURLGetString(cfPACUrl), kCFStringEncodingUTF8));
                     continue;

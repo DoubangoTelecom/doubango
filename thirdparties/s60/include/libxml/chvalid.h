@@ -52,7 +52,7 @@ struct _xmlChRangeGroup {
  * Range checking routine
  */
 XMLPUBFUN int XMLCALL
-		xmlCharInRange(unsigned int val, const xmlChRangeGroup *group);
+xmlCharInRange(unsigned int val, const xmlChRangeGroup *group);
 
 
 /**
@@ -208,21 +208,21 @@ XMLPUBVAR const unsigned char xmlIsPubidChar_tab[256];
 				 xmlIsPubidChar_ch((c)) : 0)
 
 XMLPUBFUN int XMLCALL
-		xmlIsBaseChar(unsigned int ch);
+xmlIsBaseChar(unsigned int ch);
 XMLPUBFUN int XMLCALL
-		xmlIsBlank(unsigned int ch);
+xmlIsBlank(unsigned int ch);
 XMLPUBFUN int XMLCALL
-		xmlIsChar(unsigned int ch);
+xmlIsChar(unsigned int ch);
 XMLPUBFUN int XMLCALL
-		xmlIsCombining(unsigned int ch);
+xmlIsCombining(unsigned int ch);
 XMLPUBFUN int XMLCALL
-		xmlIsDigit(unsigned int ch);
+xmlIsDigit(unsigned int ch);
 XMLPUBFUN int XMLCALL
-		xmlIsExtender(unsigned int ch);
+xmlIsExtender(unsigned int ch);
 XMLPUBFUN int XMLCALL
-		xmlIsIdeographic(unsigned int ch);
+xmlIsIdeographic(unsigned int ch);
 XMLPUBFUN int XMLCALL
-		xmlIsPubidChar(unsigned int ch);
+xmlIsPubidChar(unsigned int ch);
 
 #ifdef __cplusplus
 }

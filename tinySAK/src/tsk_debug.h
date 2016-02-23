@@ -6,12 +6,12 @@
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -103,9 +103,9 @@ TSK_BEGIN_DECLS
 #if TSK_HAVE_DEBUG_H
 #	include <my_debug.h>
 #else
-	typedef int (*tsk_debug_f)(const void* arg, const char* fmt, ...);
+typedef int (*tsk_debug_f)(const void* arg, const char* fmt, ...);
 
-	/* INFO */
+/* INFO */
 #define TSK_DEBUG_INFO(FMT, ...)		\
 	if(tsk_debug_get_level() >= DEBUG_LEVEL_INFO){ \
 		if(tsk_debug_get_info_cb()) \
@@ -115,7 +115,7 @@ TSK_BEGIN_DECLS
 	}
 
 
-	/* WARN */
+/* WARN */
 #define TSK_DEBUG_WARN(FMT, ...)		\
 	if(tsk_debug_get_level() >= DEBUG_LEVEL_WARN){ \
 		if(tsk_debug_get_warn_cb()) \
@@ -124,7 +124,7 @@ TSK_BEGIN_DECLS
 			fprintf(stderr, "**[DOUBANGO WARN]: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__); \
 	}
 
-	/* ERROR */
+/* ERROR */
 #define TSK_DEBUG_ERROR(FMT, ...) 		\
 	if(tsk_debug_get_level() >= DEBUG_LEVEL_ERROR){ \
 		if(tsk_debug_get_error_cb()) \
@@ -134,7 +134,7 @@ TSK_BEGIN_DECLS
 	}
 
 
-	/* FATAL */
+/* FATAL */
 #define TSK_DEBUG_FATAL(FMT, ...) 		\
 	if(tsk_debug_get_level() >= DEBUG_LEVEL_FATAL){ \
 		if(tsk_debug_get_fatal_cb()) \

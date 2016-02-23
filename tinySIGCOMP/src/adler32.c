@@ -56,9 +56,9 @@
 
 /* ========================================================================= */
 uLong ZEXPORT adler32(adler, buf, len)
-    uLong adler;
-    const Bytef *buf;
-    uInt len;
+uLong adler;
+const Bytef *buf;
+uInt len;
 {
     unsigned long sum2;
     unsigned n;
@@ -70,17 +70,20 @@ uLong ZEXPORT adler32(adler, buf, len)
     /* in case user likes doing a byte at a time, keep it fast */
     if (len == 1) {
         adler += buf[0];
-        if (adler >= BASE)
+        if (adler >= BASE) {
             adler -= BASE;
+        }
         sum2 += adler;
-        if (sum2 >= BASE)
+        if (sum2 >= BASE) {
             sum2 -= BASE;
+        }
         return adler | (sum2 << 16);
     }
 
     /* initial Adler-32 value (deferred check for len == 1 speed) */
-    if (buf == Z_NULL)
+    if (buf == Z_NULL) {
         return 1L;
+    }
 
     /* in case short lengths are provided, keep it somewhat fast */
     if (len < 16) {
@@ -88,8 +91,9 @@ uLong ZEXPORT adler32(adler, buf, len)
             adler += *buf++;
             sum2 += adler;
         }
-        if (adler >= BASE)
+        if (adler >= BASE) {
             adler -= BASE;
+        }
         MOD4(sum2);             /* only added so many BASE's */
         return adler | (sum2 << 16);
     }
@@ -101,7 +105,8 @@ uLong ZEXPORT adler32(adler, buf, len)
         do {
             DO16(buf);          /* 16 sums unrolled */
             buf += 16;
-        } while (--n);
+        }
+        while (--n);
         MOD(adler);
         MOD(sum2);
     }
@@ -127,9 +132,9 @@ uLong ZEXPORT adler32(adler, buf, len)
 
 /* ========================================================================= */
 uLong ZEXPORT adler32_combine(adler1, adler2, len2)
-    uLong adler1;
-    uLong adler2;
-    z_off_t len2;
+uLong adler1;
+uLong adler2;
+z_off_t len2;
 {
     unsigned long sum1;
     unsigned long sum2;
@@ -142,10 +147,18 @@ uLong ZEXPORT adler32_combine(adler1, adler2, len2)
     MOD(sum2);
     sum1 += (adler2 & 0xffff) + BASE - 1;
     sum2 += ((adler1 >> 16) & 0xffff) + ((adler2 >> 16) & 0xffff) + BASE - rem;
-    if (sum1 > BASE) sum1 -= BASE;
-    if (sum1 > BASE) sum1 -= BASE;
-    if (sum2 > (BASE << 1)) sum2 -= (BASE << 1);
-    if (sum2 > BASE) sum2 -= BASE;
+    if (sum1 > BASE) {
+        sum1 -= BASE;
+    }
+    if (sum1 > BASE) {
+        sum1 -= BASE;
+    }
+    if (sum2 > (BASE << 1)) {
+        sum2 -= (BASE << 1);
+    }
+    if (sum2 > BASE) {
+        sum2 -= BASE;
+    }
     return sum1 | (sum2 << 16);
 }
 #endif // HAS_ZLIB

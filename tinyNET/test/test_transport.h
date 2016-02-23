@@ -53,133 +53,129 @@
 
 static int tnet_tcp_cb(const tnet_transport_event_t* e)
 {
-	switch(e->type){
-		case event_data:
-			{
-				TSK_DEBUG_INFO("--- TCP ---\n%s\n", (const char*)e->data);
-				break;
-			}
-		case event_closed:
-		case event_connected:
-		default:
-			{
-				break;
-			}
-	}
-	return 0;
+    switch(e->type) {
+    case event_data: {
+        TSK_DEBUG_INFO("--- TCP ---\n%s\n", (const char*)e->data);
+        break;
+    }
+    case event_closed:
+    case event_connected:
+    default: {
+        break;
+    }
+    }
+    return 0;
 }
 
 static int tnet_udp_cb(const tnet_transport_event_t* e)
 {
-	switch(e->type){
-		case event_data:
-			{
-				TSK_DEBUG_INFO("--- UDP ---\n%s\n", (const char*)e->data);
-				break;
-			}
-		case event_closed:
-		case event_connected:
-		default: break;
-			
-	}
-	return 0;
+    switch(e->type) {
+    case event_data: {
+        TSK_DEBUG_INFO("--- UDP ---\n%s\n", (const char*)e->data);
+        break;
+    }
+    case event_closed:
+    case event_connected:
+    default:
+        break;
+
+    }
+    return 0;
 }
 
 void test_transport_tcp_ipv4(tnet_transport_handle_t *transport)
 {
-	//tnet_socket_type_t type = tnet_socket_type_tcp_ipv4;
-	tnet_ip_t ip;
-	tnet_port_t port;
-	tnet_fd_t fd = TNET_INVALID_FD;
+    //tnet_socket_type_t type = tnet_socket_type_tcp_ipv4;
+    tnet_ip_t ip;
+    tnet_port_t port;
+    tnet_fd_t fd = TNET_INVALID_FD;
 
-	/* Set our callback function */
-	tnet_transport_set_callback(transport, tnet_tcp_cb, "callbackdata");
+    /* Set our callback function */
+    tnet_transport_set_callback(transport, tnet_tcp_cb, "callbackdata");
 
-	if(tnet_transport_start(transport)){
-		TSK_DEBUG_ERROR("Failed to create %s.", tnet_transport_get_description(transport));
-		return;
-	}
-	
-	/* Connect to the SIP Registrar */
-	if((fd = tnet_transport_connectto_2(transport, REMOTE_IP, REMOTE_PORT)) == TNET_INVALID_FD){
-		TSK_DEBUG_ERROR("Failed to connect %s.", tnet_transport_get_description(transport));
-		return;
-	}
-	
-	if(tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT)){
-		TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
-		tnet_transport_remove_socket(transport, &fd);
-		return;
-	}
-	
+    if(tnet_transport_start(transport)) {
+        TSK_DEBUG_ERROR("Failed to create %s.", tnet_transport_get_description(transport));
+        return;
+    }
 
-	/* Send our SIP message */
-	{
-		char* message = 0;
-		tnet_transport_get_ip_n_port(transport, fd, &ip, &port);
-		tsk_sprintf(&message, SIP_MESSAGE, "TCP", ip, port, port, ip, port, "tcp");
+    /* Connect to the SIP Registrar */
+    if((fd = tnet_transport_connectto_2(transport, REMOTE_IP, REMOTE_PORT)) == TNET_INVALID_FD) {
+        TSK_DEBUG_ERROR("Failed to connect %s.", tnet_transport_get_description(transport));
+        return;
+    }
 
-		if(!tnet_transport_send(transport, fd, message, strlen(message)))
-		{
-			TSK_DEBUG_ERROR("Failed to send data using %s.", tnet_transport_get_description(transport));
-			TSK_FREE(message);
-			return;
-		}
-		TSK_FREE(message);
-	}
-	
+    if(tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT)) {
+        TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
+        tnet_transport_remove_socket(transport, &fd);
+        return;
+    }
+
+
+    /* Send our SIP message */
+    {
+        char* message = 0;
+        tnet_transport_get_ip_n_port(transport, fd, &ip, &port);
+        tsk_sprintf(&message, SIP_MESSAGE, "TCP", ip, port, port, ip, port, "tcp");
+
+        if(!tnet_transport_send(transport, fd, message, strlen(message))) {
+            TSK_DEBUG_ERROR("Failed to send data using %s.", tnet_transport_get_description(transport));
+            TSK_FREE(message);
+            return;
+        }
+        TSK_FREE(message);
+    }
+
 }
 
 
 int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 {
-	//tnet_socket_type_t type = tnet_socket_type_udp_ipv4;
-	tnet_ip_t ip;
-	tnet_port_t port;
-	tnet_fd_t fd = TNET_INVALID_FD;
-	
-	/* Set our callback function */
-	tnet_transport_set_callback(transport, tnet_udp_cb, "callbackdata");
+    //tnet_socket_type_t type = tnet_socket_type_udp_ipv4;
+    tnet_ip_t ip;
+    tnet_port_t port;
+    tnet_fd_t fd = TNET_INVALID_FD;
 
-	if(tnet_transport_start(transport)){
-		TSK_DEBUG_ERROR("Failed to create %s.", tnet_transport_get_description(transport));
-		return -1;
-	}
+    /* Set our callback function */
+    tnet_transport_set_callback(transport, tnet_udp_cb, "callbackdata");
 
-	/* Connect to our SIP REGISTRAR */
-	if((fd = tnet_transport_connectto_2(transport, REMOTE_IP, REMOTE_PORT)) == TNET_INVALID_FD){
-		TSK_DEBUG_ERROR("Failed to connect %s.", tnet_transport_get_description(transport));
-		//tnet_transport_shutdown(transport);
-		return -2;
-	}
+    if(tnet_transport_start(transport)) {
+        TSK_DEBUG_ERROR("Failed to create %s.", tnet_transport_get_description(transport));
+        return -1;
+    }
 
-	if(tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT)){
-		TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
-		tnet_transport_remove_socket(transport, &fd);
-		return -3;
-	}
+    /* Connect to our SIP REGISTRAR */
+    if((fd = tnet_transport_connectto_2(transport, REMOTE_IP, REMOTE_PORT)) == TNET_INVALID_FD) {
+        TSK_DEBUG_ERROR("Failed to connect %s.", tnet_transport_get_description(transport));
+        //tnet_transport_shutdown(transport);
+        return -2;
+    }
 
-	//tsk_thread_sleep(2000);
+    if(tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT)) {
+        TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
+        tnet_transport_remove_socket(transport, &fd);
+        return -3;
+    }
 
-	/* Send our SIP message */
-	/*while(1)*/{
-		char* message = 0;
-		tnet_transport_get_ip_n_port(transport, fd, &ip, &port);
-		//memset(ip, 0, sizeof(ip));
-		//memcpy(ip, "192.168.0.12", 12);
-		tsk_sprintf(&message, SIP_MESSAGE, "UDP", ip, port, port, ip, port, "udp");
+    //tsk_thread_sleep(2000);
 
-		if(!tnet_transport_send(transport, fd, message, strlen(message)))
-		{
-			TSK_DEBUG_ERROR("Failed to send data using %s.", tnet_transport_get_description(transport));
-			//tnet_transport_shutdown(transport);
-			TSK_FREE(message);
-			return -4;
-		}
-		TSK_FREE(message);
-	}
+    /* Send our SIP message */
+    /*while(1)*/{
+        char* message = 0;
+        tnet_transport_get_ip_n_port(transport, fd, &ip, &port);
+        //memset(ip, 0, sizeof(ip));
+        //memcpy(ip, "192.168.0.12", 12);
+        tsk_sprintf(&message, SIP_MESSAGE, "UDP", ip, port, port, ip, port, "udp");
 
-	return 0;
+        if(!tnet_transport_send(transport, fd, message, strlen(message))) {
+            TSK_DEBUG_ERROR("Failed to send data using %s.", tnet_transport_get_description(transport));
+            //tnet_transport_shutdown(transport);
+            TSK_FREE(message);
+            return -4;
+        }
+        TSK_FREE(message);
+    }
+
+    return 0;
 }
 
 void test_transport()
@@ -189,27 +185,27 @@ void test_transport()
 
 
 #if TEST_UDP
-	tnet_transport_handle_t *udp = tnet_transport_create(LOCAL_IP4, LOCAL_PORT, tnet_socket_type_udp_ipv4, "UDP/IPV4 TRANSPORT");
-	test_transport_udp_ipv4(udp);
+    tnet_transport_handle_t *udp = tnet_transport_create(LOCAL_IP4, LOCAL_PORT, tnet_socket_type_udp_ipv4, "UDP/IPV4 TRANSPORT");
+    test_transport_udp_ipv4(udp);
 #endif
 
 #if TEST_TCP
-	tnet_transport_handle_t *tcp = tnet_transport_create(LOCAL_IP4, LOCAL_PORT, tnet_socket_type_tcp_ipv4, "TCP/IPV4 TRANSPORT");
-	test_transport_tcp_ipv4(tcp);
-#endif	
+    tnet_transport_handle_t *tcp = tnet_transport_create(LOCAL_IP4, LOCAL_PORT, tnet_socket_type_tcp_ipv4, "TCP/IPV4 TRANSPORT");
+    test_transport_tcp_ipv4(tcp);
+#endif
 
 //#if defined(ANDROID)
-	tsk_thread_sleep(1000000);
+    tsk_thread_sleep(1000000);
 //#else
-	getchar();
+    getchar();
 //#endif
 
 #if TEST_UDP
-	TSK_OBJECT_SAFE_FREE(udp);
+    TSK_OBJECT_SAFE_FREE(udp);
 #endif
 
 #if TEST_TCP
-	TSK_OBJECT_SAFE_FREE(tcp);
+    TSK_OBJECT_SAFE_FREE(tcp);
 #endif
 }
 

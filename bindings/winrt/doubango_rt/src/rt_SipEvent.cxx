@@ -1,17 +1,17 @@
 /*Copyright (C) 2013 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 */
@@ -38,7 +38,7 @@ rt##cls##Session^ rt##cls##Event::getSession(){ \
 	} \
 	return nullptr; \
 } \
-
+ 
 #define rt_takeOwnership_Implement(cls, name, session) \
 rt##name##Session^ rt##cls##Event::take##session##Ownership(){ \
 	name##Session* s = m_pEvent->take##session##Ownership(); \
@@ -49,18 +49,18 @@ rt##name##Session^ rt##cls##Event::take##session##Ownership(){ \
 	} \
 	return nullptr; \
 } \
-
+ 
 /* ======================== rtDialogEvent ========================*/
 rtISipEvent_Implement(rtDialogEvent);
 
 rtDialogEvent::rtDialogEvent(const struct tsip_event_s *e)
 {
-	m_pEvent = new DialogEvent(e);
+    m_pEvent = new DialogEvent(e);
 }
 
 rtDialogEvent::~rtDialogEvent()
 {
-	rtSafeDelete(m_pEvent);
+    rtSafeDelete(m_pEvent);
 }
 
 
@@ -69,36 +69,36 @@ rtISipEvent_Implement(rtStackEvent);
 
 rtStackEvent::rtStackEvent(const struct tsip_event_s *e)
 {
-	m_pEvent = new StackEvent(e);
+    m_pEvent = new StackEvent(e);
 }
 
 rtStackEvent::~rtStackEvent()
 {
-	rtSafeDelete(m_pEvent);
+    rtSafeDelete(m_pEvent);
 }
 
 
- /* ======================== rtInviteEvent ========================*/
+/* ======================== rtInviteEvent ========================*/
 rtISipEvent_Implement(rtInviteEvent);
 
 rtInviteEvent::rtInviteEvent(const struct tsip_event_s *e)
 {
-	m_pEvent = new InviteEvent(e);
+    m_pEvent = new InviteEvent(e);
 }
 
 rtInviteEvent::~rtInviteEvent()
 {
-	rtSafeDelete(m_pEvent);
+    rtSafeDelete(m_pEvent);
 }
 
 rt_tsip_invite_event_type_t rtInviteEvent::getType()
 {
-	return (rt_tsip_invite_event_type_t)m_pEvent->getType();
+    return (rt_tsip_invite_event_type_t)m_pEvent->getType();
 }
 
 rt_twrap_media_type_t rtInviteEvent::getMediaType()
 {
-	return (rt_twrap_media_type_t)m_pEvent->getMediaType();
+    return (rt_twrap_media_type_t)m_pEvent->getMediaType();
 }
 
 rt_getSession_Implement(Invite);
@@ -110,18 +110,18 @@ rtISipEvent_Implement(rtMessagingEvent);
 
 rtMessagingEvent::rtMessagingEvent(const struct tsip_event_s *e)
 {
-	m_pEvent = new MessagingEvent(e);
+    m_pEvent = new MessagingEvent(e);
 }
 
-	
+
 rtMessagingEvent::~rtMessagingEvent()
 {
-	rtSafeDelete(m_pEvent);
-}	
+    rtSafeDelete(m_pEvent);
+}
 
 rt_tsip_message_event_type_t rtMessagingEvent::getType()
 {
-	return (rt_tsip_message_event_type_t)m_pEvent->getType();
+    return (rt_tsip_message_event_type_t)m_pEvent->getType();
 }
 
 rt_getSession_Implement(Messaging);
@@ -133,17 +133,17 @@ rtISipEvent_Implement(rtInfoEvent);
 
 rtInfoEvent::rtInfoEvent(const struct tsip_event_s *e)
 {
-	m_pEvent = new InfoEvent(e);
+    m_pEvent = new InfoEvent(e);
 }
 
 rtInfoEvent::~rtInfoEvent()
 {
-	rtSafeDelete(m_pEvent);
+    rtSafeDelete(m_pEvent);
 }
 
 rt_tsip_info_event_type_t rtInfoEvent::getType()
 {
-	return (rt_tsip_info_event_type_t)m_pEvent->getType();
+    return (rt_tsip_info_event_type_t)m_pEvent->getType();
 }
 
 rt_getSession_Implement(Info);
@@ -155,17 +155,17 @@ rtISipEvent_Implement(rtOptionsEvent);
 
 rtOptionsEvent::rtOptionsEvent(const struct tsip_event_s *e)
 {
-	m_pEvent = new OptionsEvent(e);
+    m_pEvent = new OptionsEvent(e);
 }
 
 rtOptionsEvent::~rtOptionsEvent()
 {
-	rtSafeDelete(m_pEvent);
+    rtSafeDelete(m_pEvent);
 }
 
 rt_tsip_options_event_type_t rtOptionsEvent::getType()
 {
-	return (rt_tsip_options_event_type_t)m_pEvent->getType();
+    return (rt_tsip_options_event_type_t)m_pEvent->getType();
 }
 
 rt_getSession_Implement(Options);
@@ -177,17 +177,17 @@ rtISipEvent_Implement(rtPublicationEvent);
 
 rtPublicationEvent::rtPublicationEvent(const struct tsip_event_s *e)
 {
-	m_pEvent = new PublicationEvent(e);
+    m_pEvent = new PublicationEvent(e);
 }
 
 rtPublicationEvent::~rtPublicationEvent()
 {
-	rtSafeDelete(m_pEvent);
+    rtSafeDelete(m_pEvent);
 }
 
 rt_tsip_publish_event_type_t rtPublicationEvent::getType()
 {
-	return (rt_tsip_publish_event_type_t)m_pEvent->getType();
+    return (rt_tsip_publish_event_type_t)m_pEvent->getType();
 }
 
 rt_getSession_Implement(Publication);
@@ -200,17 +200,17 @@ rtISipEvent_Implement(rtRegistrationEvent);
 
 rtRegistrationEvent::rtRegistrationEvent(const struct tsip_event_s *e)
 {
-	m_pEvent = new RegistrationEvent(e);
+    m_pEvent = new RegistrationEvent(e);
 }
 
 rtRegistrationEvent::~rtRegistrationEvent()
 {
-	rtSafeDelete(m_pEvent);
+    rtSafeDelete(m_pEvent);
 }
 
 rt_tsip_register_event_type_t rtRegistrationEvent::getType()
 {
-	return (rt_tsip_register_event_type_t)m_pEvent->getType();
+    return (rt_tsip_register_event_type_t)m_pEvent->getType();
 }
 
 rt_getSession_Implement(Registration);
@@ -222,17 +222,17 @@ rtISipEvent_Implement(rtSubscriptionEvent);
 
 rtSubscriptionEvent::rtSubscriptionEvent(const struct tsip_event_s *e)
 {
-	m_pEvent = new SubscriptionEvent(e);
+    m_pEvent = new SubscriptionEvent(e);
 }
 
 rtSubscriptionEvent::~rtSubscriptionEvent()
 {
-	rtSafeDelete(m_pEvent);
+    rtSafeDelete(m_pEvent);
 }
 
 rt_tsip_subscribe_event_type_t rtSubscriptionEvent::getType()
 {
-	return (rt_tsip_subscribe_event_type_t)m_pEvent->getType();
+    return (rt_tsip_subscribe_event_type_t)m_pEvent->getType();
 }
 
 rt_getSession_Implement(Subscription);

@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -46,83 +46,80 @@ TSIP_BEGIN_DECLS
 #define TSIP_TRANSPORT(self)											((tsip_transport_t*)(self))
 
 enum {
-	TSIP_TRANSPORT_IDX_UDP,
-	TSIP_TRANSPORT_IDX_DTLS,
-	TSIP_TRANSPORT_IDX_TCP,
-	TSIP_TRANSPORT_IDX_TLS,
-	TSIP_TRANSPORT_IDX_WS,
-	TSIP_TRANSPORT_IDX_WSS,
+    TSIP_TRANSPORT_IDX_UDP,
+    TSIP_TRANSPORT_IDX_DTLS,
+    TSIP_TRANSPORT_IDX_TCP,
+    TSIP_TRANSPORT_IDX_TLS,
+    TSIP_TRANSPORT_IDX_WS,
+    TSIP_TRANSPORT_IDX_WSS,
 
-	TSIP_TRANSPORT_IDX_MAX
+    TSIP_TRANSPORT_IDX_MAX
 };
 
-typedef struct tsip_transport_idx_xs 
-{ 
-	int idx; 
-	const char* name;
-	enum tnet_socket_type_e type;
-} 
+typedef struct tsip_transport_idx_xs {
+    int idx;
+    const char* name;
+    enum tnet_socket_type_e type;
+}
 tsip_transport_idx_xt;
 
 const tsip_transport_idx_xt* tsip_transport_get_by_name(const char* name);
 int tsip_transport_get_idx_by_name(const char* name);
 enum tnet_socket_type_e tsip_transport_get_type_by_name(const char* name);
 
-typedef struct tsip_transport_stream_peer_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsip_transport_stream_peer_s {
+    TSK_DECLARE_OBJECT;
 
-	tnet_fd_t local_fd;  // not owner: do not close
-	enum tnet_socket_type_e type;
-	tsk_bool_t connected;
-	uint64_t time_latest_activity; // in milliseconds
-	uint64_t time_added; // in milliseconds
-	tsk_bool_t got_valid_sip_msg; // whether we got at least one valid SIP message on this peer
-	
-	tsk_buffer_t *rcv_buff_stream;
-	tsk_buffer_t *snd_buff_stream;
+    tnet_fd_t local_fd;  // not owner: do not close
+    enum tnet_socket_type_e type;
+    tsk_bool_t connected;
+    uint64_t time_latest_activity; // in milliseconds
+    uint64_t time_added; // in milliseconds
+    tsk_bool_t got_valid_sip_msg; // whether we got at least one valid SIP message on this peer
 
-	// list of dialogs managed by this peer
-	tsk_strings_L_t *dialogs_cids;
+    tsk_buffer_t *rcv_buff_stream;
+    tsk_buffer_t *snd_buff_stream;
 
-	// temp buffers used to send/recv websocket data before (un)masking
-	struct{
-		void* rcv_buffer;
-		uint64_t rcv_buffer_size;
-		void* snd_buffer;
-		uint64_t snd_buffer_size;
-		tsk_bool_t handshaking_done;
-	} ws;
+    // list of dialogs managed by this peer
+    tsk_strings_L_t *dialogs_cids;
 
-	tnet_ip_t remote_ip;
-	tnet_port_t remote_port;
+    // temp buffers used to send/recv websocket data before (un)masking
+    struct {
+        void* rcv_buffer;
+        uint64_t rcv_buffer_size;
+        void* snd_buffer;
+        uint64_t snd_buffer_size;
+        tsk_bool_t handshaking_done;
+    } ws;
+
+    tnet_ip_t remote_ip;
+    tnet_port_t remote_port;
 }
 tsip_transport_stream_peer_t;
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_transport_stream_peer_def_t;
 typedef tsk_list_t tsip_transport_stream_peers_L_t;
 
-typedef struct tsip_transport_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsip_transport_s {
+    TSK_DECLARE_OBJECT;
 
-	tsk_bool_t initialized;
+    tsk_bool_t initialized;
 
-	int32_t idx;
+    int32_t idx;
 
-	const struct tsip_stack_s *stack;
+    const struct tsip_stack_s *stack;
 
-	tnet_socket_type_t type;
-	struct sockaddr_storage pcscf_addr;
-	tnet_fd_t connectedFD;
-	tnet_transport_handle_t *net_transport;
+    tnet_socket_type_t type;
+    struct sockaddr_storage pcscf_addr;
+    tnet_fd_t connectedFD;
+    tnet_transport_handle_t *net_transport;
 
-	const char *scheme;
-	const char *protocol;
-	const char *via_protocol;
-	const char *service; /**< NAPTR service name */
+    const char *scheme;
+    const char *protocol;
+    const char *via_protocol;
+    const char *service; /**< NAPTR service name */
 
-	tsip_transport_stream_peers_L_t* stream_peers;
-	int32_t stream_peers_count;
+    tsip_transport_stream_peers_L_t* stream_peers;
+    int32_t stream_peers_count;
 }
 tsip_transport_t;
 

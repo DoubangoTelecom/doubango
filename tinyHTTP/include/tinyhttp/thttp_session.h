@@ -1,18 +1,18 @@
 /*
 * Copyright (C) 2010-2015 Mamadou DIOP.
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -44,35 +44,33 @@ THTTP_BEGIN_DECLS
 //FD
 struct thttp_message_s;
 
-typedef uint64_t thttp_session_id_t;			
+typedef uint64_t thttp_session_id_t;
 #define THTTP_SESSION_INVALID_ID				0
 #define THTTP_SESSION_INVALID_HANDLE			tsk_null
 
 /** List of all supported options.
 * To pass an option to the sesion, use @ref THTTP_SESSION_SET_OPTION() macro.
 */
-typedef enum thttp_session_option_e
-{
-	THTTP_SESSION_OPTION_TIMEOUT,
-	THTTP_SESSION_OPTION_TTL,
-	// To be continued...
+typedef enum thttp_session_option_e {
+    THTTP_SESSION_OPTION_TIMEOUT,
+    THTTP_SESSION_OPTION_TTL,
+    // To be continued...
 }
 thttp_session_option_t;
 
-typedef enum thttp_session_param_type_e
-{
-	httpp_null = 0,
+typedef enum thttp_session_param_type_e {
+    httpp_null = 0,
 
-	httpp_option,
-	httpp_cred,
-	httpp_header,
-	httpp_userdata,
+    httpp_option,
+    httpp_cred,
+    httpp_header,
+    httpp_userdata,
 }
 thttp_session_param_type_t;
 
 /**@ingroup thttp_session_group
 * @def THTTP_SESSION_SET_OPTION
-* Adds or updates an option. 
+* Adds or updates an option.
 * This is a helper macro for @ref thttp_session_create and @ref thttp_session_set.
 * @param ID_ENUM The id of the option to add/update (@ref thttp_session_option_t).
 * @param VALUE_STR The new value of the option (<i>const char*</i>).
@@ -153,27 +151,26 @@ thttp_session_set(session,
 #define THTTP_SESSION_SET_USERDATA(USERDATA_PTR)				httpp_userdata, (const void*)USERDATA_PTR
 #define THTTP_SESSION_SET_NULL()								httpp_null
 
-typedef struct thttp_session_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct thttp_session_s {
+    TSK_DECLARE_OBJECT;
 
-	thttp_session_id_t id;
-	const struct thttp_stack_s* stack;
-	const void* userdata; // user's context
-	tsk_options_L_t *options;
-	tsk_params_L_t *headers;
+    thttp_session_id_t id;
+    const struct thttp_stack_s* stack;
+    const void* userdata; // user's context
+    tsk_options_L_t *options;
+    tsk_params_L_t *headers;
 
-	tnet_fd_t fd;
+    tnet_fd_t fd;
 
-	thttp_challenges_L_t *challenges;
-	thttp_dialogs_L_t* dialogs;
+    thttp_challenges_L_t *challenges;
+    thttp_dialogs_L_t* dialogs;
 
-	struct{
-		char* usename;
-		char* password;
-	}cred;
+    struct {
+        char* usename;
+        char* password;
+    } cred;
 
-	TSK_DECLARE_SAFEOBJ;
+    TSK_DECLARE_SAFEOBJ;
 }
 thttp_session_t;
 

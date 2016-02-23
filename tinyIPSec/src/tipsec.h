@@ -165,8 +165,8 @@ typedef enum tipsec_ipproto_e {
     tipsec_ipproto_tcp,
     //! ICMP.
     tipsec_ipproto_icmp,
-	//! ALL IP protocols
-	tipsec_ipproto_all
+    //! ALL IP protocols
+    tipsec_ipproto_all
 }
 tipsec_ipproto_t;
 
@@ -211,14 +211,14 @@ tipsec_state_t;
 typedef enum tipsec_error_e {
     tipsec_error_success = 0, /**< Success */
     tipsec_error_invalid_param, /**< Invalid parameter */
-	tipsec_error_invalid_state, /**< Invalid state */
+    tipsec_error_invalid_state, /**< Invalid state */
     tipsec_error_access_violation, /**< Access violation */
     tipsec_error_permission_denied, /**< Permission denied */
     tipsec_error_outofmemory, /**< Out of memory */
     tipsec_error_outofbound, /**< Out of bound */
     tipsec_error_notfound, /**< Not found */
     tipsec_error_notimplemented, /**< Not implemented */
-	tipsec_error_sys, /**< System error */
+    tipsec_error_sys, /**< System error */
 }
 tipsec_error_t;
 

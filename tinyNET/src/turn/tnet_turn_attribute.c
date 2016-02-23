@@ -2,19 +2,19 @@
 //* Copyright (C) 2010-2011 Mamadou Diop.
 //*
 //* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-//*	
+//*
 //* This file is part of Open Source Doubango Framework.
 //*
 //* DOUBANGO is free software: you can redistribute it and/or modify
 //* it under the terms of the GNU General Public License as published by
 //* the Free Software Foundation, either version 3 of the License, or
 //* (at your option) any later version.
-//*	
+//*
 //* DOUBANGO is distributed in the hope that it will be useful,
 //* but WITHOUT ANY WARRANTY; without even the implied warranty of
 //* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //* GNU General Public License for more details.
-//*	
+//*
 //* You should have received a copy of the GNU General Public License
 //* along with DOUBANGO.
 //*
@@ -116,7 +116,7 @@
 //
 //	/* Attribute Value
 //	*/
-//	
+//
 //	switch(type)
 //	{
 //	/*	draft-ietf-behave-turn-16 - 14.1.  CHANNEL-NUMBER */
@@ -176,7 +176,7 @@
 //			TSK_DEBUG_ERROR("==> NOT IMPLEMENTED");
 //			break;
 //		}
-//	
+//
 //	/*	draft-ietf-behave-turn-16 - 14.9.  RESERVATION-TOKEN */
 //	case stun_reservation_token:
 //		{
@@ -296,7 +296,7 @@
 //			TSK_DEBUG_ERROR("SERIALIZE:TOKEN ==> NOT IMPLEMENTED");
 //			return -3;
 //		}
-//            
+//
 //        default: break;
 //	}
 //
@@ -324,8 +324,8 @@
 //	return self;
 //}
 //
-//static tsk_object_t* tnet_turn_attribute_channelnum_dtor(tsk_object_t * self) 
-//{ 
+//static tsk_object_t* tnet_turn_attribute_channelnum_dtor(tsk_object_t * self)
+//{
 //	tnet_turn_attribute_channelnum_t *attribute = self;
 //	if(attribute){
 //	}
@@ -357,8 +357,8 @@
 //	return self;
 //}
 //
-//static tsk_object_t* tnet_turn_attribute_lifetime_dtor(tsk_object_t * self) 
-//{ 
+//static tsk_object_t* tnet_turn_attribute_lifetime_dtor(tsk_object_t * self)
+//{
 //	tnet_turn_attribute_lifetime_t *attribute = self;
 //	if(attribute){
 //	}
@@ -386,7 +386,7 @@
 //	if(attribute){
 //		const void *payload = va_arg(*app, const void*);
 //		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
-//		
+//
 //		if(payload && payload_size){
 //		}
 //		TNET_STUN_ATTRIBUTE(attribute)->type = stun_xor_peer_address;
@@ -395,8 +395,8 @@
 //	return self;
 //}
 //
-//static tsk_object_t* tnet_turn_attribute_xpeer_addr_dtor(tsk_object_t * self) 
-//{ 
+//static tsk_object_t* tnet_turn_attribute_xpeer_addr_dtor(tsk_object_t * self)
+//{
 //	tnet_turn_attribute_xpeer_addr_t *attribute = self;
 //	if(attribute){
 //	}
@@ -432,8 +432,8 @@
 //	return self;
 //}
 //
-//static tsk_object_t* tnet_turn_attribute_data_dtor(tsk_object_t * self) 
-//{ 
+//static tsk_object_t* tnet_turn_attribute_data_dtor(tsk_object_t * self)
+//{
 //	tnet_turn_attribute_data_t *attribute = self;
 //	if(attribute){
 //		TSK_OBJECT_SAFE_FREE(attribute->value);
@@ -466,7 +466,7 @@
 //
 //			TNET_STUN_ATTRIBUTE(attribute)->type = stun_xor_relayed_address;
 //			TNET_STUN_ATTRIBUTE(attribute)->length = payload_size;
-//			
+//
 //			attribute->family = (tnet_stun_addr_family_t)(*(payloadPtr++));
 //
 //			attribute->xport = tnet_ntohs_2(payloadPtr);
@@ -475,7 +475,7 @@
 //
 //			{	/*=== Compute IP address */
 //				tsk_size_t addr_size = (attribute->family == stun_ipv6) ? 16 : (attribute->family == stun_ipv4 ? 4 : 0);
-//				if(addr_size){	
+//				if(addr_size){
 //					tsk_size_t i;
 //					uint32_t addr;
 //
@@ -489,14 +489,14 @@
 //				else{
 //					TSK_DEBUG_ERROR("UNKNOWN FAMILY [%u].", attribute->family);
 //				}
-//			}			
+//			}
 //		}
 //	}
 //	return self;
 //}
 //
-//static tsk_object_t* tnet_turn_attribute_xrelayed_addr_dtor(tsk_object_t * self) 
-//{ 
+//static tsk_object_t* tnet_turn_attribute_xrelayed_addr_dtor(tsk_object_t * self)
+//{
 //	tnet_turn_attribute_xrelayed_addr_t *attribute = self;
 //	if(attribute){
 //	}
@@ -528,8 +528,8 @@
 //	return self;
 //}
 //
-//static tsk_object_t* tnet_turn_attribute_even_port_dtor(tsk_object_t * self) 
-//{ 
+//static tsk_object_t* tnet_turn_attribute_even_port_dtor(tsk_object_t * self)
+//{
 //	tnet_turn_attribute_even_port_t *attribute = self;
 //	if(attribute){
 //	}
@@ -561,8 +561,8 @@
 //	return self;
 //}
 //
-//static tsk_object_t* tnet_turn_attribute_reqtrans_dtor(tsk_object_t * self) 
-//{ 
+//static tsk_object_t* tnet_turn_attribute_reqtrans_dtor(tsk_object_t * self)
+//{
 //	tnet_turn_attribute_reqtrans_t *attribute = self;
 //	if(attribute){
 //	}
@@ -594,8 +594,8 @@
 //	return self;
 //}
 //
-//static tsk_object_t* tnet_turn_attribute_dontfrag_dtor(tsk_object_t * self) 
-//{ 
+//static tsk_object_t* tnet_turn_attribute_dontfrag_dtor(tsk_object_t * self)
+//{
 //	tnet_turn_attribute_dontfrag_t *attribute = self;
 //	if(attribute){
 //	}
@@ -628,8 +628,8 @@
 //	return self;
 //}
 //
-//static tsk_object_t* tnet_turn_attribute_restoken_dtor(tsk_object_t * self) 
-//{ 
+//static tsk_object_t* tnet_turn_attribute_restoken_dtor(tsk_object_t * self)
+//{
 //	tnet_turn_attribute_restoken_t *attribute = self;
 //	if(attribute){
 //	}

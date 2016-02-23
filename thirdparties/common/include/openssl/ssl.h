@@ -388,12 +388,12 @@ typedef struct srtp_protection_profile_st {
 DECLARE_STACK_OF(SRTP_PROTECTION_PROFILE)
 
 typedef int (*tls_session_ticket_ext_cb_fn) (SSL *s,
-                                             const unsigned char *data,
-                                             int len, void *arg);
+        const unsigned char *data,
+        int len, void *arg);
 typedef int (*tls_session_secret_cb_fn) (SSL *s, void *secret,
-                                         int *secret_len,
-                                         STACK_OF(SSL_CIPHER) *peer_ciphers,
-                                         SSL_CIPHER **cipher, void *arg);
+        int *secret_len,
+        STACK_OF(SSL_CIPHER) *peer_ciphers,
+        SSL_CIPHER **cipher, void *arg);
 
 # ifndef OPENSSL_NO_TLSEXT
 
@@ -833,8 +833,8 @@ struct ssl_session_st {
 
 void SSL_CTX_set_msg_callback(SSL_CTX *ctx,
                               void (*cb) (int write_p, int version,
-                                          int content_type, const void *buf,
-                                          size_t len, SSL *ssl, void *arg));
+                                      int content_type, const void *buf,
+                                      size_t len, SSL *ssl, void *arg));
 void SSL_set_msg_callback(SSL *ssl,
                           void (*cb) (int write_p, int version,
                                       int content_type, const void *buf,
@@ -879,10 +879,10 @@ int SRP_generate_client_master_secret(SSL *s, unsigned char *master_key);
 
 # if defined(OPENSSL_SYS_MSDOS) && !defined(OPENSSL_SYS_WIN32)
 #  define SSL_MAX_CERT_LIST_DEFAULT 1024*30
-                                          /* 30k max cert list :-) */
+/* 30k max cert list :-) */
 # else
 #  define SSL_MAX_CERT_LIST_DEFAULT 1024*100
-                                           /* 100k max cert list :-) */
+/* 100k max cert list :-) */
 # endif
 
 # define SSL_SESSION_CACHE_MAX_SIZE_DEFAULT      (1024*20)
@@ -1092,7 +1092,7 @@ struct ssl_ctx_st {
 
     /* draft-rescorla-tls-opaque-prf-input-00.txt information */
     int (*tlsext_opaque_prf_input_callback) (SSL *, void *peerinput,
-                                             size_t len, void *arg);
+            size_t len, void *arg);
     void *tlsext_opaque_prf_input_callback_arg;
 #  endif
 
@@ -1224,64 +1224,64 @@ LHASH_OF(SSL_SESSION) *SSL_CTX_sessions(SSL_CTX *ctx);
 
 void SSL_CTX_sess_set_new_cb(SSL_CTX *ctx,
                              int (*new_session_cb) (struct ssl_st *ssl,
-                                                    SSL_SESSION *sess));
+                                     SSL_SESSION *sess));
 int (*SSL_CTX_sess_get_new_cb(SSL_CTX *ctx)) (struct ssl_st *ssl,
-                                              SSL_SESSION *sess);
+        SSL_SESSION *sess);
 void SSL_CTX_sess_set_remove_cb(SSL_CTX *ctx,
                                 void (*remove_session_cb) (struct ssl_ctx_st
-                                                           *ctx,
-                                                           SSL_SESSION
-                                                           *sess));
+                                        *ctx,
+                                        SSL_SESSION
+                                        *sess));
 void (*SSL_CTX_sess_get_remove_cb(SSL_CTX *ctx)) (struct ssl_ctx_st *ctx,
-                                                  SSL_SESSION *sess);
+        SSL_SESSION *sess);
 void SSL_CTX_sess_set_get_cb(SSL_CTX *ctx,
                              SSL_SESSION *(*get_session_cb) (struct ssl_st
-                                                             *ssl,
-                                                             unsigned char
-                                                             *data, int len,
-                                                             int *copy));
+                                     *ssl,
+                                     unsigned char
+                                     *data, int len,
+                                     int *copy));
 SSL_SESSION *(*SSL_CTX_sess_get_get_cb(SSL_CTX *ctx)) (struct ssl_st *ssl,
-                                                       unsigned char *Data,
-                                                       int len, int *copy);
+        unsigned char *Data,
+        int len, int *copy);
 void SSL_CTX_set_info_callback(SSL_CTX *ctx,
                                void (*cb) (const SSL *ssl, int type,
-                                           int val));
+                                       int val));
 void (*SSL_CTX_get_info_callback(SSL_CTX *ctx)) (const SSL *ssl, int type,
-                                                 int val);
+        int val);
 void SSL_CTX_set_client_cert_cb(SSL_CTX *ctx,
                                 int (*client_cert_cb) (SSL *ssl, X509 **x509,
-                                                       EVP_PKEY **pkey));
+                                        EVP_PKEY **pkey));
 int (*SSL_CTX_get_client_cert_cb(SSL_CTX *ctx)) (SSL *ssl, X509 **x509,
-                                                 EVP_PKEY **pkey);
+        EVP_PKEY **pkey);
 # ifndef OPENSSL_NO_ENGINE
 int SSL_CTX_set_client_cert_engine(SSL_CTX *ctx, ENGINE *e);
 # endif
 void SSL_CTX_set_cookie_generate_cb(SSL_CTX *ctx,
                                     int (*app_gen_cookie_cb) (SSL *ssl,
-                                                              unsigned char
-                                                              *cookie,
-                                                              unsigned int
-                                                              *cookie_len));
+                                            unsigned char
+                                            *cookie,
+                                            unsigned int
+                                            *cookie_len));
 void SSL_CTX_set_cookie_verify_cb(SSL_CTX *ctx,
                                   int (*app_verify_cookie_cb) (SSL *ssl,
-                                                               unsigned char
-                                                               *cookie,
-                                                               unsigned int
-                                                               cookie_len));
+                                          unsigned char
+                                          *cookie,
+                                          unsigned int
+                                          cookie_len));
 # ifndef OPENSSL_NO_NEXTPROTONEG
 void SSL_CTX_set_next_protos_advertised_cb(SSL_CTX *s,
-                                           int (*cb) (SSL *ssl,
-                                                      const unsigned char
-                                                      **out,
-                                                      unsigned int *outlen,
-                                                      void *arg), void *arg);
+        int (*cb) (SSL *ssl,
+                   const unsigned char
+                   **out,
+                   unsigned int *outlen,
+                   void *arg), void *arg);
 void SSL_CTX_set_next_proto_select_cb(SSL_CTX *s,
                                       int (*cb) (SSL *ssl,
-                                                 unsigned char **out,
-                                                 unsigned char *outlen,
-                                                 const unsigned char *in,
-                                                 unsigned int inlen,
-                                                 void *arg), void *arg);
+                                              unsigned char **out,
+                                              unsigned char *outlen,
+                                              const unsigned char *in,
+                                              unsigned int inlen,
+                                              void *arg), void *arg);
 void SSL_get0_next_proto_negotiated(const SSL *s, const unsigned char **data,
                                     unsigned *len);
 # endif
@@ -1303,11 +1303,11 @@ int SSL_set_alpn_protos(SSL *ssl, const unsigned char *protos,
                         unsigned protos_len);
 void SSL_CTX_set_alpn_select_cb(SSL_CTX *ctx,
                                 int (*cb) (SSL *ssl,
-                                           const unsigned char **out,
-                                           unsigned char *outlen,
-                                           const unsigned char *in,
-                                           unsigned int inlen,
-                                           void *arg), void *arg);
+                                        const unsigned char **out,
+                                        unsigned char *outlen,
+                                        const unsigned char *in,
+                                        unsigned int inlen,
+                                        void *arg), void *arg);
 void SSL_get0_alpn_selected(const SSL *ssl, const unsigned char **data,
                             unsigned *len);
 
@@ -1320,62 +1320,62 @@ void SSL_get0_alpn_selected(const SSL *ssl, const unsigned char **data,
 #  define PSK_MAX_PSK_LEN 256
 void SSL_CTX_set_psk_client_callback(SSL_CTX *ctx,
                                      unsigned int (*psk_client_callback) (SSL
-                                                                          *ssl,
-                                                                          const
-                                                                          char
-                                                                          *hint,
-                                                                          char
-                                                                          *identity,
-                                                                          unsigned
-                                                                          int
-                                                                          max_identity_len,
-                                                                          unsigned
-                                                                          char
-                                                                          *psk,
-                                                                          unsigned
-                                                                          int
-                                                                          max_psk_len));
+                                             *ssl,
+                                             const
+                                             char
+                                             *hint,
+                                             char
+                                             *identity,
+                                             unsigned
+                                             int
+                                             max_identity_len,
+                                             unsigned
+                                             char
+                                             *psk,
+                                             unsigned
+                                             int
+                                             max_psk_len));
 void SSL_set_psk_client_callback(SSL *ssl,
                                  unsigned int (*psk_client_callback) (SSL
-                                                                      *ssl,
-                                                                      const
-                                                                      char
-                                                                      *hint,
-                                                                      char
-                                                                      *identity,
-                                                                      unsigned
-                                                                      int
-                                                                      max_identity_len,
-                                                                      unsigned
-                                                                      char
-                                                                      *psk,
-                                                                      unsigned
-                                                                      int
-                                                                      max_psk_len));
+                                         *ssl,
+                                         const
+                                         char
+                                         *hint,
+                                         char
+                                         *identity,
+                                         unsigned
+                                         int
+                                         max_identity_len,
+                                         unsigned
+                                         char
+                                         *psk,
+                                         unsigned
+                                         int
+                                         max_psk_len));
 void SSL_CTX_set_psk_server_callback(SSL_CTX *ctx,
                                      unsigned int (*psk_server_callback) (SSL
-                                                                          *ssl,
-                                                                          const
-                                                                          char
-                                                                          *identity,
-                                                                          unsigned
-                                                                          char
-                                                                          *psk,
-                                                                          unsigned
-                                                                          int
-                                                                          max_psk_len));
+                                             *ssl,
+                                             const
+                                             char
+                                             *identity,
+                                             unsigned
+                                             char
+                                             *psk,
+                                             unsigned
+                                             int
+                                             max_psk_len));
 void SSL_set_psk_server_callback(SSL *ssl,
                                  unsigned int (*psk_server_callback) (SSL
-                                                                      *ssl,
-                                                                      const
-                                                                      char
-                                                                      *identity,
-                                                                      unsigned
-                                                                      char
-                                                                      *psk,
-                                                                      unsigned
-                                                                      int
-                                                                      max_psk_len));
+                                         *ssl,
+                                         const
+                                         char
+                                         *identity,
+                                         unsigned
+                                         char
+                                         *psk,
+                                         unsigned
+                                         int
+                                         max_psk_len));
 int SSL_CTX_use_psk_identity_hint(SSL_CTX *ctx, const char *identity_hint);
 int SSL_use_psk_identity_hint(SSL *s, const char *identity_hint);
 const char *SSL_get_psk_identity_hint(const SSL *s);
@@ -1653,12 +1653,12 @@ struct ssl_st {
     STACK_OF(SRTP_PROTECTION_PROFILE) *srtp_profiles;
     /* What's been chosen */
     SRTP_PROTECTION_PROFILE *srtp_profile;
-        /*-
-         * Is use of the Heartbeat extension negotiated?
-         * 0: disabled
-         * 1: enabled
-         * 2: enabled, but not allowed to send Requests
-         */
+    /*-
+     * Is use of the Heartbeat extension negotiated?
+     * 0: disabled
+     * 1: enabled
+     * 2: enabled, but not allowed to send Requests
+     */
     unsigned int tlsext_heartbeat;
     /* Indicates if a HeartbeatRequest is in flight */
     unsigned int tlsext_hb_pending;
@@ -2257,7 +2257,7 @@ STACK_OF(X509) *SSL_get_peer_cert_chain(const SSL *s);
 int SSL_CTX_get_verify_mode(const SSL_CTX *ctx);
 int SSL_CTX_get_verify_depth(const SSL_CTX *ctx);
 int (*SSL_CTX_get_verify_callback(const SSL_CTX *ctx)) (int,
-                                                        X509_STORE_CTX *);
+        X509_STORE_CTX *);
 void SSL_CTX_set_verify(SSL_CTX *ctx, int mode,
                         int (*callback) (int, X509_STORE_CTX *));
 void SSL_CTX_set_verify_depth(SSL_CTX *ctx, int depth);
@@ -2309,7 +2309,7 @@ int SSL_CTX_set_srp_strength(SSL_CTX *ctx, int strength);
 int SSL_CTX_set_srp_client_pwd_callback(SSL_CTX *ctx,
                                         char *(*cb) (SSL *, void *));
 int SSL_CTX_set_srp_verify_param_callback(SSL_CTX *ctx,
-                                          int (*cb) (SSL *, void *));
+        int (*cb) (SSL *, void *));
 int SSL_CTX_set_srp_username_callback(SSL_CTX *ctx,
                                       int (*cb) (SSL *, int *, void *));
 int SSL_CTX_set_srp_cb_arg(SSL_CTX *ctx, void *arg);
@@ -2448,7 +2448,7 @@ SSL_CTX *SSL_set_SSL_CTX(SSL *ssl, SSL_CTX *ctx);
 void SSL_set_info_callback(SSL *ssl,
                            void (*cb) (const SSL *ssl, int type, int val));
 void (*SSL_get_info_callback(const SSL *ssl)) (const SSL *ssl, int type,
-                                               int val);
+        int val);
 int SSL_state(const SSL *ssl);
 void SSL_set_state(SSL *ssl, int state);
 
@@ -2504,20 +2504,20 @@ int SSL_get_ex_data_X509_STORE_CTX_idx(void);
 # define SSL_set_max_send_fragment(ssl,m) \
         SSL_ctrl(ssl,SSL_CTRL_SET_MAX_SEND_FRAGMENT,m,NULL)
 
-     /* NB: the keylength is only applicable when is_export is true */
+/* NB: the keylength is only applicable when is_export is true */
 # ifndef OPENSSL_NO_RSA
 void SSL_CTX_set_tmp_rsa_callback(SSL_CTX *ctx,
                                   RSA *(*cb) (SSL *ssl, int is_export,
-                                              int keylength));
+                                          int keylength));
 
 void SSL_set_tmp_rsa_callback(SSL *ssl,
                               RSA *(*cb) (SSL *ssl, int is_export,
-                                          int keylength));
+                                      int keylength));
 # endif
 # ifndef OPENSSL_NO_DH
 void SSL_CTX_set_tmp_dh_callback(SSL_CTX *ctx,
                                  DH *(*dh) (SSL *ssl, int is_export,
-                                            int keylength));
+                                         int keylength));
 void SSL_set_tmp_dh_callback(SSL *ssl,
                              DH *(*dh) (SSL *ssl, int is_export,
                                         int keylength));
@@ -2525,10 +2525,10 @@ void SSL_set_tmp_dh_callback(SSL *ssl,
 # ifndef OPENSSL_NO_ECDH
 void SSL_CTX_set_tmp_ecdh_callback(SSL_CTX *ctx,
                                    EC_KEY *(*ecdh) (SSL *ssl, int is_export,
-                                                    int keylength));
+                                           int keylength));
 void SSL_set_tmp_ecdh_callback(SSL *ssl,
                                EC_KEY *(*ecdh) (SSL *ssl, int is_export,
-                                                int keylength));
+                                       int keylength));
 # endif
 
 # ifndef OPENSSL_NO_COMP
@@ -2537,7 +2537,7 @@ const COMP_METHOD *SSL_get_current_expansion(SSL *s);
 const char *SSL_COMP_get_name(const COMP_METHOD *comp);
 STACK_OF(SSL_COMP) *SSL_COMP_get_compression_methods(void);
 STACK_OF(SSL_COMP) *SSL_COMP_set0_compression_methods(STACK_OF(SSL_COMP)
-                                                      *meths);
+        *meths);
 void SSL_COMP_free_compression_methods(void);
 int SSL_COMP_add_compression_method(int id, COMP_METHOD *cm);
 # else

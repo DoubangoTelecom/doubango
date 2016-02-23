@@ -8,7 +8,8 @@ extern "C" {
 #endif
 
 //  Helper
-__inline BOOL MultiplyCheckOverflow(DWORD a, DWORD b, __deref_out_range(==, a * b) DWORD *pab) {
+__inline BOOL MultiplyCheckOverflow(DWORD a, DWORD b, __deref_out_range(==, a * b) DWORD *pab)
+{
     *pab = a * b;
     if ((a == 0) || (((*pab) / a) == b)) {
         return TRUE;
@@ -43,8 +44,8 @@ __success(return != 0) __inline BOOL ValidateBitmapInfoHeader(
 
     // Reject bad parameters - do the size check first to avoid reading bad memory
     if (cbSize < sizeof(BITMAPINFOHEADER) ||
-        pbmi->biSize < sizeof(BITMAPINFOHEADER) ||
-        pbmi->biSize > 4096) {
+            pbmi->biSize < sizeof(BITMAPINFOHEADER) ||
+            pbmi->biSize > 4096) {
         return FALSE;
     }
 
@@ -78,7 +79,7 @@ __success(return != 0) __inline BOOL ValidateBitmapInfoHeader(
     // Also don't allow huge values > 1GB which might cause arithmetic
     // errors for users
     if (dwSizeImage > 0x40000000 ||
-        pbmi->biSizeImage > 0x40000000) {
+            pbmi->biSizeImage > 0x40000000) {
         return FALSE;
     }
 
@@ -89,13 +90,14 @@ __success(return != 0) __inline BOOL ValidateBitmapInfoHeader(
 
     if (pbmi->biClrUsed == 0 && pbmi->biBitCount <= 8 && pbmi->biBitCount > 0) {
         dwClrUsed = (1 << pbmi->biBitCount);
-    } else {
+    }
+    else {
         dwClrUsed = pbmi->biClrUsed;
     }
 
     //  Check total size
     if (cbSize < pbmi->biSize + dwClrUsed * sizeof(RGBQUAD) +
-                 (pbmi->biCompression == BI_BITFIELDS ? 3 * sizeof(DWORD) : 0)) {
+            (pbmi->biCompression == BI_BITFIELDS ? 3 * sizeof(DWORD) : 0)) {
         return FALSE;
     }
 

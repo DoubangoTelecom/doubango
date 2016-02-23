@@ -72,15 +72,18 @@ public:
 
     // Allow the filter to see what allocator we have
     // N.B. This does NOT AddRef
-    __out IMemAllocator * PeekAllocator() const
-        {  return m_pAllocator; }
+    __out IMemAllocator * PeekAllocator() const {
+        return m_pAllocator;
+    }
 
     // Pass this on downstream if it ever gets called.
     STDMETHODIMP GetAllocatorRequirements(__out ALLOCATOR_PROPERTIES *pProps);
 
     HRESULT CompleteConnect(IPin *pReceivePin);
 
-    inline const BOOL ReadOnly() { return m_bReadOnly ; }
+    inline const BOOL ReadOnly() {
+        return m_bReadOnly ;
+    }
 
 };  // CTransInPlaceInputPin
 
@@ -122,13 +125,15 @@ public:
     //  Also called by input pin's GetAllocator()
     void SetAllocator(IMemAllocator * pAllocator);
 
-    __out_opt IMemInputPin * ConnectedIMemInputPin()
-        { return m_pInputPin; }
+    __out_opt IMemInputPin * ConnectedIMemInputPin() {
+        return m_pInputPin;
+    }
 
     // Allow the filter to see what allocator we have
     // N.B. This does NOT AddRef
-    __out IMemAllocator * PeekAllocator() const
-        {  return m_pAllocator; }
+    __out IMemAllocator * PeekAllocator() const {
+        return m_pAllocator;
+    }
 
     HRESULT CompleteConnect(IPin *pReceivePin);
 
@@ -162,10 +167,10 @@ public:
 
     // We override EnumMediaTypes to bypass the transform class enumerator
     // which would otherwise call this.
-    HRESULT GetMediaType(int iPosition, __inout CMediaType *pMediaType)
-        {   DbgBreak("CTransInPlaceFilter::GetMediaType should never be called");
-            return E_UNEXPECTED;
-        }
+    HRESULT GetMediaType(int iPosition, __inout CMediaType *pMediaType) {
+        DbgBreak("CTransInPlaceFilter::GetMediaType should never be called");
+        return E_UNEXPECTED;
+    }
 
     // This is called when we actually have to provide our own allocator.
     HRESULT DecideBufferSize(IMemAllocator*, __inout ALLOCATOR_PROPERTIES *);
@@ -174,8 +179,7 @@ public:
     // class to call CheckInputType with the assumption that the type
     // does not change.  In Debug builds some calls will be made and
     // we just ensure that they do not assert.
-    HRESULT CheckTransform(const CMediaType *mtIn, const CMediaType *mtOut)
-    {
+    HRESULT CheckTransform(const CMediaType *mtIn, const CMediaType *mtOut) {
         return S_OK;
     };
 
@@ -202,8 +206,9 @@ public:
 #ifdef PERF
     // Override to register performance measurement with a less generic string
     // You should do this to avoid confusion with other filters
-    virtual void RegisterPerfId()
-         {m_idTransInPlace = MSR_REGISTER(TEXT("TransInPlace"));}
+    virtual void RegisterPerfId() {
+        m_idTransInPlace = MSR_REGISTER(TEXT("TransInPlace"));
+    }
 #endif // PERF
 
 
@@ -223,25 +228,21 @@ protected:
     friend class CTransInPlaceInputPin;
     friend class CTransInPlaceOutputPin;
 
-    __out CTransInPlaceInputPin  *InputPin() const
-    {
+    __out CTransInPlaceInputPin  *InputPin() const {
         return (CTransInPlaceInputPin *)m_pInput;
     };
-    __out CTransInPlaceOutputPin *OutputPin() const
-    {
+    __out CTransInPlaceOutputPin *OutputPin() const {
         return (CTransInPlaceOutputPin *)m_pOutput;
     };
 
     //  Helper to see if the input and output types match
-    BOOL TypesMatch()
-    {
+    BOOL TypesMatch() {
         return InputPin()->CurrentMediaType() ==
                OutputPin()->CurrentMediaType();
     }
 
     //  Are the input and output allocators different?
-    BOOL UsingDifferentAllocators() const
-    {
+    BOOL UsingDifferentAllocators() const {
         return InputPin()->PeekAllocator() != OutputPin()->PeekAllocator();
     }
 }; // CTransInPlaceFilter

@@ -19,7 +19,8 @@ extern "C" unsigned __int64 __getReg( int whichReg );
 #endif // _IA64_
 
 
-inline ULONGLONG _RDTSC( void ) {
+inline ULONGLONG _RDTSC( void )
+{
 #ifdef _X86_
     LARGE_INTEGER   li;
     __asm {
@@ -216,7 +217,7 @@ inline ULONGLONG _RDTSC( void ) {
         perfData.data.sampleDuration = (msecs); \
         PerflogTraceEvent ((PEVENT_TRACE_HEADER) &perfData); \
     } \
-
+ 
 
 inline
 VOID PERFLOG_STREAMTRACE(
@@ -227,10 +228,9 @@ VOID PERFLOG_STREAMTRACE(
     ULONGLONG Data2,
     ULONGLONG Data3,
     ULONGLONG Data4
-    )
+)
 {
-    if (Level <= PerflogModuleLevel)
-    {
+    if (Level <= PerflogModuleLevel) {
         PERFINFO_WMI_STREAMTRACE perfData;
         memset( &perfData, 0, sizeof( perfData ) );
         perfData.header.Size = sizeof( perfData );

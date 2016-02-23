@@ -33,140 +33,140 @@
 FT_BEGIN_HEADER
 
 
-  /**************************************************************************
-   *
-   * @section:
-   *   quick_advance
-   *
-   * @title:
-   *   Quick retrieval of advance values
-   *
-   * @abstract:
-   *   Retrieve horizontal and vertical advance values without processing
-   *   glyph outlines, if possible.
-   *
-   * @description:
-   *   This section contains functions to quickly extract advance values
-   *   without handling glyph outlines, if possible.
-   */
+/**************************************************************************
+ *
+ * @section:
+ *   quick_advance
+ *
+ * @title:
+ *   Quick retrieval of advance values
+ *
+ * @abstract:
+ *   Retrieve horizontal and vertical advance values without processing
+ *   glyph outlines, if possible.
+ *
+ * @description:
+ *   This section contains functions to quickly extract advance values
+ *   without handling glyph outlines, if possible.
+ */
 
 
-  /*************************************************************************/
-  /*                                                                       */
-  /* <Const>                                                               */
-  /*    FT_ADVANCE_FLAG_FAST_ONLY                                          */
-  /*                                                                       */
-  /* <Description>                                                         */
-  /*    A bit-flag to be OR-ed with the `flags' parameter of the           */
-  /*    @FT_Get_Advance and @FT_Get_Advances functions.                    */
-  /*                                                                       */
-  /*    If set, it indicates that you want these functions to fail if the  */
-  /*    corresponding hinting mode or font driver doesn't allow for very   */
-  /*    quick advance computation.                                         */
-  /*                                                                       */
-  /*    Typically, glyphs which are either unscaled, unhinted, bitmapped,  */
-  /*    or light-hinted can have their advance width computed very         */
-  /*    quickly.                                                           */
-  /*                                                                       */
-  /*    Normal and bytecode hinted modes, which require loading, scaling,  */
-  /*    and hinting of the glyph outline, are extremely slow by            */
-  /*    comparison.                                                        */
-  /*                                                                       */
+/*************************************************************************/
+/*                                                                       */
+/* <Const>                                                               */
+/*    FT_ADVANCE_FLAG_FAST_ONLY                                          */
+/*                                                                       */
+/* <Description>                                                         */
+/*    A bit-flag to be OR-ed with the `flags' parameter of the           */
+/*    @FT_Get_Advance and @FT_Get_Advances functions.                    */
+/*                                                                       */
+/*    If set, it indicates that you want these functions to fail if the  */
+/*    corresponding hinting mode or font driver doesn't allow for very   */
+/*    quick advance computation.                                         */
+/*                                                                       */
+/*    Typically, glyphs which are either unscaled, unhinted, bitmapped,  */
+/*    or light-hinted can have their advance width computed very         */
+/*    quickly.                                                           */
+/*                                                                       */
+/*    Normal and bytecode hinted modes, which require loading, scaling,  */
+/*    and hinting of the glyph outline, are extremely slow by            */
+/*    comparison.                                                        */
+/*                                                                       */
 #define FT_ADVANCE_FLAG_FAST_ONLY  0x20000000UL
 
 
-  /*************************************************************************/
-  /*                                                                       */
-  /* <Function>                                                            */
-  /*    FT_Get_Advance                                                     */
-  /*                                                                       */
-  /* <Description>                                                         */
-  /*    Retrieve the advance value of a given glyph outline in an          */
-  /*    @FT_Face.  By default, the unhinted advance is returned in font    */
-  /*    units.                                                             */
-  /*                                                                       */
-  /* <Input>                                                               */
-  /*    face       :: The source @FT_Face handle.                          */
-  /*                                                                       */
-  /*    gindex     :: The glyph index.                                     */
-  /*                                                                       */
-  /*    load_flags :: A set of bit flags similar to those used when        */
-  /*                  calling @FT_Load_Glyph, used to determine what kind  */
-  /*                  of advances you need.                                */
-  /* <Output>                                                              */
-  /*    padvance :: The advance value, in either font units or 16.16       */
-  /*                format.                                                */
-  /*                                                                       */
-  /*                If @FT_LOAD_VERTICAL_LAYOUT is set, this is the        */
-  /*                vertical advance corresponding to a vertical layout.   */
-  /*                Otherwise, it is the horizontal advance in a           */
-  /*                horizontal layout.                                     */
-  /*                                                                       */
-  /* <Return>                                                              */
-  /*    FreeType error code.  0 means success.                             */
-  /*                                                                       */
-  /* <Note>                                                                */
-  /*    This function may fail if you use @FT_ADVANCE_FLAG_FAST_ONLY and   */
-  /*    if the corresponding font backend doesn't have a quick way to      */
-  /*    retrieve the advances.                                             */
-  /*                                                                       */
-  /*    A scaled advance is returned in 16.16 format but isn't transformed */
-  /*    by the affine transformation specified by @FT_Set_Transform.       */
-  /*                                                                       */
-  FT_EXPORT( FT_Error )
-  FT_Get_Advance( FT_Face    face,
-                  FT_UInt    gindex,
-                  FT_Int32   load_flags,
-                  FT_Fixed  *padvance );
+/*************************************************************************/
+/*                                                                       */
+/* <Function>                                                            */
+/*    FT_Get_Advance                                                     */
+/*                                                                       */
+/* <Description>                                                         */
+/*    Retrieve the advance value of a given glyph outline in an          */
+/*    @FT_Face.  By default, the unhinted advance is returned in font    */
+/*    units.                                                             */
+/*                                                                       */
+/* <Input>                                                               */
+/*    face       :: The source @FT_Face handle.                          */
+/*                                                                       */
+/*    gindex     :: The glyph index.                                     */
+/*                                                                       */
+/*    load_flags :: A set of bit flags similar to those used when        */
+/*                  calling @FT_Load_Glyph, used to determine what kind  */
+/*                  of advances you need.                                */
+/* <Output>                                                              */
+/*    padvance :: The advance value, in either font units or 16.16       */
+/*                format.                                                */
+/*                                                                       */
+/*                If @FT_LOAD_VERTICAL_LAYOUT is set, this is the        */
+/*                vertical advance corresponding to a vertical layout.   */
+/*                Otherwise, it is the horizontal advance in a           */
+/*                horizontal layout.                                     */
+/*                                                                       */
+/* <Return>                                                              */
+/*    FreeType error code.  0 means success.                             */
+/*                                                                       */
+/* <Note>                                                                */
+/*    This function may fail if you use @FT_ADVANCE_FLAG_FAST_ONLY and   */
+/*    if the corresponding font backend doesn't have a quick way to      */
+/*    retrieve the advances.                                             */
+/*                                                                       */
+/*    A scaled advance is returned in 16.16 format but isn't transformed */
+/*    by the affine transformation specified by @FT_Set_Transform.       */
+/*                                                                       */
+FT_EXPORT( FT_Error )
+FT_Get_Advance( FT_Face    face,
+                FT_UInt    gindex,
+                FT_Int32   load_flags,
+                FT_Fixed  *padvance );
 
 
-  /*************************************************************************/
-  /*                                                                       */
-  /* <Function>                                                            */
-  /*    FT_Get_Advances                                                    */
-  /*                                                                       */
-  /* <Description>                                                         */
-  /*    Retrieve the advance values of several glyph outlines in an        */
-  /*    @FT_Face.  By default, the unhinted advances are returned in font  */
-  /*    units.                                                             */
-  /*                                                                       */
-  /* <Input>                                                               */
-  /*    face        :: The source @FT_Face handle.                         */
-  /*                                                                       */
-  /*    start       :: The first glyph index.                              */
-  /*                                                                       */
-  /*    count       :: The number of advance values you want to retrieve.  */
-  /*                                                                       */
-  /*    load_flags  :: A set of bit flags similar to those used when       */
-  /*                   calling @FT_Load_Glyph.                             */
-  /*                                                                       */
-  /* <Output>                                                              */
-  /*    padvance :: The advances, in either font units or 16.16 format.    */
-  /*                This array must contain at least `count' elements.     */
-  /*                                                                       */
-  /*                If @FT_LOAD_VERTICAL_LAYOUT is set, these are the      */
-  /*                vertical advances corresponding to a vertical layout.  */
-  /*                Otherwise, they are the horizontal advances in a       */
-  /*                horizontal layout.                                     */
-  /*                                                                       */
-  /* <Return>                                                              */
-  /*    FreeType error code.  0 means success.                             */
-  /*                                                                       */
-  /* <Note>                                                                */
-  /*    This function may fail if you use @FT_ADVANCE_FLAG_FAST_ONLY and   */
-  /*    if the corresponding font backend doesn't have a quick way to      */
-  /*    retrieve the advances.                                             */
-  /*                                                                       */
-  /*    Scaled advances are returned in 16.16 format but aren't            */
-  /*    transformed by the affine transformation specified by              */
-  /*    @FT_Set_Transform.                                                 */
-  /*                                                                       */
-  FT_EXPORT( FT_Error )
-  FT_Get_Advances( FT_Face    face,
-                   FT_UInt    start,
-                   FT_UInt    count,
-                   FT_Int32   load_flags,
-                   FT_Fixed  *padvances );
+/*************************************************************************/
+/*                                                                       */
+/* <Function>                                                            */
+/*    FT_Get_Advances                                                    */
+/*                                                                       */
+/* <Description>                                                         */
+/*    Retrieve the advance values of several glyph outlines in an        */
+/*    @FT_Face.  By default, the unhinted advances are returned in font  */
+/*    units.                                                             */
+/*                                                                       */
+/* <Input>                                                               */
+/*    face        :: The source @FT_Face handle.                         */
+/*                                                                       */
+/*    start       :: The first glyph index.                              */
+/*                                                                       */
+/*    count       :: The number of advance values you want to retrieve.  */
+/*                                                                       */
+/*    load_flags  :: A set of bit flags similar to those used when       */
+/*                   calling @FT_Load_Glyph.                             */
+/*                                                                       */
+/* <Output>                                                              */
+/*    padvance :: The advances, in either font units or 16.16 format.    */
+/*                This array must contain at least `count' elements.     */
+/*                                                                       */
+/*                If @FT_LOAD_VERTICAL_LAYOUT is set, these are the      */
+/*                vertical advances corresponding to a vertical layout.  */
+/*                Otherwise, they are the horizontal advances in a       */
+/*                horizontal layout.                                     */
+/*                                                                       */
+/* <Return>                                                              */
+/*    FreeType error code.  0 means success.                             */
+/*                                                                       */
+/* <Note>                                                                */
+/*    This function may fail if you use @FT_ADVANCE_FLAG_FAST_ONLY and   */
+/*    if the corresponding font backend doesn't have a quick way to      */
+/*    retrieve the advances.                                             */
+/*                                                                       */
+/*    Scaled advances are returned in 16.16 format but aren't            */
+/*    transformed by the affine transformation specified by              */
+/*    @FT_Set_Transform.                                                 */
+/*                                                                       */
+FT_EXPORT( FT_Error )
+FT_Get_Advances( FT_Face    face,
+                 FT_UInt    start,
+                 FT_UInt    count,
+                 FT_Int32   load_flags,
+                 FT_Fixed  *padvances );
 
 /* */
 

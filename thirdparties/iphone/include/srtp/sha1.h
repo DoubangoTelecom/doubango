@@ -9,26 +9,26 @@
  */
 
 /*
- *	
+ *
  * Copyright (c) 2001-2006, Cisco Systems, Inc.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  *   Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   Redistributions in binary form must reproduce the above
  *   copyright notice, this list of conditions and the following
  *   disclaimer in the documentation and/or other materials provided
  *   with the distribution.
- * 
+ *
  *   Neither the name of the Cisco Systems, Inc. nor the names of its
  *   contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -51,17 +51,17 @@
 #include "datatypes.h"
 
 typedef struct {
-  uint32_t H[5];             /* state vector                    */
-  uint32_t M[16];            /* message buffer                  */
-  int octets_in_buffer;      /* octets of message in buffer     */
-  uint32_t num_bits_in_msg;  /* total number of bits in message */
+    uint32_t H[5];             /* state vector                    */
+    uint32_t M[16];            /* message buffer                  */
+    int octets_in_buffer;      /* octets of message in buffer     */
+    uint32_t num_bits_in_msg;  /* total number of bits in message */
 } sha1_ctx_t;
 
 /*
  * sha1(&ctx, msg, len, output) hashes the len octets starting at msg
  * into the SHA1 context, then writes the result to the 20 octets at
  * output
- * 
+ *
  */
 
 void
@@ -69,10 +69,10 @@ sha1(const uint8_t *message,  int octets_in_msg, uint32_t output[5]);
 
 /*
  * sha1_init(&ctx) initializes the SHA1 context ctx
- * 
+ *
  * sha1_update(&ctx, msg, len) hashes the len octets starting at msg
  * into the SHA1 context
- * 
+ *
  * sha1_final(&ctx, output) performs the final processing of the SHA1
  * context and writes the result to the 20 octets at output
  *
@@ -90,7 +90,7 @@ sha1_final(sha1_ctx_t *ctx, uint32_t output[5]);
 /*
  * The sha1_core function is INTERNAL to SHA-1, but it is declared
  * here because it is also used by the cipher SEAL 3.0 in its key
- * setup algorithm.  
+ * setup algorithm.
  */
 
 /*
@@ -104,5 +104,5 @@ sha1_final(sha1_ctx_t *ctx, uint32_t output[5]);
 
 void
 sha1_core(const uint32_t M[16], uint32_t hash_value[5]);
-     
+
 #endif /* SHA1_H */

@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -44,52 +44,48 @@ TXCAP_BEGIN_DECLS
 
 /** List of all supported types.
 */
-typedef enum txcap_action_type_e
-{
-	txcap_atp_create,
-	txcap_atp_replace,
-	txcap_atp_fetch,
-	txcap_atp_delete
+typedef enum txcap_action_type_e {
+    txcap_atp_create,
+    txcap_atp_replace,
+    txcap_atp_fetch,
+    txcap_atp_delete
 }
 txcap_action_type_t;
 
 /** List of all supported targets.
 */
-typedef enum txcap_action_target_e
-{
-	txcap_atg_element,
-	txcap_atg_document,
-	txcap_atg_attribute
+typedef enum txcap_action_target_e {
+    txcap_atg_element,
+    txcap_atg_document,
+    txcap_atg_attribute
 }
 txcap_action_target_t;
 
 /** List of all supported options.
 * To pass an option to the sesion, use @ref TXCAP_ACTION_SET_OPTION() macro.
 */
-typedef enum txcap_action_option_e
-{
-	TXCAP_ACTION_OPTION_TIMEOUT = THTTP_ACTION_OPTION_TIMEOUT,
+typedef enum txcap_action_option_e {
+    TXCAP_ACTION_OPTION_TIMEOUT = THTTP_ACTION_OPTION_TIMEOUT,
 
-	//TXCAP_ACTION_OPTION_*** = 0xFF,
-	//TXCAP_ACTION_OPTION_****,
+    //TXCAP_ACTION_OPTION_*** = 0xFF,
+    //TXCAP_ACTION_OPTION_****,
 }
 txcap_action_option_t;
 
-typedef enum txcap_action_param_type_e
-{
-	txcap_apt_null = 0,
+typedef enum txcap_action_param_type_e {
+    txcap_apt_null = 0,
 
-	txcap_apt_option,
-	txcap_apt_header,
-	txcap_apt_payload,
-	txcap_apt_selector,
-	txcap_apt_urlstring
+    txcap_apt_option,
+    txcap_apt_header,
+    txcap_apt_payload,
+    txcap_apt_selector,
+    txcap_apt_urlstring
 }
 txcap_action_param_type_t;
 
 /**@ingroup txcap_action_group
 * @def TXCAP_ACTION_SET_OPTION
-* Adds or updates an option. 
+* Adds or updates an option.
 * This is a helper macro for @a txcap_action_*() functions.
 * @param ID_INT The id of the option to add/update (@ref txcap_action_option_t).
 * @param VALUE_STR The new value of the option (<i>const char*</i>).
@@ -130,7 +126,7 @@ int ret = txcap_action_fetch_element(stack,
 */
 /**@ingroup txcap_action_group
 * @def TXCAP_ACTION_SET_PAYLOAD
-* Adds a content (or payload) to the request. You should also add a content-type header by using 
+* Adds a content (or payload) to the request. You should also add a content-type header by using
 * @ref TXCAP_ACTION_SET_HEADER() macro. You should not add the content-length header.
 * This is a helper macro for @a txcap_action_*() functions.
 * @param PAY_PTR A pointer to the payload (<i>const void*</i>).
@@ -158,7 +154,7 @@ int ret = txcap_action_create_element(stack,
 * if it's missing. This parameter is mandatory.
 * @param ... Node selection steps. You must use @a TXCAP_SELECTOR_NODE_SET_*() macros to set these parameters.
 * MUST always ends with @ref TXCAP_SELECTOR_NODE_SET_NULL.
-* 
+*
 * @code
 int ret = txcap_action_fetch_attribute(stack,
 	// action-level options
@@ -182,7 +178,7 @@ int ret = txcap_action_fetch_attribute(stack,
 * @def TXCAP_ACTION_SET_REQUEST_URI
 * Sets the request URI. This macro is useful if you want to provide your own request URI instead of using @ref TXCAP_ACTION_SET_SELECTOR.
 * @param URI_STR Fully Qualified HTTP/HTTPS URI.
-* 
+*
 * @code
 const char* PAYLOAD = "....";
 int ret = txcap_action_create_element(stack,

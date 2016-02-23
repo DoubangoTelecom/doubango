@@ -1,17 +1,17 @@
 /*Copyright (C) 2013 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 */
@@ -61,7 +61,7 @@ class T140Callback;
 	virtual bool setSilentHangup(bool silent); \
 	virtual bool addSigCompCompartment(Platform::String^ compId); \
 	virtual bool removeSigCompCompartment(); \
-
+ 
 #define rtISession_Implement(cls) \
 	unsigned cls##::getId(){ \
 	return m_pSipSession->getId(); \
@@ -108,7 +108,7 @@ OVERRIDE_FUNC(bool cls##::setToUri(Platform::String^ toUriString){ \
 	bool cls##::removeSigCompCompartment(){ \
 	return m_pSipSession->removeSigCompCompartment(); \
 }\
-
+ 
 
 #define rtIInviteSession_Declare() \
 	[Windows::Foundation::Metadata::DefaultOverload] \
@@ -124,7 +124,7 @@ OVERRIDE_FUNC(bool cls##::setToUri(Platform::String^ toUriString){ \
 	virtual bool sendInfo(VISIBLE_VOID_PTR payload, unsigned len, rtActionConfig^ config); \
 	OVERRIDE_FUNC(virtual bool sendInfo(VISIBLE_VOID_PTR payload, unsigned len);) \
 	virtual rtMediaSessionMgr^ getMediaMgr(); \
-
+ 
 #define rtIInviteSession_Implement(cls) \
 bool cls##::accept(rtActionConfig^ config){ \
 	return m_pSipSession->accept(config ? config->getWrappedActionConfig() : tsk_null); \
@@ -156,355 +156,363 @@ rtMediaSessionMgr^ cls##::getMediaMgr(){ \
 	} \
 	return nullptr; \
 } \
-
+ 
 namespace doubango_rt
 {
-	namespace BackEnd
-		{
-		ref class rtMsrpCallback;
-		interface class rtIMsrpCallback;
+namespace BackEnd
+{
+ref class rtMsrpCallback;
+interface class rtIMsrpCallback;
 
 
-		/* ======================== rtT140CallbackData ========================*/
-		public ref class rtT140CallbackData sealed
-		{
-		internal:
-			rtT140CallbackData(enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);
-		public:
-			virtual ~rtT140CallbackData();
+/* ======================== rtT140CallbackData ========================*/
+public ref class rtT140CallbackData sealed
+{
+internal:
+    rtT140CallbackData(enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);
+public:
+    virtual ~rtT140CallbackData();
 
-		private:
-			T140CallbackData* m_pData;
-		};
+private:
+    T140CallbackData* m_pData;
+};
 
-		/* ======================== rtT140Callback ========================*/ 
-		public interface class rtIT140Callback
-		{
-			virtual int ondata(rtT140CallbackData^ pData);
-		};
-		public ref class rtT140Callback sealed
-		{
-		internal:
-			rtT140Callback();
-			const T140Callback* getWrappedCallback(){ return m_pCallback; }
-			
-		public:
-			rtT140Callback(rtIT140Callback^ pI)
-			{
-				m_pI = pI;
-			}
-			virtual ~rtT140Callback();
+/* ======================== rtT140Callback ========================*/
+public interface class rtIT140Callback
+{
+    virtual int ondata(rtT140CallbackData^ pData);
+};
+public ref class rtT140Callback sealed
+{
+internal:
+    rtT140Callback();
+    const T140Callback* getWrappedCallback() {
+        return m_pCallback;
+    }
 
-		protected:
-			virtual int ondata(rtT140CallbackData^ pData){ 
-				if(m_pI)
-				{
-					return m_pI->ondata(pData);
-				}
-				return 0; 
-			}
+public:
+    rtT140Callback(rtIT140Callback^ pI) {
+        m_pI = pI;
+    }
+    virtual ~rtT140Callback();
 
-		private:
-			T140Callback* m_pCallback;
-			rtIT140Callback^ m_pI;
-		};
+protected:
+    virtual int ondata(rtT140CallbackData^ pData) {
+        if(m_pI) {
+            return m_pI->ondata(pData);
+        }
+        return 0;
+    }
 
-
-		/* ======================== rtISipSession ========================*/
-		public interface class rtISipSession
-		{
-			rtISession_Declare();
-		};
+private:
+    T140Callback* m_pCallback;
+    rtIT140Callback^ m_pI;
+};
 
 
-		/* ======================== rtIInviteSession ========================*/
-		public interface class rtIInviteSession : rtISipSession
-		{
-			rtIInviteSession_Declare();
-		};
+/* ======================== rtISipSession ========================*/
+public interface class rtISipSession
+{
+    rtISession_Declare();
+};
 
-		/* ======================== rtSipSession ========================*/
-		public ref class rtSipSession sealed: rtISipSession
-		{
-		public:
-			rtSipSession(rtSipStack^ pStack);
-			virtual ~rtSipSession();
-		internal:
-			rtSipSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
-			SipSession* getWrappedSession(){ return m_pSipSession; }
 
-		public:
-			rtISession_Declare();
+/* ======================== rtIInviteSession ========================*/
+public interface class rtIInviteSession : rtISipSession
+{
+    rtIInviteSession_Declare();
+};
 
-		private:
-			SipSession* m_pSipSession;
-		};
+/* ======================== rtSipSession ========================*/
+public ref class rtSipSession sealed: rtISipSession
+{
+public:
+    rtSipSession(rtSipStack^ pStack);
+    virtual ~rtSipSession();
+internal:
+    rtSipSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
+    SipSession* getWrappedSession() {
+        return m_pSipSession;
+    }
 
-		/* ======================== rtInviteSession ========================*/
-		public ref class rtInviteSession sealed: rtIInviteSession
-		{
-		public:
-			rtInviteSession(rtSipStack^ pStack);
-			virtual ~rtInviteSession();
-		internal:
-			rtInviteSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
-			InviteSession* getWrappedSession(){ return m_pSipSession; }
+public:
+    rtISession_Declare();
 
-		public:
-			rtISession_Declare();
-			rtIInviteSession_Declare();
+private:
+    SipSession* m_pSipSession;
+};
 
-		private:
-			InviteSession* m_pSipSession;
-		};
+/* ======================== rtInviteSession ========================*/
+public ref class rtInviteSession sealed: rtIInviteSession
+{
+public:
+    rtInviteSession(rtSipStack^ pStack);
+    virtual ~rtInviteSession();
+internal:
+    rtInviteSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
+    InviteSession* getWrappedSession() {
+        return m_pSipSession;
+    }
 
-		/* ======================== CallSession ========================*/
-		public ref class rtCallSession sealed : rtIInviteSession
-		{
-		public:
-			rtCallSession(rtSipStack^ pStack);
-			virtual ~rtCallSession();
-		internal:
-			rtCallSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
-			CallSession* getWrappedSession(){ return m_pSipSession; }
+public:
+    rtISession_Declare();
+    rtIInviteSession_Declare();
 
-		public:
-			rtISession_Declare();
-			rtIInviteSession_Declare();
+private:
+    InviteSession* m_pSipSession;
+};
 
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool call(Platform::String^ remoteUriString, rt_twrap_media_type_t media, rtActionConfig^ config);
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool call(Platform::String^ remoteUriString, rt_twrap_media_type_t media);
-			bool call(rtSipUri^ remoteUri, rt_twrap_media_type_t media, rtActionConfig^ config);
-			bool call(rtSipUri^ remoteUri, rt_twrap_media_type_t media);
+/* ======================== CallSession ========================*/
+public ref class rtCallSession sealed : rtIInviteSession
+{
+public:
+    rtCallSession(rtSipStack^ pStack);
+    virtual ~rtCallSession();
+internal:
+    rtCallSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
+    CallSession* getWrappedSession() {
+        return m_pSipSession;
+    }
 
-			bool setSessionTimer(unsigned timeout, Platform::String^ refresher);
-			bool set100rel(bool enabled);
-			bool setRtcp(bool enabled);
-			bool setRtcpMux(bool enabled);
-			bool setICE(bool enabled);
-			bool setQoS(rt_tmedia_qos_stype_t type, rt_tmedia_qos_strength_t strength);
-			bool setVideoFps(int32_t fps);
-			bool setVideoBandwidthUploadMax(int32_t max);
-			bool setVideoBandwidthDownloadMax(int32_t max);
-			bool setVideoPrefSize(rt_tmedia_pref_video_size_t pref_video_size);
-			bool hold(rtActionConfig^ config);
-			bool hold();
-			bool resume(rtActionConfig^ config);
-			bool resume();
-			bool transfer(Platform::String^ referToUriString, rtActionConfig^ config);
-			bool transfer(Platform::String^ referToUriString);
-			bool acceptTransfer(rtActionConfig^ config);
-			bool acceptTransfer();
-			bool rejectTransfer(rtActionConfig^ config);
-			bool rejectTransfer();
-			bool sendDTMF(int number);
-			unsigned getSessionTransferId();
+public:
+    rtISession_Declare();
+    rtIInviteSession_Declare();
+
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool call(Platform::String^ remoteUriString, rt_twrap_media_type_t media, rtActionConfig^ config);
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool call(Platform::String^ remoteUriString, rt_twrap_media_type_t media);
+    bool call(rtSipUri^ remoteUri, rt_twrap_media_type_t media, rtActionConfig^ config);
+    bool call(rtSipUri^ remoteUri, rt_twrap_media_type_t media);
+
+    bool setSessionTimer(unsigned timeout, Platform::String^ refresher);
+    bool set100rel(bool enabled);
+    bool setRtcp(bool enabled);
+    bool setRtcpMux(bool enabled);
+    bool setICE(bool enabled);
+    bool setQoS(rt_tmedia_qos_stype_t type, rt_tmedia_qos_strength_t strength);
+    bool setVideoFps(int32_t fps);
+    bool setVideoBandwidthUploadMax(int32_t max);
+    bool setVideoBandwidthDownloadMax(int32_t max);
+    bool setVideoPrefSize(rt_tmedia_pref_video_size_t pref_video_size);
+    bool hold(rtActionConfig^ config);
+    bool hold();
+    bool resume(rtActionConfig^ config);
+    bool resume();
+    bool transfer(Platform::String^ referToUriString, rtActionConfig^ config);
+    bool transfer(Platform::String^ referToUriString);
+    bool acceptTransfer(rtActionConfig^ config);
+    bool acceptTransfer();
+    bool rejectTransfer(rtActionConfig^ config);
+    bool rejectTransfer();
+    bool sendDTMF(int number);
+    unsigned getSessionTransferId();
 #if COM_VISIBLE
-			bool sendT140Data(rt_tmedia_t140_data_type_t data_type, Platform::String^ data);
+    bool sendT140Data(rt_tmedia_t140_data_type_t data_type, Platform::String^ data);
 #else
-			bool sendT140Data(rt_tmedia_t140_data_type_t data_type, Platform::IntPtr data_ptr, unsigned data_size);
+    bool sendT140Data(rt_tmedia_t140_data_type_t data_type, Platform::IntPtr data_ptr, unsigned data_size);
 #endif
-			bool sendT140Data(rt_tmedia_t140_data_type_t data_type);
-			bool setT140Callback(rtT140Callback^ pT140Callback);
+    bool sendT140Data(rt_tmedia_t140_data_type_t data_type);
+    bool setT140Callback(rtT140Callback^ pT140Callback);
 
-		private:
-			CallSession* m_pSipSession;
-		};
+private:
+    CallSession* m_pSipSession;
+};
 
 
-		/* ======================== rtMsrpSession ========================*/
-		public ref class rtMsrpSession sealed : rtIInviteSession
-		{
-		public:
-			rtMsrpSession(rtSipStack^ pStack, rtIMsrpCallback^ pCallback);
-			virtual ~rtMsrpSession();
+/* ======================== rtMsrpSession ========================*/
+public ref class rtMsrpSession sealed : rtIInviteSession
+{
+public:
+    rtMsrpSession(rtSipStack^ pStack, rtIMsrpCallback^ pCallback);
+    virtual ~rtMsrpSession();
 
-		internal:
-			rtMsrpSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
-			MsrpSession* getWrappedSession(){ return m_pSipSession; }
+internal:
+    rtMsrpSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
+    MsrpSession* getWrappedSession() {
+        return m_pSipSession;
+    }
 
-		public:
-			rtISession_Declare();
-			rtIInviteSession_Declare();
+public:
+    rtISession_Declare();
+    rtIInviteSession_Declare();
 
-			bool setCallback(rtIMsrpCallback^ pCallback);
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool callMsrp(Platform::String^ remoteUriString, rtActionConfig^ config);
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool callMsrp(Platform::String^ remoteUriString);
-			bool callMsrp(rtSipUri^ remoteUri, rtActionConfig^ config);
-			bool callMsrp(rtSipUri^ remoteUri);
+    bool setCallback(rtIMsrpCallback^ pCallback);
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool callMsrp(Platform::String^ remoteUriString, rtActionConfig^ config);
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool callMsrp(Platform::String^ remoteUriString);
+    bool callMsrp(rtSipUri^ remoteUri, rtActionConfig^ config);
+    bool callMsrp(rtSipUri^ remoteUri);
 #if COM_VISIBLE
-			bool sendMessage(Platform::String^ payload, rtActionConfig^ config);
-			bool sendMessage(Platform::String^ payload);
+    bool sendMessage(Platform::String^ payload, rtActionConfig^ config);
+    bool sendMessage(Platform::String^ payload);
 #else
-			bool sendMessage(Platform::IntPtr payload, unsigned len, rtActionConfig^ config);
-			bool sendMessage(Platform::IntPtr payload, unsigned len);
+    bool sendMessage(Platform::IntPtr payload, unsigned len, rtActionConfig^ config);
+    bool sendMessage(Platform::IntPtr payload, unsigned len);
 #endif
 
-		private:
-			MsrpSession* m_pSipSession;
-			rtMsrpCallback^ m_pCallback;
-		};
+private:
+    MsrpSession* m_pSipSession;
+    rtMsrpCallback^ m_pCallback;
+};
 
-		/* ======================== rtMessagingSession ========================*/
-		public ref class rtMessagingSession sealed : rtISipSession
-		{
-		internal:
-			rtMessagingSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
-		public:
-			rtMessagingSession(rtSipStack^ pStack);
-			virtual ~rtMessagingSession();
-	
-			rtISession_Declare();
-			
-#if COM_VISIBLE
-			bool send(Platform::String^ payload, rtActionConfig^ config);
-			bool send(Platform::String^ payload);
-#else
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool send(Platform::IntPtr payload, unsigned len, rtActionConfig^ config);
-			bool send(Platform::IntPtr payload, unsigned len);
-#endif
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool accept(rtActionConfig^ config);
-			bool accept();
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool reject(rtActionConfig^ config);
-			bool reject();
+/* ======================== rtMessagingSession ========================*/
+public ref class rtMessagingSession sealed : rtISipSession
+{
+internal:
+    rtMessagingSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
+public:
+    rtMessagingSession(rtSipStack^ pStack);
+    virtual ~rtMessagingSession();
 
-		private:
-			MessagingSession* m_pSipSession;
-		};
-
-
-		/* ======================== rtInfoSession ========================*/
-		public ref class rtInfoSession sealed : rtISipSession
-		{
-		internal:
-			rtInfoSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
-		public:
-			rtInfoSession(rtSipStack^ pStack);
-			virtual ~rtInfoSession();
-	
-			rtISession_Declare();
+    rtISession_Declare();
 
 #if COM_VISIBLE
-			bool send(Platform::String^ payload, rtActionConfig^ config);
-			bool send(Platform::String^ payload);
+    bool send(Platform::String^ payload, rtActionConfig^ config);
+    bool send(Platform::String^ payload);
 #else
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool send(Platform::IntPtr payload, unsigned len, rtActionConfig^ config);
-			bool send(Platform::IntPtr payload, unsigned len);
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool send(Platform::IntPtr payload, unsigned len, rtActionConfig^ config);
+    bool send(Platform::IntPtr payload, unsigned len);
 #endif
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool accept(rtActionConfig^ config);
-			bool accept();
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool reject(rtActionConfig^ config);
-			bool reject();
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool accept(rtActionConfig^ config);
+    bool accept();
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool reject(rtActionConfig^ config);
+    bool reject();
 
-		private:
-			InfoSession* m_pSipSession;
-		};
-
-
-		/* ======================== rtOptionsSession ========================*/
-		public ref class rtOptionsSession sealed : rtISipSession
-		{
-		internal:
-			rtOptionsSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
-		public:
-			rtOptionsSession(rtSipStack^ pStack);
-			virtual ~rtOptionsSession();
-	
-			rtISession_Declare();
-
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool send(rtActionConfig^ config);
-			bool send();
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool accept(rtActionConfig^ config);
-			bool accept();
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool reject(rtActionConfig^ config);
-			bool reject();
-
-		private:
-			OptionsSession* m_pSipSession;
-		};
+private:
+    MessagingSession* m_pSipSession;
+};
 
 
-		/* ======================== rtPublicationSession ========================*/
-		public ref class rtPublicationSession sealed : rtISipSession
-		{
-		internal:
-			rtPublicationSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
-		public:
-			rtPublicationSession(rtSipStack^ pStack);
-			virtual ~rtPublicationSession();
-	
-			rtISession_Declare();
+/* ======================== rtInfoSession ========================*/
+public ref class rtInfoSession sealed : rtISipSession
+{
+internal:
+    rtInfoSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
+public:
+    rtInfoSession(rtSipStack^ pStack);
+    virtual ~rtInfoSession();
+
+    rtISession_Declare();
 
 #if COM_VISIBLE
-			bool publish(Platform::String^ payload, rtActionConfig^ config);
-			bool publish(Platform::String^ payload);
+    bool send(Platform::String^ payload, rtActionConfig^ config);
+    bool send(Platform::String^ payload);
 #else
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool publish(Platform::IntPtr payload, unsigned len, rtActionConfig^ config);
-			bool publish(Platform::IntPtr payload, unsigned len);
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool send(Platform::IntPtr payload, unsigned len, rtActionConfig^ config);
+    bool send(Platform::IntPtr payload, unsigned len);
 #endif
-			[Windows::Foundation::Metadata::DefaultOverload]
-			bool unPublish(rtActionConfig^ config);
-			bool unPublish();
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool accept(rtActionConfig^ config);
+    bool accept();
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool reject(rtActionConfig^ config);
+    bool reject();
 
-		private:
-			PublicationSession* m_pSipSession;
-		};
+private:
+    InfoSession* m_pSipSession;
+};
 
 
-		/* ======================== rtRegistrationSession ========================*/
-		public ref class rtRegistrationSession sealed : rtISipSession
-		{
-		internal:
-			rtRegistrationSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
-		public:
-			rtRegistrationSession(rtSipStack^ pStack);
-			virtual ~rtRegistrationSession();
-	
-			rtISession_Declare();
+/* ======================== rtOptionsSession ========================*/
+public ref class rtOptionsSession sealed : rtISipSession
+{
+internal:
+    rtOptionsSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
+public:
+    rtOptionsSession(rtSipStack^ pStack);
+    virtual ~rtOptionsSession();
 
-			bool register_(rtActionConfig^ config);
-			bool register_();
-			bool unRegister(rtActionConfig^ config);
-			bool unRegister();
-			bool accept(rtActionConfig^ config);
-			bool accept();
-			bool reject(rtActionConfig^ config);
-			bool reject();
+    rtISession_Declare();
 
-		private:
-			RegistrationSession* m_pSipSession;
-		};
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool send(rtActionConfig^ config);
+    bool send();
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool accept(rtActionConfig^ config);
+    bool accept();
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool reject(rtActionConfig^ config);
+    bool reject();
 
-		/* ======================== rtSubscriptionSession ========================*/
-		public ref class rtSubscriptionSession sealed : rtISipSession
-		{
-		internal:
-			rtSubscriptionSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
-		public:
-			rtSubscriptionSession(rtSipStack^ pStack);
-			virtual ~rtSubscriptionSession();
-	
-			rtISession_Declare();
+private:
+    OptionsSession* m_pSipSession;
+};
 
-			bool subscribe();
-			bool unSubscribe();
 
-		private:
-			SubscriptionSession* m_pSipSession;
-		};
-	}
+/* ======================== rtPublicationSession ========================*/
+public ref class rtPublicationSession sealed : rtISipSession
+{
+internal:
+    rtPublicationSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
+public:
+    rtPublicationSession(rtSipStack^ pStack);
+    virtual ~rtPublicationSession();
+
+    rtISession_Declare();
+
+#if COM_VISIBLE
+    bool publish(Platform::String^ payload, rtActionConfig^ config);
+    bool publish(Platform::String^ payload);
+#else
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool publish(Platform::IntPtr payload, unsigned len, rtActionConfig^ config);
+    bool publish(Platform::IntPtr payload, unsigned len);
+#endif
+    [Windows::Foundation::Metadata::DefaultOverload]
+    bool unPublish(rtActionConfig^ config);
+    bool unPublish();
+
+private:
+    PublicationSession* m_pSipSession;
+};
+
+
+/* ======================== rtRegistrationSession ========================*/
+public ref class rtRegistrationSession sealed : rtISipSession
+{
+internal:
+    rtRegistrationSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
+public:
+    rtRegistrationSession(rtSipStack^ pStack);
+    virtual ~rtRegistrationSession();
+
+    rtISession_Declare();
+
+    bool register_(rtActionConfig^ config);
+    bool register_();
+    bool unRegister(rtActionConfig^ config);
+    bool unRegister();
+    bool accept(rtActionConfig^ config);
+    bool accept();
+    bool reject(rtActionConfig^ config);
+    bool reject();
+
+private:
+    RegistrationSession* m_pSipSession;
+};
+
+/* ======================== rtSubscriptionSession ========================*/
+public ref class rtSubscriptionSession sealed : rtISipSession
+{
+internal:
+    rtSubscriptionSession(SipStack* pStack, tsip_ssession_handle_t* pHandle);
+public:
+    rtSubscriptionSession(rtSipStack^ pStack);
+    virtual ~rtSubscriptionSession();
+
+    rtISession_Declare();
+
+    bool subscribe();
+    bool unSubscribe();
+
+private:
+    SubscriptionSession* m_pSipSession;
+};
+}
 }

@@ -206,7 +206,7 @@ void DSA_free(DSA *r);
 /* "up" the DSA object's reference count */
 int DSA_up_ref(DSA *r);
 int DSA_size(const DSA *);
-        /* next 4 return -1 on error */
+/* next 4 return -1 on error */
 int DSA_sign_setup(DSA *dsa, BN_CTX *ctx_in, BIGNUM **kinvp, BIGNUM **rp);
 int DSA_sign(int type, const unsigned char *dgst, int dlen,
              unsigned char *sig, unsigned int *siglen, DSA *dsa);
@@ -226,7 +226,7 @@ DSA *d2i_DSAparams(DSA **a, const unsigned char **pp, long length);
 DSA *DSA_generate_parameters(int bits,
                              unsigned char *seed, int seed_len,
                              int *counter_ret, unsigned long *h_ret, void
-                              (*callback) (int, int, void *), void *cb_arg);
+                             (*callback) (int, int, void *), void *cb_arg);
 # endif                         /* !defined(OPENSSL_NO_DEPRECATED) */
 
 /* New version */

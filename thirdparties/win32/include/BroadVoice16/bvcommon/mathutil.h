@@ -20,21 +20,21 @@
 
 
 /*****************************************************************************
-  fixmath.h : Common Fixed-Point Library: 
+  fixmath.h : Common Fixed-Point Library:
 
   $Log$
 ******************************************************************************/
 
 Word32 Pow2(                  /* Q0 output            */
-            Word16 int_comp,  /* Q0 Integer part      */
-            Word16 frac_comp  /* Q15 frac_compal part  */
-            );
+    Word16 int_comp,  /* Q0 Integer part      */
+    Word16 frac_comp  /* Q15 frac_compal part  */
+);
 
 void Log2(
-          Word32 x,         /* (i) input           */
-          Word16 *int_comp, /* Q0 integer part     */
-          Word16 *frac_comp /* Q15 fractional part */
-          );
+    Word32 x,         /* (i) input           */
+    Word16 *int_comp, /* Q0 integer part     */
+    Word16 *frac_comp /* Q15 fractional part */
+);
 
 void sqrt_i(Word16 x_man, Word16 x_exp, Word16 *y_man, Word16 *y_exp);
 Word16 sqrts(Word16 x);

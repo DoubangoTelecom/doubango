@@ -1,17 +1,17 @@
 /* Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 */
@@ -50,7 +50,7 @@ public:
                                             const uint32_t nSamples,
                                             const uint8_t nBytesPerSample,
                                             const uint8_t nChannels,
-                                            const uint32_t samplesPerSec) = 0;   
+                                            const uint32_t samplesPerSec) = 0;
 
     virtual int32_t NeedMorePlayData(const uint32_t nSamples,
                                      const uint8_t nBytesPerSample,
@@ -66,75 +66,75 @@ protected:
 class SLAudioDevice
 {
 public:
-	SLAudioDevice(const SLAudioDeviceCallback* pCallback = NULL);
-	virtual ~SLAudioDevice();
+    SLAudioDevice(const SLAudioDeviceCallback* pCallback = NULL);
+    virtual ~SLAudioDevice();
 
 public:
-	int SetCallback(const SLAudioDeviceCallback* pCallback);
-	int Init();
-	bool Initialized();
-	int SpeakerIsAvailable(bool *pAvailable);
-	int InitSpeaker();
-	int SetMaxSpeakerVolume(int nMaxSpeakerVolume);
-	int SetMinSpeakerVolume(int nMinSpeakerVolume);
-	int SetSpeakerVolume(int nSpeakerVolume);
-	int SetSpeakerOn(bool bSpeakerOn);
-	int PlayoutIsAvailable(bool *pAvailable);
-	int SetStereoPlayout(bool bEnabled);
-	int SetPlayoutBuffer(int nPlayoutBufferSize);
-	int SetPlayoutSampleRate(int nPlayoutSampleRate);
-	int InitPlayout();
-	int StereoPlayout(bool *pEnabled);
-	int PlayoutSampleRate(int *pPlayoutSampleRate);
-	int StartPlayout();
-	bool Playing();
-	int StopPlayout();
-	int RecordingIsAvailable(bool *pAvailable);
-	int MicrophoneIsAvailable(bool *pAvailable);
-	int InitMicrophone();
-	int SetMicrophoneVolume(int nMicrophoneVolume);
-	int SetStereoRecording(bool bEnabled);
-	int SetRecordingSampleRate(int nRecordingSampleRate);
-	int InitRecording();
-	int StereoRecording(bool *pEnabled);
-	int RecordingSampleRate(int *pRecordingSampleRate);
-	int StartRecording();
-	bool Recording();
-	int StopRecording();
-	int Terminate();
+    int SetCallback(const SLAudioDeviceCallback* pCallback);
+    int Init();
+    bool Initialized();
+    int SpeakerIsAvailable(bool *pAvailable);
+    int InitSpeaker();
+    int SetMaxSpeakerVolume(int nMaxSpeakerVolume);
+    int SetMinSpeakerVolume(int nMinSpeakerVolume);
+    int SetSpeakerVolume(int nSpeakerVolume);
+    int SetSpeakerOn(bool bSpeakerOn);
+    int PlayoutIsAvailable(bool *pAvailable);
+    int SetStereoPlayout(bool bEnabled);
+    int SetPlayoutBuffer(int nPlayoutBufferSize);
+    int SetPlayoutSampleRate(int nPlayoutSampleRate);
+    int InitPlayout();
+    int StereoPlayout(bool *pEnabled);
+    int PlayoutSampleRate(int *pPlayoutSampleRate);
+    int StartPlayout();
+    bool Playing();
+    int StopPlayout();
+    int RecordingIsAvailable(bool *pAvailable);
+    int MicrophoneIsAvailable(bool *pAvailable);
+    int InitMicrophone();
+    int SetMicrophoneVolume(int nMicrophoneVolume);
+    int SetStereoRecording(bool bEnabled);
+    int SetRecordingSampleRate(int nRecordingSampleRate);
+    int InitRecording();
+    int StereoRecording(bool *pEnabled);
+    int RecordingSampleRate(int *pRecordingSampleRate);
+    int StartRecording();
+    bool Recording();
+    int StopRecording();
+    int Terminate();
 
 private:
-	int PlayoutApplyNewConfig();
-	uint32_t PullPlayoutData(void* pAudioSamples, const uint32_t nSamples);
-	void PushRecordingData(void* pAudioSamples, const uint32_t nSamples);
+    int PlayoutApplyNewConfig();
+    uint32_t PullPlayoutData(void* pAudioSamples, const uint32_t nSamples);
+    void PushRecordingData(void* pAudioSamples, const uint32_t nSamples);
 #if AUDIO_OPENSLES_UNDER_ANDROID
-	static void PlayerSimpleBufferQueueCallback(SLAndroidSimpleBufferQueueItf queueItf, void *pContext);
-	static void RecorderSimpleBufferQueueCallback(SLAndroidSimpleBufferQueueItf queueItf, void *pContext);
+    static void PlayerSimpleBufferQueueCallback(SLAndroidSimpleBufferQueueItf queueItf, void *pContext);
+    static void RecorderSimpleBufferQueueCallback(SLAndroidSimpleBufferQueueItf queueItf, void *pContext);
 #endif
 
 private:
-	const SLAudioDeviceCallback* m_pCallback;
-	int m_nMicDeviceId;
-	bool m_bInitialized;
-	bool m_bSpeakerInitialized;
-	bool m_bPlayoutInitialized;
-	bool m_bRecordingInitialized;
-	bool m_bMicrophoneInitialized;
-	bool m_bSpeakerOn;
-	bool m_bStereoPlayout;
-	bool m_bStereoRecording;
-	int m_nPlayoutBufferSize;
-	int m_nRecordingBufferSize;
-	int m_nPlayoutSampleRate;
-	int m_nRecordingSampleRate;
-	bool m_bPlaying;
-	bool m_bRecording;
-	int m_nSpeakerVolume;
-	int m_nMaxSpeakerVolume;
-	int m_nMinSpeakerVolume;
+    const SLAudioDeviceCallback* m_pCallback;
+    int m_nMicDeviceId;
+    bool m_bInitialized;
+    bool m_bSpeakerInitialized;
+    bool m_bPlayoutInitialized;
+    bool m_bRecordingInitialized;
+    bool m_bMicrophoneInitialized;
+    bool m_bSpeakerOn;
+    bool m_bStereoPlayout;
+    bool m_bStereoRecording;
+    int m_nPlayoutBufferSize;
+    int m_nRecordingBufferSize;
+    int m_nPlayoutSampleRate;
+    int m_nRecordingSampleRate;
+    bool m_bPlaying;
+    bool m_bRecording;
+    int m_nSpeakerVolume;
+    int m_nMaxSpeakerVolume;
+    int m_nMinSpeakerVolume;
 
 #if AUDIO_OPENSLES_UNDER_ANDROID
-	// audio unit
+    // audio unit
     SLObjectItf m_slEngineObject;
 
     // playout device
@@ -152,10 +152,10 @@ private:
     SLAndroidSimpleBufferQueueItf m_slRecorderSimpleBufferQueue;
     SLDeviceVolumeItf m_slMicVolume;
 
-	int _recQueueSeq;
+    int _recQueueSeq;
 
-	 // Playout buffer
-	uint8_t _playQueueBuffer[N_PLAY_QUEUE_BUFFERS][PLAY_BUF_SIZE_IN_SAMPLES << BYTES_PER_SAMPLE_LOG2];
+    // Playout buffer
+    uint8_t _playQueueBuffer[N_PLAY_QUEUE_BUFFERS][PLAY_BUF_SIZE_IN_SAMPLES << BYTES_PER_SAMPLE_LOG2];
     int _playQueueSeq;
     // Recording buffer
     uint8_t _recQueueBuffer[N_REC_QUEUE_BUFFERS][REC_BUF_SIZE_IN_SAMPLES << BYTES_PER_SAMPLE_LOG2];

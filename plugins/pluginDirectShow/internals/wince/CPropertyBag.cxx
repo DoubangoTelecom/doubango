@@ -16,14 +16,14 @@
 #include "internals/wince/CPropertyBag.h"
 
 CPropertyBag::CPropertyBag() : _refCount(1), pVar(0)
-{       
+{
 }
 
 CPropertyBag::~CPropertyBag()
 {
     VAR_LIST *pTemp = pVar;
     HRESULT hr = S_OK;
-    
+
     while(pTemp) {
         VAR_LIST *pDel = pTemp;
         VariantClear(&pTemp->var);
@@ -35,13 +35,13 @@ CPropertyBag::~CPropertyBag()
 }
 
 HRESULT STDMETHODCALLTYPE
-CPropertyBag::Read(LPCOLESTR pszPropName, 
-                       VARIANT *_pVar, 
-                       IErrorLog *pErrorLog)
+CPropertyBag::Read(LPCOLESTR pszPropName,
+                   VARIANT *_pVar,
+                   IErrorLog *pErrorLog)
 {
     VAR_LIST *pTemp = pVar;
     HRESULT hr = S_OK;
-    
+
     while (pTemp) {
         if (0 == wcscmp(pszPropName, pTemp->pBSTRName)) {
             hr = VariantCopy(_pVar, &pTemp->var);
@@ -54,8 +54,8 @@ CPropertyBag::Read(LPCOLESTR pszPropName,
 
 
 HRESULT STDMETHODCALLTYPE
-CPropertyBag::Write(LPCOLESTR pszPropName, 
-                            VARIANT *_pVar)
+CPropertyBag::Write(LPCOLESTR pszPropName,
+                    VARIANT *_pVar)
 {
     HRESULT hr = S_OK;
     VAR_LIST *pTemp = new VAR_LIST();
@@ -72,37 +72,37 @@ CPropertyBag::Write(LPCOLESTR pszPropName,
     return VariantCopy(&pTemp->var, _pVar);
 }
 
-ULONG STDMETHODCALLTYPE 
-CPropertyBag::AddRef() 
+ULONG STDMETHODCALLTYPE
+CPropertyBag::AddRef()
 {
     return InterlockedIncrement((LONG *)&_refCount);
 }
 
-ULONG STDMETHODCALLTYPE 
-CPropertyBag::Release() 
+ULONG STDMETHODCALLTYPE
+CPropertyBag::Release()
 {
     ASSERT(_refCount != 0xFFFFFFFF);
-    ULONG ret = InterlockedDecrement((LONG *)&_refCount);    
-	if (!ret) {
-        delete this; 
-	}
+    ULONG ret = InterlockedDecrement((LONG *)&_refCount);
+    if (!ret) {
+        delete this;
+    }
     return ret;
 }
 
-HRESULT STDMETHODCALLTYPE 
-CPropertyBag::QueryInterface(REFIID riid, void** ppv) 
+HRESULT STDMETHODCALLTYPE
+CPropertyBag::QueryInterface(REFIID riid, void** ppv)
 {
-	if (!ppv) {
+    if (!ppv) {
         return E_POINTER;
-	}
-	if (riid == IID_IPropertyBag) {
+    }
+    if (riid == IID_IPropertyBag) {
         *ppv = static_cast<IPropertyBag*>(this);
-	}
-	else {
+    }
+    else {
         return *ppv = 0, E_NOINTERFACE;
-	}
-    
-    return AddRef(), S_OK;	
+    }
+
+    return AddRef(), S_OK;
 }
 
 #endif /* _WIN32_WCE */

@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -66,33 +66,32 @@ TSIP_BEGIN_DECLS
 /// port1              = "port1" EQUAL port
 /// port2              = "port2" EQUAL port
 /// port               = 1*DIGIT
-/// 
-/// 	
+///
+///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-typedef struct tsip_header_Security_Server_s
-{	
-	TSIP_DECLARE_HEADER;
+typedef struct tsip_header_Security_Server_s {
+    TSIP_DECLARE_HEADER;
 
-	//! sec-mechanism (e.g. "digest" / "tls" / "ipsec-3gpp")
-	char* mech;
-	//! algorithm (e.g. "hmac-md5-96" / "hmac-sha-1-96")
-	char* alg;
-	//! protocol (e.g. "ah" / "esp")
-	char* prot;
-	//! mode (e.g. "trans" / "tun")
-	char* mod;
-	//! encrypt-algorithm (e.g. "des-ede3-cbc" / "null")
-	char* ealg;
-	//! client port
-	tnet_port_t port_c;
-	//! server port
-	tnet_port_t port_s;
-	//! client spi
-	uint32_t spi_c;
-	//! server spi
-	uint32_t spi_s;
-	//! preference
-	double q;
+    //! sec-mechanism (e.g. "digest" / "tls" / "ipsec-3gpp")
+    char* mech;
+    //! algorithm (e.g. "hmac-md5-96" / "hmac-sha-1-96")
+    char* alg;
+    //! protocol (e.g. "ah" / "esp")
+    char* prot;
+    //! mode (e.g. "trans" / "tun")
+    char* mod;
+    //! encrypt-algorithm (e.g. "des-ede3-cbc" / "null")
+    char* ealg;
+    //! client port
+    tnet_port_t port_c;
+    //! server port
+    tnet_port_t port_s;
+    //! client spi
+    uint32_t spi_c;
+    //! server spi
+    uint32_t spi_s;
+    //! preference
+    double q;
 }
 tsip_header_Security_Server_t;
 

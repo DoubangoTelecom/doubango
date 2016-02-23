@@ -185,9 +185,15 @@ typedef union {
 
 #if defined(__GNUC__) && !defined(__TI_COMPILER_VERSION__)
 
-union unaligned_64 { uint64_t l; } __attribute__((packed)) av_alias;
-union unaligned_32 { uint32_t l; } __attribute__((packed)) av_alias;
-union unaligned_16 { uint16_t l; } __attribute__((packed)) av_alias;
+union unaligned_64 {
+    uint64_t l;
+} __attribute__((packed)) av_alias;
+union unaligned_32 {
+    uint32_t l;
+} __attribute__((packed)) av_alias;
+union unaligned_16 {
+    uint16_t l;
+} __attribute__((packed)) av_alias;
 
 #   define AV_RN(s, p) (((const union unaligned_##s *) (p))->l)
 #   define AV_WN(s, p, v) ((((union unaligned_##s *) (p))->l) = (v))

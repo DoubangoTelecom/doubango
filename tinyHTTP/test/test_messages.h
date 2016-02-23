@@ -2,19 +2,19 @@
 * Copyright (C) 2009 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU Lesser General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -76,63 +76,63 @@
 
 static void test_messages()
 {
-	thttp_message_t *message = tsk_null;
-	tsk_ragel_state_t state;
-	int ret/*, idx*/;
-	
-	const char* msg_start = TEST_MSG_WS;
-	const char* msg_end = msg_start + tsk_strlen(msg_start);
-	//const thttp_header_Sec_WebSocket_Key_t* ws_hdr_key;
-	//const thttp_header_Sec_WebSocket_Version_t* ws_hdr_version;
-	//const thttp_header_Sec_WebSocket_Accept_t* ws_hdr_accept;
-	message = thttp_message_create();
+    thttp_message_t *message = tsk_null;
+    tsk_ragel_state_t state;
+    int ret/*, idx*/;
 
-	/*while(msg_start < msg_end){
-		if((idx = tsk_strindexOf(msg_start, (msg_end - msg_start), "\r\n")) <= 2){
-			break;
-		}
-		idx+= 2;
-		tsk_ragel_state_init(&state, msg_start, idx);
-		if((ret = thttp_header_parse(&state, message))){
-			break;
-		}
-		msg_start += idx;
-	}
+    const char* msg_start = TEST_MSG_WS;
+    const char* msg_end = msg_start + tsk_strlen(msg_start);
+    //const thttp_header_Sec_WebSocket_Key_t* ws_hdr_key;
+    //const thttp_header_Sec_WebSocket_Version_t* ws_hdr_version;
+    //const thttp_header_Sec_WebSocket_Accept_t* ws_hdr_accept;
+    message = thttp_message_create();
 
-	if((ws_hdr_key = (const thttp_header_Sec_WebSocket_Key_t*)thttp_message_get_header(message, thttp_htype_Sec_WebSocket_Key))){
-		TSK_DEBUG_INFO("Sec-WebSocket-Key: %s", ws_hdr_key->value);
-	}
+    /*while(msg_start < msg_end){
+    	if((idx = tsk_strindexOf(msg_start, (msg_end - msg_start), "\r\n")) <= 2){
+    		break;
+    	}
+    	idx+= 2;
+    	tsk_ragel_state_init(&state, msg_start, idx);
+    	if((ret = thttp_header_parse(&state, message))){
+    		break;
+    	}
+    	msg_start += idx;
+    }
 
-	if((ws_hdr_accept = (const thttp_header_Sec_WebSocket_Accept_t*)thttp_message_get_header(message, thttp_htype_Sec_WebSocket_Accept))){
-		TSK_DEBUG_INFO("Sec-WebSocket-Accept: %s", ws_hdr_accept->value);
-	}
+    if((ws_hdr_key = (const thttp_header_Sec_WebSocket_Key_t*)thttp_message_get_header(message, thttp_htype_Sec_WebSocket_Key))){
+    	TSK_DEBUG_INFO("Sec-WebSocket-Key: %s", ws_hdr_key->value);
+    }
 
-	if((ws_hdr_version = (const thttp_header_Sec_WebSocket_Version_t*)thttp_message_get_header(message, thttp_htype_Sec_WebSocket_Version))){
-		const tsk_list_item_t* item;
-		tsk_list_foreach(item, ws_hdr_version->values){
-			TSK_DEBUG_INFO("Sec-WebSocket-Version: %s", TSK_STRING_STR(item->data));
-		}
-	}*/
+    if((ws_hdr_accept = (const thttp_header_Sec_WebSocket_Accept_t*)thttp_message_get_header(message, thttp_htype_Sec_WebSocket_Accept))){
+    	TSK_DEBUG_INFO("Sec-WebSocket-Accept: %s", ws_hdr_accept->value);
+    }
+
+    if((ws_hdr_version = (const thttp_header_Sec_WebSocket_Version_t*)thttp_message_get_header(message, thttp_htype_Sec_WebSocket_Version))){
+    	const tsk_list_item_t* item;
+    	tsk_list_foreach(item, ws_hdr_version->values){
+    		TSK_DEBUG_INFO("Sec-WebSocket-Version: %s", TSK_STRING_STR(item->data));
+    	}
+    }*/
 
 
-	/* deserialize the message */
-	tsk_ragel_state_init(&state, TEST_MSG, strlen(TEST_MSG));
-	if(!(ret = thttp_message_parse(&state, &message, tsk_true))){
-		tsk_buffer_t *buffer = tsk_buffer_create_null();
+    /* deserialize the message */
+    tsk_ragel_state_init(&state, TEST_MSG, strlen(TEST_MSG));
+    if(!(ret = thttp_message_parse(&state, &message, tsk_true))) {
+        tsk_buffer_t *buffer = tsk_buffer_create_null();
 
-		/* serialize the message */
-		thttp_message_serialize(message, buffer);
-		TSK_DEBUG_INFO("HTTP Message=\n%s", TSK_BUFFER_TO_STRING(buffer));
+        /* serialize the message */
+        thttp_message_serialize(message, buffer);
+        TSK_DEBUG_INFO("HTTP Message=\n%s", TSK_BUFFER_TO_STRING(buffer));
 
-		TSK_OBJECT_SAFE_FREE(buffer);
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to parse HTTP message.");
-	}
+        TSK_OBJECT_SAFE_FREE(buffer);
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to parse HTTP message.");
+    }
 
-	TSK_OBJECT_SAFE_FREE(message);
+    TSK_OBJECT_SAFE_FREE(message);
 
-	getchar();
+    getchar();
 }
 
 #endif /* _TEST_MESSAGES_H_ */

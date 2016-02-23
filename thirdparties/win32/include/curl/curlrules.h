@@ -78,52 +78,52 @@
 
 #ifndef CURL_SIZEOF_LONG
 #  error "CURL_SIZEOF_LONG definition is missing!"
-   Error Compilation_aborted_CURL_SIZEOF_LONG_is_missing
+Error Compilation_aborted_CURL_SIZEOF_LONG_is_missing
 #endif
 
 #ifndef CURL_TYPEOF_CURL_SOCKLEN_T
 #  error "CURL_TYPEOF_CURL_SOCKLEN_T definition is missing!"
-   Error Compilation_aborted_CURL_TYPEOF_CURL_SOCKLEN_T_is_missing
+Error Compilation_aborted_CURL_TYPEOF_CURL_SOCKLEN_T_is_missing
 #endif
 
 #ifndef CURL_SIZEOF_CURL_SOCKLEN_T
 #  error "CURL_SIZEOF_CURL_SOCKLEN_T definition is missing!"
-   Error Compilation_aborted_CURL_SIZEOF_CURL_SOCKLEN_T_is_missing
+Error Compilation_aborted_CURL_SIZEOF_CURL_SOCKLEN_T_is_missing
 #endif
 
 #ifndef CURL_TYPEOF_CURL_OFF_T
 #  error "CURL_TYPEOF_CURL_OFF_T definition is missing!"
-   Error Compilation_aborted_CURL_TYPEOF_CURL_OFF_T_is_missing
+Error Compilation_aborted_CURL_TYPEOF_CURL_OFF_T_is_missing
 #endif
 
 #ifndef CURL_FORMAT_CURL_OFF_T
 #  error "CURL_FORMAT_CURL_OFF_T definition is missing!"
-   Error Compilation_aborted_CURL_FORMAT_CURL_OFF_T_is_missing
+Error Compilation_aborted_CURL_FORMAT_CURL_OFF_T_is_missing
 #endif
 
 #ifndef CURL_FORMAT_CURL_OFF_TU
 #  error "CURL_FORMAT_CURL_OFF_TU definition is missing!"
-   Error Compilation_aborted_CURL_FORMAT_CURL_OFF_TU_is_missing
+Error Compilation_aborted_CURL_FORMAT_CURL_OFF_TU_is_missing
 #endif
 
 #ifndef CURL_FORMAT_OFF_T
 #  error "CURL_FORMAT_OFF_T definition is missing!"
-   Error Compilation_aborted_CURL_FORMAT_OFF_T_is_missing
+Error Compilation_aborted_CURL_FORMAT_OFF_T_is_missing
 #endif
 
 #ifndef CURL_SIZEOF_CURL_OFF_T
 #  error "CURL_SIZEOF_CURL_OFF_T definition is missing!"
-   Error Compilation_aborted_CURL_SIZEOF_CURL_OFF_T_is_missing
+Error Compilation_aborted_CURL_SIZEOF_CURL_OFF_T_is_missing
 #endif
 
 #ifndef CURL_SUFFIX_CURL_OFF_T
 #  error "CURL_SUFFIX_CURL_OFF_T definition is missing!"
-   Error Compilation_aborted_CURL_SUFFIX_CURL_OFF_T_is_missing
+Error Compilation_aborted_CURL_SUFFIX_CURL_OFF_T_is_missing
 #endif
 
 #ifndef CURL_SUFFIX_CURL_OFF_TU
 #  error "CURL_SUFFIX_CURL_OFF_TU definition is missing!"
-   Error Compilation_aborted_CURL_SUFFIX_CURL_OFF_TU_is_missing
+Error Compilation_aborted_CURL_SUFFIX_CURL_OFF_TU_is_missing
 #endif
 
 /*
@@ -140,8 +140,8 @@
  */
 
 typedef char
-  __curl_rule_01__
-    [CurlchkszEQ(long, CURL_SIZEOF_LONG)];
+__curl_rule_01__
+[CurlchkszEQ(long, CURL_SIZEOF_LONG)];
 
 /*
  * Verify that the size previously defined and expected for
@@ -150,8 +150,8 @@ typedef char
  */
 
 typedef char
-  __curl_rule_02__
-    [CurlchkszEQ(curl_off_t, CURL_SIZEOF_CURL_OFF_T)];
+__curl_rule_02__
+[CurlchkszEQ(curl_off_t, CURL_SIZEOF_CURL_OFF_T)];
 
 /*
  * Verify at compile time that the size of curl_off_t as reported
@@ -160,8 +160,8 @@ typedef char
  */
 
 typedef char
-  __curl_rule_03__
-    [CurlchkszGE(curl_off_t, long)];
+__curl_rule_03__
+[CurlchkszGE(curl_off_t, long)];
 
 /*
  * Verify that the size previously defined and expected for
@@ -170,8 +170,8 @@ typedef char
  */
 
 typedef char
-  __curl_rule_04__
-    [CurlchkszEQ(curl_socklen_t, CURL_SIZEOF_CURL_SOCKLEN_T)];
+__curl_rule_04__
+[CurlchkszEQ(curl_socklen_t, CURL_SIZEOF_CURL_SOCKLEN_T)];
 
 /*
  * Verify at compile time that the size of curl_socklen_t as reported
@@ -180,14 +180,14 @@ typedef char
  */
 
 typedef char
-  __curl_rule_05__
-    [CurlchkszGE(curl_socklen_t, int)];
+__curl_rule_05__
+[CurlchkszGE(curl_socklen_t, int)];
 
 /* ================================================================ */
 /*          EXTERNALLY AND INTERNALLY VISIBLE DEFINITIONS           */
 /* ================================================================ */
 
-/* 
+/*
  * CURL_ISOCPP and CURL_OFF_T_C definitions are done here in order to allow
  * these to be visible and exported by the external libcurl interface API,
  * while also making them visible to the library internals, simply including
@@ -206,10 +206,10 @@ typedef char
   defined(__HP_aCC) || defined(__BORLANDC__) || defined(__LCC__) || \
   defined(__POCC__) || defined(__SALFORDC__) || defined(__HIGHC__) || \
   defined(__ILEC400__)
-  /* This compiler is believed to have an ISO compatible preprocessor */
+/* This compiler is believed to have an ISO compatible preprocessor */
 #define CURL_ISOCPP
 #else
-  /* This compiler is believed NOT to have an ISO compatible preprocessor */
+/* This compiler is believed NOT to have an ISO compatible preprocessor */
 #undef CURL_ISOCPP
 #endif
 

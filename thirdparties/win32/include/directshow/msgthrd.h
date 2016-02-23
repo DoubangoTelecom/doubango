@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // File: MsgThrd.h
 //
-// Desc: DirectShow base classes - provides support for a worker thread 
+// Desc: DirectShow base classes - provides support for a worker thread
 //       class to which one can asynchronously post messages.
 //
 // Copyright (c) 1992-2001 Microsoft Corporation.  All rights reserved.
@@ -10,7 +10,8 @@
 
 // Message class - really just a structure.
 //
-class CMsg {
+class CMsg
+{
 public:
     UINT uMsg;
     DWORD dwFlags;
@@ -29,7 +30,8 @@ public:
 // that it is prompted to perform particaular tasks by responding to messages
 // posted to its message queue.
 //
-class AM_NOVTABLE CMsgThread {
+class AM_NOVTABLE CMsgThread
+{
 private:
     static DWORD WINAPI DefaultThreadProc(__inout LPVOID lpParam);
     DWORD               m_ThreadId;
@@ -47,13 +49,12 @@ protected:
 public:
     CMsgThread()
         : m_ThreadId(0),
-        m_hThread(NULL),
-        m_lWaiting(0),
-        m_hSem(NULL),
-        // make a list with a cache of 5 items
-        m_ThreadQueue(NAME("MsgThread list"), 5)
-        {
-        }
+          m_hThread(NULL),
+          m_lWaiting(0),
+          m_hSem(NULL),
+          // make a list with a cache of 5 items
+          m_ThreadQueue(NAME("MsgThread list"), 5) {
+    }
 
     ~CMsgThread();
     // override this if you want to block on other things as well

@@ -61,52 +61,52 @@
 
 #ifdef CURL_SIZEOF_LONG
 #  error "CURL_SIZEOF_LONG shall not be defined except in curlbuild.h"
-   Error Compilation_aborted_CURL_SIZEOF_LONG_already_defined
+Error Compilation_aborted_CURL_SIZEOF_LONG_already_defined
 #endif
 
 #ifdef CURL_TYPEOF_CURL_SOCKLEN_T
 #  error "CURL_TYPEOF_CURL_SOCKLEN_T shall not be defined except in curlbuild.h"
-   Error Compilation_aborted_CURL_TYPEOF_CURL_SOCKLEN_T_already_defined
+Error Compilation_aborted_CURL_TYPEOF_CURL_SOCKLEN_T_already_defined
 #endif
 
 #ifdef CURL_SIZEOF_CURL_SOCKLEN_T
 #  error "CURL_SIZEOF_CURL_SOCKLEN_T shall not be defined except in curlbuild.h"
-   Error Compilation_aborted_CURL_SIZEOF_CURL_SOCKLEN_T_already_defined
+Error Compilation_aborted_CURL_SIZEOF_CURL_SOCKLEN_T_already_defined
 #endif
 
 #ifdef CURL_TYPEOF_CURL_OFF_T
 #  error "CURL_TYPEOF_CURL_OFF_T shall not be defined except in curlbuild.h"
-   Error Compilation_aborted_CURL_TYPEOF_CURL_OFF_T_already_defined
+Error Compilation_aborted_CURL_TYPEOF_CURL_OFF_T_already_defined
 #endif
 
 #ifdef CURL_FORMAT_CURL_OFF_T
 #  error "CURL_FORMAT_CURL_OFF_T shall not be defined except in curlbuild.h"
-   Error Compilation_aborted_CURL_FORMAT_CURL_OFF_T_already_defined
+Error Compilation_aborted_CURL_FORMAT_CURL_OFF_T_already_defined
 #endif
 
 #ifdef CURL_FORMAT_CURL_OFF_TU
 #  error "CURL_FORMAT_CURL_OFF_TU shall not be defined except in curlbuild.h"
-   Error Compilation_aborted_CURL_FORMAT_CURL_OFF_TU_already_defined
+Error Compilation_aborted_CURL_FORMAT_CURL_OFF_TU_already_defined
 #endif
 
 #ifdef CURL_FORMAT_OFF_T
 #  error "CURL_FORMAT_OFF_T shall not be defined except in curlbuild.h"
-   Error Compilation_aborted_CURL_FORMAT_OFF_T_already_defined
+Error Compilation_aborted_CURL_FORMAT_OFF_T_already_defined
 #endif
 
 #ifdef CURL_SIZEOF_CURL_OFF_T
 #  error "CURL_SIZEOF_CURL_OFF_T shall not be defined except in curlbuild.h"
-   Error Compilation_aborted_CURL_SIZEOF_CURL_OFF_T_already_defined
+Error Compilation_aborted_CURL_SIZEOF_CURL_OFF_T_already_defined
 #endif
 
 #ifdef CURL_SUFFIX_CURL_OFF_T
 #  error "CURL_SUFFIX_CURL_OFF_T shall not be defined except in curlbuild.h"
-   Error Compilation_aborted_CURL_SUFFIX_CURL_OFF_T_already_defined
+Error Compilation_aborted_CURL_SUFFIX_CURL_OFF_T_already_defined
 #endif
 
 #ifdef CURL_SUFFIX_CURL_OFF_TU
 #  error "CURL_SUFFIX_CURL_OFF_TU shall not be defined except in curlbuild.h"
-   Error Compilation_aborted_CURL_SUFFIX_CURL_OFF_TU_already_defined
+Error Compilation_aborted_CURL_SUFFIX_CURL_OFF_TU_already_defined
 #endif
 
 /* ================================================================ */

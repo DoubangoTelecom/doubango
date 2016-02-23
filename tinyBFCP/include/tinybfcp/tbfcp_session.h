@@ -29,17 +29,16 @@ TBFCP_BEGIN_DECLS
 struct tbfcp_session_s;
 struct tbfcp_pkt_s;
 
-typedef enum tbfcp_session_event_type_e
-{
-	tbfcp_session_event_type_inf_inc_msg,
-	tbfcp_session_event_type_err_send_timedout
+typedef enum tbfcp_session_event_type_e {
+    tbfcp_session_event_type_inf_inc_msg,
+    tbfcp_session_event_type_err_send_timedout
 }
 tbfcp_session_event_type_t;
 
 typedef struct tbfcp_session_event_xs {
-	enum tbfcp_session_event_type_e e_type;
-	const struct tbfcp_pkt_s* pc_pkt;
-	const void* pc_usr_data;
+    enum tbfcp_session_event_type_e e_type;
+    const struct tbfcp_pkt_s* pc_pkt;
+    const void* pc_usr_data;
 } tbfcp_session_event_xt;
 
 typedef int (*tbfcp_session_callback_f)(const struct tbfcp_session_event_xs *e);

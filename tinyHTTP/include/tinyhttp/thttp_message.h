@@ -1,19 +1,19 @@
 /*
 * Copyright (C) 2010-2015 Mamadou DIOP.
 *
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -166,45 +166,43 @@ THTTP_BEGIN_DECLS
 #define THTTP_RESPONSE_IS_6XX(self)			THTTP_RESPONSE_IS_NXX(self, 6)
 #define THTTP_RESPONSE_IS_23456(self)		(200<= THTTP_RESPONSE_CODE((self)) && THTTP_RESPONSE_CODE((self)) <= 699)
 
-/**Defines the message type (Request or Response). 
+/**Defines the message type (Request or Response).
 **/
-typedef enum thttp_message_type_e
-{
-	thttp_unknown,
-	thttp_request,
-	thttp_response
+typedef enum thttp_message_type_e {
+    thttp_unknown,
+    thttp_request,
+    thttp_response
 }
 thttp_message_type_t;
 
 /**Represents a HTTP message. A HTTP message is either a request from a client to a server,
  * 	or a response from a server to a client.
 **/
-typedef struct thttp_message_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	char *http_version; /**< The HTTP version. Only 'HTTP/1.1' is supported. */
-	thttp_message_type_t type; /**< The type of this HTTP message. */
+typedef struct thttp_message_s {
+    TSK_DECLARE_OBJECT;
 
-	/* Request-Line */
-	union{
-		struct{
-			char *method;
-			thttp_url_t *url;
-		} request;
-		struct{
-			short status_code;
-			char *reason_phrase;
-		} response;
-	} line;
-	
-	/*== MOST COMMON HEADERS. */
-	thttp_header_Content_Type_t *Content_Type;
-	thttp_header_Content_Length_t *Content_Length;
-	tsk_buffer_t *Content;
+    char *http_version; /**< The HTTP version. Only 'HTTP/1.1' is supported. */
+    thttp_message_type_t type; /**< The type of this HTTP message. */
 
-	/*== OTHER HEADERS*/
-	thttp_headers_L_t *headers;
+    /* Request-Line */
+    union {
+        struct {
+            char *method;
+            thttp_url_t *url;
+        } request;
+        struct {
+            short status_code;
+            char *reason_phrase;
+        } response;
+    } line;
+
+    /*== MOST COMMON HEADERS. */
+    thttp_header_Content_Type_t *Content_Type;
+    thttp_header_Content_Length_t *Content_Length;
+    tsk_buffer_t *Content;
+
+    /*== OTHER HEADERS*/
+    thttp_headers_L_t *headers;
 }
 thttp_message_t;
 
@@ -220,19 +218,19 @@ TINYHTTP_API int thttp_message_append_content(thttp_message_t *self, const void*
 
 #if defined(__SYMBIAN32__) && 0
 static void THTTP_MESSAGE_ADD_HEADER(thttp_message_t *self, ...)
-	{
-		va_list ap;
-		thttp_header_t *header;
-		const tsk_object_def_t *objdef;
-		
-		va_start(ap, self);
-		objdef = va_arg(ap, const tsk_object_def_t*);
-		header = tsk_object_new_2(objdef, &ap);
-		va_end(ap);
+{
+    va_list ap;
+    thttp_header_t *header;
+    const tsk_object_def_t *objdef;
 
-		thttp_message_add_header(self, header);
-		tsk_object_unref(header);
-	}
+    va_start(ap, self);
+    objdef = va_arg(ap, const tsk_object_def_t*);
+    header = tsk_object_new_2(objdef, &ap);
+    va_end(ap);
+
+    thttp_message_add_header(self, header);
+    tsk_object_unref(header);
+}
 #else
 #define THTTP_MESSAGE_ADD_HEADER(self, objdef, ...)											\
 	{																						\

@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -37,15 +37,14 @@
 
 TXCAP_BEGIN_DECLS
 
-typedef enum txcap_selector_param_type_e
-{
-	xcapp_node_null = 0,
+typedef enum txcap_selector_param_type_e {
+    xcapp_node_null = 0,
 
-	xcapp_node_name,
-	xcapp_node_pos,
-	xcapp_node_attribute,
-	xcapp_node_pos_n_attribute,
-	xcapp_node_namespace
+    xcapp_node_name,
+    xcapp_node_pos,
+    xcapp_node_attribute,
+    xcapp_node_pos_n_attribute,
+    xcapp_node_namespace
 }
 txcap_selector_param_type_t;
 

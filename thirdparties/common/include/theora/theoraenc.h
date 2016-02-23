@@ -58,7 +58,7 @@ extern "C" {
  *
  * \param[in] _buf #th_quant_info
  * \retval TH_EFAULT \a _enc_ctx is <tt>NULL</tt>.
- * \retval TH_EINVAL Encoding has already begun, \a _buf is 
+ * \retval TH_EINVAL Encoding has already begun, \a _buf is
  *                    <tt>NULL</tt> and \a _buf_sz is not zero,
  *                    or \a _buf is non-<tt>NULL</tt> and
  *                    \a _buf_sz is not <tt>sizeof(#th_quant_info)</tt>.
@@ -368,7 +368,7 @@ extern const th_quant_info TH_VP31_QUANT_INFO;
 
 /**The Huffman tables used by VP3.*/
 extern const th_huff_code
- TH_VP31_HUFF_CODES[TH_NHUFFMAN_TABLES][TH_NDCT_TOKENS];
+TH_VP31_HUFF_CODES[TH_NHUFFMAN_TABLES][TH_NDCT_TOKENS];
 
 
 
@@ -437,7 +437,7 @@ extern int th_encode_ctl(th_enc_ctx *_enc,int _req,void *_buf,size_t _buf_sz);
  * \retval 0         No packet was produced, and no more header packets remain.
  * \retval TH_EFAULT \a _enc, \a _comments, or \a _op was <tt>NULL</tt>.*/
 extern int th_encode_flushheader(th_enc_ctx *_enc,
- th_comment *_comments,ogg_packet *_op);
+                                 th_comment *_comments,ogg_packet *_op);
 /**Submits an uncompressed frame to the encoder.
  * \param _enc   A #th_enc_ctx handle.
  * \param _ycbcr A buffer of Y'CbCr data to encode.

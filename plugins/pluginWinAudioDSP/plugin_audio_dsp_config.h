@@ -1,18 +1,18 @@
 /* Copyright (C) 2013 Mamadou DIOP
 * Copyright (C) 2013 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 */
@@ -48,12 +48,12 @@
 #	define PLUGIN_AUDIO_DSP_UNDER_X86				1
 #endif
 
-// Guards against C++ name mangling 
+// Guards against C++ name mangling
 #ifdef __cplusplus
 #	define PLUGIN_AUDIO_DSP_BEGIN_DECLS extern "C" {
 #	define PLUGIN_AUDIO_DSP_END_DECLS }
 #else
-#	define PLUGIN_AUDIO_DSP_BEGIN_DECLS 
+#	define PLUGIN_AUDIO_DSP_BEGIN_DECLS
 #	define PLUGIN_AUDIO_DSP_END_DECLS
 #endif
 
@@ -69,7 +69,7 @@
 #endif
 
 #if HAVE_CONFIG_H
-	#include <config.h>
+#include <config.h>
 #endif
 
 #endif // PLUGIN_AUDIO_DSP_CONFIG_H

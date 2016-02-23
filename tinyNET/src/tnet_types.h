@@ -7,12 +7,12 @@
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -82,14 +82,13 @@ typedef void tnet_transport_handle_t;
 typedef tsk_list_t tnet_interfaces_L_t; /**< List of @ref tnet_interface_t elements*/
 typedef tsk_list_t tnet_addresses_L_t; /**< List of @ref tnet_address_t elements*/
 
-typedef enum tnet_dtls_setup_e
-{
-	tnet_dtls_setup_none,
-	tnet_dtls_setup_actpass,
-	tnet_dtls_setup_active,
-	tnet_dtls_setup_passive,
+typedef enum tnet_dtls_setup_e {
+    tnet_dtls_setup_none,
+    tnet_dtls_setup_actpass,
+    tnet_dtls_setup_active,
+    tnet_dtls_setup_passive,
 
-	TNET_DTLS_SETUP_MAX
+    TNET_DTLS_SETUP_MAX
 }
 tnet_dtls_setup_t;
 
@@ -103,27 +102,24 @@ typedef enum tnet_proxy_type_e {
 }
 tnet_proxy_type_t;
 
-static const char* TNET_DTLS_SETUP_NAMES[TNET_DTLS_SETUP_MAX] =
-{
-	"UNKNOWN", "actpass", "active", "passive"
+static const char* TNET_DTLS_SETUP_NAMES[TNET_DTLS_SETUP_MAX] = {
+    "UNKNOWN", "actpass", "active", "passive"
 };
 
-typedef enum tnet_dtls_hash_type_e
-{
-	tnet_dtls_hash_type_none,
-	tnet_dtls_hash_type_md5,
-	tnet_dtls_hash_type_sha1,
-	tnet_dtls_hash_type_sha256,
-	tnet_dtls_hash_type_sha512,
+typedef enum tnet_dtls_hash_type_e {
+    tnet_dtls_hash_type_none,
+    tnet_dtls_hash_type_md5,
+    tnet_dtls_hash_type_sha1,
+    tnet_dtls_hash_type_sha256,
+    tnet_dtls_hash_type_sha512,
 
-	TNET_DTLS_HASH_TYPE_MAX
+    TNET_DTLS_HASH_TYPE_MAX
 }
 tnet_dtls_hash_type_t;
 
 // Hash names are case-insensitive but use lower case values because of https://bugzilla.mozilla.org/show_bug.cgi?id=828027
-static const char* TNET_DTLS_HASH_NAMES[TNET_DTLS_HASH_TYPE_MAX] =
-{
-	"UNKNOWN", "md5", "sha-1", "sha-256", "sha-512"
+static const char* TNET_DTLS_HASH_NAMES[TNET_DTLS_HASH_TYPE_MAX] = {
+    "UNKNOWN", "md5", "sha-1", "sha-256", "sha-512"
 };
 
 #if TNET_UNDER_WINDOWS
@@ -139,22 +135,20 @@ static const char* TNET_DTLS_HASH_NAMES[TNET_DTLS_HASH_TYPE_MAX] =
 #		if !defined (WC_ERR_INVALID_CHARS)
 #			define WC_ERR_INVALID_CHARS 0
 #		endif
-		static TNET_INLINE const char* tnet_gai_strerror(int ecode)
-		{
-			static char aBuff[1024] = {0};
-			
-			WCHAR *wBuff = gai_strerrorW(ecode);
-			int len;
-			if((len = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, wBuff, wcslen(wBuff), aBuff, sizeof(aBuff) - 1, NULL, NULL)) > 0)
-			{
-				aBuff[len] = '\0';
-			}
-			else
-			{
-				aBuff[0] = '\0';
-			}
-			return aBuff;
-		}
+static TNET_INLINE const char* tnet_gai_strerror(int ecode)
+{
+    static char aBuff[1024] = {0};
+
+    WCHAR *wBuff = gai_strerrorW(ecode);
+    int len;
+    if((len = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, wBuff, wcslen(wBuff), aBuff, sizeof(aBuff) - 1, NULL, NULL)) > 0) {
+        aBuff[len] = '\0';
+    }
+    else {
+        aBuff[0] = '\0';
+    }
+    return aBuff;
+}
 #	else
 #		define tnet_gai_strerror			gai_strerrorA
 #	endif

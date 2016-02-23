@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -50,30 +50,28 @@ TMEDIA_BEGIN_DECLS
 struct tmedia_session_s;
 
 // rfc5168 (XML Schema for Media Control) commands
-typedef enum tmedia_session_rfc5168_cmd_e
-{
-	tmedia_session_rfc5168_cmd_picture_fast_update,
+typedef enum tmedia_session_rfc5168_cmd_e {
+    tmedia_session_rfc5168_cmd_picture_fast_update,
 }
 tmedia_session_rfc5168_cmd_t;
 // BFCP (rfc4582) events
-typedef enum tmedia_session_bfcp_evt_type_e
-{
-	tmedia_session_bfcp_evt_type_err, // Global error
-	tmedia_session_bfcp_evt_type_flreq_status, // FloorRequestStatus
+typedef enum tmedia_session_bfcp_evt_type_e {
+    tmedia_session_bfcp_evt_type_err, // Global error
+    tmedia_session_bfcp_evt_type_flreq_status, // FloorRequestStatus
 }
 tmedia_session_bfcp_evt_type_t;
 
 typedef struct tmedia_session_bfcp_evt_xs {
-	tmedia_session_bfcp_evt_type_t type;
-	const char* reason;
-	union {
-		struct {
-			int code;
-		} err;
-		struct {
-			uint16_t status;
-		} flreq;
-	};
+    tmedia_session_bfcp_evt_type_t type;
+    const char* reason;
+    union {
+        struct {
+            int code;
+        } err;
+        struct {
+            uint16_t status;
+        } flreq;
+    };
 } tmedia_session_bfcp_evt_xt;
 
 #define TMEDIA_SESSION(self)		((tmedia_session_t*)(self))
@@ -91,106 +89,123 @@ typedef int (*tmedia_session_bfcp_cb_f)(const void* usrdata, const struct tmedia
 #define TMED_SESSION_MAX_PLUGINS			0x0F
 
 /** Base objct used for all media sessions */
-typedef struct tmedia_session_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	//! unique id. If you want to modifiy this field then you must use @ref tmedia_session_get_unique_id()
-	uint64_t id;
-	//! session type
-	tmedia_type_t type;
-	//! list of codec ids used as filter on the enabled codecs
-	tmedia_codec_id_t codecs_allowed;
-	//! list of codecs managed by this session (enabled)
-	tmedia_codecs_L_t* codecs;
-	//! negociated codec
-	tmedia_codecs_L_t* neg_codecs;
-	//! whether the ro have been prepared (up to the manager to update the value)
-	tsk_bool_t ro_changed;
-	//! whether the session have been initialized (up to the manager to update the value)
-	tsk_bool_t initialized;
-	//! whether the session have been prepared (up to the manager to update the value)
-	tsk_bool_t prepared;
-	//! whether the session is localy held
-	tsk_bool_t lo_held;
-	//! whether the session is remotely held
-	tsk_bool_t ro_held;
-	//! QoS
-	tmedia_qos_tline_t* qos;
-	//! bandwidth level
-	tmedia_bandwidth_level_t bl;
-	//! error callback function: not part of the plugin (likes .t140 or .rtcp) because it's not part of the API
-	struct{
-		tmedia_session_onerror_cb_f fun;
-		const void* usrdata;
-	} onerror_cb; 
-	//! rfc5168 (XML Schema for Media Control) callback function: not part of the plugin (likes .t140 or .rtcp) because it's not part of the API.
-	struct {
-		tmedia_session_rfc5168_cb_f fun;
-		const void* usrdata;
-	} rfc5168_cb;
-	//! BFCP (rfc4582)
-	struct {
-		tmedia_session_bfcp_cb_f fun;
-		const void* usrdata;
-	} bfcp_cb;
-	
-	tsk_bool_t bypass_encoding;
-	tsk_bool_t bypass_decoding;
+typedef struct tmedia_session_s {
+    TSK_DECLARE_OBJECT;
 
-	struct{
-		char* file_ca;
-		char* file_pbk;
-		char* file_pvk;
-		tsk_bool_t verify;
-	} dtls;
+    //! unique id. If you want to modifiy this field then you must use @ref tmedia_session_get_unique_id()
+    uint64_t id;
+    //! session type
+    tmedia_type_t type;
+    //! list of codec ids used as filter on the enabled codecs
+    tmedia_codec_id_t codecs_allowed;
+    //! list of codecs managed by this session (enabled)
+    tmedia_codecs_L_t* codecs;
+    //! negociated codec
+    tmedia_codecs_L_t* neg_codecs;
+    //! whether the ro have been prepared (up to the manager to update the value)
+    tsk_bool_t ro_changed;
+    //! whether the session have been initialized (up to the manager to update the value)
+    tsk_bool_t initialized;
+    //! whether the session have been prepared (up to the manager to update the value)
+    tsk_bool_t prepared;
+    //! whether the session is localy held
+    tsk_bool_t lo_held;
+    //! whether the session is remotely held
+    tsk_bool_t ro_held;
+    //! QoS
+    tmedia_qos_tline_t* qos;
+    //! bandwidth level
+    tmedia_bandwidth_level_t bl;
+    //! error callback function: not part of the plugin (likes .t140 or .rtcp) because it's not part of the API
+    struct {
+        tmedia_session_onerror_cb_f fun;
+        const void* usrdata;
+    } onerror_cb;
+    //! rfc5168 (XML Schema for Media Control) callback function: not part of the plugin (likes .t140 or .rtcp) because it's not part of the API.
+    struct {
+        tmedia_session_rfc5168_cb_f fun;
+        const void* usrdata;
+    } rfc5168_cb;
+    //! BFCP (rfc4582)
+    struct {
+        tmedia_session_bfcp_cb_f fun;
+        const void* usrdata;
+    } bfcp_cb;
 
-	struct{
-		tsdp_header_M_t* lo;
-		tsdp_header_M_t* ro;
-	} M;
+    tsk_bool_t bypass_encoding;
+    tsk_bool_t bypass_decoding;
 
-	//! plugin used to create the session
-	const struct tmedia_session_plugin_def_s* plugin;
+    struct {
+        char* file_ca;
+        char* file_pbk;
+        char* file_pvk;
+        tsk_bool_t verify;
+    } dtls;
+
+    struct {
+        float q1; /**< 2.1.Packet loss recovery */
+        float q2; /**< 2.2.Global packet loss estimation */
+        float q3; /**< 2.3.Receiver Estimated Maximum Bitrate */
+        float q4; /**< 2.4.Latency estimation */
+        float q5; /**< 2.5. Jitter buffer congestion estimation */
+        float qvag;
+        unsigned bw_up_est_kbps;
+        unsigned bw_down_est_kbps;
+        unsigned video_out_width;
+        unsigned video_out_height;
+        unsigned video_in_width;
+        unsigned video_in_height;
+        unsigned video_in_avg_fps;
+        unsigned video_dec_avg_time;
+        unsigned video_enc_avg_time;
+        uint64_t last_update_time;
+    } qos_metrics;
+
+    struct {
+        tsdp_header_M_t* lo;
+        tsdp_header_M_t* ro;
+    } M;
+
+    //! plugin used to create the session
+    const struct tmedia_session_plugin_def_s* plugin;
 }
 tmedia_session_t;
 
 /** Virtual table used to define a session plugin */
-typedef struct tmedia_session_plugin_def_s
-{
-	//! object definition used to create an instance of the session
-	const tsk_object_def_t* objdef;
+typedef struct tmedia_session_plugin_def_s {
+    //! object definition used to create an instance of the session
+    const tsk_object_def_t* objdef;
 
-	//! the type of the session
-	tmedia_type_t type;
-	//! the media name. e.g. "audio", "video", "message", "image" etc.
-	const char* media;
-	
-	int (*set) (tmedia_session_t* , const tmedia_param_t*);
-	int (*get) (tmedia_session_t* , tmedia_param_t*);
-	int (* prepare) (tmedia_session_t* );
-	int (* start) (tmedia_session_t* );
-	int (* pause) (tmedia_session_t* );
-	int (* stop) (tmedia_session_t* );
+    //! the type of the session
+    tmedia_type_t type;
+    //! the media name. e.g. "audio", "video", "message", "image" etc.
+    const char* media;
 
-	struct{ /* Special case */
-		int (* send_dtmf) (tmedia_session_t*, uint8_t );
-	} audio;
+    int (*set) (tmedia_session_t* , const tmedia_param_t*);
+    int (*get) (tmedia_session_t* , tmedia_param_t*);
+    int (* prepare) (tmedia_session_t* );
+    int (* start) (tmedia_session_t* );
+    int (* pause) (tmedia_session_t* );
+    int (* stop) (tmedia_session_t* );
 
-	const tsdp_header_M_t* (* get_local_offer) (tmedia_session_t* );
-	/* return zero if can handle the ro and non-zero otherwise */
-	int (* set_remote_offer) (tmedia_session_t* , const tsdp_header_M_t* );
+    struct { /* Special case */
+        int (* send_dtmf) (tmedia_session_t*, uint8_t );
+    } audio;
 
-	struct{ /* Special case */
-		int (* set_ondata_cbfn) (tmedia_session_t*, const void* usrdata, tmedia_session_t140_ondata_cb_f func);
-		int (* send_data) (tmedia_session_t*, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);
-	} t140;
+    const tsdp_header_M_t* (* get_local_offer) (tmedia_session_t* );
+    /* return zero if can handle the ro and non-zero otherwise */
+    int (* set_remote_offer) (tmedia_session_t* , const tsdp_header_M_t* );
 
-	struct{ /* Handles both SIP INFO and RTCP-FB: should be called by end-user only when transcoding is disabled */
-		int (* set_onevent_cbfn) (tmedia_session_t*, const void* usrdata, tmedia_session_rtcp_onevent_cb_f func);
-		int (* send_event) (tmedia_session_t*, enum tmedia_rtcp_event_type_e event_type, uint32_t ssrc_media);
-		int (* recv_event) (tmedia_session_t*, enum tmedia_rtcp_event_type_e event_type, uint32_t ssrc_media);
-	} rtcp;
+    struct { /* Special case */
+        int (* set_ondata_cbfn) (tmedia_session_t*, const void* usrdata, tmedia_session_t140_ondata_cb_f func);
+        int (* send_data) (tmedia_session_t*, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);
+    } t140;
+
+    struct { /* Handles both SIP INFO and RTCP-FB: should be called by end-user only when transcoding is disabled */
+        int (* set_onevent_cbfn) (tmedia_session_t*, const void* usrdata, tmedia_session_rtcp_onevent_cb_f func);
+        int (* send_event) (tmedia_session_t*, enum tmedia_rtcp_event_type_e event_type, uint32_t ssrc_media);
+        int (* recv_event) (tmedia_session_t*, enum tmedia_rtcp_event_type_e event_type, uint32_t ssrc_media);
+    } rtcp;
 }
 tmedia_session_plugin_def_t;
 
@@ -216,9 +231,8 @@ typedef tsk_list_t tmedia_sessions_L_t; /**< List of @ref tmedia_session_t objec
 #define TMEDIA_DECLARE_SESSION tmedia_session_t __session__
 
 /** Audio Session */
-typedef struct tmedia_session_audio_s
-{
-	TMEDIA_DECLARE_SESSION;
+typedef struct tmedia_session_audio_s {
+    TMEDIA_DECLARE_SESSION;
 }
 tmedia_session_audio_t;
 #define tmedia_session_audio_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmedia_audio)
@@ -228,9 +242,8 @@ TINYMEDIA_API int tmedia_session_audio_send_dtmf(tmedia_session_audio_t* self, u
 #define TMEDIA_DECLARE_SESSION_AUDIO tmedia_session_audio_t __session_audio__
 
 /** Video Session */
-typedef struct tmedia_session_video_s
-{
-	TMEDIA_DECLARE_SESSION;
+typedef struct tmedia_session_video_s {
+    TMEDIA_DECLARE_SESSION;
 }
 tmedia_session_video_t;
 #define tmedia_session_video_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmedia_video)
@@ -243,17 +256,16 @@ struct tmedia_session_msrp_s;
 struct tmsrp_event_s;
 // use "struct tmsrp_event_s" instead of "tmsrp_event_t" to avoid linking aginst tinyMSRP
 typedef int (*tmedia_session_msrp_cb_f)(const struct tmsrp_event_s* event);
-typedef struct tmedia_session_msrp_s
-{
-	TMEDIA_DECLARE_SESSION;
+typedef struct tmedia_session_msrp_s {
+    TMEDIA_DECLARE_SESSION;
 
-	struct {
-		tmedia_session_msrp_cb_f func;
-		const void* data;
-	} callback;
-	
-	int (* send_file) (struct tmedia_session_msrp_s*, const char* path, va_list *app);
-	int (* send_message) (struct tmedia_session_msrp_s*, const void* data, tsk_size_t size, const tmedia_params_L_t *params);
+    struct {
+        tmedia_session_msrp_cb_f func;
+        const void* data;
+    } callback;
+
+    int (* send_file) (struct tmedia_session_msrp_s*, const char* path, va_list *app);
+    int (* send_message) (struct tmedia_session_msrp_s*, const void* data, tsk_size_t size, const tmedia_params_L_t *params);
 }
 tmedia_session_msrp_t;
 #define tmedia_session_msrp_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmedia_msrp)
@@ -264,18 +276,17 @@ tmedia_session_msrp_t;
 /** BFCP Session */
 struct tmedia_session_bfcp_s;
 struct tbfcp_event_s;
-typedef struct tmedia_session_bfcp_s
-{
-	TMEDIA_DECLARE_SESSION;
+typedef struct tmedia_session_bfcp_s {
+    TMEDIA_DECLARE_SESSION;
 
-	struct {
-		// use "struct tbfcp_event_s" instead of "tbfcp_event_t" to avoid linking aginst tinyBFCP
-		int (*fun)(const struct tbfcp_event_s* event);
-		const void* data;
-	} callback;
-	
-	// int (* share_file) (struct tmedia_session_bfcp_s*, const char* path, va_list *app);
-	// int (* share_screen) (struct tmedia_session_bfcp_s*, const tmedia_params_L_t *params);
+    struct {
+        // use "struct tbfcp_event_s" instead of "tbfcp_event_t" to avoid linking aginst tinyBFCP
+        int (*fun)(const struct tbfcp_event_s* event);
+        const void* data;
+    } callback;
+
+    // int (* share_file) (struct tmedia_session_bfcp_s*, const char* path, va_list *app);
+    // int (* share_screen) (struct tmedia_session_bfcp_s*, const tmedia_params_L_t *params);
 }
 tmedia_session_bfcp_t;
 #define tmedia_session_bfcp_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmedia_bfcp)
@@ -288,80 +299,78 @@ int tmedia_session_t140_set_ondata_cbfn(tmedia_session_t* self, const void* cont
 int tmedia_session_t140_send_data(tmedia_session_t* self, enum tmedia_t140_data_type_e data_type, const void* data_ptr, unsigned data_size);
 
 /** Session manager */
-typedef struct tmedia_session_mgr_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	//! whether we are the offerer or not
-	tsk_bool_t offerer;
-	//! local IP address or FQDN
-	char* addr;
-	//! public IP address or FQDN
-	char* public_addr;
-	//! whether the @a addr is IPv6 or not (useful when @addr is a FQDN)
-	tsk_bool_t ipv6;
+typedef struct tmedia_session_mgr_s {
+    TSK_DECLARE_OBJECT;
 
-	struct{
-		uint32_t lo_ver;
-		tsdp_message_t* lo;
+    //! whether we are the offerer or not
+    tsk_bool_t offerer;
+    //! local IP address or FQDN
+    char* addr;
+    //! public IP address or FQDN
+    char* public_addr;
+    //! whether the @a addr is IPv6 or not (useful when @addr is a FQDN)
+    tsk_bool_t ipv6;
 
-		int32_t ro_ver;
-		tsdp_message_t* ro;
-	} sdp;
+    struct {
+        uint32_t lo_ver;
+        tsdp_message_t* lo;
 
-	tsk_bool_t started;
-	tsk_bool_t ro_changed;
-	tsk_bool_t ro_provisional;
-	tsk_bool_t state_changed;
-	tsk_bool_t mediaType_changed;
+        int32_t ro_ver;
+        tsdp_message_t* ro;
+    } sdp;
 
-	//! session type
-	tmedia_type_t type;
-	//! QoS type
-	struct {
-		tmedia_qos_stype_t type;
-		tmedia_qos_strength_t strength;
-	} qos;
-	
-	//! bandwidth level
-	tmedia_bandwidth_level_t bl;
+    tsk_bool_t started;
+    tsk_bool_t ro_changed;
+    tsk_bool_t ro_provisional;
+    tsk_bool_t state_changed;
+    tsk_bool_t mediaType_changed;
 
-	/* NAT Traversal context */
-	struct tnet_nat_ctx_s* natt_ctx;
-	struct {
-		struct tnet_ice_ctx_s *ctx_audio;
-		struct tnet_ice_ctx_s *ctx_video;
-		struct tnet_ice_ctx_s *ctx_bfcpvid;
-	} ice;
+    //! session type
+    tmedia_type_t type;
+    //! QoS type
+    struct {
+        tmedia_qos_stype_t type;
+        tmedia_qos_strength_t strength;
+    } qos;
 
-	/* session error callback */
-	struct{
-		tmedia_session_onerror_cb_f fun;
-		const void* usrdata;
-	} onerror_cb; 
+    //! bandwidth level
+    tmedia_bandwidth_level_t bl;
 
-	/* rfc5168 callback */
-	struct {
-		tmedia_session_rfc5168_cb_f fun;
-		const void* usrdata;
-	} rfc5168_cb;
+    /* NAT Traversal context */
+    struct tnet_nat_ctx_s* natt_ctx;
+    struct {
+        struct tnet_ice_ctx_s *ctx_audio;
+        struct tnet_ice_ctx_s *ctx_video;
+        struct tnet_ice_ctx_s *ctx_bfcpvid;
+    } ice;
 
-	//! List of all sessions
-	tmedia_sessions_L_t* sessions;
+    /* session error callback */
+    struct {
+        tmedia_session_onerror_cb_f fun;
+        const void* usrdata;
+    } onerror_cb;
 
-	//! User's parameters used to confugure plugins
-	tmedia_params_L_t* params;
+    /* rfc5168 callback */
+    struct {
+        tmedia_session_rfc5168_cb_f fun;
+        const void* usrdata;
+    } rfc5168_cb;
 
-	TSK_DECLARE_SAFEOBJ;
+    //! List of all sessions
+    tmedia_sessions_L_t* sessions;
+
+    //! User's parameters used to confugure plugins
+    tmedia_params_L_t* params;
+
+    TSK_DECLARE_SAFEOBJ;
 }
 tmedia_session_mgr_t;
 
-typedef enum tmedia_session_param_type_e
-{
-	tmedia_sptype_null = 0,
-	
-	tmedia_sptype_set,
-	tmedia_sptype_get
+typedef enum tmedia_session_param_type_e {
+    tmedia_sptype_null = 0,
+
+    tmedia_sptype_set,
+    tmedia_sptype_get
 }
 tmedia_session_param_type_t;
 

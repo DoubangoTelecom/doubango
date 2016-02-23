@@ -20,14 +20,14 @@
 extern "C" {
 #endif
 
-  /*!\brief Current ABI version number
-   *
-   * \internal
-   * If this file is altered in any way that changes the ABI, this value
-   * must be bumped.  Examples include, but are not limited to, changing
-   * types, removing or reassigning enums, adding/removing/rearranging
-   * fields to structures
-   */
+/*!\brief Current ABI version number
+ *
+ * \internal
+ * If this file is altered in any way that changes the ABI, this value
+ * must be bumped.  Examples include, but are not limited to, changing
+ * types, removing or reassigning enums, adding/removing/rearranging
+ * fields to structures
+ */
 #define VPX_IMAGE_ABI_VERSION (3) /**<\hideinitializer*/
 
 
@@ -36,8 +36,8 @@ extern "C" {
 #define VPX_IMG_FMT_HAS_ALPHA  0x400  /**< Image has an alpha channel. */
 #define VPX_IMG_FMT_HIGHBITDEPTH 0x800  /**< Image uses 16bit framebuffer. */
 
-  /*!\brief List of supported image formats */
-  typedef enum vpx_img_fmt {
+/*!\brief List of supported image formats */
+typedef enum vpx_img_fmt {
     VPX_IMG_FMT_NONE,
     VPX_IMG_FMT_RGB24,   /**< 24 bit per pixel packed RGB */
     VPX_IMG_FMT_RGB32,   /**< 32 bit per pixel packed 0RGB */
@@ -64,10 +64,11 @@ extern "C" {
     VPX_IMG_FMT_I42216    = VPX_IMG_FMT_I422 | VPX_IMG_FMT_HIGHBITDEPTH,
     VPX_IMG_FMT_I44416    = VPX_IMG_FMT_I444 | VPX_IMG_FMT_HIGHBITDEPTH,
     VPX_IMG_FMT_I44016    = VPX_IMG_FMT_I440 | VPX_IMG_FMT_HIGHBITDEPTH
-  } vpx_img_fmt_t; /**< alias for enum vpx_img_fmt */
+}
+vpx_img_fmt_t; /**< alias for enum vpx_img_fmt */
 
-  /*!\brief List of supported color spaces */
-  typedef enum vpx_color_space {
+/*!\brief List of supported color spaces */
+typedef enum vpx_color_space {
     VPX_CS_UNKNOWN    = 0,  /**< Unknown */
     VPX_CS_BT_601     = 1,  /**< BT.601 */
     VPX_CS_BT_709     = 2,  /**< BT.709 */
@@ -76,10 +77,10 @@ extern "C" {
     VPX_CS_BT_2020    = 5,  /**< BT.2020 */
     VPX_CS_RESERVED   = 6,  /**< Reserved */
     VPX_CS_SRGB       = 7   /**< sRGB */
-  } vpx_color_space_t; /**< alias for enum vpx_color_space */
+} vpx_color_space_t; /**< alias for enum vpx_color_space */
 
-  /**\brief Image Descriptor */
-  typedef struct vpx_image {
+/**\brief Image Descriptor */
+typedef struct vpx_image {
     vpx_img_fmt_t fmt; /**< Image Format */
     vpx_color_space_t cs; /**< Color Space */
 
@@ -119,103 +120,103 @@ extern "C" {
     int      self_allocd;    /**< private */
 
     void    *fb_priv; /**< Frame buffer data associated with the image. */
-  } vpx_image_t; /**< alias for struct vpx_image */
+} vpx_image_t; /**< alias for struct vpx_image */
 
-  /**\brief Representation of a rectangle on a surface */
-  typedef struct vpx_image_rect {
+/**\brief Representation of a rectangle on a surface */
+typedef struct vpx_image_rect {
     unsigned int x; /**< leftmost column */
     unsigned int y; /**< topmost row */
     unsigned int w; /**< width */
     unsigned int h; /**< height */
-  } vpx_image_rect_t; /**< alias for struct vpx_image_rect */
+} vpx_image_rect_t; /**< alias for struct vpx_image_rect */
 
-  /*!\brief Open a descriptor, allocating storage for the underlying image
-   *
-   * Returns a descriptor for storing an image of the given format. The
-   * storage for the descriptor is allocated on the heap.
-   *
-   * \param[in]    img       Pointer to storage for descriptor. If this parameter
-   *                         is NULL, the storage for the descriptor will be
-   *                         allocated on the heap.
-   * \param[in]    fmt       Format for the image
-   * \param[in]    d_w       Width of the image
-   * \param[in]    d_h       Height of the image
-   * \param[in]    align     Alignment, in bytes, of the image buffer and
-   *                         each row in the image(stride).
-   *
-   * \return Returns a pointer to the initialized image descriptor. If the img
-   *         parameter is non-null, the value of the img parameter will be
-   *         returned.
-   */
-  vpx_image_t *vpx_img_alloc(vpx_image_t  *img,
-                             vpx_img_fmt_t fmt,
-                             unsigned int d_w,
-                             unsigned int d_h,
-                             unsigned int align);
+/*!\brief Open a descriptor, allocating storage for the underlying image
+ *
+ * Returns a descriptor for storing an image of the given format. The
+ * storage for the descriptor is allocated on the heap.
+ *
+ * \param[in]    img       Pointer to storage for descriptor. If this parameter
+ *                         is NULL, the storage for the descriptor will be
+ *                         allocated on the heap.
+ * \param[in]    fmt       Format for the image
+ * \param[in]    d_w       Width of the image
+ * \param[in]    d_h       Height of the image
+ * \param[in]    align     Alignment, in bytes, of the image buffer and
+ *                         each row in the image(stride).
+ *
+ * \return Returns a pointer to the initialized image descriptor. If the img
+ *         parameter is non-null, the value of the img parameter will be
+ *         returned.
+ */
+vpx_image_t *vpx_img_alloc(vpx_image_t  *img,
+                           vpx_img_fmt_t fmt,
+                           unsigned int d_w,
+                           unsigned int d_h,
+                           unsigned int align);
 
-  /*!\brief Open a descriptor, using existing storage for the underlying image
-   *
-   * Returns a descriptor for storing an image of the given format. The
-   * storage for descriptor has been allocated elsewhere, and a descriptor is
-   * desired to "wrap" that storage.
-   *
-   * \param[in]    img       Pointer to storage for descriptor. If this parameter
-   *                         is NULL, the storage for the descriptor will be
-   *                         allocated on the heap.
-   * \param[in]    fmt       Format for the image
-   * \param[in]    d_w       Width of the image
-   * \param[in]    d_h       Height of the image
-   * \param[in]    align     Alignment, in bytes, of each row in the image.
-   * \param[in]    img_data  Storage to use for the image
-   *
-   * \return Returns a pointer to the initialized image descriptor. If the img
-   *         parameter is non-null, the value of the img parameter will be
-   *         returned.
-   */
-  vpx_image_t *vpx_img_wrap(vpx_image_t  *img,
-                            vpx_img_fmt_t fmt,
-                            unsigned int d_w,
-                            unsigned int d_h,
-                            unsigned int align,
-                            unsigned char      *img_data);
-
-
-  /*!\brief Set the rectangle identifying the displayed portion of the image
-   *
-   * Updates the displayed rectangle (aka viewport) on the image surface to
-   * match the specified coordinates and size.
-   *
-   * \param[in]    img       Image descriptor
-   * \param[in]    x         leftmost column
-   * \param[in]    y         topmost row
-   * \param[in]    w         width
-   * \param[in]    h         height
-   *
-   * \return 0 if the requested rectangle is valid, nonzero otherwise.
-   */
-  int vpx_img_set_rect(vpx_image_t  *img,
-                       unsigned int  x,
-                       unsigned int  y,
-                       unsigned int  w,
-                       unsigned int  h);
+/*!\brief Open a descriptor, using existing storage for the underlying image
+ *
+ * Returns a descriptor for storing an image of the given format. The
+ * storage for descriptor has been allocated elsewhere, and a descriptor is
+ * desired to "wrap" that storage.
+ *
+ * \param[in]    img       Pointer to storage for descriptor. If this parameter
+ *                         is NULL, the storage for the descriptor will be
+ *                         allocated on the heap.
+ * \param[in]    fmt       Format for the image
+ * \param[in]    d_w       Width of the image
+ * \param[in]    d_h       Height of the image
+ * \param[in]    align     Alignment, in bytes, of each row in the image.
+ * \param[in]    img_data  Storage to use for the image
+ *
+ * \return Returns a pointer to the initialized image descriptor. If the img
+ *         parameter is non-null, the value of the img parameter will be
+ *         returned.
+ */
+vpx_image_t *vpx_img_wrap(vpx_image_t  *img,
+                          vpx_img_fmt_t fmt,
+                          unsigned int d_w,
+                          unsigned int d_h,
+                          unsigned int align,
+                          unsigned char      *img_data);
 
 
-  /*!\brief Flip the image vertically (top for bottom)
-   *
-   * Adjusts the image descriptor's pointers and strides to make the image
-   * be referenced upside-down.
-   *
-   * \param[in]    img       Image descriptor
-   */
-  void vpx_img_flip(vpx_image_t *img);
+/*!\brief Set the rectangle identifying the displayed portion of the image
+ *
+ * Updates the displayed rectangle (aka viewport) on the image surface to
+ * match the specified coordinates and size.
+ *
+ * \param[in]    img       Image descriptor
+ * \param[in]    x         leftmost column
+ * \param[in]    y         topmost row
+ * \param[in]    w         width
+ * \param[in]    h         height
+ *
+ * \return 0 if the requested rectangle is valid, nonzero otherwise.
+ */
+int vpx_img_set_rect(vpx_image_t  *img,
+                     unsigned int  x,
+                     unsigned int  y,
+                     unsigned int  w,
+                     unsigned int  h);
 
-  /*!\brief Close an image descriptor
-   *
-   * Frees all allocated storage associated with an image descriptor.
-   *
-   * \param[in]    img       Image descriptor
-   */
-  void vpx_img_free(vpx_image_t *img);
+
+/*!\brief Flip the image vertically (top for bottom)
+ *
+ * Adjusts the image descriptor's pointers and strides to make the image
+ * be referenced upside-down.
+ *
+ * \param[in]    img       Image descriptor
+ */
+void vpx_img_flip(vpx_image_t *img);
+
+/*!\brief Close an image descriptor
+ *
+ * Frees all allocated storage associated with an image descriptor.
+ *
+ * \param[in]    img       Image descriptor
+ */
+void vpx_img_free(vpx_image_t *img);
 
 #ifdef __cplusplus
 }  // extern "C"

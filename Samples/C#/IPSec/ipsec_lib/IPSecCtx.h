@@ -24,27 +24,27 @@
 class IPSecCtx
 {
 public:
-	IPSecCtx(tipsec_ipproto_t ipproto,
-		bool use_ipv6,
-		tipsec_mode_t mode,
-		tipsec_ealg_t ealg,
-		tipsec_alg_t alg,
-		tipsec_proto_t protocol);
-	virtual ~IPSecCtx();
-	tipsec_error_t start();
-	tipsec_error_t setLocal(const char* addr_local, const char* addr_remote, tipsec_port_t port_uc, tipsec_port_t port_us);
-	tipsec_error_t setKeys(const tipsec_key_t* ik, const tipsec_key_t* ck);
-	tipsec_error_t setRemote(tipsec_spi_t spi_pc, tipsec_spi_t spi_ps, tipsec_port_t port_pc, tipsec_port_t port_ps, tipsec_lifetime_t lifetime);
-	tipsec_error_t stop();
+    IPSecCtx(tipsec_ipproto_t ipproto,
+             bool use_ipv6,
+             tipsec_mode_t mode,
+             tipsec_ealg_t ealg,
+             tipsec_alg_t alg,
+             tipsec_proto_t protocol);
+    virtual ~IPSecCtx();
+    tipsec_error_t start();
+    tipsec_error_t setLocal(const char* addr_local, const char* addr_remote, tipsec_port_t port_uc, tipsec_port_t port_us);
+    tipsec_error_t setKeys(const tipsec_key_t* ik, const tipsec_key_t* ck);
+    tipsec_error_t setRemote(tipsec_spi_t spi_pc, tipsec_spi_t spi_ps, tipsec_port_t port_pc, tipsec_port_t port_ps, tipsec_lifetime_t lifetime);
+    tipsec_error_t stop();
 
-	tipsec_spi_t getSpiUC();
-	tipsec_spi_t getSpiUS();
-	tipsec_spi_t getSpiPC();
-	tipsec_spi_t getSpiPS();
+    tipsec_spi_t getSpiUC();
+    tipsec_spi_t getSpiUS();
+    tipsec_spi_t getSpiPC();
+    tipsec_spi_t getSpiPS();
 
 private:
-	static bool sInitialized;
-	tipsec_ctx_t* m_pCtx;
+    static bool sInitialized;
+    tipsec_ctx_t* m_pCtx;
 };
 
 #endif /* IPSEC_CTX_H */

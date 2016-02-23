@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -39,7 +39,7 @@
 #define TSK_XML_NODE_IS_TEXTVALUE(node)							(node && node->type==XML_TEXT_NODE)
 #define TSK_XML_NODE_SAFE_GET_TEXTVALUE(node)					(const char*)(TSK_XML_NODE_IS_TEXTVALUE(node)?(node->content):0)
 #define TSK_XML_NODE_SKIP_COMMENTS(node)						while(node && (node->type==XML_COMMENT_NODE)) node = tsk_xml_find_node(node, 0, nft_next);
-		
+
 
 #define TSK_XML_NODE_SELECT_BY_NAME(qname)						nst_by_name, qname
 #define TSK_XML_NODE_SELECT_BY_ATT(qname, att_name, att_value)	nst_by_att, qname, att_name, att_value
@@ -61,77 +61,71 @@
 	else tsk_strupdate(&result, "");
 
 /** C and XML Schema mapping */
-typedef enum tsk_xml_type_e
-{
-	xt_none,
-	xt_string,			/* xsd:string */
-	xt_byte,			/* xsd:byte */
-	xt_unsignedByte,	/* xsd:unsignedByte */
-	xt_short,			/* xsd:short */
-	xt_unsignedShort,	/* xsd:unsignedShort */
-	xt_int,				/* xsd:int */
-	xt_unsignedInt,		/* xsd:unsignedInt */
-	xt_long,			/* xsd:long */
-	xt_boolean,			/* xsd:boolean */
-	xt_float,			/* xsd:float */
-	xt_double			/* xsd:double */
+typedef enum tsk_xml_type_e {
+    xt_none,
+    xt_string,			/* xsd:string */
+    xt_byte,			/* xsd:byte */
+    xt_unsignedByte,	/* xsd:unsignedByte */
+    xt_short,			/* xsd:short */
+    xt_unsignedShort,	/* xsd:unsignedShort */
+    xt_int,				/* xsd:int */
+    xt_unsignedInt,		/* xsd:unsignedInt */
+    xt_long,			/* xsd:long */
+    xt_boolean,			/* xsd:boolean */
+    xt_float,			/* xsd:float */
+    xt_double			/* xsd:double */
 }
 tsk_xml_type_t;
 
 /** Node finding types */
-typedef enum tsk_xml_node_find_type_s
-{
-	nft_none,
-	nft_children,
-	nft_parent,
-	nft_next,
-	nft_prev
+typedef enum tsk_xml_node_find_type_s {
+    nft_none,
+    nft_children,
+    nft_parent,
+    nft_next,
+    nft_prev
 }
 tsk_xml_node_find_type_t;
 
 /** Element selection types */
-typedef enum tsk_xml_node_select_type_s
-{
-	nst_by_name,
-	nst_by_att,
-	nst_att_value,
-	nst_content,
-	nst_end
+typedef enum tsk_xml_node_select_type_s {
+    nst_by_name,
+    nst_by_att,
+    nst_att_value,
+    nst_content,
+    nst_end
 }
 tsk_xml_node_select_type_t;
 
 /** XML namespace */
-typedef struct tsk_xml_namespace_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsk_xml_namespace_s {
+    TSK_DECLARE_OBJECT;
 
-	char* prefix;
-	char* value;
+    char* prefix;
+    char* value;
 }
 tsk_xml_namespace_t;
 
 /** XML attribute */
-typedef struct tsk_xml_attribute_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsk_xml_attribute_s {
+    TSK_DECLARE_OBJECT;
 
-	char* name;
-	void* value;
-	tsk_xml_type_t type;
+    char* name;
+    void* value;
+    tsk_xml_type_t type;
 }
 tsk_xml_attribute_t;
 
 /** XML element */
-typedef struct tsk_xml_element_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsk_xml_element_s {
+    TSK_DECLARE_OBJECT;
 
-	char* name;
-	void* value;
-	tsk_list_t* elements;
-	tsk_list_t* attributes;
-	tsk_list_t* namespaces;
-	tsk_xml_type_t type;
+    char* name;
+    void* value;
+    tsk_list_t* elements;
+    tsk_list_t* attributes;
+    tsk_list_t* namespaces;
+    tsk_xml_type_t type;
 }
 tsk_xml_element_t;
 

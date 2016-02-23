@@ -17,22 +17,22 @@ BOOL
 PerflogInitIfEnabled(
     IN HINSTANCE hInstance,
     __in PPERFLOG_LOGGING_PARAMS LogParams
-    );
+);
 
 BOOL
 PerflogInitialize (
     __in PPERFLOG_LOGGING_PARAMS LogParams
-    );
+);
 
 VOID
 PerflogShutdown (
     VOID
-    );
+);
 
 VOID
 PerflogTraceEvent (
     __in PEVENT_TRACE_HEADER Event
-    );
+);
 
 extern ULONG PerflogEnableFlags;
 extern UCHAR PerflogEnableLevel;
@@ -48,9 +48,9 @@ VOID
 PerflogTraceEventLevel(
     ULONG Level,
     __in PEVENT_TRACE_HEADER Event
-    );
+);
 
 VOID
 PerflogTraceEvent (
     __in PEVENT_TRACE_HEADER Event
-    );
+);

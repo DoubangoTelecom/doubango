@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -43,30 +43,29 @@
 TDAV_BEGIN_DECLS
 
 /** G.729abb codec */
-typedef struct tdav_codec_g729ab_s
-{
-	TMEDIA_DECLARE_CODEC_AUDIO;
+typedef struct tdav_codec_g729ab_s {
+    TMEDIA_DECLARE_CODEC_AUDIO;
 
-	struct{
-		Word16 prm[PRM_SIZE+1];        /* Analysis parameters + frame type      */
-		Word16 serial[SERIAL_SIZE];    /* Output bitstream buffer               */
+    struct {
+        Word16 prm[PRM_SIZE+1];        /* Analysis parameters + frame type      */
+        Word16 serial[SERIAL_SIZE];    /* Output bitstream buffer               */
 
-		Word16 frame;                  /* frame counter */
+        Word16 frame;                  /* frame counter */
 
-		/* For G.729B */
-		Word16 vad_enable;
-	} encoder;
+        /* For G.729B */
+        Word16 vad_enable;
+    } encoder;
 
-	struct{
-		Word16  serial[SERIAL_SIZE];          /* Serial stream               */
-		Word16  synth_buf[L_FRAME+M], *synth; /* Synthesis                   */
-		Word16  parm[PRM_SIZE+2];             /* Synthesis parameters        */
-		Word16  Az_dec[MP1*2];                /* Decoded Az for post-filter  */
-		Word16  T2[2];                        /* Pitch lag for 2 subframes   */
+    struct {
+        Word16  serial[SERIAL_SIZE];          /* Serial stream               */
+        Word16  synth_buf[L_FRAME+M], *synth; /* Synthesis                   */
+        Word16  parm[PRM_SIZE+2];             /* Synthesis parameters        */
+        Word16  Az_dec[MP1*2];                /* Decoded Az for post-filter  */
+        Word16  T2[2];                        /* Pitch lag for 2 subframes   */
 
-		/* For G.729B */
-		Word16  Vad;
-	} decoder;
+        /* For G.729B */
+        Word16  Vad;
+    } decoder;
 }
 tdav_codec_g729ab_t;
 

@@ -2,19 +2,19 @@
 //* Copyright (C) 2010-2011 Mamadou Diop.
 //*
 //* Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-//*	
+//*
 //* This file is part of Open Source Doubango Framework.
 //*
 //* DOUBANGO is free software: you can redistribute it and/or modify
 //* it under the terms of the GNU General Public License as published by
 //* the Free Software Foundation, either version 3 of the License, or
 //* (at your option) any later version.
-//*	
+//*
 //* DOUBANGO is distributed in the hope that it will be useful,
 //* but WITHOUT ANY WARRANTY; without even the implied warranty of
 //* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //* GNU General Public License for more details.
-//*	
+//*
 //* You should have received a copy of the GNU General Public License
 //* along with DOUBANGO.
 //*
@@ -97,7 +97,7 @@
 //		request->nonce = tsk_strdup(allocation->nonce);
 //
 //		/* Create random transaction id */
-//		{	
+//		{
 //			tsk_istr_t random;
 //			tsk_md5digest_t digest;
 //
@@ -176,8 +176,8 @@
 //		tnet_turn_attribute_t *attribute;
 //		tnet_turn_channel_binding_id_t number;
 //		uint32_t lifetime;
-//		
-//		
+//
+//
 //		channel_binding = va_arg(*app, const tnet_turn_channel_binding_t *);
 //		number = tnet_htons(channel_binding->id);
 //		lifetime = tnet_htonl(channel_binding->timeout);
@@ -216,7 +216,7 @@
 //		tnet_turn_attribute_xpeer_addr_t* xpeer  = tsk_object_ref(va_arg(*app, tnet_turn_attribute_xpeer_addr_t *));
 //		const void* data = va_arg(*app, const void *);
 //		tsk_size_t size = va_arg(*app, tsk_size_t);
-//		
+//
 //		/*
 //			draft-ietf-behave-turn-16 - 10.1.  Forming a Send Indication
 //
@@ -255,7 +255,7 @@
 //		attribute->xaddress[1] = 0xA1;
 //		attribute->xaddress[2] = 0x83;
 //		attribute->xaddress[3] = 0x47;
-//		
+//
 //		tnet_stun_message_add_attribute(request, (tnet_stun_attr_t**)&attribute);
 //
 //		/*if((attribute = tnet_turn_attribute_even_port_create(context->enable_evenport)))
@@ -293,7 +293,7 @@
 //						{	/* First time we get a nonce */
 //							tsk_strupdate(&allocation->nonce, nonce);
 //							tsk_strupdate(&allocation->realm, realm);
-//							
+//
 //							/* Delete the message and response before retrying*/
 //							TSK_OBJECT_SAFE_FREE(response);
 //							TSK_OBJECT_SAFE_FREE(request);
@@ -347,7 +347,7 @@
 //			TSK_OBJECT_SAFE_FREE(response);
 //		}
 //	}
-//	
+//
 //	TSK_OBJECT_SAFE_FREE(request);
 //	return ret;
 //}
@@ -357,12 +357,12 @@
 //tnet_turn_allocation_id_t tnet_turn_allocate(const tnet_nat_context_t* nat_context, const tnet_fd_t localFD, tnet_socket_type_t socket_type)
 //{
 //	tnet_turn_allocation_id_t id = TNET_TURN_INVALID_ALLOCATION_ID;
-//	
+//
 //	if(nat_context){
 //		int ret;
 //		tnet_turn_allocation_t* allocation = tnet_turn_allocation_create(localFD, nat_context->socket_type, nat_context->server_address, nat_context->server_port, nat_context->username, nat_context->password);
 //		allocation->software = tsk_strdup(nat_context->software);
-//		
+//
 //		if((ret = tnet_turn_send_request(nat_context, allocation, tnet_turn_create_request_allocate))){
 //			TSK_DEBUG_ERROR("TURN allocation failed with error code:%d.", ret);
 //			TSK_OBJECT_SAFE_FREE(allocation);
@@ -422,9 +422,9 @@
 //
 //	if(nat_context && allocation){
 //		int ret;
-//		
+//
 //		channel_binding = tnet_turn_channel_binding_create(allocation);
-//		
+//
 //		if(channel_binding){
 //			if(((struct sockaddr*)peer)->sa_family == AF_INET){
 //				struct sockaddr_in *sin = ((struct sockaddr_in*)peer);
@@ -433,7 +433,7 @@
 //				channel_binding->xpeer = tnet_turn_attribute_xpeer_addr_create_null();
 //				channel_binding->xpeer->family = stun_ipv4;
 //				channel_binding->xpeer->xport = ((sin->sin_port) ^ tnet_htons(0x2112));
-//				
+//
 //				_sin_addr = tnet_htonl_2(&sin->sin_addr) ^tnet_htonl(kStunMagicCookieLong);
 //				memcpy(channel_binding->xpeer->xaddress, &_sin_addr, sizeof(_sin_addr));
 //			}
@@ -453,7 +453,7 @@
 //		if((ret = tnet_turn_send_request(nat_context, allocation, tnet_turn_create_request_channel_bind, channel_binding))){
 //			TSK_DEBUG_ERROR("TURN (CHANNEL-BIND) failed with error code:%d.", ret);
 //			TSK_OBJECT_SAFE_FREE(channel_binding);
-//			
+//
 //			goto bail;
 //		}
 //		else{
@@ -566,8 +566,8 @@
 //{
 //	tnet_turn_channel_binding_t *channel_binding = self;
 //	if(channel_binding){
-//		static tnet_turn_channel_binding_id_t __allocation_unique_id = 0x4000; /* 0x4000 through 0x7FFF */		
-//		
+//		static tnet_turn_channel_binding_id_t __allocation_unique_id = 0x4000; /* 0x4000 through 0x7FFF */
+//
 //		channel_binding->id = __allocation_unique_id++;
 //		channel_binding->allocation = va_arg(*app, const tnet_turn_allocation_t *);
 //		channel_binding->timeout = TNET_TURN_CHANBIND_TIMEOUT_DEFAULT; /* 10 minutes as per draft-ietf-behave-turn-16 subclause 11 */
@@ -580,21 +580,21 @@
 //}
 //
 //static tsk_object_t* tnet_turn_channel_binding_dtor(tsk_object_t * self)
-//{ 
+//{
 //	tnet_turn_channel_binding_t *channel_binding = self;
 //	if(channel_binding){
 //		TSK_OBJECT_SAFE_FREE(channel_binding->xpeer);
 //	}
-//	
+//
 //	return self;
 //}
 //
-//static const tsk_object_def_t tnet_turn_channel_binding_def_s = 
+//static const tsk_object_def_t tnet_turn_channel_binding_def_s =
 //{
 //	sizeof(tnet_turn_channel_binding_t),
-//	tnet_turn_channel_binding_ctor, 
+//	tnet_turn_channel_binding_ctor,
 //	tnet_turn_channel_binding_dtor,
-//	tsk_null, 
+//	tsk_null,
 //};
 //const tsk_object_def_t *tnet_turn_channel_binding_def_t = &tnet_turn_channel_binding_def_s;
 //
@@ -611,21 +611,21 @@
 //}
 //
 //static tsk_object_t* tnet_turn_permission_dtor(tsk_object_t * self)
-//{ 
+//{
 //	tnet_turn_permission_t *permission = self;
 //	if(permission){
 //		TSK_OBJECT_SAFE_FREE(permission->xpeer);
 //	}
-//	
+//
 //	return self;
 //}
 //
-//static const tsk_object_def_t tnet_turn_permission_def_s = 
+//static const tsk_object_def_t tnet_turn_permission_def_s =
 //{
 //	sizeof(tnet_turn_permission_t),
-//	tnet_turn_permission_ctor, 
+//	tnet_turn_permission_ctor,
 //	tnet_turn_permission_dtor,
-//	tsk_null, 
+//	tsk_null,
 //};
 //const tsk_object_def_t *tnet_turn_permission_def_t = &tnet_turn_permission_def_s;
 //
@@ -639,7 +639,7 @@
 //	tnet_turn_allocation_t *allocation = self;
 //	if(allocation){
 //		static tnet_turn_allocation_id_t __allocation_unique_id = 0;
-//		
+//
 //		const char* server_address;
 //		tnet_port_t server_port;
 //
@@ -647,7 +647,7 @@
 //
 //		allocation->localFD = va_arg(*app, tnet_fd_t);
 //		allocation->socket_type = va_arg(*app, tnet_socket_type_t);
-//	
+//
 //		server_address = va_arg(*app, const char*);
 //#if defined(__GNUC__)
 //		server_port = (tnet_port_t)va_arg(*app, unsigned);
@@ -668,7 +668,7 @@
 //}
 //
 //static tsk_object_t* tnet_turn_allocation_dtor(tsk_object_t * self)
-//{ 
+//{
 //	tnet_turn_allocation_t *allocation = self;
 //	if(allocation){
 //		TSK_FREE(allocation->relay_address);
@@ -679,23 +679,23 @@
 //		TSK_FREE(allocation->nonce);
 //
 //		TSK_FREE(allocation->software);
-//		
+//
 //		TSK_OBJECT_SAFE_FREE(allocation->xmaddr);
 //		TSK_OBJECT_SAFE_FREE(allocation->maddr);
 //
 //		TSK_OBJECT_SAFE_FREE(allocation->channel_bindings);
 //		TSK_OBJECT_SAFE_FREE(allocation->permissions);
 //	}
-//	
+//
 //	return self;
 //}
 //
-//static const tsk_object_def_t tnet_turn_allocation_def_s = 
+//static const tsk_object_def_t tnet_turn_allocation_def_s =
 //{
 //	sizeof(tnet_turn_allocation_t),
-//	tnet_turn_allocation_ctor, 
+//	tnet_turn_allocation_ctor,
 //	tnet_turn_allocation_dtor,
-//	tsk_null, 
+//	tsk_null,
 //};
 //const tsk_object_def_t *tnet_turn_allocation_def_t = &tnet_turn_allocation_def_s;
 //

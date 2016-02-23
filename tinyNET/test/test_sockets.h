@@ -21,41 +21,40 @@
 
 void test_sockets()
 {
-	int test;
-	tnet_socket_tcp_t * tcp_socket;
-	tnet_socket_type_t type = tnet_socket_type_udp_ipv4;
-	struct sockaddr_storage to;
-	
-	TNET_SOCKET_TYPE_SET_IPV4(type);
-	TNET_SOCKET_TYPE_SET_IPV6(type);
-	TNET_SOCKET_TYPE_SET_IPV4Only(type);
-	TNET_SOCKET_TYPE_SET_IPV6Only(type);
-	TNET_SOCKET_TYPE_SET_IPV6Only(type);
-	TNET_SOCKET_TYPE_SET_IPV4(type);
-	TNET_SOCKET_TYPE_SET_IPV6(type);
+    int test;
+    tnet_socket_tcp_t * tcp_socket;
+    tnet_socket_type_t type = tnet_socket_type_udp_ipv4;
+    struct sockaddr_storage to;
 
-	TNET_SOCKET_TYPE_SET_TLS(type);
-	TNET_SOCKET_TYPE_SET_UDP(type);
-	TNET_SOCKET_TYPE_SET_SCTP(type);
-	TNET_SOCKET_TYPE_SET_TCP(type);
-	
-	tcp_socket = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, type);
+    TNET_SOCKET_TYPE_SET_IPV4(type);
+    TNET_SOCKET_TYPE_SET_IPV6(type);
+    TNET_SOCKET_TYPE_SET_IPV4Only(type);
+    TNET_SOCKET_TYPE_SET_IPV6Only(type);
+    TNET_SOCKET_TYPE_SET_IPV6Only(type);
+    TNET_SOCKET_TYPE_SET_IPV4(type);
+    TNET_SOCKET_TYPE_SET_IPV6(type);
 
-	if(!TNET_SOCKET_IS_VALID(tcp_socket))
-	{
-		TSK_OBJECT_SAFE_FREE(tcp_socket);
-		return;
-	}
+    TNET_SOCKET_TYPE_SET_TLS(type);
+    TNET_SOCKET_TYPE_SET_UDP(type);
+    TNET_SOCKET_TYPE_SET_SCTP(type);
+    TNET_SOCKET_TYPE_SET_TCP(type);
 
-	//if(!(test = tnet_sockaddr_init("www.google.com", 80, type, &to))){
-	//	test = tnet_sockfd_connetto(tcp_socket->fd, (const struct sockaddr_storage *)&to);
-	//}
+    tcp_socket = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, type);
 
-	if(!(test = tnet_sockaddr_init("ipv6.google.com", 80, type, &to))){
-		test = tnet_sockfd_connectto(tcp_socket->fd, (const struct sockaddr_storage *)&to);
-	}
+    if(!TNET_SOCKET_IS_VALID(tcp_socket)) {
+        TSK_OBJECT_SAFE_FREE(tcp_socket);
+        return;
+    }
 
-	TSK_OBJECT_SAFE_FREE(tcp_socket);
+    //if(!(test = tnet_sockaddr_init("www.google.com", 80, type, &to))){
+    //	test = tnet_sockfd_connetto(tcp_socket->fd, (const struct sockaddr_storage *)&to);
+    //}
+
+    if(!(test = tnet_sockaddr_init("ipv6.google.com", 80, type, &to))) {
+        test = tnet_sockfd_connectto(tcp_socket->fd, (const struct sockaddr_storage *)&to);
+    }
+
+    TSK_OBJECT_SAFE_FREE(tcp_socket);
 }
 
 #endif /* TNET_TEST_SOCKETS_H */

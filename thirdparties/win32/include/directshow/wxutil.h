@@ -15,7 +15,8 @@
 #pragma warning(disable: 4705)
 
 // wrapper for whatever critical section we have
-class CCritSec {
+class CCritSec
+{
 
     // make copy constructor and assignment operator inaccessible
 
@@ -66,21 +67,22 @@ public:
 //
 
 #ifdef DEBUG
-    BOOL WINAPI CritCheckIn(CCritSec * pcCrit);
-    BOOL WINAPI CritCheckIn(const CCritSec * pcCrit);
-    BOOL WINAPI CritCheckOut(CCritSec * pcCrit);
-    BOOL WINAPI CritCheckOut(const CCritSec * pcCrit);
-    void WINAPI DbgLockTrace(CCritSec * pcCrit, BOOL fTrace);
+BOOL WINAPI CritCheckIn(CCritSec * pcCrit);
+BOOL WINAPI CritCheckIn(const CCritSec * pcCrit);
+BOOL WINAPI CritCheckOut(CCritSec * pcCrit);
+BOOL WINAPI CritCheckOut(const CCritSec * pcCrit);
+void WINAPI DbgLockTrace(CCritSec * pcCrit, BOOL fTrace);
 #else
-    #define CritCheckIn(x) TRUE
-    #define CritCheckOut(x) TRUE
-    #define DbgLockTrace(pc, fT)
+#define CritCheckIn(x) TRUE
+#define CritCheckOut(x) TRUE
+#define DbgLockTrace(pc, fT)
 #endif
 
 
 // locks a critical section, and unlocks it automatically
 // when the lock goes out of scope
-class CAutoLock {
+class CAutoLock
+{
 
     // make copy constructor and assignment operator inaccessible
 
@@ -91,8 +93,7 @@ protected:
     CCritSec * m_pLock;
 
 public:
-    CAutoLock(CCritSec * plock)
-    {
+    CAutoLock(CCritSec * plock) {
         m_pLock = plock;
         m_pLock->Lock();
     };
@@ -121,14 +122,22 @@ public:
     ~CAMEvent();
 
     // Cast to HANDLE - we don't support this as an lvalue
-    operator HANDLE () const { return m_hEvent; };
-
-    void Set() {EXECUTE_ASSERT(SetEvent(m_hEvent));};
-    BOOL Wait(DWORD dwTimeout = INFINITE) {
-	return (WaitForSingleObject(m_hEvent, dwTimeout) == WAIT_OBJECT_0);
+    operator HANDLE () const {
+        return m_hEvent;
     };
-    void Reset() { ResetEvent(m_hEvent); };
-    BOOL Check() { return Wait(0); };
+
+    void Set() {
+        EXECUTE_ASSERT(SetEvent(m_hEvent));
+    };
+    BOOL Wait(DWORD dwTimeout = INFINITE) {
+        return (WaitForSingleObject(m_hEvent, dwTimeout) == WAIT_OBJECT_0);
+    };
+    void Reset() {
+        ResetEvent(m_hEvent);
+    };
+    BOOL Check() {
+        return Wait(0);
+    };
 };
 
 
@@ -155,7 +164,8 @@ public:
 #ifdef AM_NOVTABLE
 // simple thread class supports creation of worker thread, synchronization
 // and communication. Can be derived to simplify parameter passing
-class AM_NOVTABLE CAMThread {
+class AM_NOVTABLE CAMThread
+{
 
     // make copy constructor and assignment operator inaccessible
 
@@ -211,11 +221,11 @@ public:
 
     // ThreadExists
     // Return TRUE if the thread exists. FALSE otherwise
-    BOOL ThreadExists(void) const
-    {
+    BOOL ThreadExists(void) const {
         if (m_hThread == 0) {
             return FALSE;
-        } else {
+        }
+        else {
             return TRUE;
         }
     }
@@ -231,10 +241,14 @@ public:
 
     // If you want to do WaitForMultipleObjects you'll need to include
     // this handle in your wait list or you won't be responsive
-    HANDLE GetRequestHandle() const { return m_EventSend; };
+    HANDLE GetRequestHandle() const {
+        return m_EventSend;
+    };
 
     // Find out what the request was
-    DWORD GetRequestParam() const { return m_dwParam; };
+    DWORD GetRequestParam() const {
+        return m_dwParam;
+    };
 
     // call CoInitializeEx (COINIT_DISABLE_OLE1DDE) if
     // available. S_FALSE means it's not available.
@@ -258,7 +272,8 @@ public:
 
 #define DEFAULT_QUEUESIZE   2
 
-template <class T> class CQueue {
+template <class T> class CQueue
+{
 private:
     HANDLE          hSemPut;        // Semaphore controlling queue "putting"
     HANDLE          hSemGet;        // Semaphore controlling queue "getting"
@@ -375,9 +390,9 @@ inline void * __cdecl memchrInternal(const void *buf, int chr, size_t cnt)
         repne   scasb       // look for the byte in the byte stream
         jnz     exit_memchr // Z flag set if byte found
         dec     edi         // scasb always increments edi even when it
-                            // finds the required byte
+        // finds the required byte
         mov     pRet, edi
-exit_memchr:
+        exit_memchr:
     }
     return pRet;
 
@@ -482,38 +497,65 @@ IUnknown* QzAtlComPtrAssign(__deref_inout_opt IUnknown** pp, __in_opt IUnknown* 
 template <class T>
 class QzCComPtr
 {
-public:
-	typedef T _PtrClass;
-	QzCComPtr() {p=NULL;}
-	QzCComPtr(T* lp)
-	{
-		if ((p = lp) != NULL)
-			p->AddRef();
-	}
-	QzCComPtr(const QzCComPtr<T>& lp)
-	{
-		if ((p = lp.p) != NULL)
-			p->AddRef();
-	}
-	~QzCComPtr() {if (p) p->Release();}
-	void Release() {if (p) p->Release(); p=NULL;}
-	operator T*() {return (T*)p;}
-	T& operator*() {ASSERT(p!=NULL); return *p; }
-	//The assert on operator& usually indicates a bug.  If this is really
-	//what is needed, however, take the address of the p member explicitly.
-	T** operator&() { ASSERT(p==NULL); return &p; }
-	T* operator->() { ASSERT(p!=NULL); return p; }
-	T* operator=(T* lp){return (T*)QzAtlComPtrAssign((IUnknown**)&p, lp);}
-	T* operator=(const QzCComPtr<T>& lp)
-	{
-		return (T*)QzAtlComPtrAssign((IUnknown**)&p, lp.p);
-	}
+    public:
+    typedef T _PtrClass;
+    QzCComPtr() {
+        p=NULL;
+    }
+    QzCComPtr(T* lp) {
+        if ((p = lp) != NULL) {
+            p->AddRef();
+        }
+    }
+    QzCComPtr(const QzCComPtr<T>& lp) {
+        if ((p = lp.p) != NULL) {
+            p->AddRef();
+        }
+    }
+    ~QzCComPtr() {
+        if (p) {
+            p->Release();
+        }
+    }
+    void Release() {
+        if (p) {
+            p->Release();
+        }
+        p=NULL;
+    }
+    operator T*() {
+        return (T*)p;
+    }
+    T& operator*() {
+        ASSERT(p!=NULL);
+        return *p;
+    }
+    //The assert on operator& usually indicates a bug.  If this is really
+    //what is needed, however, take the address of the p member explicitly.
+    T** operator&() {
+        ASSERT(p==NULL);
+        return &p;
+    }
+    T* operator->() {
+        ASSERT(p!=NULL);
+        return p;
+    }
+    T* operator=(T* lp) {
+        return (T*)QzAtlComPtrAssign((IUnknown**)&p, lp);
+    }
+    T* operator=(const QzCComPtr<T>& lp) {
+        return (T*)QzAtlComPtrAssign((IUnknown**)&p, lp.p);
+    }
 #if _MSC_VER>1020
-	bool operator!(){return (p == NULL);}
+    bool operator!() {
+        return (p == NULL);
+    }
 #else
-	BOOL operator!(){return (p == NULL) ? TRUE : FALSE;}
+    BOOL operator!() {
+        return (p == NULL) ? TRUE : FALSE;
+    }
 #endif
-	T* p;
+    T* p;
 };
 
 MMRESULT CompatibleTimeSetEvent( UINT uDelay, UINT uResolution, __in LPTIMECALLBACK lpTimeProc, DWORD_PTR dwUser, UINT fuEvent );

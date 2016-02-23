@@ -1,7 +1,7 @@
 /*
  *
  * Based on the RFC 3174
- * 
+ *
  * Full Copyright Statement
  *
  *  Copyright (C) The Internet Society (2001).  All Rights Reserved.
@@ -32,7 +32,7 @@
  *  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
  *
  *
- * 
+ *
  *  Description:
  *	  This file implements the Secure Hashing Algorithm 1 as
  *	  defined in FIPS PUB 180-1 published April 17, 1995.
@@ -65,19 +65,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -108,7 +108,7 @@
  *	  when n is the digest size in bits.  Therefore, this
  *	  algorithm can serve as a means of providing a
  *	  "fingerprint" for a message.
- * 
+ *
 */
 
 /**@ingroup tsk_sha1_group
@@ -132,7 +132,7 @@ void SHA1ProcessMessageBlock(tsk_sha1context_t *);
  */
 tsk_sha1_errcode_t tsk_sha1reset(tsk_sha1context_t *context)
 {
-    if (!context){
+    if (!context) {
         return shaNull;
     }
 
@@ -165,17 +165,17 @@ tsk_sha1_errcode_t tsk_sha1result( tsk_sha1context_t *context, tsk_sha1digest_t 
 {
     int32_t i;
 
-    if (!context || !Message_Digest){
+    if (!context || !Message_Digest) {
         return shaNull;
     }
 
-    if (context->Corrupted){
+    if (context->Corrupted) {
         return (tsk_sha1_errcode_t)context->Corrupted;
     }
 
-    if (!context->Computed){
+    if (!context->Computed) {
         SHA1PadMessage(context);
-        for(i=0; i<64; ++i){
+        for(i=0; i<64; ++i) {
             /* message may be sensitive, clear it out */
             context->Message_Block[i] = 0;
         }
@@ -185,7 +185,7 @@ tsk_sha1_errcode_t tsk_sha1result( tsk_sha1context_t *context, tsk_sha1digest_t 
 
     }
 
-    for(i = 0; i < TSK_SHA1_DIGEST_SIZE; ++i){
+    for(i = 0; i < TSK_SHA1_DIGEST_SIZE; ++i) {
         Message_Digest[i] = context->Intermediate_Hash[i>>2]
                             >> 8 * ( 3 - ( i & 0x03 ) );
     }
@@ -203,46 +203,44 @@ tsk_sha1_errcode_t tsk_sha1result( tsk_sha1context_t *context, tsk_sha1digest_t 
  * @retval @ref tsk_sha1_errcode_t code.
  */
 tsk_sha1_errcode_t tsk_sha1input(tsk_sha1context_t    *context,
-								 const uint8_t  *message_array,
-								 unsigned  length)
+                                 const uint8_t  *message_array,
+                                 unsigned  length)
 {
-    if (!length){
+    if (!length) {
         return shaSuccess;
     }
 
-    if (!context || !message_array){
+    if (!context || !message_array) {
         return shaNull;
     }
 
-    if (context->Computed){
+    if (context->Computed) {
         context->Corrupted = shaStateError;
 
         return shaStateError;
     }
 
-    if (context->Corrupted){
-         return (tsk_sha1_errcode_t)context->Corrupted;
+    if (context->Corrupted) {
+        return (tsk_sha1_errcode_t)context->Corrupted;
     }
-    while(length-- && !context->Corrupted)
-    {
-    context->Message_Block[context->Message_Block_Index++] =
-                    (*message_array & 0xFF);
+    while(length-- && !context->Corrupted) {
+        context->Message_Block[context->Message_Block_Index++] =
+            (*message_array & 0xFF);
 
-    context->Length_Low += 8;
-    if (context->Length_Low == 0){
-        context->Length_High++;
-        if (context->Length_High == 0)
-        {
-            /* Message is too long */
-            context->Corrupted = 1;
+        context->Length_Low += 8;
+        if (context->Length_Low == 0) {
+            context->Length_High++;
+            if (context->Length_High == 0) {
+                /* Message is too long */
+                context->Corrupted = 1;
+            }
         }
-    }
 
-    if (context->Message_Block_Index == 64){
-        SHA1ProcessMessageBlock(context);
-    }
+        if (context->Message_Block_Index == 64) {
+            SHA1ProcessMessageBlock(context);
+        }
 
-    message_array++;
+        message_array++;
     }
 
     return shaSuccess;
@@ -258,17 +256,17 @@ tsk_sha1_errcode_t tsk_sha1input(tsk_sha1context_t    *context,
  */
 void SHA1ProcessMessageBlock(tsk_sha1context_t *context)
 {
-	/*
-	*      Many of the variable names in this code, especially the
-	*      single character names, were used because those were the
-	*      names used in the publication.
-	*/
+    /*
+    *      Many of the variable names in this code, especially the
+    *      single character names, were used because those were the
+    *      names used in the publication.
+    */
     const uint32_t K[] =    {       /* Constants defined in SHA-1   */
-                            0x5A827999,
-                            0x6ED9EBA1,
-                            0x8F1BBCDC,
-                            0xCA62C1D6
-                            };
+        0x5A827999,
+        0x6ED9EBA1,
+        0x8F1BBCDC,
+        0xCA62C1D6
+    };
     int32_t           t;                 /* Loop counter                */
     uint32_t      temp;              /* Temporary word value        */
     uint32_t      W[80];             /* Word sequence               */
@@ -277,15 +275,15 @@ void SHA1ProcessMessageBlock(tsk_sha1context_t *context)
     /*
      *  Initialize the first 16 words in the array W
      */
-    for(t = 0; t < 16; t++){
+    for(t = 0; t < 16; t++) {
         W[t] = context->Message_Block[t * 4] << 24;
         W[t] |= context->Message_Block[t * 4 + 1] << 16;
         W[t] |= context->Message_Block[t * 4 + 2] << 8;
         W[t] |= context->Message_Block[t * 4 + 3];
     }
 
-    for(t = 16; t < 80; t++){
-       W[t] = SHA1CircularShift(1,W[t-3] ^ W[t-8] ^ W[t-14] ^ W[t-16]);
+    for(t = 16; t < 80; t++) {
+        W[t] = SHA1CircularShift(1,W[t-3] ^ W[t-8] ^ W[t-14] ^ W[t-16]);
     }
 
     A = context->Intermediate_Hash[0];
@@ -294,7 +292,7 @@ void SHA1ProcessMessageBlock(tsk_sha1context_t *context)
     D = context->Intermediate_Hash[3];
     E = context->Intermediate_Hash[4];
 
-    for(t = 0; t < 20; t++){
+    for(t = 0; t < 20; t++) {
         temp =  SHA1CircularShift(5,A) +
                 ((B & C) | ((~B) & D)) + E + W[t] + K[0];
         E = D;
@@ -305,7 +303,7 @@ void SHA1ProcessMessageBlock(tsk_sha1context_t *context)
         A = temp;
     }
 
-    for(t = 20; t < 40; t++){
+    for(t = 20; t < 40; t++) {
         temp = SHA1CircularShift(5,A) + (B ^ C ^ D) + E + W[t] + K[1];
         E = D;
         D = C;
@@ -314,7 +312,7 @@ void SHA1ProcessMessageBlock(tsk_sha1context_t *context)
         A = temp;
     }
 
-    for(t = 40; t < 60; t++){
+    for(t = 40; t < 60; t++) {
         temp = SHA1CircularShift(5,A) +
                ((B & C) | (B & D) | (C & D)) + E + W[t] + K[2];
         E = D;
@@ -324,7 +322,7 @@ void SHA1ProcessMessageBlock(tsk_sha1context_t *context)
         A = temp;
     }
 
-    for(t = 60; t < 80; t++){
+    for(t = 60; t < 80; t++) {
         temp = SHA1CircularShift(5,A) + (B ^ C ^ D) + E + W[t] + K[3];
         E = D;
         D = C;
@@ -365,21 +363,21 @@ void SHA1PadMessage(tsk_sha1context_t *context)
      *  block, process it, and then continue padding into a second
      *  block.
      */
-    if (context->Message_Block_Index > 55){
+    if (context->Message_Block_Index > 55) {
         context->Message_Block[context->Message_Block_Index++] = 0x80;
-        while(context->Message_Block_Index < 64){
+        while(context->Message_Block_Index < 64) {
             context->Message_Block[context->Message_Block_Index++] = 0;
         }
 
         SHA1ProcessMessageBlock(context);
 
-        while(context->Message_Block_Index < 56){
+        while(context->Message_Block_Index < 56) {
             context->Message_Block[context->Message_Block_Index++] = 0;
         }
     }
-    else{
+    else {
         context->Message_Block[context->Message_Block_Index++] = 0x80;
-        while(context->Message_Block_Index < 56){
+        while(context->Message_Block_Index < 56) {
             context->Message_Block[context->Message_Block_Index++] = 0;
         }
     }
@@ -405,51 +403,51 @@ void SHA1PadMessage(tsk_sha1context_t *context)
 * @param context The sha1 context.
 */
 void tsk_sha1final(uint8_t *Message_Digest, tsk_sha1context_t *context)
-{	
-	int32_t i;
+{
+    int32_t i;
 
-	SHA1PadMessage(context);
-	for(i = 0; i<64; ++i) {
-		context->Message_Block[i] = 0;
-	}
-	context->Length_Low = 0;    /* and clear length */
-	context->Length_High = 0;
-	
-	for(i = 0; i < TSK_SHA1_DIGEST_SIZE; ++i) {
-		Message_Digest[i] = context->Intermediate_Hash[i>>2] >> 8*(3-(i&0x03));
-	}
+    SHA1PadMessage(context);
+    for(i = 0; i<64; ++i) {
+        context->Message_Block[i] = 0;
+    }
+    context->Length_Low = 0;    /* and clear length */
+    context->Length_High = 0;
+
+    for(i = 0; i < TSK_SHA1_DIGEST_SIZE; ++i) {
+        Message_Digest[i] = context->Intermediate_Hash[i>>2] >> 8*(3-(i&0x03));
+    }
 }
 
 
 /**@ingroup tsk_sha1_group
- *	Calculates sha1 digest result (hexadecimal string). 
+ *	Calculates sha1 digest result (hexadecimal string).
  *
- * @param input	The input data for which to calculate the SHA-1 hash. 
- * @param size	The size of the input data. 
- * @param result SHA-1 hash result as a hexadecimal string. 
+ * @param input	The input data for which to calculate the SHA-1 hash.
+ * @param size	The size of the input data.
+ * @param result SHA-1 hash result as a hexadecimal string.
  *
  * @retval @ref tsk_sha1_errcode_t code.
  * @sa @ref TSK_SHA1_DIGEST_CALC
 **/
 tsk_sha1_errcode_t tsk_sha1compute(const char* input, tsk_size_t size, tsk_sha1string_t *result)
 {
-	tsk_sha1_errcode_t ret;
-	tsk_sha1context_t sha;
-	uint8_t digest[TSK_SHA1_DIGEST_SIZE];
-	
-	(*result)[TSK_SHA1_STRING_SIZE] = '\0';
+    tsk_sha1_errcode_t ret;
+    tsk_sha1context_t sha;
+    uint8_t digest[TSK_SHA1_DIGEST_SIZE];
 
-	if( (ret = tsk_sha1reset(&sha)) != shaSuccess ){
-		return ret;
-	}
-	else if ( (ret = tsk_sha1input(&sha, (uint8_t*)input, (unsigned int)size)) != shaSuccess ){
-		return ret;
-	}
-	else if( (ret = tsk_sha1result(&sha, digest)) != shaSuccess ){
-		return ret;
-	}
+    (*result)[TSK_SHA1_STRING_SIZE] = '\0';
 
-	tsk_str_from_hex(digest, TSK_SHA1_DIGEST_SIZE, (char*)*result);
+    if( (ret = tsk_sha1reset(&sha)) != shaSuccess ) {
+        return ret;
+    }
+    else if ( (ret = tsk_sha1input(&sha, (uint8_t*)input, (unsigned int)size)) != shaSuccess ) {
+        return ret;
+    }
+    else if( (ret = tsk_sha1result(&sha, digest)) != shaSuccess ) {
+        return ret;
+    }
 
-	return shaSuccess;
+    tsk_str_from_hex(digest, TSK_SHA1_DIGEST_SIZE, (char*)*result);
+
+    return shaSuccess;
 }

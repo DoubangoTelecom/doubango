@@ -215,7 +215,7 @@
  * before the file is actually opened.
  */
 
-enum AVOptionType{
+enum AVOptionType {
     AV_OPT_TYPE_FLAGS,
     AV_OPT_TYPE_INT,
     AV_OPT_TYPE_INT64,

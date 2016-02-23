@@ -7,7 +7,7 @@
  *
  * Copyright (C) 2005 Steve Underwood
  *
- *  Despite my general liking of the GPL, I place my own contributions 
+ *  Despite my general liking of the GPL, I place my own contributions
  *  to this code in the public domain for the benefit of all mankind -
  *  even the slimy ones who might try to proprietize my work and use it
  *  to my detriment.
@@ -49,14 +49,12 @@ codec is considerably faster, and still fully compatible with wideband terminals
 #define TDAV_INT16_MAX 32767
 #define TDAV_INT16_MIN -32768
 
-enum
-{
+enum {
     G722_SAMPLE_RATE_8000 = 0x0001,
     G722_PACKED = 0x0002
 };
 
-typedef struct
-{
+typedef struct {
     /*! TRUE if the operating in the special ITU test mode, with the band split filters
              disabled. */
     int itu_test_mode;
@@ -70,8 +68,7 @@ typedef struct
     /*! Signal history for the QMF */
     int x[24];
 
-    struct
-    {
+    struct {
         int s;
         int sp;
         int sz;
@@ -93,8 +90,7 @@ typedef struct
     int out_bits;
 } g722_encode_state_t;
 
-typedef struct
-{
+typedef struct {
     /*! TRUE if the operating in the special ITU test mode, with the band split filters
              disabled. */
     int itu_test_mode;
@@ -108,8 +104,7 @@ typedef struct
     /*! Signal history for the QMF */
     int x[24];
 
-    struct
-    {
+    struct {
         int s;
         int sp;
         int sz;
@@ -124,7 +119,7 @@ typedef struct
         int nb;
         int det;
     } band[2];
-    
+
     unsigned int in_buffer;
     int in_bits;
     unsigned int out_buffer;

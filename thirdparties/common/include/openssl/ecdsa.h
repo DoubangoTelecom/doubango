@@ -261,10 +261,10 @@ void *ECDSA_METHOD_get_app_data(ECDSA_METHOD *ecdsa_method);
 
 void ECDSA_METHOD_set_sign(ECDSA_METHOD *ecdsa_method,
                            ECDSA_SIG *(*ecdsa_do_sign) (const unsigned char
-                                                        *dgst, int dgst_len,
-                                                        const BIGNUM *inv,
-                                                        const BIGNUM *rp,
-                                                        EC_KEY *eckey));
+                                   *dgst, int dgst_len,
+                                   const BIGNUM *inv,
+                                   const BIGNUM *rp,
+                                   EC_KEY *eckey));
 
 /**  Set the  ECDSA_sign_setup function in the ECDSA_METHOD
  *   \param  ecdsa_method  pointer to existing ECDSA_METHOD
@@ -273,9 +273,9 @@ void ECDSA_METHOD_set_sign(ECDSA_METHOD *ecdsa_method,
 
 void ECDSA_METHOD_set_sign_setup(ECDSA_METHOD *ecdsa_method,
                                  int (*ecdsa_sign_setup) (EC_KEY *eckey,
-                                                          BN_CTX *ctx,
-                                                          BIGNUM **kinv,
-                                                          BIGNUM **r));
+                                         BN_CTX *ctx,
+                                         BIGNUM **kinv,
+                                         BIGNUM **r));
 
 /**  Set the ECDSA_do_verify function in the ECDSA_METHOD
  *   \param  ecdsa_method  pointer to existing ECDSA_METHOD
@@ -284,9 +284,9 @@ void ECDSA_METHOD_set_sign_setup(ECDSA_METHOD *ecdsa_method,
 
 void ECDSA_METHOD_set_verify(ECDSA_METHOD *ecdsa_method,
                              int (*ecdsa_do_verify) (const unsigned char
-                                                     *dgst, int dgst_len,
-                                                     const ECDSA_SIG *sig,
-                                                     EC_KEY *eckey));
+                                     *dgst, int dgst_len,
+                                     const ECDSA_SIG *sig,
+                                     EC_KEY *eckey));
 
 void ECDSA_METHOD_set_flags(ECDSA_METHOD *ecdsa_method, int flags);
 

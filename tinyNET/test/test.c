@@ -57,65 +57,65 @@ int _tmain(int argc, _TCHAR* argv[])
 int main()
 #endif
 {
-	/* Startup the network stack. */
-	if(tnet_startup()){
-		return -1;
-	}
+    /* Startup the network stack. */
+    if(tnet_startup()) {
+        return -1;
+    }
 
 #if RUN_TEST_LOOP
-	for(;;)
+    for(;;)
 #endif
-	{
-	
+    {
+
 #if RUN_TEST_ALL  || RUN_TEST_SOCKETS
-		test_sockets();
+        test_sockets();
 #endif
 
 #if RUN_TEST_ALL  || RUN_TEST_TRANSPORT
-		test_transport();
+        test_transport();
 #endif
 
 #if RUN_TEST_ALL || RUN_TEST_AUTH
-		test_auth();
+        test_auth();
 #endif
 
 #if RUN_TEST_ALL || RUN_TEST_STUN
-		test_stun();
+        test_stun();
 #endif
 
 #if RUN_TEST_ALL || RUN_TEST_ICE
-		test_ice();
+        test_ice();
 #endif
 
 #if RUN_TEST_ALL || RUN_TEST_NAT
-		test_nat();
+        test_nat();
 #endif
 
 #if RUN_TEST_ALL || RUN_TEST_IFACES
-		test_ifaces();
+        test_ifaces();
 #endif
 
 #if RUN_TEST_ALL || RUN_TEST_DNS
-		test_dns();
+        test_dns();
 #endif
 
 #if RUN_TEST_ALL || RUN_TEST_DHCP
-		test_dhcp();
+        test_dhcp();
 #endif
 
 #if RUN_TEST_ALL || RUN_TEST_DHCP6
-		test_dhcp6();
+        test_dhcp6();
 #endif
 
 #if RUN_TEST_ALL || RUN_TEST_TLS
-		test_tls();
+        test_tls();
 #endif
 
-	}
+    }
 
-	/* Cleanup the network stack */
-	tnet_cleanup();
+    /* Cleanup the network stack */
+    tnet_cleanup();
 
-	return 0;
+    return 0;
 }
 

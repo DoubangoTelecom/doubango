@@ -165,16 +165,15 @@ TSK_BEGIN_DECLS
 /**@ingroup tsk_ragel_state_group
 * Ragel state.
 */
-typedef struct tsk_ragel_state_s
-{
-	int cs; /**< Ragel current state. */
-	const char *p; /**< Data pointing to the buffer to parse. */
-	const char *pe; /**< Data end pointer. */
-	const char *eof; /**< End of the file (in our case data) pointer. */
-	const char *eoh; /**< End of the headers. */
+typedef struct tsk_ragel_state_s {
+    int cs; /**< Ragel current state. */
+    const char *p; /**< Data pointing to the buffer to parse. */
+    const char *pe; /**< Data end pointer. */
+    const char *eof; /**< End of the file (in our case data) pointer. */
+    const char *eoh; /**< End of the headers. */
 
-	const char* tag_start; /**< Last tag start position set by ragel machine. */
-	const char* tag_end; /**< The end of the ragel tag. */
+    const char* tag_start; /**< Last tag start position set by ragel machine. */
+    const char* tag_end; /**< The end of the ragel tag. */
 }
 tsk_ragel_state_t;
 

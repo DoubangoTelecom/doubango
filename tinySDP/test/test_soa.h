@@ -1,19 +1,19 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 * Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -34,68 +34,68 @@
 
 void test_create_sdp()
 {
-	tsdp_ctx_handle_t* ctx = TSDP_CTX_CREATE();
-	const tsdp_message_t* sdp;
-	char* str;
-	
-	// Create local SDP from string
-	tsdp_ctx_local_create_sdp_2(ctx, SDP, strlen(SDP));
-	if((sdp = tsdp_ctx_local_get_sdp(ctx))){
-		if((str = tsdp_message_tostring(sdp))){
-			TSK_DEBUG_INFO("Local SDP (2)=\n%s", str);
-			TSK_FREE(str);
-		}
-	}
-	
-	// Create local SDP from object
-	tsdp_ctx_local_create_sdp(ctx, sdp);
-	if((sdp = tsdp_ctx_local_get_sdp(ctx))){
-		if((str = tsdp_message_tostring(sdp))){
-			TSK_DEBUG_INFO("Local SDP (1)=\n%s", str);
-			TSK_FREE(str);
-		}
-	}
+    tsdp_ctx_handle_t* ctx = TSDP_CTX_CREATE();
+    const tsdp_message_t* sdp;
+    char* str;
 
-	// Add media to the local sdp
-	tsdp_ctx_local_add_media_2(ctx, "audio", 0, "RTP/AVP",
-			TSDP_HEADER_I_VA_ARGS("this is the (audio)information line"),
-			
-			// PCMU
-			TSDP_FMT_VA_ARGS("0"),
-			TSDP_HEADER_A_VA_ARGS("rtpmap", "0 PCMU/8000"),
+    // Create local SDP from string
+    tsdp_ctx_local_create_sdp_2(ctx, SDP, strlen(SDP));
+    if((sdp = tsdp_ctx_local_get_sdp(ctx))) {
+        if((str = tsdp_message_tostring(sdp))) {
+            TSK_DEBUG_INFO("Local SDP (2)=\n%s", str);
+            TSK_FREE(str);
+        }
+    }
 
-			// 1016
-			TSDP_FMT_VA_ARGS("1"),
-			TSDP_HEADER_A_VA_ARGS("rtpmap", "1 1016/8000"),
+    // Create local SDP from object
+    tsdp_ctx_local_create_sdp(ctx, sdp);
+    if((sdp = tsdp_ctx_local_get_sdp(ctx))) {
+        if((str = tsdp_message_tostring(sdp))) {
+            TSK_DEBUG_INFO("Local SDP (1)=\n%s", str);
+            TSK_FREE(str);
+        }
+    }
 
-			// GSM
-			TSDP_FMT_VA_ARGS("3"),
-			TSDP_HEADER_A_VA_ARGS("rtpmap", "3 GSM/8000"),
+    // Add media to the local sdp
+    tsdp_ctx_local_add_media_2(ctx, "audio", 0, "RTP/AVP",
+                               TSDP_HEADER_I_VA_ARGS("this is the (audio)information line"),
 
-			tsk_null);
-	if((str = tsdp_message_tostring(sdp))){
-			TSK_DEBUG_INFO("Local SDP (audio)=\n%s", str);
-			TSK_FREE(str);
-		}
+                               // PCMU
+                               TSDP_FMT_VA_ARGS("0"),
+                               TSDP_HEADER_A_VA_ARGS("rtpmap", "0 PCMU/8000"),
 
-	// Add headers to the local sdp
-	tsdp_ctx_local_add_headers(ctx,
-			TSDP_HEADER_E_VA_ARGS("j.doe@example.com (Jane Doe)"),
-			TSDP_HEADER_P_VA_ARGS("+44 (123)456789"),
+                               // 1016
+                               TSDP_FMT_VA_ARGS("1"),
+                               TSDP_HEADER_A_VA_ARGS("rtpmap", "1 1016/8000"),
 
-			tsk_null);
-	if((str = tsdp_message_tostring(sdp))){
-			TSK_DEBUG_INFO("Local SDP (headers)=\n%s", str);
-			TSK_FREE(str);
-		}
-	
+                               // GSM
+                               TSDP_FMT_VA_ARGS("3"),
+                               TSDP_HEADER_A_VA_ARGS("rtpmap", "3 GSM/8000"),
 
-	TSK_OBJECT_SAFE_FREE(ctx);
+                               tsk_null);
+    if((str = tsdp_message_tostring(sdp))) {
+        TSK_DEBUG_INFO("Local SDP (audio)=\n%s", str);
+        TSK_FREE(str);
+    }
+
+    // Add headers to the local sdp
+    tsdp_ctx_local_add_headers(ctx,
+                               TSDP_HEADER_E_VA_ARGS("j.doe@example.com (Jane Doe)"),
+                               TSDP_HEADER_P_VA_ARGS("+44 (123)456789"),
+
+                               tsk_null);
+    if((str = tsdp_message_tostring(sdp))) {
+        TSK_DEBUG_INFO("Local SDP (headers)=\n%s", str);
+        TSK_FREE(str);
+    }
+
+
+    TSK_OBJECT_SAFE_FREE(ctx);
 }
 
 void test_soa()
 {
-	test_create_sdp();
+    test_create_sdp();
 }
 
 

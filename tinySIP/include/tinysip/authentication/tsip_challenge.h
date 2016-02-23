@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -48,29 +48,28 @@
 TSIP_BEGIN_DECLS
 
 
-typedef struct tsip_challenge_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsip_challenge_s {
+    TSK_DECLARE_OBJECT;
 
-	const tsip_stack_handle_t *stack;
+    const tsip_stack_handle_t *stack;
 
-	tsk_bool_t isproxy;
+    tsk_bool_t isproxy;
 
-	char* username;
-	char* scheme;
-	char* realm;
-	char* nonce;
-	char* opaque;
-	char* algorithm;
-	const char* qop;
+    char* username;
+    char* scheme;
+    char* realm;
+    char* nonce;
+    char* opaque;
+    char* algorithm;
+    const char* qop;
 
-	char* ha1_hexstr;
+    char* ha1_hexstr;
 
-	AKA_CK_T ck;
-	AKA_IK_T ik;
+    AKA_CK_T ck;
+    AKA_IK_T ik;
 
-	tsk_md5string_t cnonce;
-	unsigned nc;
+    tsk_md5string_t cnonce;
+    unsigned nc;
 }
 tsip_challenge_t;
 

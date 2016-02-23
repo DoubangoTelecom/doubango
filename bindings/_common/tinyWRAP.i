@@ -33,6 +33,7 @@
 %newobject SipStack::getPreferredIdentity;
 %newobject SipStack::getLocalIPnPort;
 %newobject MediaSessionMgr::producerGetCodec;
+%newobject MediaSessionMgr::sessionGetQoS;
 
 %newobject MessagingEvent::takeSessionOwnership;
 %newobject InviteEvent::takeCallSessionOwnership;

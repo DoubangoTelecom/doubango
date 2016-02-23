@@ -31,7 +31,9 @@ public:
     REFERENCE_TIME Advise( const REFERENCE_TIME & rtTime );
 
     // Get the event handle which will be set if advise time requires re-evaluation.
-    HANDLE GetEvent() const { return m_ev; }
+    HANDLE GetEvent() const {
+        return m_ev;
+    }
 
 private:
     // We define the nodes that will be used in our singly linked list
@@ -40,8 +42,8 @@ private:
     class CAdvisePacket
     {
     public:
-        CAdvisePacket()
-        {}
+        CAdvisePacket() {
+        }
 
         CAdvisePacket * m_next;
         DWORD_PTR       m_dwAdviseCookie;
@@ -50,40 +52,40 @@ private:
         HANDLE          m_hNotify;          // Handle to event or semephore
         BOOL            m_bPeriodic;        // TRUE => Periodic event
 
-        CAdvisePacket( __inout_opt CAdvisePacket * next, LONGLONG time ) : m_next(next), m_rtEventTime(time)
-        {}
+        CAdvisePacket( __inout_opt CAdvisePacket * next, LONGLONG time ) : m_next(next), m_rtEventTime(time) {
+        }
 
-        void InsertAfter( __inout CAdvisePacket * p )
-        {
+        void InsertAfter( __inout CAdvisePacket * p ) {
             p->m_next = m_next;
             m_next    = p;
         }
 
-        int IsZ() const // That is, is it the node that represents the end of the list
-        { return m_next == 0; }
+        int IsZ() const { // That is, is it the node that represents the end of the list
+            return m_next == 0;
+        }
 
-        CAdvisePacket * RemoveNext()
-        {
+        CAdvisePacket * RemoveNext() {
             CAdvisePacket *const next = m_next;
             CAdvisePacket *const new_next = next->m_next;
             m_next = new_next;
             return next;
         }
 
-        void DeleteNext()
-        {
+        void DeleteNext() {
             delete RemoveNext();
         }
 
-        CAdvisePacket * Next() const
-        {
+        CAdvisePacket * Next() const {
             CAdvisePacket * result = m_next;
-            if (result->IsZ()) result = 0;
+            if (result->IsZ()) {
+                result = 0;
+            }
             return result;
         }
 
-        DWORD_PTR Cookie() const
-        { return m_dwAdviseCookie; }
+        DWORD_PTR Cookie() const {
+            return m_dwAdviseCookie;
+        }
     };
 
     // Structure is:

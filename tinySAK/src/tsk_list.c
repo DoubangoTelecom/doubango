@@ -6,12 +6,12 @@
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -35,7 +35,7 @@
 */
 static int tsk_list_find_by_item(const tsk_list_item_t* item, const void* _item)
 {
-	return (item == (const tsk_list_item_t*)_item) ? 0 : -1;
+    return (item == (const tsk_list_item_t*)_item) ? 0 : -1;
 }
 
 /**@ingroup tsk_list_group
@@ -45,18 +45,18 @@ static int tsk_list_find_by_item(const tsk_list_item_t* item, const void* _item)
 */
 tsk_list_t* tsk_list_create()
 {
-	return (tsk_list_t*)tsk_object_new(tsk_list_def_t);
+    return (tsk_list_t*)tsk_object_new(tsk_list_def_t);
 }
 
 /**@ingroup tsk_list_group
-* Create and initialize an item to be added to a @ref tsk_list_t "linked list". 
+* Create and initialize an item to be added to a @ref tsk_list_t "linked list".
 * You should not need to call this function by yourself. See @ref _Anchor_TinySAK_Linked_List_Add_Remove "here" for more information on how to add items.<br />
 * You <b>MUST</b> use @ref TSK_OBJECT_SAFE_FREE() to safely free the returned @ref _Page_TinySAK_AnsiC_Object_Programming "well-defined" object. <br />
 * @return The newly created @ref tsk_list_item_t "item" object.
 */
 tsk_list_item_t* tsk_list_item_create()
 {
-	return (tsk_list_item_t*)tsk_object_new(tsk_list_item_def_t);
+    return (tsk_list_item_t*)tsk_object_new(tsk_list_item_def_t);
 }
 
 /**@ingroup tsk_list_group
@@ -68,16 +68,16 @@ tsk_list_item_t* tsk_list_item_create()
 */
 int tsk_list_lock(tsk_list_t* list)
 {
-	if(list){
-		if(!list->mutex){
-			list->mutex = tsk_mutex_create();
-		}
-		return tsk_mutex_lock(list->mutex);
-	}
-	else{
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
+    if(list) {
+        if(!list->mutex) {
+            list->mutex = tsk_mutex_create();
+        }
+        return tsk_mutex_lock(list->mutex);
+    }
+    else {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
 }
 
 /**@ingroup tsk_list_group
@@ -89,13 +89,13 @@ int tsk_list_lock(tsk_list_t* list)
 */
 int tsk_list_unlock(tsk_list_t* list)
 {
-	if(list && list->mutex){
-		return tsk_mutex_unlock(list->mutex); 
-	}
-	else{
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
+    if(list && list->mutex) {
+        return tsk_mutex_unlock(list->mutex);
+    }
+    else {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
 }
 
 /**@ingroup tsk_list_group
@@ -107,10 +107,10 @@ int tsk_list_unlock(tsk_list_t* list)
 */
 tsk_bool_t tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item)
 {
-	if(item){
-		return tsk_list_remove_item_by_pred(list, tsk_list_find_by_item, (const void*)item);
-	}
-	return tsk_false;
+    if(item) {
+        return tsk_list_remove_item_by_pred(list, tsk_list_find_by_item, (const void*)item);
+    }
+    return tsk_false;
 }
 
 /**@ingroup tsk_list_group
@@ -122,42 +122,42 @@ tsk_bool_t tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item)
 */
 tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t *tskobj)
 {
-	if(list){
-		tsk_list_item_t *prev = tsk_null;
-		tsk_list_item_t *curr = prev = list->head;
+    if(list) {
+        tsk_list_item_t *prev = tsk_null;
+        tsk_list_item_t *curr = prev = list->head;
 
-		while(curr){
-			if(!tsk_object_cmp(curr->data, tskobj)){
-				if(prev == curr){
-					/* Found at first position. */
-					if(list->head == list->tail){
-						/* There was only one item */
-						list->head = list->tail = tsk_null;
-					}
-					else{
-						list->head = curr->next;
-					}
-				}
-				else {
-					if(curr == list->tail){
-						/* Found at last position */
-						list->tail = prev;
-						list->tail->next = tsk_null;
-					}
-					else{
-						prev->next = curr->next;
-					}
-				}
+        while(curr) {
+            if(!tsk_object_cmp(curr->data, tskobj)) {
+                if(prev == curr) {
+                    /* Found at first position. */
+                    if(list->head == list->tail) {
+                        /* There was only one item */
+                        list->head = list->tail = tsk_null;
+                    }
+                    else {
+                        list->head = curr->next;
+                    }
+                }
+                else {
+                    if(curr == list->tail) {
+                        /* Found at last position */
+                        list->tail = prev;
+                        list->tail->next = tsk_null;
+                    }
+                    else {
+                        prev->next = curr->next;
+                    }
+                }
 
-				return curr;
-			}
-			
-			prev = curr;
-			curr = curr->next;
-		}
-	}
+                return curr;
+            }
 
-	return tsk_null;
+            prev = curr;
+            curr = curr->next;
+        }
+    }
+
+    return tsk_null;
 }
 
 /**@ingroup tsk_list_group
@@ -168,12 +168,12 @@ tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t 
 */
 tsk_bool_t tsk_list_remove_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj)
 {
-	tsk_list_item_t* item;
-	if((item = tsk_list_pop_item_by_data(list, tskobj))){
-		tsk_object_unref(item);
-		return tsk_true;
-	}
-	return tsk_false;
+    tsk_list_item_t* item;
+    if((item = tsk_list_pop_item_by_data(list, tskobj))) {
+        tsk_object_unref(item);
+        return tsk_true;
+    }
+    return tsk_false;
 }
 
 /**@ingroup tsk_list_group
@@ -187,42 +187,42 @@ tsk_bool_t tsk_list_remove_item_by_data(tsk_list_t* list, const tsk_object_t * t
 */
 tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
 {
-	if(list){
-		tsk_list_item_t *prev = tsk_null;
-		tsk_list_item_t *curr = prev = list->head;
+    if(list) {
+        tsk_list_item_t *prev = tsk_null;
+        tsk_list_item_t *curr = prev = list->head;
 
-		while(curr){
-			if(!predicate(curr, data)){
-				if(prev == curr){
-					/* Found at first position. */
-					if(list->head == list->tail){
-						/* There was only one item */
-						list->head = list->tail = tsk_null;
-					}
-					else{
-						list->head = curr->next;
-					}
-				}
-				else {
-					if(curr == list->tail){
-						/* Found at last position */
-						list->tail = prev;
-						list->tail->next = tsk_null;
-					}
-					else{
-						prev->next = curr->next;
-					}
-				}
+        while(curr) {
+            if(!predicate(curr, data)) {
+                if(prev == curr) {
+                    /* Found at first position. */
+                    if(list->head == list->tail) {
+                        /* There was only one item */
+                        list->head = list->tail = tsk_null;
+                    }
+                    else {
+                        list->head = curr->next;
+                    }
+                }
+                else {
+                    if(curr == list->tail) {
+                        /* Found at last position */
+                        list->tail = prev;
+                        list->tail->next = tsk_null;
+                    }
+                    else {
+                        prev->next = curr->next;
+                    }
+                }
 
-				return curr;
-			}
-			
-			prev = curr;
-			curr = curr->next;
-		}
-	}
+                return curr;
+            }
 
-	return 0;
+            prev = curr;
+            curr = curr->next;
+        }
+    }
+
+    return 0;
 }
 
 /**@ingroup tsk_list_group
@@ -234,12 +234,12 @@ tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predi
 */
 tsk_bool_t tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
 {
-	tsk_list_item_t* item;
-	if((item = tsk_list_pop_item_by_pred(list, predicate, data))){
-		tsk_object_unref(item);
-		return tsk_true;
-	}
-	return tsk_false;
+    tsk_list_item_t* item;
+    if((item = tsk_list_pop_item_by_pred(list, predicate, data))) {
+        tsk_object_unref(item);
+        return tsk_true;
+    }
+    return tsk_false;
 }
 
 /**@ingroup tsk_list_group
@@ -248,18 +248,18 @@ tsk_bool_t tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicat
 */
 void tsk_list_clear_items(tsk_list_t* list)
 {
-	if(list){
-		tsk_list_item_t* next = tsk_null;
-		tsk_list_item_t* curr = list->head;
+    if(list) {
+        tsk_list_item_t* next = tsk_null;
+        tsk_list_item_t* curr = list->head;
 
-		while(curr){
-			next = curr->next;
-			tsk_object_unref(curr);
-			curr = next;
-		}
-		list->head = tsk_null;
-		list->tail = tsk_null;
-	}
+        while(curr) {
+            next = curr->next;
+            tsk_object_unref(curr);
+            curr = next;
+        }
+        list->head = tsk_null;
+        list->tail = tsk_null;
+    }
 }
 
 /**@ingroup tsk_list_group
@@ -269,20 +269,20 @@ void tsk_list_clear_items(tsk_list_t* list)
 */
 tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list)
 {
-	tsk_list_item_t* item = tsk_null;
-	if(list){
-		item = list->head;
-		if(list->head){
-			if(list->head->next){
-				list->head = list->head->next;
-			}
-			else{
-				list->head = list->tail = tsk_null;
-			}
-		}
-	}
+    tsk_list_item_t* item = tsk_null;
+    if(list) {
+        item = list->head;
+        if(list->head) {
+            if(list->head->next) {
+                list->head = list->head->next;
+            }
+            else {
+                list->head = list->tail = tsk_null;
+            }
+        }
+    }
 
-	return item;
+    return item;
 }
 
 /**@ingroup tsk_list_group
@@ -293,20 +293,20 @@ tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list)
 */
 void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, tsk_bool_t back)
 {
-	// do not test
-	tsk_bool_t first = !list->head;
-	
-	if(back && list->tail){
-		list->tail->next = *item, list->tail = *item, (*item)->next = tsk_null;
-	}
-	else {
-		(*item)->next = list->head, list->head = *item;
-	}
-	
-	if(first){
-		list->tail = list->head = *item, list->tail->next = tsk_null;
-	}
-	(*item) = tsk_null;
+    // do not test
+    tsk_bool_t first = !list->head;
+
+    if(back && list->tail) {
+        list->tail->next = *item, list->tail = *item, (*item)->next = tsk_null;
+    }
+    else {
+        (*item)->next = list->head, list->head = *item;
+    }
+
+    if(first) {
+        list->tail = list->head = *item, list->tail->next = tsk_null;
+    }
+    (*item) = tsk_null;
 }
 
 /**@ingroup tsk_list_group
@@ -318,44 +318,44 @@ void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, tsk_bool_t bac
 */
 void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, tsk_bool_t ascending)
 {
-	if (list && item && *item) {
-		tsk_list_item_t *prev = tsk_null;
-		tsk_list_item_t *curr = prev = list->head;
-		int diff;
-		
-		while (curr) {
-			diff = tsk_object_cmp((*item), curr);
-			if (diff == 0 || (diff </*=*/ 0 && ascending) || (diff >/*=*/0 && !ascending)) {
-				int after = (diff == 0); // push_after(match) -> backward compatibility
-				int back = (after && (curr == list->tail));
-				int front = !back && (curr == list->head);
+    if (list && item && *item) {
+        tsk_list_item_t *prev = tsk_null;
+        tsk_list_item_t *curr = prev = list->head;
+        int diff;
 
-				if (back) {
-					tsk_list_push_back_item(list, item);
-				}
-				else if (front) {
-					tsk_list_push_front_item(list, item);
-				}
-				else {
-					if (after) {
-						// push_after(match)
-						(*item)->next = curr->next;
-						curr->next = (*item);
-					}
-					else {
-						// push_before(match)
-						(*item)->next = curr;
-						prev->next = (*item);
-					}
-				}				
-				(*item) = tsk_null;
-				return;
-			}
-			prev = curr;
-			curr = curr->next;
-		}
-		tsk_list_push_back_item(list, item);
-	}
+        while (curr) {
+            diff = tsk_object_cmp((*item), curr);
+            if (diff == 0 || (diff </*=*/ 0 && ascending) || (diff >/*=*/0 && !ascending)) {
+                int after = (diff == 0); // push_after(match) -> backward compatibility
+                int back = (after && (curr == list->tail));
+                int front = !back && (curr == list->head);
+
+                if (back) {
+                    tsk_list_push_back_item(list, item);
+                }
+                else if (front) {
+                    tsk_list_push_front_item(list, item);
+                }
+                else {
+                    if (after) {
+                        // push_after(match)
+                        (*item)->next = curr->next;
+                        curr->next = (*item);
+                    }
+                    else {
+                        // push_before(match)
+                        (*item)->next = curr;
+                        prev->next = (*item);
+                    }
+                }
+                (*item) = tsk_null;
+                return;
+            }
+            prev = curr;
+            curr = curr->next;
+        }
+        tsk_list_push_back_item(list, item);
+    }
 }
 
 /**@ingroup tsk_list_group
@@ -367,25 +367,25 @@ void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, tsk_b
 **/
 int tsk_list_push_list(tsk_list_t* dest, const tsk_list_t* src, tsk_bool_t back)
 {
-	const tsk_list_item_t* curr = (src)->head;
-	tsk_object_t* copy;
-	
-	if(!dest || !src){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
+    const tsk_list_item_t* curr = (src)->head;
+    tsk_object_t* copy;
 
-	while(curr){
-		copy = tsk_object_ref(curr->data);
-		tsk_list_push_data(dest, (void**)&copy, back);
-				
-		curr = curr->next;
-	}
-	return 0;
+    if(!dest || !src) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+
+    while(curr) {
+        copy = tsk_object_ref(curr->data);
+        tsk_list_push_data(dest, (void**)&copy, back);
+
+        curr = curr->next;
+    }
+    return 0;
 }
 
 /**@ingroup tsk_list_group
-* Adds a @ref _Page_TinySAK_AnsiC_Object_Programming "well-defined" object to the @a list. 
+* Adds a @ref _Page_TinySAK_AnsiC_Object_Programming "well-defined" object to the @a list.
 * The reference to the @a object will be stolen(set to @ref tsk_null) instead of incrementing its reference counter.
 * @param list The destination @a list.
 * @param tskobj The @a object to add.
@@ -395,19 +395,19 @@ int tsk_list_push_list(tsk_list_t* dest, const tsk_list_t* src, tsk_bool_t back)
 */
 int tsk_list_push_data(tsk_list_t* list, tsk_object_t** tskobj, tsk_bool_t back)
 {
-	if(list && tskobj && *tskobj){
-		tsk_list_item_t *item = tsk_list_item_create();
-		item->data = *tskobj; // stolen
-		
-		tsk_list_push_item(list, &item, back);
-		(*tskobj) = tsk_null;
+    if(list && tskobj && *tskobj) {
+        tsk_list_item_t *item = tsk_list_item_create();
+        item->data = *tskobj; // stolen
 
-		return 0;
-	}
-	else{
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
+        tsk_list_push_item(list, &item, back);
+        (*tskobj) = tsk_null;
+
+        return 0;
+    }
+    else {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
 }
 
 /**@ingroup tsk_list_group
@@ -420,19 +420,19 @@ int tsk_list_push_data(tsk_list_t* list, tsk_object_t** tskobj, tsk_bool_t back)
 */
 int tsk_list_push_filtered_data(tsk_list_t* list, tsk_object_t** tskobj, tsk_bool_t ascending)
 {
-	if(list && tskobj && *tskobj){
-		tsk_list_item_t *item = tsk_list_item_create();
-		item->data = *tskobj;
-		
-		tsk_list_push_filtered_item(list, &item, ascending);
-		(*tskobj) = tsk_null;
+    if(list && tskobj && *tskobj) {
+        tsk_list_item_t *item = tsk_list_item_create();
+        item->data = *tskobj;
 
-		return 0;
-	}
-	else{
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
+        tsk_list_push_filtered_item(list, &item, ascending);
+        (*tskobj) = tsk_null;
+
+        return 0;
+    }
+    else {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
 }
 
 /**@ingroup tsk_list_group
@@ -446,16 +446,16 @@ int tsk_list_push_filtered_data(tsk_list_t* list, tsk_object_t** tskobj, tsk_boo
 */
 const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const tsk_object_t* tskobj)
 {
-	if(list && tskobj){
-		tsk_list_item_t *item;
-		tsk_list_foreach(item, list){
-			if(!tsk_object_cmp(item->data, tskobj)){
-				return item;
-			}
-		}
-	}
-	
-	return 0;
+    if(list && tskobj) {
+        tsk_list_item_t *item;
+        tsk_list_foreach(item, list) {
+            if(!tsk_object_cmp(item->data, tskobj)) {
+                return item;
+            }
+        }
+    }
+
+    return 0;
 }
 
 /**@ingroup tsk_list_group
@@ -470,18 +470,18 @@ const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const 
 */
 const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
 {
-	if(predicate){
-		const tsk_list_item_t *item;
-		tsk_list_foreach(item, list){
-			if(predicate(item, data) == 0){
-				return item;
-			}
-		}
-	}
-	else{
-		TSK_DEBUG_WARN("Cannot use a null predicate function");
-	}
-	return tsk_null;
+    if(predicate) {
+        const tsk_list_item_t *item;
+        tsk_list_foreach(item, list) {
+            if(predicate(item, data) == 0) {
+                return item;
+            }
+        }
+    }
+    else {
+        TSK_DEBUG_WARN("Cannot use a null predicate function");
+    }
+    return tsk_null;
 }
 
 /**@ingroup tsk_list_group
@@ -495,47 +495,47 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 */
 const tsk_object_t* tsk_list_find_object_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
 {
-	return tsk_list_find_object_by_pred_at_index(list, predicate, data, 0);
+    return tsk_list_find_object_by_pred_at_index(list, predicate, data, 0);
 }
 
 const tsk_object_t* tsk_list_find_object_by_data(const tsk_list_t* list, const tsk_object_t* tskobj)
 {
-	const tsk_list_item_t* item = tsk_list_find_item_by_data(list, tskobj);
-	if(item) {
-		return (const tsk_object_t*)item->data;
-	}
-	return tsk_null;
+    const tsk_list_item_t* item = tsk_list_find_item_by_data(list, tskobj);
+    if(item) {
+        return (const tsk_object_t*)item->data;
+    }
+    return tsk_null;
 }
 
 /**@ingroup tsk_list_group */
 const tsk_object_t* tsk_list_find_object_by_pred_at_index(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data, tsk_size_t index)
 {
-	tsk_size_t pos = 0;
-	const tsk_list_item_t *item;
-	
-	tsk_list_foreach(item, list){
-		if((!predicate || predicate(item, data) == 0) && pos++ >= index){
-			return item->data;
-		}
-	}
-	
-	return tsk_null;
+    tsk_size_t pos = 0;
+    const tsk_list_item_t *item;
+
+    tsk_list_foreach(item, list) {
+        if((!predicate || predicate(item, data) == 0) && pos++ >= index) {
+            return item->data;
+        }
+    }
+
+    return tsk_null;
 }
 
 /**@ingroup tsk_list_group */
 int tsk_list_find_index_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
-{ 
-	if(list && predicate){
-		int index = 0;
-		const tsk_list_item_t *item;
-		tsk_list_foreach(item, list){
-			if(predicate(item, data) == 0){
-				return index;
-			}
-			++index;
-		}
-	}
-	return -1;
+{
+    if(list && predicate) {
+        int index = 0;
+        const tsk_list_item_t *item;
+        tsk_list_foreach(item, list) {
+            if(predicate(item, data) == 0) {
+                return index;
+            }
+            ++index;
+        }
+    }
+    return -1;
 }
 
 /**@ingroup tsk_list_group
@@ -547,34 +547,34 @@ int tsk_list_find_index_by_pred(const tsk_list_t* list, tsk_list_func_predicate 
 */
 tsk_size_t tsk_list_count(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
 {
-	tsk_size_t count = 0;
-	if(list){
-		const tsk_list_item_t *item;
-		tsk_list_foreach(item, list){
-			if(!predicate || (predicate(item, data) == 0)){
-				++count;
-			}
-		}
-	}
-	else{
-		TSK_DEBUG_ERROR("Invalid parameter");
-	}
+    tsk_size_t count = 0;
+    if(list) {
+        const tsk_list_item_t *item;
+        tsk_list_foreach(item, list) {
+            if(!predicate || (predicate(item, data) == 0)) {
+                ++count;
+            }
+        }
+    }
+    else {
+        TSK_DEBUG_ERROR("Invalid parameter");
+    }
 
-	return count;
+    return count;
 }
 
 /**@ingroup tsk_list_group
 */
 tsk_list_t* tsk_list_clone(const tsk_list_t* list)
 {
-	if (list) {
-		tsk_list_t*clone = tsk_list_create();
-		if (clone) {
-			tsk_list_pushback_list(clone, list);
-		}
-		return clone;
-	}
-	return tsk_null;
+    if (list) {
+        tsk_list_t*clone = tsk_list_create();
+        if (clone) {
+            tsk_list_pushback_list(clone, list);
+        }
+        return clone;
+    }
+    return tsk_null;
 }
 
 
@@ -590,41 +590,42 @@ tsk_list_t* tsk_list_clone(const tsk_list_t* list)
 //
 static tsk_object_t* tsk_list_item_ctor(tsk_object_t * self, va_list * app)
 {
-	tsk_list_item_t *item = (tsk_list_item_t*)self;
-	if(item){
-	}
-	return self;
+    tsk_list_item_t *item = (tsk_list_item_t*)self;
+    if(item) {
+    }
+    return self;
 }
 
 static tsk_object_t* tsk_list_item_dtor(tsk_object_t *self)
 {
-	tsk_list_item_t *item = (tsk_list_item_t*)self;
-	if(item){
-		item->data = tsk_object_unref(item->data);
-	}
-	else{
-		TSK_DEBUG_WARN("Cannot free an uninitialized item");
-	}
-	return item;
+    tsk_list_item_t *item = (tsk_list_item_t*)self;
+    if(item) {
+        item->data = tsk_object_unref(item->data);
+    }
+    else {
+        TSK_DEBUG_WARN("Cannot free an uninitialized item");
+    }
+    return item;
 }
 
 static int tsk_list_item_cmp(const tsk_object_t *_item1, const tsk_object_t *_item2)
-{	
-	const tsk_list_item_t* item1 = (const tsk_list_item_t*)_item1;
-	const tsk_list_item_t* item2 = (const tsk_list_item_t*)_item2;
-	
-	if(item1 && item2){
-		return tsk_object_cmp(item1->data, item2->data);
-	}
-	else return -1;
+{
+    const tsk_list_item_t* item1 = (const tsk_list_item_t*)_item1;
+    const tsk_list_item_t* item2 = (const tsk_list_item_t*)_item2;
+
+    if(item1 && item2) {
+        return tsk_object_cmp(item1->data, item2->data);
+    }
+    else {
+        return -1;
+    }
 }
 
-static const tsk_object_def_t tsk_list_item_def_s =
-{
-	sizeof(tsk_list_item_t),	
-	tsk_list_item_ctor,
-	tsk_list_item_dtor,
-	tsk_list_item_cmp,
+static const tsk_object_def_t tsk_list_item_def_s = {
+    sizeof(tsk_list_item_t),
+    tsk_list_item_ctor,
+    tsk_list_item_dtor,
+    tsk_list_item_cmp,
 };
 const tsk_object_def_t *tsk_list_item_def_t = &tsk_list_item_def_s;
 
@@ -633,52 +634,51 @@ const tsk_object_def_t *tsk_list_item_def_t = &tsk_list_item_def_s;
 //
 static tsk_object_t* tsk_list_ctor(tsk_object_t *self, va_list *app)
 {
-	tsk_list_t *list = (tsk_list_t *)self;
-	if(list){
-	}
+    tsk_list_t *list = (tsk_list_t *)self;
+    if(list) {
+    }
 
-	return self;
+    return self;
 }
 
 static tsk_object_t* tsk_list_dtor(tsk_object_t *self)
-{ 
-	tsk_list_t *list = (tsk_list_t *)self;
-	if(list){
+{
+    tsk_list_t *list = (tsk_list_t *)self;
+    if(list) {
 #if 0
-		/* Not thread-safe */
-		tsk_list_item_t* next = tsk_null;
-		tsk_list_item_t* curr = list->head;
+        /* Not thread-safe */
+        tsk_list_item_t* next = tsk_null;
+        tsk_list_item_t* curr = list->head;
 
-		while(curr){
-			next = curr->next;
-			/*curr =*/ tsk_object_unref(curr);
-			curr = next;
-		}
+        while(curr) {
+            next = curr->next;
+            /*curr =*/ tsk_object_unref(curr);
+            curr = next;
+        }
 #else
-		/* Thread-safe method */
-		tsk_list_item_t* item;
-		while((item = tsk_list_pop_first_item(list))){
-			tsk_object_unref(item);
-		}
+        /* Thread-safe method */
+        tsk_list_item_t* item;
+        while((item = tsk_list_pop_first_item(list))) {
+            tsk_object_unref(item);
+        }
 #endif
 
-		/* destroy the on-demand mutex */
-		if(list->mutex){
-			tsk_mutex_destroy(&list->mutex);
-		}
-	}
-	else{
-		TSK_DEBUG_WARN("Cannot free an uninitialized list");
-	}
-	return list;
+        /* destroy the on-demand mutex */
+        if(list->mutex) {
+            tsk_mutex_destroy(&list->mutex);
+        }
+    }
+    else {
+        TSK_DEBUG_WARN("Cannot free an uninitialized list");
+    }
+    return list;
 }
 
-static const tsk_object_def_t tsk_list_def_s =
-{
-	sizeof(tsk_list_t),
-	tsk_list_ctor,
-	tsk_list_dtor,
-	tsk_null,
+static const tsk_object_def_t tsk_list_def_s = {
+    sizeof(tsk_list_t),
+    tsk_list_ctor,
+    tsk_list_dtor,
+    tsk_null,
 };
 const tsk_object_def_t *tsk_list_def_t = &tsk_list_def_s;
 
@@ -701,19 +701,19 @@ const tsk_object_def_t *tsk_list_def_t = &tsk_list_def_s;
 *
 * A linked-list is a @ref _Page_TinySAK_AnsiC_Object_Programming "well defined" object and must contain only @ref _Page_TinySAK_AnsiC_Object_Programming "well defined" objects. <br />
 * A linked-list is a @ref tsk_list_t object and contains @ref tsk_list_item_t objects which holds @ref _Anchor_TinySAK_Linked_List_Well_Defined_Object "our well defined object" in its <i>data</i> field. <br />
-* 
+*
 * <h2>@anchor _Anchor_TinySAK_Linked_List_Well_Defined_Object Our "well-defined" object</h2>
 * Our linked-list will hold a "well defined" object defined like this:
 *
 *@code
 // (well-defined object declaration)
-typedef struct student_s 
-{	
+typedef struct student_s
+{
 	TSK_DECLARE_OBJECT;
 
 	char *id;
 	char *name;
-} 
+}
 student_t;
 
 // (constructor)
@@ -736,7 +736,7 @@ static tsk_object_t* student_dtor(tsk_object_t* self)
 
 // (case insensitive comparator)
 static int student_icmp(const tsk_object_t *self, const tsk_object_t *object)
-{	
+{
 	const student_t* student1 = (const tsk_object_t*)self;
 	const student_t* student2 = (const tsk_object_t*)object;
 
@@ -750,7 +750,7 @@ static int student_icmp(const tsk_object_t *self, const tsk_object_t *object)
 // (well-defined object declaration)
 static const tsk_object_def_t student_def_s =
 {
-	sizeof(student_t),	
+	sizeof(student_t),
 	student_ctor,
 	student_dtor,
 	student_icmp
@@ -820,7 +820,7 @@ static int pred_find_student_by_id(const tsk_list_item_t *item, const void *id)
 * There are two ways to add items to the list: <br />
 * First way:
 * @code
-* // create the well-defined object 
+* // create the well-defined object
 * student_t *student = student_create("0", "student-0");
 * // push the object at the end of the list
 * tsk_list_push_back_data(list, (void**)&student);
@@ -857,7 +857,7 @@ static int pred_find_student_by_id(const tsk_list_item_t *item, const void *id)
 *	TSK_DEBUG_INFO("id = %s, name = %s", student->id, student->name);
 * }
 * @endcode
-* 
+*
 * <h2>@anchor _Anchor_TinySAK_Linked_List_Sort_Items Sort items</h2>
 * You can sort the list in ascending or descending order. The default function used for comparison is the one defined in the well-defined object (see @ref _Anchor_TinySAK_Object_Comparator "here" for more information). <br />
 * An item is sorted when it's being added to the list. It's not possible to sort items later once they are added. <br />
@@ -873,7 +873,7 @@ static int pred_find_student_by_id(const tsk_list_item_t *item, const void *id)
 *
 * <h2>@anchor _Anchor_TinySAK_Linked_List_Find_Items Find items</h2>
 * @code
-* // find student with same id 
+* // find student with same id
 * const student_t* _student = tsk_list_find_object_by_data(list, student);// comparision function will be student_icmp() defined above.
 * // find an item containing a student with name equal to "student-2"
 * const tsk_list_item_t *item = tsk_list_find_item_by_pred(list, pred_find_student_by_name, "student-2");

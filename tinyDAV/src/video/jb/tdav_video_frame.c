@@ -36,8 +36,8 @@
 static tsk_object_t* tdav_video_frame_ctor(tsk_object_t * self, va_list * app)
 {
     tdav_video_frame_t *frame = self;
-    if(frame){
-        if(!(frame->pkts = tsk_list_create())){
+    if(frame) {
+        if(!(frame->pkts = tsk_list_create())) {
             TSK_DEBUG_ERROR("Faile to list");
             return tsk_null;
         }
@@ -48,27 +48,30 @@ static tsk_object_t* tdav_video_frame_ctor(tsk_object_t * self, va_list * app)
 static tsk_object_t* tdav_video_frame_dtor(tsk_object_t * self)
 {
     tdav_video_frame_t *frame = self;
-    if(frame){
+    if(frame) {
         TSK_OBJECT_SAFE_FREE(frame->pkts);
-        
+
         tsk_safeobj_deinit(frame);
     }
-    
+
     return self;
 }
 static int tdav_video_frame_cmp(const tsk_object_t *_p1, const tsk_object_t *_p2)
 {
     const tdav_video_frame_t *p1 = _p1;
     const tdav_video_frame_t *p2 = _p2;
-    
-    if(p1 && p2){
+
+    if(p1 && p2) {
         return (int)(p1->timestamp - p2->timestamp);
     }
-    else if(!p1 && !p2) return 0;
-    else return -1;
+    else if(!p1 && !p2) {
+        return 0;
+    }
+    else {
+        return -1;
+    }
 }
-static const tsk_object_def_t tdav_video_frame_def_s =
-{
+static const tsk_object_def_t tdav_video_frame_def_s = {
     sizeof(tdav_video_frame_t),
     tdav_video_frame_ctor,
     tdav_video_frame_dtor,
@@ -80,12 +83,12 @@ const tsk_object_def_t *tdav_video_frame_def_t = &tdav_video_frame_def_s;
 tdav_video_frame_t* tdav_video_frame_create(trtp_rtp_packet_t* rtp_pkt)
 {
     tdav_video_frame_t* frame;
-    if(!rtp_pkt || !rtp_pkt->header){
+    if(!rtp_pkt || !rtp_pkt->header) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return tsk_null;
     }
-    
-    if((frame = tsk_object_new(tdav_video_frame_def_t))){
+
+    if((frame = tsk_object_new(tdav_video_frame_def_t))) {
         rtp_pkt = tsk_object_ref(rtp_pkt);
         frame->payload_type = rtp_pkt->header->payload_type;
         frame->timestamp = rtp_pkt->header->timestamp;
@@ -98,25 +101,25 @@ tdav_video_frame_t* tdav_video_frame_create(trtp_rtp_packet_t* rtp_pkt)
 
 int tdav_video_frame_put(tdav_video_frame_t* self, trtp_rtp_packet_t* rtp_pkt)
 {
-    if(!self || !rtp_pkt || !rtp_pkt->header){
+    if(!self || !rtp_pkt || !rtp_pkt->header) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-    if(self->timestamp != rtp_pkt->header->timestamp){
+    if(self->timestamp != rtp_pkt->header->timestamp) {
         TSK_DEBUG_ERROR("Timestamp mismatch");
         return -2;
     }
-    if(self->payload_type != rtp_pkt->header->payload_type){
+    if(self->payload_type != rtp_pkt->header->payload_type) {
         TSK_DEBUG_ERROR("Payload Type mismatch");
         return -2;
     }
 #if 0
-    if(self->ssrc != rtp_pkt->header->ssrc){
+    if(self->ssrc != rtp_pkt->header->ssrc) {
         TSK_DEBUG_ERROR("SSRC mismatch");
         return -2;
     }
 #endif
-    
+
     rtp_pkt = tsk_object_ref(rtp_pkt);
     self->highest_seq_num = TSK_MAX(self->highest_seq_num, rtp_pkt->header->seq_num);
     tsk_list_lock(self->pkts);
@@ -127,7 +130,7 @@ int tdav_video_frame_put(tdav_video_frame_t* self, trtp_rtp_packet_t* rtp_pkt)
         tsk_list_push_ascending_data(self->pkts, (void**)&rtp_pkt);
     }
     tsk_list_unlock(self->pkts);
-    
+
     return 0;
 }
 
@@ -136,26 +139,26 @@ const trtp_rtp_packet_t* tdav_video_frame_find_by_seq_num(const tdav_video_frame
     const tsk_list_item_t *item;
     const trtp_rtp_packet_t* pkt;
     const trtp_rtp_packet_t* ret;
-    
-    if(!self){
+
+    if(!self) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return tsk_null;
     }
-    
+
     ret = tsk_null;
-    
+
     tsk_list_lock(self->pkts);
-    tsk_list_foreach(item, self->pkts){
-        if(!(pkt = item->data) || !pkt->header){
+    tsk_list_foreach(item, self->pkts) {
+        if(!(pkt = item->data) || !pkt->header) {
             continue;
         }
-        if(pkt->header->seq_num == seq_num){
+        if(pkt->header->seq_num == seq_num) {
             ret = pkt;
             break;
         }
     }
     tsk_list_unlock(self->pkts);
-    
+
     return ret;
 }
 
@@ -168,19 +171,19 @@ tsk_size_t tdav_video_frame_write(struct tdav_video_frame_s* self, void** buffer
     const trtp_rtp_packet_t* pkt;
     tsk_size_t ret_size = 0;
     int32_t last_seq_num = -1; // guard against duplicated packets
-    
-    if(!self || !buffer_ptr || !buffer_size){
+
+    if(!self || !buffer_ptr || !buffer_size) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return 0;
     }
-    
+
     tsk_list_lock(self->pkts);
-    tsk_list_foreach(item, self->pkts){
-        if(!(pkt = item->data) || !pkt->payload.size || !pkt->header || pkt->header->seq_num == last_seq_num){
+    tsk_list_foreach(item, self->pkts) {
+        if(!(pkt = item->data) || !pkt->payload.size || !pkt->header || pkt->header->seq_num == last_seq_num) {
             continue;
         }
-        if((ret_size + pkt->payload.size) > *buffer_size){
-            if(!(*buffer_ptr = tsk_realloc(*buffer_ptr, (ret_size + pkt->payload.size)))){
+        if((ret_size + pkt->payload.size) > *buffer_size) {
+            if(!(*buffer_ptr = tsk_realloc(*buffer_ptr, (ret_size + pkt->payload.size)))) {
                 TSK_DEBUG_ERROR("Failed to resize the buffer");
                 *buffer_size = 0;
                 goto bail;
@@ -191,10 +194,10 @@ tsk_size_t tdav_video_frame_write(struct tdav_video_frame_s* self, void** buffer
         ret_size += pkt->payload.size;
         last_seq_num = pkt->header->seq_num;
     }
-    
+
 bail:
     tsk_list_unlock(self->pkts);
-    
+
     return ret_size;
 }
 
@@ -213,31 +216,39 @@ tsk_bool_t tdav_video_frame_is_complete(const tdav_video_frame_t* self, int32_t 
     const tsk_list_item_t *item;
     uint16_t i;
     tsk_bool_t is_complete = tsk_false;
-    
-    if (!self){
+
+    if (!self) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return tsk_false;
     }
-    
+
     i = 0;
     tsk_list_lock(self->pkts);
     tsk_list_foreach (item, self->pkts) {
-        if (!(pkt = item->data)){
+        if (!(pkt = item->data)) {
             continue;
         }
         if (last_seq_num_with_mark >= 0 && pkt->header->seq_num != (last_seq_num_with_mark + ++i)) {
-            if (missing_seq_num_start) *missing_seq_num_start = (last_seq_num_with_mark + i);
-            if (missing_seq_num_count) *missing_seq_num_count = pkt->header->seq_num - (*missing_seq_num_start);
+            if (missing_seq_num_start) {
+                *missing_seq_num_start = (last_seq_num_with_mark + i);
+            }
+            if (missing_seq_num_count) {
+                *missing_seq_num_count = pkt->header->seq_num - (*missing_seq_num_start);
+            }
             break;
         }
         if (item == self->pkts->tail) {
-            if(!(is_complete = (pkt->header->marker))){
-                if (missing_seq_num_start) *missing_seq_num_start = (pkt->header->seq_num + 1);
-                if (missing_seq_num_count) *missing_seq_num_count = 1;
+            if(!(is_complete = (pkt->header->marker))) {
+                if (missing_seq_num_start) {
+                    *missing_seq_num_start = (pkt->header->seq_num + 1);
+                }
+                if (missing_seq_num_count) {
+                    *missing_seq_num_count = 1;
+                }
             }
         }
     }
     tsk_list_unlock(self->pkts);
-    
+
     return is_complete;
 }

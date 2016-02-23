@@ -209,7 +209,7 @@ int tbfcp_pkt_write_with_padding(const tbfcp_pkt_t* pc_self, uint8_t* p_buff_ptr
 
     p_buff_ptr[0] = (((uint8_t)pc_self->hdr.ver) << 5) | (pc_self->hdr.reserved & 0x7F);
     p_buff_ptr[1] = (uint8_t)pc_self->hdr.primitive;
-	*((uint32_t*)&p_buff_ptr[2]) = tnet_htons((unsigned short)((*p_written - TBFCP_PKT_HDR_SIZE_IN_OCTETS) >> 2));
+    *((uint32_t*)&p_buff_ptr[2]) = tnet_htons((unsigned short)((*p_written - TBFCP_PKT_HDR_SIZE_IN_OCTETS) >> 2));
     *((uint32_t*)&p_buff_ptr[4]) = (uint32_t)tnet_htonl(pc_self->hdr.conf_id);
     *((uint16_t*)&p_buff_ptr[8]) = tnet_htons(pc_self->hdr.transac_id);
     *((uint16_t*)&p_buff_ptr[10]) = tnet_htons(pc_self->hdr.user_id);
@@ -301,25 +301,25 @@ int tbfcp_pkt_read(const uint8_t* pc_buff_ptr, tsk_size_t n_buff_size, tbfcp_pkt
 
 int tbfcp_pkt_attr_find_at(const struct tbfcp_pkt_s* pc_self, enum tbfcp_attribute_format_e e_format, tsk_size_t u_index, const struct tbfcp_attr_s** ppc_attr)
 {
-	tsk_size_t _u_index = 0;
-	const tsk_list_item_t *pc_item;
-	const struct tbfcp_attr_s* pc_attr;
-	if (!pc_self || !ppc_attr) {
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	*ppc_attr = tsk_null;
-	tsk_list_foreach(pc_item, pc_self->p_list_attrs) {
-		pc_attr = (const struct tbfcp_attr_s*)pc_item->data;
-		if (!pc_attr || pc_attr->format != e_format) {
-			continue;
-		}
-		if (_u_index++ >= u_index) {
-			*ppc_attr = pc_attr;
-			break;
-		}
-	}
-	return 0;
+    tsk_size_t _u_index = 0;
+    const tsk_list_item_t *pc_item;
+    const struct tbfcp_attr_s* pc_attr;
+    if (!pc_self || !ppc_attr) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    *ppc_attr = tsk_null;
+    tsk_list_foreach(pc_item, pc_self->p_list_attrs) {
+        pc_attr = (const struct tbfcp_attr_s*)pc_item->data;
+        if (!pc_attr || pc_attr->format != e_format) {
+            continue;
+        }
+        if (_u_index++ >= u_index) {
+            *ppc_attr = pc_attr;
+            break;
+        }
+    }
+    return 0;
 }
 
 

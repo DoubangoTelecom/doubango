@@ -2,19 +2,19 @@
 * Copyright (C) 2012 Doubango Telecom <http://www.doubango.org>
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -33,16 +33,15 @@
 
 TRTP_BEGIN_DECLS
 
-typedef struct trtp_rtcp_header_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	unsigned version:2;
-	unsigned padding:1;
-	unsigned rc:5;
-	trtp_rtcp_packet_type_t type; /**< Packet Type on 8bits */
-	uint16_t length_in_words_minus1; /**< The length of this RTCP packet in 32-bit words minus one */
-	uint32_t length_in_bytes;
+typedef struct trtp_rtcp_header_s {
+    TSK_DECLARE_OBJECT;
+
+    unsigned version:2;
+    unsigned padding:1;
+    unsigned rc:5;
+    trtp_rtcp_packet_type_t type; /**< Packet Type on 8bits */
+    uint16_t length_in_words_minus1; /**< The length of this RTCP packet in 32-bit words minus one */
+    uint32_t length_in_bytes;
 }
 trtp_rtcp_header_t;
 

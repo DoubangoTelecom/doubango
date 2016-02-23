@@ -8,5 +8,5 @@ uint64_t AndroidUtils::getCpuFamily()
 
 uint64_t AndroidUtils::getCpuFeatures()
 {
-	return (uint64_t)android_getCpuFeatures();
+    return (uint64_t)android_getCpuFeatures();
 }

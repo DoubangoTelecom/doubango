@@ -113,13 +113,12 @@ AMOVIESETUP_MEDIATYPE, * PAMOVIESETUP_MEDIATYPE, * FAR LPAMOVIESETUP_MEDIATYPE;
 typedef REGFILTERPINS
 AMOVIESETUP_PIN, * PAMOVIESETUP_PIN, * FAR LPAMOVIESETUP_PIN;
 
-typedef struct _AMOVIESETUP_FILTER
-{
-  const CLSID * clsID;
-  const WCHAR * strName;
-  DWORD      dwMerit;
-  UINT       nPins;
-  const AMOVIESETUP_PIN * lpPin;
+typedef struct _AMOVIESETUP_FILTER {
+    const CLSID * clsID;
+    const WCHAR * strName;
+    DWORD      dwMerit;
+    UINT       nPins;
+    const AMOVIESETUP_PIN * lpPin;
 }
 AMOVIESETUP_FILTER, * PAMOVIESETUP_FILTER, * FAR LPAMOVIESETUP_FILTER;
 
@@ -198,7 +197,7 @@ public:
    support, and an implementation of the core non delegating IUnknown */
 
 class AM_NOVTABLE CUnknown : public INonDelegatingUnknown,
-                 public CBaseObject
+    public CBaseObject
 {
 private:
     const LPUNKNOWN m_pUnknown; /* Owner of this object */
@@ -257,7 +256,8 @@ typedef void (CALLBACK *LPFNInitRoutine)(BOOL bLoading, const CLSID *rclsid);
 /* Create one of these per object class in an array so that
    the default class factory code can create new instances */
 
-class CFactoryTemplate {
+class CFactoryTemplate
+{
 
 public:
 

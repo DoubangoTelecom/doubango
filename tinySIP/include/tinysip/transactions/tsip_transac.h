@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -67,15 +67,14 @@ TSIP_BEGIN_DECLS
 #define TRANSAC_TIMER_CANCEL(TX) \
 	tsk_timer_mgr_global_cancel(self->timer##TX.id)
 
-typedef enum tsip_transac_event_type_e
-{
-	tsip_transac_incoming_msg,
-	tsip_transac_outgoing_msg,
-	tsip_transac_canceled,
-	tsip_transac_terminated,
-	tsip_transac_timedout,
-	tsip_transac_error,
-	tsip_transac_transport_error
+typedef enum tsip_transac_event_type_e {
+    tsip_transac_incoming_msg,
+    tsip_transac_outgoing_msg,
+    tsip_transac_canceled,
+    tsip_transac_terminated,
+    tsip_transac_timedout,
+    tsip_transac_error,
+    tsip_transac_transport_error
 }
 tsip_transac_event_type_t;
 
@@ -93,66 +92,62 @@ tsip_transac_event_t;
 typedef int (*tsip_transac_event_callback_f)(const void *arg, tsip_transac_event_type_t type, const tsip_message_t *msg);
 #define TSIP_TRANSAC_EVENT_CALLBACK_F(callback)	 ((tsip_transac_event_callback_f)(callback))
 
-typedef enum tsip_transac_type_e
-{
-	tsip_transac_type_ict, /**< Invite Client Transaction. */
-	tsip_transac_type_ist, /**< Invite Server Transaction. */
-	tsip_transac_type_nict, /**< Non-Invite Client Transaction. */
-	tsip_transac_type_nist, /**< Non-Invite Server Transaction. */
+typedef enum tsip_transac_type_e {
+    tsip_transac_type_ict, /**< Invite Client Transaction. */
+    tsip_transac_type_ist, /**< Invite Server Transaction. */
+    tsip_transac_type_nict, /**< Non-Invite Client Transaction. */
+    tsip_transac_type_nist, /**< Non-Invite Server Transaction. */
 }
 tsip_transac_type_t;
 
 
 
-typedef enum tsip_transac_dst_type_e
-{
-	tsip_transac_dst_type_dialog,
-	tsip_transac_dst_type_net
+typedef enum tsip_transac_dst_type_e {
+    tsip_transac_dst_type_dialog,
+    tsip_transac_dst_type_net
 }
 tsip_transac_dst_type_t;
 
-typedef struct tsip_transac_dst_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tsip_transac_dst_s {
+    TSK_DECLARE_OBJECT;
 
-	tsip_transac_dst_type_t type;
-	struct tsip_stack_s* stack;
+    tsip_transac_dst_type_t type;
+    struct tsip_stack_s* stack;
 
-	union{
-		struct{
-			tsip_dialog_t *dlg;
-		}dialog;
+    union {
+        struct {
+            tsip_dialog_t *dlg;
+        } dialog;
 
-		//struct{
-		//}net;
-	};
+        //struct{
+        //}net;
+    };
 }
 tsip_transac_dst_t;
 #define TSIP_TRANSAC_DST(self)	((tsip_transac_dst_t*)(self))
 #define TSIP_DECLARE_TRANSAC_DST tsip_transac_dst_t __transac__
 
 
-typedef struct tsip_transac_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	tsip_transac_type_t type;
+typedef struct tsip_transac_s {
+    TSK_DECLARE_OBJECT;
 
-	struct tsip_transac_dst_s* dst;
-	tsk_fsm_t *fsm;
-	
-	tsk_bool_t reliable;
-	tsk_bool_t running;
-	tsk_bool_t initialized;
-	
-	char *branch;
-	
-	int32_t cseq_value;
-	char* cseq_method;
-	
-	char* callid;
-	
-	tsip_transac_event_callback_f callback;
+    tsip_transac_type_t type;
+
+    struct tsip_transac_dst_s* dst;
+    tsk_fsm_t *fsm;
+
+    tsk_bool_t reliable;
+    tsk_bool_t running;
+    tsk_bool_t initialized;
+
+    char *branch;
+
+    int32_t cseq_value;
+    char* cseq_method;
+
+    char* callid;
+
+    tsip_transac_event_callback_f callback;
 }
 tsip_transac_t;
 

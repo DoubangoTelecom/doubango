@@ -43,6 +43,11 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_sessionGetInt32(swigCPtr, this, media.swigValue(), key);
   }
 
+  public QoS sessionGetQoS(twrap_media_type_t media) {
+    long cPtr = tinyWRAPJNI.MediaSessionMgr_sessionGetQoS(swigCPtr, this, media.swigValue());
+    return (cPtr == 0) ? null : new QoS(cPtr, true);
+  }
+
   public boolean consumerSetInt32(twrap_media_type_t media, String key, int value) {
     return tinyWRAPJNI.MediaSessionMgr_consumerSetInt32(swigCPtr, this, media.swigValue(), key, value);
   }
@@ -120,6 +125,14 @@ public class MediaSessionMgr {
 
   public static boolean defaultsSetPrefVideoSize(tmedia_pref_video_size_t pref_video_size) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSetPrefVideoSize(pref_video_size.swigValue());
+  }
+
+  public static boolean defaultsSetPrefVideoSizeOutRange(tmedia_pref_video_size_t min, tmedia_pref_video_size_t max) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetPrefVideoSizeOutRange(min.swigValue(), max.swigValue());
+  }
+
+  public static boolean defaultsSetAdaptativeVideoSizeOutEnabled(boolean enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled(enabled);
   }
 
   public static boolean defaultsSetJbMargin(long jb_margin_ms) {

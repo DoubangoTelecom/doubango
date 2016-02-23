@@ -6,12 +6,12 @@
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -71,30 +71,28 @@ TSK_BEGIN_DECLS
 #define TSK_LIST_LAST_DATA(list)			(((list) && (list)->tail) ? (list)->tail->data : tsk_null)
 
 /**@ingroup tsk_list_group
-* Item for @ref tsk_list_t "linked list". 
+* Item for @ref tsk_list_t "linked list".
 */
-typedef struct tsk_list_item_s
-{
-	TSK_DECLARE_OBJECT;
-	void* data; /**< Opaque data. <b>Must</b> be a @ref _Page_TinySAK_AnsiC_Object_Programming "well-defined" object. */
-	struct tsk_list_item_s* next; /**< Next item. */
+typedef struct tsk_list_item_s {
+    TSK_DECLARE_OBJECT;
+    void* data; /**< Opaque data. <b>Must</b> be a @ref _Page_TinySAK_AnsiC_Object_Programming "well-defined" object. */
+    struct tsk_list_item_s* next; /**< Next item. */
 }
 tsk_list_item_t;
 
 /**@ingroup tsk_list_group
 * A @ref _Page_TinySAK_AnsiC_Linked_List "linked-list".
 */
-typedef struct tsk_list_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	tsk_list_item_t* head; /**< The head of the linked list. */
-	tsk_list_item_t* tail; /**< The tail of the linked list. */
-	tsk_mutex_handle_t* mutex; /**< on-demand mutex. */
+typedef struct tsk_list_s {
+    TSK_DECLARE_OBJECT;
+
+    tsk_list_item_t* head; /**< The head of the linked list. */
+    tsk_list_item_t* tail; /**< The tail of the linked list. */
+    tsk_mutex_handle_t* mutex; /**< on-demand mutex. */
 }
 tsk_list_t;
 
-/**@ingroup tsk_list_group 
+/**@ingroup tsk_list_group
 * Function predicate used to match an item. <br />
 * For example, see @ref _Anchor_TinySAK_Linked_List_Find_Items "here" for more information on how to use this function to find items.
 * @param item The current item to match.

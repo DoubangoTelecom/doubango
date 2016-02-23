@@ -1,17 +1,17 @@
 /* Copyright (C) 2011-2013 Doubango Telecom <http://www.doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 */
@@ -67,10 +67,10 @@
 
 
 void ResizeRGB( BITMAPINFOHEADER *pbiIn,    //Src's BitMapInFoHeader
-			   const unsigned char * dibBits,    //Src bits
-			   BITMAPINFOHEADER *pbiOut,
-			   unsigned char *pFrame,    //Dst bits
-			   int iNewWidth,            //new W in pixel
-			   int iNewHeight);           //new H in pixel
+                const unsigned char * dibBits,    //Src bits
+                BITMAPINFOHEADER *pbiOut,
+                unsigned char *pFrame,    //Dst bits
+                int iNewWidth,            //new W in pixel
+                int iNewHeight);           //new H in pixel
 
 #endif //RESIZER_H

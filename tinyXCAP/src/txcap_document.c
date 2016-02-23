@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -62,23 +62,23 @@
 */
 char* txcap_selector_get_document(const txcap_stack_handle_t* stack, const char* auid_id)
 {
-	char* ret = tsk_null;
-	txcap_auid_t* auid;
+    char* ret = tsk_null;
+    txcap_auid_t* auid;
 
-	const txcap_stack_t* xcap_stack = stack;
-	if(xcap_stack && xcap_stack->auids && auid_id){
-		if((auid = txcap_auid_get_by_id(xcap_stack->auids, auid_id))){
-			ret = txcap_selector_get_document_2(xcap_stack->xcap_root, auid->id, auid->global? tsk_null: xcap_stack->xui, auid->document_name);
-			TSK_OBJECT_SAFE_FREE(auid);
-		}
-		else{
-			TSK_DEBUG_ERROR("Fail to find AUID with id %s.", auid_id);
-		}
-	}
-	else{
-		TSK_DEBUG_ERROR("Invalid parameter.");
-	}
-	return ret;
+    const txcap_stack_t* xcap_stack = stack;
+    if(xcap_stack && xcap_stack->auids && auid_id) {
+        if((auid = txcap_auid_get_by_id(xcap_stack->auids, auid_id))) {
+            ret = txcap_selector_get_document_2(xcap_stack->xcap_root, auid->id, auid->global? tsk_null: xcap_stack->xui, auid->document_name);
+            TSK_OBJECT_SAFE_FREE(auid);
+        }
+        else {
+            TSK_DEBUG_ERROR("Fail to find AUID with id %s.", auid_id);
+        }
+    }
+    else {
+        TSK_DEBUG_ERROR("Invalid parameter.");
+    }
+    return ret;
 }
 
 /**@ingroup txcap_selector_group
@@ -117,21 +117,21 @@ char* txcap_selector_get_document(const txcap_stack_handle_t* stack, const char*
 */
 char* txcap_selector_get_document_2(const char* xcap_root, const char* auid_id, const char* xui, const char* doc_name)
 {
-	char* ret = tsk_null;
-	
-	if(!xcap_root || !auid_id || !doc_name){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return tsk_null;
-	}
+    char* ret = tsk_null;
 
-	if(!xui || tsk_striequals("global", xui)){
-		/* xdm-root/auid-name/global/doc-name */
-		tsk_sprintf(&ret, "%s/%s/global/%s", xcap_root, auid_id, doc_name);
-	}
-	else{
-		/* xdm-root/auid-name/users/xui/doc-name */
-		tsk_sprintf(&ret, "%s/%s/users/%s/%s", xcap_root, auid_id, xui, doc_name);
-	}
+    if(!xcap_root || !auid_id || !doc_name) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return tsk_null;
+    }
 
-	return ret;
+    if(!xui || tsk_striequals("global", xui)) {
+        /* xdm-root/auid-name/global/doc-name */
+        tsk_sprintf(&ret, "%s/%s/global/%s", xcap_root, auid_id, doc_name);
+    }
+    else {
+        /* xdm-root/auid-name/users/xui/doc-name */
+        tsk_sprintf(&ret, "%s/%s/users/%s/%s", xcap_root, auid_id, xui, doc_name);
+    }
+
+    return ret;
 }

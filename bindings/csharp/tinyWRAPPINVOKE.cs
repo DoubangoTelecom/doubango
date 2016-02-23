@@ -264,6 +264,54 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_ActionConfig_setMediaInt")]
   public static extern IntPtr ActionConfig_setMediaInt(HandleRef jarg1, int jarg2, string jarg3, int jarg4);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_QoS")]
+  public static extern void delete_QoS(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getQavg")]
+  public static extern float QoS_getQavg(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getQ1")]
+  public static extern float QoS_getQ1(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getQ2")]
+  public static extern float QoS_getQ2(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getQ3")]
+  public static extern float QoS_getQ3(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getQ4")]
+  public static extern float QoS_getQ4(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getQ5")]
+  public static extern float QoS_getQ5(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getVideoInWidth")]
+  public static extern uint QoS_getVideoInWidth(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getVideoOutWidth")]
+  public static extern uint QoS_getVideoOutWidth(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getVideoInHeight")]
+  public static extern uint QoS_getVideoInHeight(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getVideoOutHeight")]
+  public static extern uint QoS_getVideoOutHeight(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getBandwidthDownKbps")]
+  public static extern uint QoS_getBandwidthDownKbps(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getBandwidthUpKbps")]
+  public static extern uint QoS_getBandwidthUpKbps(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getVideoInAvgFps")]
+  public static extern uint QoS_getVideoInAvgFps(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getVideoDecAvgTime")]
+  public static extern uint QoS_getVideoDecAvgTime(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_QoS_getVideoEncAvgTime")]
+  public static extern uint QoS_getVideoEncAvgTime(HandleRef jarg1);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_Codec")]
   public static extern void delete_Codec(HandleRef jarg1);
 
@@ -296,6 +344,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_sessionGetInt32")]
   public static extern int MediaSessionMgr_sessionGetInt32(HandleRef jarg1, int jarg2, string jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_sessionGetQoS")]
+  public static extern IntPtr MediaSessionMgr_sessionGetQoS(HandleRef jarg1, int jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_consumerSetInt32")]
   public static extern bool MediaSessionMgr_consumerSetInt32(HandleRef jarg1, int jarg2, string jarg3, int jarg4);
@@ -353,6 +404,12 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetPrefVideoSize")]
   public static extern bool MediaSessionMgr_defaultsSetPrefVideoSize(int jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetPrefVideoSizeOutRange")]
+  public static extern bool MediaSessionMgr_defaultsSetPrefVideoSizeOutRange(int jarg1, int jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetAdaptativeVideoSizeOutEnabled(bool jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetJbMargin")]
   public static extern bool MediaSessionMgr_defaultsSetJbMargin(uint jarg1);

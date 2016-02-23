@@ -2,19 +2,19 @@
 * Copyright (C) 2009 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -59,92 +59,92 @@
 
 void test_parser()
 {
-	tmsrp_message_t *message;
-	const tmsrp_header_Dummy_t* header;
-	size_t msg_size;
-	char* str;
-	
-	//
-	//	Serialization / Deserialization
-	//
-	/* deserialize the message */
-	if((message = tmsrp_message_parse_2(MSRP_MSG_TO_TEST, strlen(MSRP_MSG_TO_TEST), &msg_size))){
-		
-		tmsrp_message_add_headers(message,
-			TMSRP_HEADER_DUMMY_VA_ARGS("NS", "imdn <urn:ietf:params:imdn>"),
-			TMSRP_HEADER_DUMMY_VA_ARGS("imdn.Message-ID", "MsgiQqFZqTYAA"),
-			TMSRP_HEADER_DUMMY_VA_ARGS("DateTime", "2012-10-25T18:02:08.000Z"),
-			TMSRP_HEADER_DUMMY_VA_ARGS("imdn.Disposition-Notification", "positive-delivery, display"),
-			
-			tsk_null);
+    tmsrp_message_t *message;
+    const tmsrp_header_Dummy_t* header;
+    size_t msg_size;
+    char* str;
 
-		if((header = (const tmsrp_header_Dummy_t*)tmsrp_message_get_headerByName(message, "NS"))){
-			TSK_DEBUG_INFO("NS=%s\n", header->value);
-		}
-		if((header = (const tmsrp_header_Dummy_t*)tmsrp_message_get_headerByName(message, "imdn.Message-ID"))){
-			TSK_DEBUG_INFO("imdn.Message-ID=%s\n", header->value);
-		}
+    //
+    //	Serialization / Deserialization
+    //
+    /* deserialize the message */
+    if((message = tmsrp_message_parse_2(MSRP_MSG_TO_TEST, strlen(MSRP_MSG_TO_TEST), &msg_size))) {
 
-		/* serialize the message */
-		if((str = tmsrp_message_tostring(message))){
-			TSK_DEBUG_INFO("\nMSRP Message=\n%s\n\n", str);
-			TSK_FREE(str);
-		}
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to parse MSRP message(1).");
-	}
-	TSK_OBJECT_SAFE_FREE(message);
+        tmsrp_message_add_headers(message,
+                                  TMSRP_HEADER_DUMMY_VA_ARGS("NS", "imdn <urn:ietf:params:imdn>"),
+                                  TMSRP_HEADER_DUMMY_VA_ARGS("imdn.Message-ID", "MsgiQqFZqTYAA"),
+                                  TMSRP_HEADER_DUMMY_VA_ARGS("DateTime", "2012-10-25T18:02:08.000Z"),
+                                  TMSRP_HEADER_DUMMY_VA_ARGS("imdn.Disposition-Notification", "positive-delivery, display"),
 
-	//
-	//	Create Response from Request
-	//
-	if((message = tmsrp_message_parse(MSRP_MSG_REQUEST, strlen(MSRP_MSG_REQUEST)))){
-		tmsrp_response_t* response = tmsrp_create_response(message, 202, "Accepted");
+                                  tsk_null);
 
-		if((str = tmsrp_message_tostring(response))){
-			TSK_DEBUG_INFO("\nMSRP Response=\n%s\n\n", str);
-			TSK_FREE(str);
-		}
-		
-		TSK_OBJECT_SAFE_FREE(response);
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to parse MSRP message(2).");
-	}
-	TSK_OBJECT_SAFE_FREE(message);
+        if((header = (const tmsrp_header_Dummy_t*)tmsrp_message_get_headerByName(message, "NS"))) {
+            TSK_DEBUG_INFO("NS=%s\n", header->value);
+        }
+        if((header = (const tmsrp_header_Dummy_t*)tmsrp_message_get_headerByName(message, "imdn.Message-ID"))) {
+            TSK_DEBUG_INFO("imdn.Message-ID=%s\n", header->value);
+        }
 
-	//
-	//	Create Report from Request
-	//
-	if((message = tmsrp_message_parse(MSRP_MSG_REQUEST, strlen(MSRP_MSG_REQUEST)))){
-		tmsrp_request_t* report = tmsrp_create_report(message, 403, "Stop-sending-message");
+        /* serialize the message */
+        if((str = tmsrp_message_tostring(message))) {
+            TSK_DEBUG_INFO("\nMSRP Message=\n%s\n\n", str);
+            TSK_FREE(str);
+        }
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to parse MSRP message(1).");
+    }
+    TSK_OBJECT_SAFE_FREE(message);
 
-		if((str = tmsrp_message_tostring(report))){
-			TSK_DEBUG_INFO("\nMSRP Response=\n%s\n\n", str);
-			TSK_FREE(str);
-		}
-		
-		TSK_OBJECT_SAFE_FREE(report);
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to parse MSRP message(2).");
-	}
-	TSK_OBJECT_SAFE_FREE(message);
+    //
+    //	Create Response from Request
+    //
+    if((message = tmsrp_message_parse(MSRP_MSG_REQUEST, strlen(MSRP_MSG_REQUEST)))) {
+        tmsrp_response_t* response = tmsrp_create_response(message, 202, "Accepted");
 
-	//
-	// Create bodiless Request
-	//
-	{
-		tmsrp_request_t* bodiless = tmsrp_create_bodiless(tsk_null, tsk_null);
+        if((str = tmsrp_message_tostring(response))) {
+            TSK_DEBUG_INFO("\nMSRP Response=\n%s\n\n", str);
+            TSK_FREE(str);
+        }
 
-		if((str = tmsrp_message_tostring(bodiless))){
-			TSK_DEBUG_INFO("\nMSRP Bodiless=\n%s\n\n", str);
-			TSK_FREE(str);
-		}
+        TSK_OBJECT_SAFE_FREE(response);
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to parse MSRP message(2).");
+    }
+    TSK_OBJECT_SAFE_FREE(message);
 
-		TSK_OBJECT_SAFE_FREE(bodiless);
-	}
+    //
+    //	Create Report from Request
+    //
+    if((message = tmsrp_message_parse(MSRP_MSG_REQUEST, strlen(MSRP_MSG_REQUEST)))) {
+        tmsrp_request_t* report = tmsrp_create_report(message, 403, "Stop-sending-message");
+
+        if((str = tmsrp_message_tostring(report))) {
+            TSK_DEBUG_INFO("\nMSRP Response=\n%s\n\n", str);
+            TSK_FREE(str);
+        }
+
+        TSK_OBJECT_SAFE_FREE(report);
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to parse MSRP message(2).");
+    }
+    TSK_OBJECT_SAFE_FREE(message);
+
+    //
+    // Create bodiless Request
+    //
+    {
+        tmsrp_request_t* bodiless = tmsrp_create_bodiless(tsk_null, tsk_null);
+
+        if((str = tmsrp_message_tostring(bodiless))) {
+            TSK_DEBUG_INFO("\nMSRP Bodiless=\n%s\n\n", str);
+            TSK_FREE(str);
+        }
+
+        TSK_OBJECT_SAFE_FREE(bodiless);
+    }
 }
 
 #endif /* _TEST_MSRPPARSER_H */

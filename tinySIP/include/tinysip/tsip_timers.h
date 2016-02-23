@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -55,31 +55,29 @@ TSIP_BEGIN_DECLS
 //extern const char *timerL;
 //extern const char *timerM;
 
-typedef struct tsip_timer_s
-{
-	tsk_timer_id_t id;
-	uint64_t timeout;
+typedef struct tsip_timer_s {
+    tsk_timer_id_t id;
+    uint64_t timeout;
 }
 tsip_timer_t;
 
-typedef struct tsip_timers_s
-{
-	uint32_t T1;
-	uint32_t T2;
-	uint32_t T4;
-	uint32_t A;
-	uint32_t B;
-	uint32_t C;
-	uint32_t D;
-	uint32_t E;
-	uint32_t F;
-	uint32_t G;
-	uint32_t H;
-	uint32_t I;
-	uint32_t J;
-	uint32_t K;
-	uint32_t L;
-	uint32_t M;
+typedef struct tsip_timers_s {
+    uint32_t T1;
+    uint32_t T2;
+    uint32_t T4;
+    uint32_t A;
+    uint32_t B;
+    uint32_t C;
+    uint32_t D;
+    uint32_t E;
+    uint32_t F;
+    uint32_t G;
+    uint32_t H;
+    uint32_t I;
+    uint32_t J;
+    uint32_t K;
+    uint32_t L;
+    uint32_t M;
 }
 tsip_timers_t;
 

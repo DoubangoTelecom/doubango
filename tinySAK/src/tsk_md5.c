@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -35,7 +35,7 @@
 #include <string.h>
 
 /**@defgroup tsk_md5_group MD5 (RFC 1321) utility functions.
- *	The code in this file is a modified version of an implementation placed in the public domain by the following persons: 
+ *	The code in this file is a modified version of an implementation placed in the public domain by the following persons:
  *	@author Colin Plumb
  *	@author Mamadou Diop <diopmamadou(at)doubango[dot]org>
 */
@@ -47,7 +47,7 @@ void tsk_byteReverse(uint32_t *buf, unsigned words)
 {
     uint8_t *p = (uint8_t *)buf;
 
-    do{
+    do {
         *buf++ = (uint32_t)((unsigned)p[3] << 8 | p[2]) << 16 |
                  ((unsigned)p[1] << 8 | p[0]);
         p += 4;
@@ -84,12 +84,12 @@ void tsk_md5update(tsk_md5context_t *ctx, uint8_t const *buf, tsk_size_t len)
     /* Update byte count */
 
     t = ctx->bytes[0];
-	if ((ctx->bytes[0] = t + (uint32_t)len) < t)
-        ctx->bytes[1]++; 	/* Carry from low to high */
+    if ((ctx->bytes[0] = t + (uint32_t)len) < t) {
+        ctx->bytes[1]++;    /* Carry from low to high */
+    }
 
     t = 64 - (t & 0x3f); 	/* Space available in ctx->in (at least 1) */
-    if (t > len)
-    {
+    if (t > len) {
         memcpy((uint8_t *)ctx->in + 64 - t, buf, len);
         return ;
     }
@@ -101,8 +101,7 @@ void tsk_md5update(tsk_md5context_t *ctx, uint8_t const *buf, tsk_size_t len)
     len -= t;
 
     /* Process data in 64-byte chunks */
-    while (len >= 64)
-    {
+    while (len >= 64) {
         memcpy(ctx->in, buf, 64);
         tsk_byteReverse(ctx->in, 16);
         tsk_md5transform(ctx->buf, ctx->in);
@@ -115,7 +114,7 @@ void tsk_md5update(tsk_md5context_t *ctx, uint8_t const *buf, tsk_size_t len)
 }
 
 /**@ingroup tsk_md5_group
- * Final wrapup - pad to 64-byte boundary with the bit pattern 
+ * Final wrapup - pad to 64-byte boundary with the bit pattern
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
 void tsk_md5final(tsk_md5digest_t digest, tsk_md5context_t *ctx)
@@ -129,8 +128,8 @@ void tsk_md5final(tsk_md5digest_t digest, tsk_md5context_t *ctx)
     /* Bytes of padding needed to make 56 bytes (-8..55) */
     count = 56 - 1 - count;
 
-    if (count < 0)
-    {	/* Padding forces an extra block */
+    if (count < 0) {
+        /* Padding forces an extra block */
         memset(p, 0, count + 8);
         tsk_byteReverse(ctx->in, 16);
         tsk_md5transform(ctx->buf, ctx->in);
@@ -253,24 +252,26 @@ void tsk_md5transform(uint32_t buf[4], uint32_t const in[TSK_MD5_DIGEST_SIZE])
 
 /**@ingroup tsk_md5_group
  *
- * @brief	Calculate MD5 HASH for @a input data. 
+ * @brief	Calculate MD5 HASH for @a input data.
  *
- * @param input	The input data. 
- * @param size	The size of the input data. 
- * @param result MD5 hash result as Hexadecimal string. 
+ * @param input	The input data.
+ * @param size	The size of the input data.
+ * @param result MD5 hash result as Hexadecimal string.
  *
- * @return	Zero if succeed and non-zero error code otherwise. 
+ * @return	Zero if succeed and non-zero error code otherwise.
 **/
 int tsk_md5compute(const char* input, tsk_size_t size, tsk_md5string_t *result)
 {
-	tsk_md5digest_t digest;
+    tsk_md5digest_t digest;
 
-	if(!result | !*result) return -1;
-	
-	(*result)[TSK_MD5_STRING_SIZE] = '\0';
-	
-	TSK_MD5_DIGEST_CALC(input, size, digest);
-	tsk_str_from_hex(digest, TSK_MD5_DIGEST_SIZE, *result);
+    if(!result | !*result) {
+        return -1;
+    }
 
-	return 0;
+    (*result)[TSK_MD5_STRING_SIZE] = '\0';
+
+    TSK_MD5_DIGEST_CALC(input, size, digest);
+    tsk_str_from_hex(digest, TSK_MD5_DIGEST_SIZE, *result);
+
+    return 0;
 }

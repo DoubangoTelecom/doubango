@@ -58,7 +58,7 @@ public:
 #ifdef UNICODE
     CBasePropertyPage(__in_opt LPCSTR pName,
                       __inout_opt LPUNKNOWN pUnk,
-                      int DialogId,  
+                      int DialogId,
                       int TitleId);
 #endif
     virtual ~CBasePropertyPage() { };
@@ -66,11 +66,21 @@ public:
 
     // Override these virtual methods
 
-    virtual HRESULT OnConnect(IUnknown *pUnknown) { return NOERROR; };
-    virtual HRESULT OnDisconnect() { return NOERROR; };
-    virtual HRESULT OnActivate() { return NOERROR; };
-    virtual HRESULT OnDeactivate() { return NOERROR; };
-    virtual HRESULT OnApplyChanges() { return NOERROR; };
+    virtual HRESULT OnConnect(IUnknown *pUnknown) {
+        return NOERROR;
+    };
+    virtual HRESULT OnDisconnect() {
+        return NOERROR;
+    };
+    virtual HRESULT OnActivate() {
+        return NOERROR;
+    };
+    virtual HRESULT OnDeactivate() {
+        return NOERROR;
+    };
+    virtual HRESULT OnApplyChanges() {
+        return NOERROR;
+    };
     virtual INT_PTR OnReceiveMessage(HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam);
 
     // These implement an IPropertyPage interface
@@ -85,10 +95,16 @@ public:
     STDMETHODIMP SetObjects(ULONG cObjects, __in_ecount_opt(cObjects) LPUNKNOWN *ppUnk);
     STDMETHODIMP Show(UINT nCmdShow);
     STDMETHODIMP Move(LPCRECT prect);
-    STDMETHODIMP IsPageDirty(void) { return m_bDirty ? S_OK : S_FALSE; }
+    STDMETHODIMP IsPageDirty(void) {
+        return m_bDirty ? S_OK : S_FALSE;
+    }
     STDMETHODIMP Apply(void);
-    STDMETHODIMP Help(LPCWSTR lpszHelpDir) { return E_NOTIMPL; }
-    STDMETHODIMP TranslateAccelerator(__inout LPMSG lpMsg) { return E_NOTIMPL; }
+    STDMETHODIMP Help(LPCWSTR lpszHelpDir) {
+        return E_NOTIMPL;
+    }
+    STDMETHODIMP TranslateAccelerator(__inout LPMSG lpMsg) {
+        return E_NOTIMPL;
+    }
 };
 
 #endif // __CPROP__

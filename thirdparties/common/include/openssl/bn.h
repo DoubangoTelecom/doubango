@@ -280,7 +280,7 @@ extern "C" {
 
 # ifndef OPENSSL_NO_DEPRECATED
 #  define BN_FLG_FREE             0x8000
-                                       /* used for debuging */
+/* used for debuging */
 # endif
 # define BN_set_flags(b,n)       ((b)->flags|=(n))
 # define BN_get_flags(b,n)       ((b)->flags&(n))
@@ -609,11 +609,11 @@ void BN_BLINDING_set_flags(BN_BLINDING *, unsigned long);
 BN_BLINDING *BN_BLINDING_create_param(BN_BLINDING *b,
                                       const BIGNUM *e, BIGNUM *m, BN_CTX *ctx,
                                       int (*bn_mod_exp) (BIGNUM *r,
-                                                         const BIGNUM *a,
-                                                         const BIGNUM *p,
-                                                         const BIGNUM *m,
-                                                         BN_CTX *ctx,
-                                                         BN_MONT_CTX *m_ctx),
+                                              const BIGNUM *a,
+                                              const BIGNUM *p,
+                                              const BIGNUM *m,
+                                              BN_CTX *ctx,
+                                              BN_MONT_CTX *m_ctx),
                                       BN_MONT_CTX *m_ctx);
 
 # ifndef OPENSSL_NO_DEPRECATED

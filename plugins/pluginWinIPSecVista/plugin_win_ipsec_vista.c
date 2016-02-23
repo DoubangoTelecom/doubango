@@ -60,11 +60,11 @@ typedef struct plugin_win_ipsec_vista_ctx_s {
     tipsec_ctx_t* pc_base;
     UINT64 saId_us;
     UINT64 saId_uc;
-	UINT64 filterId_in_us;
-	UINT64 filterId_out_us;
-	UINT64 filterId_in_uc;
-	UINT64 filterId_out_uc;
-	WCHAR filter_name[256];
+    UINT64 filterId_in_us;
+    UINT64 filterId_out_us;
+    UINT64 filterId_in_uc;
+    UINT64 filterId_out_uc;
+    WCHAR filter_name[256];
 
     HANDLE engine;
 }
@@ -84,33 +84,33 @@ static tipsec_error_t _plugin_win_ipsec_vista_ctx_init(tipsec_ctx_t* _p_ctx)
 {
     plugin_win_ipsec_vista_ctx_t* p_ctx = (plugin_win_ipsec_vista_ctx_t*)_p_ctx;
     DWORD code;
-	UUID uuid;
-	RPC_STATUS status;
-	static uint64_t __guard = 0;
+    UUID uuid;
+    RPC_STATUS status;
+    static uint64_t __guard = 0;
 
     if (p_ctx->pc_base->initialized) {
         TSK_DEBUG_ERROR("Already initialized");
         return tipsec_error_invalid_state;
     }
 
-	/* Create filter name */
+    /* Create filter name */
     status = UuidCreate(&uuid);
     if (status == RPC_S_OK) {
-		WCHAR* wszUuid = NULL;
+        WCHAR* wszUuid = NULL;
         UuidToStringW(&uuid, (RPC_WSTR*)&wszUuid);
-		if (!wszUuid) {
-			TSK_DEBUG_ERROR("Failed to convert the UUID");
-			return tipsec_error_sys;
-		}
-		swprintf(p_ctx->filter_name, sizeof(p_ctx->filter_name)/sizeof(p_ctx->filter_name[0]), L"%s//%s//%llu", TINYIPSEC_FILTER_NAME, wszUuid, __guard++);
-		RpcStringFree((RPC_WSTR*)&wszUuid);
-	}
-	else {
-		TSK_DEBUG_ERROR("Failed to create new UUID");
-		return tipsec_error_sys;
-	}
+        if (!wszUuid) {
+            TSK_DEBUG_ERROR("Failed to convert the UUID");
+            return tipsec_error_sys;
+        }
+        swprintf(p_ctx->filter_name, sizeof(p_ctx->filter_name)/sizeof(p_ctx->filter_name[0]), L"%s//%s//%llu", TINYIPSEC_FILTER_NAME, wszUuid, __guard++);
+        RpcStringFree((RPC_WSTR*)&wszUuid);
+    }
+    else {
+        TSK_DEBUG_ERROR("Failed to create new UUID");
+        return tipsec_error_sys;
+    }
 
-	
+
 
     /* Open engine */
     if ((code = FwpmEngineOpen0(NULL, RPC_C_AUTHN_WINNT, NULL, NULL, &p_ctx->engine))) {
@@ -172,7 +172,7 @@ static tipsec_error_t _plugin_win_ipsec_vista_ctx_set_local(tipsec_ctx_t* _p_ctx
     _p_ctx->port_us = port_us;
 
     // Create SA1: (UC -> PS)
-	if ((ret = _vista_createLocalSA(p_ctx, _p_ctx->port_uc, &_p_ctx->spi_uc, &p_ctx->saId_uc, &p_ctx->filterId_in_uc, &p_ctx->filterId_out_uc))) {
+    if ((ret = _vista_createLocalSA(p_ctx, _p_ctx->port_uc, &_p_ctx->spi_uc, &p_ctx->saId_uc, &p_ctx->filterId_in_uc, &p_ctx->filterId_out_uc))) {
         return tipsec_error_sys;
     }
 
@@ -312,12 +312,12 @@ static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, 
     IPSEC_GETSPI0 getSpi;
     int ret = -1;
     FWPM_FILTER_CONDITION0 conds[6];
-	UINT32 numFilterConditions = 3;
+    UINT32 numFilterConditions = 3;
 
     *spi = 0;
     *saId = 0;
-	*filterId_in = 0;
-	*filterId_out = 0;
+    *filterId_in = 0;
+    *filterId_out = 0;
 
     conds[0].fieldKey = FWPM_CONDITION_IP_LOCAL_ADDRESS;
     conds[0].matchType = FWP_MATCH_EQUAL;
@@ -341,19 +341,19 @@ static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, 
     conds[2].conditionValue.type = FWP_UINT16;
     conds[2].conditionValue.uint16 = local_port;
 
-	if (p_ctx->pc_base->ipproto != tipsec_ipproto_all) {
-		conds[numFilterConditions].fieldKey = FWPM_CONDITION_IP_PROTOCOL;
-		conds[numFilterConditions].matchType = FWP_MATCH_EQUAL;
-		conds[numFilterConditions].conditionValue.type = FWP_UINT8;
-		conds[numFilterConditions].conditionValue.uint8 = TINYIPSEC_VISTA_GET_IPPROTO(p_ctx->pc_base->ipproto);
-		++numFilterConditions;
-	}
+    if (p_ctx->pc_base->ipproto != tipsec_ipproto_all) {
+        conds[numFilterConditions].fieldKey = FWPM_CONDITION_IP_PROTOCOL;
+        conds[numFilterConditions].matchType = FWP_MATCH_EQUAL;
+        conds[numFilterConditions].conditionValue.type = FWP_UINT8;
+        conds[numFilterConditions].conditionValue.uint8 = TINYIPSEC_VISTA_GET_IPPROTO(p_ctx->pc_base->ipproto);
+        ++numFilterConditions;
+    }
 
     // Fill in the common fields shared by both filters.
     memset(&filter, 0, sizeof(filter));
     // For MUI compatibility, object names should be indirect strings. See
     // SHLoadIndirectString for details.
-	filter.displayData.name = (PWCHAR)p_ctx->filter_name;
+    filter.displayData.name = (PWCHAR)p_ctx->filter_name;
     // Link all objects to our provider. When multiple providers are installed
     // on a computer, this makes it easy to determine who added what.
     filter.providerKey = (GUID*)TINYIPSEC_PROVIDER_KEY;
@@ -362,7 +362,7 @@ static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, 
     filter.action.type = FWP_ACTION_CALLOUT_TERMINATING;
     filter.flags = FWPM_FILTER_FLAG_NONE;
     filter.weight.type = FWP_EMPTY;
-	
+
     // Add the inbound filter.
     filter.layerKey = (p_ctx->pc_base->use_ipv6) ? FWPM_LAYER_INBOUND_TRANSPORT_V6 : FWPM_LAYER_INBOUND_TRANSPORT_V4;
     if (p_ctx->pc_base->mode == tipsec_mode_tun) {
@@ -427,8 +427,8 @@ static int _vista_createLocalSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, 
     }
 
     //// Return the various LUIDs to the caller, so he can clean up.
-	*filterId_in = tmpInFilterId;
-	*filterId_out = tmpOutFilterId;
+    *filterId_in = tmpInFilterId;
+    *filterId_out = tmpOutFilterId;
     *saId = tmpSaId;
 
 CLEANUP:
@@ -449,7 +449,7 @@ static int _vista_boundSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, __in U
     IPSEC_SA0 sa;
     IPSEC_SA_BUNDLE0 bundle;
     IPSEC_SA_AUTH_INFORMATION0 authInfo; // must be global because use as reference (X = &authInfo)
-	IPSEC_SA_AUTH_AND_CIPHER_INFORMATION0 cipherAuthInfo; // must be global because use as reference (X = &cipherAuthInfo)
+    IPSEC_SA_AUTH_AND_CIPHER_INFORMATION0 cipherAuthInfo; // must be global because use as reference (X = &cipherAuthInfo)
     PFWP_BYTE_BLOB ik = (PFWP_BYTE_BLOB)p_ctx->pc_base->ik;
     PFWP_BYTE_BLOB ck = (PFWP_BYTE_BLOB)p_ctx->pc_base->ck;
 
@@ -490,7 +490,7 @@ static int _vista_boundSA(__in const plugin_win_ipsec_vista_ctx_t* p_ctx, __in U
     else if ( sa.saTransformType == IPSEC_TRANSFORM_ESP_AUTH ) {
         sa.espAuthInformation = &authInfo;
     }
-	else if ( sa.saTransformType == IPSEC_TRANSFORM_ESP_CIPHER ) {
+    else if ( sa.saTransformType == IPSEC_TRANSFORM_ESP_CIPHER ) {
         IPSEC_SA_CIPHER_INFORMATION0 cipherInfo;
 
         memset(&cipherInfo, 0, sizeof(cipherInfo));
@@ -540,29 +540,29 @@ CLEANUP:
 static int _vista_flushAll(const plugin_win_ipsec_vista_ctx_t* p_ctx)
 {
 #if 1
-	int ret = -1;
-	if (p_ctx && p_ctx->engine) {
-		DWORD result;
-		result = FwpmFilterDeleteById0(p_ctx->engine, p_ctx->filterId_in_uc);
-		if (result != ERROR_SUCCESS && result != FWP_E_FILTER_NOT_FOUND) {
-			TSK_DEBUG_ERROR("FwpmFilterDeleteById0 failed with error code [%x]", result);
-		}
-		result = FwpmFilterDeleteById0(p_ctx->engine, p_ctx->filterId_in_us);
-		if (result != ERROR_SUCCESS && result != FWP_E_FILTER_NOT_FOUND) {
-			TSK_DEBUG_ERROR("FwpmFilterDeleteById0 failed with error code [%x]", result);
-		}
-		result = FwpmFilterDeleteById0(p_ctx->engine, p_ctx->filterId_out_uc);
-		if (result != ERROR_SUCCESS && result != FWP_E_FILTER_NOT_FOUND) {
-			TSK_DEBUG_ERROR("FwpmFilterDeleteById0 failed with error code [%x]", result);
-		}
-		result = FwpmFilterDeleteById0(p_ctx->engine, p_ctx->filterId_out_us);
-		if (result != ERROR_SUCCESS && result != FWP_E_FILTER_NOT_FOUND) {
-			TSK_DEBUG_ERROR("FwpmFilterDeleteById0 failed with error code [%x]", result);
-		}
-		return 0;
-	}
-	// 
-	return ret;
+    int ret = -1;
+    if (p_ctx && p_ctx->engine) {
+        DWORD result;
+        result = FwpmFilterDeleteById0(p_ctx->engine, p_ctx->filterId_in_uc);
+        if (result != ERROR_SUCCESS && result != FWP_E_FILTER_NOT_FOUND) {
+            TSK_DEBUG_ERROR("FwpmFilterDeleteById0 failed with error code [%x]", result);
+        }
+        result = FwpmFilterDeleteById0(p_ctx->engine, p_ctx->filterId_in_us);
+        if (result != ERROR_SUCCESS && result != FWP_E_FILTER_NOT_FOUND) {
+            TSK_DEBUG_ERROR("FwpmFilterDeleteById0 failed with error code [%x]", result);
+        }
+        result = FwpmFilterDeleteById0(p_ctx->engine, p_ctx->filterId_out_uc);
+        if (result != ERROR_SUCCESS && result != FWP_E_FILTER_NOT_FOUND) {
+            TSK_DEBUG_ERROR("FwpmFilterDeleteById0 failed with error code [%x]", result);
+        }
+        result = FwpmFilterDeleteById0(p_ctx->engine, p_ctx->filterId_out_us);
+        if (result != ERROR_SUCCESS && result != FWP_E_FILTER_NOT_FOUND) {
+            TSK_DEBUG_ERROR("FwpmFilterDeleteById0 failed with error code [%x]", result);
+        }
+        return 0;
+    }
+    //
+    return ret;
 #else
     UINT32 i;
     int ret = -1;
@@ -593,18 +593,18 @@ static int _vista_flushAll(const plugin_win_ipsec_vista_ctx_t* p_ctx)
             }
         }
 
-		TSK_DEBUG_INFO("All SAs have been flushed.");
+        TSK_DEBUG_INFO("All SAs have been flushed.");
         ret = 0;
 
 CLEANUP:
-		if (entries) {
-			FwpmFreeMemory0((void**)entries);
-		}
-		if (enumHandle) {
-			if ((result = IPsecSaDestroyEnumHandle0(p_ctx->engine, enumHandle)) != ERROR_SUCCESS) {
-				TSK_DEBUG_ERROR("IPsecSaDestroyEnumHandle0 failed with error code [%x].", result);
-			}
-		}		
+        if (entries) {
+            FwpmFreeMemory0((void**)entries);
+        }
+        if (enumHandle) {
+            if ((result = IPsecSaDestroyEnumHandle0(p_ctx->engine, enumHandle)) != ERROR_SUCCESS) {
+                TSK_DEBUG_ERROR("IPsecSaDestroyEnumHandle0 failed with error code [%x].", result);
+            }
+        }
     }
 
     return ret;
@@ -672,15 +672,15 @@ static tsk_object_t* _plugin_win_ipsec_vista_ctx_dtor(tsk_object_t * self)
 
         TSK_FREE(p_ctx->pc_base->addr_local);
         TSK_FREE(p_ctx->pc_base->addr_remote);
-		
-		if (p_ctx->pc_base->ik) {
-			TSK_FREE(((PFWP_BYTE_BLOB)p_ctx->pc_base->ik)->data);
-			TSK_FREE(p_ctx->pc_base->ik);
-		}
+
+        if (p_ctx->pc_base->ik) {
+            TSK_FREE(((PFWP_BYTE_BLOB)p_ctx->pc_base->ik)->data);
+            TSK_FREE(p_ctx->pc_base->ik);
+        }
         if (p_ctx->pc_base->ck) {
-			TSK_FREE(((PFWP_BYTE_BLOB)p_ctx->pc_base->ck)->data);
-			TSK_FREE(p_ctx->pc_base->ck);
-		}
+            TSK_FREE(((PFWP_BYTE_BLOB)p_ctx->pc_base->ck)->data);
+            TSK_FREE(p_ctx->pc_base->ck);
+        }
 
         TSK_DEBUG_INFO("*** Windows Vista IPSec plugin (Windows Filtering Platform) context destroyed ***");
     }

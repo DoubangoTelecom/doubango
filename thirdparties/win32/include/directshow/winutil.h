@@ -59,8 +59,8 @@ protected:
     BOOL m_bDoGetDC;                // Should this window get a DC
     bool m_bDoPostToDestroy;        // Use PostMessage to destroy
     CCritSec m_PaletteLock;         // This lock protects m_hPalette.
-                                    // It should be held anytime the
-                                    // program use the value of m_hPalette.
+    // It should be held anytime the
+    // program use the value of m_hPalette.
 
     // Maps windows message procedure into C++ methods
     friend LRESULT CALLBACK WndProc(HWND hwnd,      // Window handle
@@ -96,8 +96,7 @@ public:
     void PaintWindow(BOOL bErase);
     void DoSetWindowForeground(BOOL bFocus);
     virtual HRESULT SetPalette(HPALETTE hPalette);
-    void SetRealize(BOOL bRealize)
-    {
+    void SetRealize(BOOL bRealize) {
         m_bNoRealize = !bRealize;
     }
 
@@ -109,8 +108,9 @@ public:
     void LockPaletteLock();
     void UnlockPaletteLock();
 
-    virtual BOOL PossiblyEatMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
-	    { return FALSE; };
+    virtual BOOL PossiblyEatMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+        return FALSE;
+    };
 
     // Access our window information
 
@@ -121,9 +121,9 @@ public:
     HDC GetMemoryHDC();
     HDC GetWindowHDC();
 
-    #ifdef DEBUG
+#ifdef DEBUG
     HPALETTE GetPalette();
-    #endif // DEBUG
+#endif // DEBUG
 
     // This is the window procedure the derived object should override
 
@@ -135,9 +135,9 @@ public:
     // Must be overriden to return class and window styles
 
     virtual LPTSTR GetClassWindowStyles(
-                            __out DWORD *pClassStyles,          // Class styles
-                            __out DWORD *pWindowStyles,         // Window styles
-                            __out DWORD *pWindowStylesEx) PURE; // Extended styles
+        __out DWORD *pClassStyles,          // Class styles
+        __out DWORD *pWindowStyles,         // Window styles
+        __out DWORD *pWindowStylesEx) PURE; // Extended styles
 };
 
 
@@ -350,8 +350,7 @@ public:
     BOOL ShouldUpdate(const VIDEOINFOHEADER *pNewInfo,const VIDEOINFOHEADER *pOldInfo);
     HRESULT PreparePalette(const CMediaType *pmtNew,const CMediaType *pmtOld,__in LPSTR szDevice);
 
-    BOOL DrawVideoImageHere(HDC hdc, IMediaSample *pMediaSample, __in LPRECT lprcSrc, __in LPRECT lprcDst)
-    {
+    BOOL DrawVideoImageHere(HDC hdc, IMediaSample *pMediaSample, __in LPRECT lprcSrc, __in LPRECT lprcDst) {
         return m_pDrawImage->DrawVideoImageHere(hdc, pMediaSample, lprcSrc,lprcDst);
     }
 };

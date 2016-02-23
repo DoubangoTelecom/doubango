@@ -299,16 +299,16 @@ extern "C" {
 
 /* Flags specific to the nCipher "chil" engine */
 # define ENGINE_CTRL_CHIL_SET_FORKCHECK          100
-        /*
-         * Depending on the value of the (long)i argument, this sets or
-         * unsets the SimpleForkCheck flag in the CHIL API to enable or
-         * disable checking and workarounds for applications that fork().
-         */
+/*
+ * Depending on the value of the (long)i argument, this sets or
+ * unsets the SimpleForkCheck flag in the CHIL API to enable or
+ * disable checking and workarounds for applications that fork().
+ */
 # define ENGINE_CTRL_CHIL_NO_LOCKING             101
-        /*
-         * This prevents the initialisation function from providing mutex
-         * callbacks to the nCipher library.
-         */
+/*
+ * This prevents the initialisation function from providing mutex
+ * callbacks to the nCipher library.
+ */
 
 /*
  * If an ENGINE supports its own specific control commands and wishes the
@@ -336,14 +336,14 @@ typedef int (*ENGINE_CTRL_FUNC_PTR) (ENGINE *, int, long, void *,
                                      void (*f) (void));
 /* Generic load_key function pointer */
 typedef EVP_PKEY *(*ENGINE_LOAD_KEY_PTR)(ENGINE *, const char *,
-                                         UI_METHOD *ui_method,
-                                         void *callback_data);
+        UI_METHOD *ui_method,
+        void *callback_data);
 typedef int (*ENGINE_SSL_CLIENT_CERT_PTR) (ENGINE *, SSL *ssl,
-                                           STACK_OF(X509_NAME) *ca_dn,
-                                           X509 **pcert, EVP_PKEY **pkey,
-                                           STACK_OF(X509) **pother,
-                                           UI_METHOD *ui_method,
-                                           void *callback_data);
+        STACK_OF(X509_NAME) *ca_dn,
+        X509 **pcert, EVP_PKEY **pkey,
+        STACK_OF(X509) **pother,
+        UI_METHOD *ui_method,
+        void *callback_data);
 /*-
  * These callback types are for an ENGINE's handler for cipher and digest logic.
  * These handlers have these prototypes;
@@ -366,7 +366,7 @@ typedef int (*ENGINE_DIGESTS_PTR) (ENGINE *, const EVP_MD **, const int **,
 typedef int (*ENGINE_PKEY_METHS_PTR) (ENGINE *, EVP_PKEY_METHOD **,
                                       const int **, int);
 typedef int (*ENGINE_PKEY_ASN1_METHS_PTR) (ENGINE *, EVP_PKEY_ASN1_METHOD **,
-                                           const int **, int);
+        const int **, int);
 /*
  * STRUCTURE functions ... all of these functions deal with pointers to
  * ENGINE structures where the pointers have a "structural reference". This
@@ -567,8 +567,8 @@ int ENGINE_set_load_privkey_function(ENGINE *e,
                                      ENGINE_LOAD_KEY_PTR loadpriv_f);
 int ENGINE_set_load_pubkey_function(ENGINE *e, ENGINE_LOAD_KEY_PTR loadpub_f);
 int ENGINE_set_load_ssl_client_cert_function(ENGINE *e,
-                                             ENGINE_SSL_CLIENT_CERT_PTR
-                                             loadssl_f);
+        ENGINE_SSL_CLIENT_CERT_PTR
+        loadssl_f);
 int ENGINE_set_ciphers(ENGINE *e, ENGINE_CIPHERS_PTR f);
 int ENGINE_set_digests(ENGINE *e, ENGINE_DIGESTS_PTR f);
 int ENGINE_set_pkey_meths(ENGINE *e, ENGINE_PKEY_METHS_PTR f);
@@ -612,7 +612,7 @@ ENGINE_CTRL_FUNC_PTR ENGINE_get_ctrl_function(const ENGINE *e);
 ENGINE_LOAD_KEY_PTR ENGINE_get_load_privkey_function(const ENGINE *e);
 ENGINE_LOAD_KEY_PTR ENGINE_get_load_pubkey_function(const ENGINE *e);
 ENGINE_SSL_CLIENT_CERT_PTR ENGINE_get_ssl_client_cert_function(const ENGINE
-                                                               *e);
+        *e);
 ENGINE_CIPHERS_PTR ENGINE_get_ciphers(const ENGINE *e);
 ENGINE_DIGESTS_PTR ENGINE_get_digests(const ENGINE *e);
 ENGINE_PKEY_METHS_PTR ENGINE_get_pkey_meths(const ENGINE *e);
@@ -622,11 +622,11 @@ const EVP_MD *ENGINE_get_digest(ENGINE *e, int nid);
 const EVP_PKEY_METHOD *ENGINE_get_pkey_meth(ENGINE *e, int nid);
 const EVP_PKEY_ASN1_METHOD *ENGINE_get_pkey_asn1_meth(ENGINE *e, int nid);
 const EVP_PKEY_ASN1_METHOD *ENGINE_get_pkey_asn1_meth_str(ENGINE *e,
-                                                          const char *str,
-                                                          int len);
+        const char *str,
+        int len);
 const EVP_PKEY_ASN1_METHOD *ENGINE_pkey_asn1_find_str(ENGINE **pe,
-                                                      const char *str,
-                                                      int len);
+        const char *str,
+        int len);
 const ENGINE_CMD_DEFN *ENGINE_get_cmd_defns(const ENGINE *e);
 int ENGINE_get_flags(const ENGINE *e);
 
@@ -763,7 +763,7 @@ typedef struct st_dynamic_MEM_fns {
 typedef void (*dyn_lock_locking_cb) (int, int, const char *, int);
 typedef int (*dyn_lock_add_lock_cb) (int *, int, int, const char *, int);
 typedef struct CRYPTO_dynlock_value *(*dyn_dynlock_create_cb) (const char *,
-                                                               int);
+        int);
 typedef void (*dyn_dynlock_lock_cb) (int, struct CRYPTO_dynlock_value *,
                                      const char *, int);
 typedef void (*dyn_dynlock_destroy_cb) (struct CRYPTO_dynlock_value *,

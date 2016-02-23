@@ -38,11 +38,11 @@ typedef enum {
 } xmlModuleOption;
 
 XMLPUBFUN xmlModulePtr XMLCALL xmlModuleOpen	(const char *filename,
-						 int options);
+        int options);
 
 XMLPUBFUN int XMLCALL xmlModuleSymbol		(xmlModulePtr module,
-						 const char* name,
-						 void **result);
+        const char* name,
+        void **result);
 
 XMLPUBFUN int XMLCALL xmlModuleClose		(xmlModulePtr module);
 
@@ -50,7 +50,7 @@ XMLPUBFUN int XMLCALL xmlModuleFree		(xmlModulePtr module);
 
 #ifdef __cplusplus
 }
-#endif 
+#endif
 
 #endif /* LIBXML_MODULES_ENABLED */
 

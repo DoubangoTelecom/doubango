@@ -121,8 +121,7 @@ extern vpx_codec_iface_t* vpx_codec_vp8_cx(void);
  *
  * \sa #vpx_codec_control
  */
-enum vp8e_enc_control_id
-{
+enum vp8e_enc_control_id {
     VP8E_UPD_ENTROPY           = 5,  /**< control function to set mode of entropy update in encoder */
     VP8E_UPD_REFERENCE,              /**< control function to set reference update mode in encoder */
     VP8E_USE_REFERENCE,              /**< control function to set which reference frame encoder can use */
@@ -184,8 +183,7 @@ enum vp8e_enc_control_id
  *
  * This set of constants define 1-D vpx scaling modes
  */
-typedef enum vpx_scaling_mode_1d
-{
+typedef enum vpx_scaling_mode_1d {
     VP8E_NORMAL      = 0,
     VP8E_FOURFIVE    = 1,
     VP8E_THREEFIVE   = 2,
@@ -199,8 +197,7 @@ typedef enum vpx_scaling_mode_1d
  *
  */
 
-typedef struct vpx_roi_map
-{
+typedef struct vpx_roi_map {
     unsigned char *roi_map;      /**< specify an id between 0 and 3 for each 16x16 region within a frame */
     unsigned int   rows;         /**< number of rows */
     unsigned int   cols;         /**< number of cols */
@@ -216,8 +213,7 @@ typedef struct vpx_roi_map
  */
 
 
-typedef struct vpx_active_map
-{
+typedef struct vpx_active_map {
     unsigned char  *active_map; /**< specify an on (1) or off (0) each 16x16 region within a frame */
     unsigned int    rows;       /**< number of rows */
     unsigned int    cols;       /**< number of cols */
@@ -228,8 +224,7 @@ typedef struct vpx_active_map
  * This defines the data structure for image scaling mode
  *
  */
-typedef struct vpx_scaling_mode
-{
+typedef struct vpx_scaling_mode {
     VPX_SCALING_MODE    h_scaling_mode;  /**< horizontal scaling mode */
     VPX_SCALING_MODE    v_scaling_mode;  /**< vertical scaling mode   */
 } vpx_scaling_mode_t;
@@ -239,8 +234,7 @@ typedef struct vpx_scaling_mode
  * This defines VP8 encoding mode
  *
  */
-typedef enum
-{
+typedef enum {
     VP8_BEST_QUALITY_ENCODING,
     VP8_GOOD_QUALITY_ENCODING,
     VP8_REAL_TIME_ENCODING
@@ -253,8 +247,7 @@ typedef enum
  *
  */
 
-typedef enum
-{
+typedef enum {
     VP8_ONE_TOKENPARTITION   = 0,
     VP8_TWO_TOKENPARTITION   = 1,
     VP8_FOUR_TOKENPARTITION  = 2,
@@ -267,8 +260,7 @@ typedef enum
  * Changes the encoder to tune for certain types of input material.
  *
  */
-typedef enum
-{
+typedef enum {
     VP8_TUNE_PSNR,
     VP8_TUNE_SSIM
 } vp8e_tuning;

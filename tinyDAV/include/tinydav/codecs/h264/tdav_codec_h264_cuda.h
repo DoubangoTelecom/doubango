@@ -2,19 +2,19 @@
 * Copyright (C) 2011-2014 Mamadou DIOP.
 * Copyright (C) 2011-2014 Doubango Telecom <http://www.doubango.org>.
 *
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -69,38 +69,37 @@ typedef struct NVEncoderParams NVEncoderParams;
 
 TDAV_BEGIN_DECLS
 
-typedef struct tdav_codec_h264_cuda_s
-{
-	TDAV_DECLARE_CODEC_H264_COMMON;
+typedef struct tdav_codec_h264_cuda_s {
+    TDAV_DECLARE_CODEC_H264_COMMON;
 
-	struct {
-		NVEncoder context;
-		NVEncoderParams ctx_params;
-		NVVE_CallbackParams clb_params;
-		void *buffer;
-		tsk_size_t buffer_size;
-		int64_t frame_count;
-	} encoder;
+    struct {
+        NVEncoder context;
+        NVEncoderParams ctx_params;
+        NVVE_CallbackParams clb_params;
+        void *buffer;
+        tsk_size_t buffer_size;
+        int64_t frame_count;
+    } encoder;
 
-	struct {
-		tsk_mutex_handle_t *mutex;
-		CUvideodecoder context;
-		CUVIDDECODECREATEINFO info;
-		CUvideoparser cu_parser;
-		CUVIDPARSERPARAMS cu_paser_params;
-		CUdevice cu_device;
-		IDirect3D9 *dx_d3d;
-		IDirect3DDevice9 *dx_d3ddevice;
-		CUcontext cu_context;
-		void* accumulator;
-		tsk_size_t accumulator_pos;
-		tsk_size_t accumulator_size;
-		void *cu_buffer;
-		tsk_size_t cu_buffer_size;
-		tsk_size_t cu_buffer_pitch;
-		tsk_bool_t cu_buffer_avail;
-		uint16_t last_seq;
-	} decoder;
+    struct {
+        tsk_mutex_handle_t *mutex;
+        CUvideodecoder context;
+        CUVIDDECODECREATEINFO info;
+        CUvideoparser cu_parser;
+        CUVIDPARSERPARAMS cu_paser_params;
+        CUdevice cu_device;
+        IDirect3D9 *dx_d3d;
+        IDirect3DDevice9 *dx_d3ddevice;
+        CUcontext cu_context;
+        void* accumulator;
+        tsk_size_t accumulator_pos;
+        tsk_size_t accumulator_size;
+        void *cu_buffer;
+        tsk_size_t cu_buffer_size;
+        tsk_size_t cu_buffer_pitch;
+        tsk_bool_t cu_buffer_avail;
+        uint16_t last_seq;
+    } decoder;
 }
 tdav_codec_h264_cuda_t;
 
@@ -111,10 +110,10 @@ TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_h264_cuda_bp30_plugi
 tsk_bool_t tdav_codec_h264_cuda_is_supported();
 static inline tsk_bool_t tdav_codec_h264_is_cuda_plugin(const tmedia_codec_plugin_def_t *plugin)
 {
-	if(plugin && (plugin == tdav_codec_h264_cuda_bp10_plugin_def_t || plugin == tdav_codec_h264_cuda_bp20_plugin_def_t || plugin == tdav_codec_h264_cuda_bp30_plugin_def_t)){
-		return tsk_true;
-	}
-	return tsk_false;
+    if(plugin && (plugin == tdav_codec_h264_cuda_bp10_plugin_def_t || plugin == tdav_codec_h264_cuda_bp20_plugin_def_t || plugin == tdav_codec_h264_cuda_bp30_plugin_def_t)) {
+        return tsk_true;
+    }
+    return tsk_false;
 }
 
 TDAV_END_DECLS

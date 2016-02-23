@@ -2,19 +2,19 @@
 * Copyright (C) 2010-2011 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango[dot]org>
-*	
+*
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
-*	
+*
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-*	
+*
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
@@ -43,15 +43,14 @@ TCOMP_BEGIN_DECLS
 
 #define MAX_TEMP_SATES	4
 
-typedef struct tcomp_tempstate_to_free_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tcomp_tempstate_to_free_s {
+    TSK_DECLARE_OBJECT;
 
-	// Operands
-	uint32_t partial_identifier_start;
-	uint32_t partial_identifier_length;
-	// identifier
-	tcomp_buffer_handle_t *identifier;
+    // Operands
+    uint32_t partial_identifier_start;
+    uint32_t partial_identifier_length;
+    // identifier
+    tcomp_buffer_handle_t *identifier;
 }
 tcomp_tempstate_to_free_t;
 
@@ -59,29 +58,28 @@ TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_tempstate_to_free_def_t;
 
 /**SigComp decompression result.
 */
-typedef struct tcomp_result_s
-{
-	TSK_DECLARE_OBJECT;
+typedef struct tcomp_result_s {
+    TSK_DECLARE_OBJECT;
 
-	uint64_t					compartmentId;
-	tcomp_state_t*				statesToCreate[MAX_TEMP_SATES];
-	uint8_t						statesToCreateIndex;
+    uint64_t					compartmentId;
+    tcomp_state_t*				statesToCreate[MAX_TEMP_SATES];
+    uint8_t						statesToCreateIndex;
 
-	tcomp_tempstate_to_free_t*	statesToFree[MAX_TEMP_SATES];
-	uint8_t						statesToFreeIndex;
+    tcomp_tempstate_to_free_t*	statesToFree[MAX_TEMP_SATES];
+    uint8_t						statesToFreeIndex;
 
-	uint64_t					streamId;
-	unsigned					isStreamBased:1;
-	tcomp_buffer_handle_t		*output_buffer;
+    uint64_t					streamId;
+    unsigned					isStreamBased:1;
+    tcomp_buffer_handle_t		*output_buffer;
 
-	tcomp_reqfeed_t				*req_feedback;
-	tcomp_params_t				*remote_parameters;
-	tcomp_buffer_handle_t		*ret_feedback;
+    tcomp_reqfeed_t				*req_feedback;
+    tcomp_params_t				*remote_parameters;
+    tcomp_buffer_handle_t		*ret_feedback;
 
-	unsigned					isNack:1;
-	tcomp_buffer_handle_t		*nack_info;
+    unsigned					isNack:1;
+    tcomp_buffer_handle_t		*nack_info;
 
-	uint64_t					consumed_cycles;
+    uint64_t					consumed_cycles;
 }
 tcomp_result_t;
 

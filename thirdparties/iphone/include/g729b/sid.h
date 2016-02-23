@@ -14,8 +14,8 @@
 void Init_lsfq_noise(void);
 void lsfq_noise(Word16 *lsp_new, Word16 *lspq,
                 Word16 freq_prev[MA_NP][M], Word16 *idx);
-void sid_lsfq_decode(Word16 *index, Word16 *lspq, 
-                     Word16 freq_prev[MA_NP][M]); 
+void sid_lsfq_decode(Word16 *index, Word16 *lspq,
+                     Word16 freq_prev[MA_NP][M]);
 
 
 

@@ -35,84 +35,75 @@ void test_dhcp_request(tnet_dhcp_ctx_t *ctx)
 
 void test_dhcp_inform(tnet_dhcp_ctx_t *ctx)
 {
-	tnet_dhcp_params_t *params = tsk_null;
-	tnet_dhcp_reply_t *reply = tsk_null;
+    tnet_dhcp_params_t *params = tsk_null;
+    tnet_dhcp_reply_t *reply = tsk_null;
 
-	params = tnet_dhcp_params_create();
-	tnet_dhcp_params_add_code(params, dhcp_code_SIP_Servers_DHCP_Option); /* SIP Servers */
-	tnet_dhcp_params_add_code(params, dhcp_code_Domain_Server); /* DNS Server */
-	
-	reply = tnet_dhcp_query_inform(ctx, params);
+    params = tnet_dhcp_params_create();
+    tnet_dhcp_params_add_code(params, dhcp_code_SIP_Servers_DHCP_Option); /* SIP Servers */
+    tnet_dhcp_params_add_code(params, dhcp_code_Domain_Server); /* DNS Server */
 
-	if(reply && !TNET_DHCP_MESSAGE_IS_REPLY(reply)){
-		TSK_DEBUG_ERROR("DHCP request is not expected in response to a request.");
-		goto bail;
-	}
+    reply = tnet_dhcp_query_inform(ctx, params);
 
-	if(reply){
-		switch(reply->type)
-		{
-		case dhcp_type_ack:
-			{
-				tsk_list_item_t *item;
-				TSK_DEBUG_INFO("DHCP response type ==> ACK.");
+    if(reply && !TNET_DHCP_MESSAGE_IS_REPLY(reply)) {
+        TSK_DEBUG_ERROR("DHCP request is not expected in response to a request.");
+        goto bail;
+    }
 
-				tsk_list_foreach(item, reply->options)
-				{
-					const tnet_dhcp_option_t *option = item->data;
+    if(reply) {
+        switch(reply->type) {
+        case dhcp_type_ack: {
+            tsk_list_item_t *item;
+            TSK_DEBUG_INFO("DHCP response type ==> ACK.");
 
-					/* SIP SERVERS */
-					if(option->code == dhcp_code_SIP_Servers_DHCP_Option)
-					{
-						tsk_list_item_t *item2;
-						const tnet_dhcp_option_sip_t *option_sip4 = (const tnet_dhcp_option_sip_t*)option;;
-						tsk_list_foreach(item2, option_sip4->servers)
-						{
-							const tsk_string_t *str = item2->data;
-							TSK_DEBUG_INFO("DHCP-SIP_SERVER ==>%s", str->value);
-						}
-					}
+            tsk_list_foreach(item, reply->options) {
+                const tnet_dhcp_option_t *option = item->data;
 
-					/* DNS SERVERS */
-					if(option->code == dhcp_code_Domain_Server)
-					{
-						tsk_list_item_t *item2;
-						const tnet_dhcp_option_dns_t *option_dns = (const tnet_dhcp_option_dns_t*)option;;
-						tsk_list_foreach(item2, option_dns->servers)
-						{
-							const tsk_string_t *str = item2->data;
-							TSK_DEBUG_INFO("DHCP-DNS_SERVER ==>%s", str->value);
-						}
-					}
-				}
-				break;
-			}
+                /* SIP SERVERS */
+                if(option->code == dhcp_code_SIP_Servers_DHCP_Option) {
+                    tsk_list_item_t *item2;
+                    const tnet_dhcp_option_sip_t *option_sip4 = (const tnet_dhcp_option_sip_t*)option;;
+                    tsk_list_foreach(item2, option_sip4->servers) {
+                        const tsk_string_t *str = item2->data;
+                        TSK_DEBUG_INFO("DHCP-SIP_SERVER ==>%s", str->value);
+                    }
+                }
 
-		default:
-			{
-				break;
-			}
-		}
-	}
-	else
-	{
-		TSK_DEBUG_ERROR("DHCP reply is NULL.");
-		goto bail;
-	}
-	
+                /* DNS SERVERS */
+                if(option->code == dhcp_code_Domain_Server) {
+                    tsk_list_item_t *item2;
+                    const tnet_dhcp_option_dns_t *option_dns = (const tnet_dhcp_option_dns_t*)option;;
+                    tsk_list_foreach(item2, option_dns->servers) {
+                        const tsk_string_t *str = item2->data;
+                        TSK_DEBUG_INFO("DHCP-DNS_SERVER ==>%s", str->value);
+                    }
+                }
+            }
+            break;
+        }
+
+        default: {
+            break;
+        }
+        }
+    }
+    else {
+        TSK_DEBUG_ERROR("DHCP reply is NULL.");
+        goto bail;
+    }
+
 bail:
-	TSK_OBJECT_SAFE_FREE(reply);
-	TSK_OBJECT_SAFE_FREE(params);
+    TSK_OBJECT_SAFE_FREE(reply);
+    TSK_OBJECT_SAFE_FREE(params);
 
-	//tsk_thread_sleep(1000);
+    //tsk_thread_sleep(1000);
 }
 
 void test_dhcp()
 {
-	tnet_dhcp_ctx_t *ctx = tnet_dhcp_ctx_create();
-	test_dhcp_inform(ctx);
+    tnet_dhcp_ctx_t *ctx = tnet_dhcp_ctx_create();
+    test_dhcp_inform(ctx);
 
-	TSK_OBJECT_SAFE_FREE(ctx);
+    TSK_OBJECT_SAFE_FREE(ctx);
 }
 
 #endif /* TNET_TEST_DHCP_H */

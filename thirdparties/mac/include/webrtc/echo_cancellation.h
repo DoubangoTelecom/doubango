@@ -24,36 +24,36 @@
 #define AEC_BAD_PARAMETER_WARNING 12050
 
 enum {
-  kAecNlpConservative = 0,
-  kAecNlpModerate,
-  kAecNlpAggressive
+    kAecNlpConservative = 0,
+    kAecNlpModerate,
+    kAecNlpAggressive
 };
 
 enum {
-  kAecFalse = 0,
-  kAecTrue
+    kAecFalse = 0,
+    kAecTrue
 };
 
 typedef struct {
-  int16_t nlpMode;      // default kAecNlpModerate
-  int16_t skewMode;     // default kAecFalse
-  int16_t metricsMode;  // default kAecFalse
-  int delay_logging;    // default kAecFalse
-  // float realSkew;
+    int16_t nlpMode;      // default kAecNlpModerate
+    int16_t skewMode;     // default kAecFalse
+    int16_t metricsMode;  // default kAecFalse
+    int delay_logging;    // default kAecFalse
+    // float realSkew;
 } AecConfig;
 
 typedef struct {
-  int instant;
-  int average;
-  int max;
-  int min;
+    int instant;
+    int average;
+    int max;
+    int min;
 } AecLevel;
 
 typedef struct {
-  AecLevel rerl;
-  AecLevel erl;
-  AecLevel erle;
-  AecLevel aNlp;
+    AecLevel rerl;
+    AecLevel erl;
+    AecLevel erle;
+    AecLevel aNlp;
 } AecMetrics;
 
 struct AecCore;
