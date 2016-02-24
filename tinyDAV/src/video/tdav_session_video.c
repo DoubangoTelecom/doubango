@@ -1439,13 +1439,16 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
                 session->qos_metrics.video_out_height = codec->out.height;
                 session->qos_metrics.video_in_width = codec->in.width;
                 session->qos_metrics.video_in_height = codec->in.height;
-                // reset n
-                video->q1_n = video->q2_n = video->q3_n = video->q4_n = video->q5_n = 0;
-                session->qos_metrics.q1 = session->qos_metrics.q2 = session->qos_metrics.q3 = session->qos_metrics.q4 = session->qos_metrics.q5 = 0.f;
+                
                 // continue averaging
-                video->in_avg_fps_n = video->in_avg_fps_n ? 1 : 0;
-                video->dec_avg_time_n = video->dec_avg_time_n ? 1 : 0;
-                video->enc_avg_time_n = video->enc_avg_time_n ? 1 : 0;
+				video->q1_n = TSK_CLAMP(0, video->q1_n, 1);
+				video->q2_n = TSK_CLAMP(0, video->q2_n, 1);
+				video->q3_n = TSK_CLAMP(0, video->q3_n, 1);
+				video->q4_n = TSK_CLAMP(0, video->q4_n, 1);
+				video->q5_n = TSK_CLAMP(0, video->q5_n, 1);
+                video->in_avg_fps_n = TSK_CLAMP(0, video->in_avg_fps_n, 1);
+                video->dec_avg_time_n = TSK_CLAMP(0, video->dec_avg_time_n, 1);
+                video->enc_avg_time_n = TSK_CLAMP(0, video->enc_avg_time_n, 1);
 
                 // reset time
                 session->qos_metrics.last_update_time = tsk_time_now();
