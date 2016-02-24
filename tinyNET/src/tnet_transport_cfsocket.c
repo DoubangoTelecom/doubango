@@ -319,6 +319,7 @@ static int recvData(tnet_transport_t *transport, transport_socket_xt* active_soc
 
     if (len && buffer) {
         tnet_transport_event_t* e = tnet_transport_event_create(event_data, transport->callback_data, active_socket->fd);
+        transport->bytes_in += len;
         if (e && buffer && len) {
             e->data = buffer;
             buffer = NULL;
@@ -485,6 +486,7 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
     }
 
 bail:
+    transport->bytes_out += numberOfBytesSent;
     return numberOfBytesSent;
 }
 
@@ -517,6 +519,7 @@ tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_
     }
 
 bail:
+    transport->bytes_out += numberOfBytesSent;
     return numberOfBytesSent;
 }
 
@@ -1034,6 +1037,7 @@ void __CFSocketCallBack(CFSocketRef s, CFSocketCallBackType callbackType, CFData
             int len = (int)CFDataGetLength((CFDataRef)data);
             if (ptr && len > 0) {
                 tnet_transport_event_t* e = tnet_transport_event_create(event_data, transport->callback_data, sock->fd);
+                transport->bytes_in += len;
                 if (e) {
                     e->data = tsk_malloc(len);
                     if (e->data) {

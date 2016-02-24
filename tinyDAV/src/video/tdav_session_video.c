@@ -614,12 +614,12 @@ static int tdav_session_video_rtcp_cb(const void* callback_data, const trtp_rtcp
         case trtp_rtcp_psfb_fci_type_afb: {
             if (psfb->afb.type == trtp_rtcp_psfb_afb_type_remb) {
                 uint64_t bw_up_reported_kpbs = ((psfb->afb.remb.mantissa << psfb->afb.remb.exp) >> 10);
-                TSK_DEBUG_INFO("Receiving RTCP-AFB-REMB (%u), exp=%u, mantissa=%u, bandwidth=%ukbps", ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media, psfb->afb.remb.exp, psfb->afb.remb.mantissa, bw_up_reported_kpbs);
+                TSK_DEBUG_INFO("Receiving RTCP-AFB-REMB (%u), exp=%u, mantissa=%u, bandwidth=%llukbps", ((const trtp_rtcp_report_fb_t*)psfb)->ssrc_media, psfb->afb.remb.exp, psfb->afb.remb.mantissa, bw_up_reported_kpbs);
                 if (base->congestion_ctrl_enabled) {
                     if (session->qos_metrics.bw_up_est_kbps != 0) {
                         float q3 = bw_up_reported_kpbs / (float)session->qos_metrics.bw_up_est_kbps;
                         q3 = TSK_CLAMP(0.f, q3, 1.f);
-                        TSK_DEBUG_INFO("bw_up_estimated_kbps=%llu, bw_up_reported_kpbs=%llu, q3=%f", session->qos_metrics.bw_up_est_kbps, bw_up_reported_kpbs, q3);
+                        TSK_DEBUG_INFO("bw_up_estimated_kbps=%u, bw_up_reported_kpbs=%llu, q3=%f", session->qos_metrics.bw_up_est_kbps, bw_up_reported_kpbs, q3);
                         tsk_mutex_lock(video->h_mutex_qos);
                         session->qos_metrics.q3 = (session->qos_metrics.q3 + q3) / (video->q3_n++ ? 2.f : 1.f);
                         tsk_mutex_unlock(video->h_mutex_qos);
@@ -1539,7 +1539,7 @@ static int _tdav_session_video_report_bw_usage_and_jcng(tdav_session_video_t* se
                     jcng_q = q5;
                 }
             }
-            TSK_DEBUG_INFO("video with congestion control enabled: est_bw_down=%llukbps, est_jcng=%f", session->qos_metrics.bw_down_est_kbps, jcng_q);
+            TSK_DEBUG_INFO("video with congestion control enabled: est_bw_down=%ukbps, est_jcng=%f", session->qos_metrics.bw_down_est_kbps, jcng_q);
             ret = trtp_manager_set_app_bw_and_jcng(base->rtp_manager, INT_MAX/* unused */, (int32_t)session->qos_metrics.bw_down_est_kbps, jcng_q);
 			self->last_sendreport_time = tsk_time_now();
         }
