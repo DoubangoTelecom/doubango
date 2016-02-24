@@ -230,11 +230,11 @@ int tsip_dialog_layer_shutdownAll(tsip_dialog_layer_t *self)
 
         tsk_safeobj_lock(self);
         if(tsk_list_count(self->dialogs, pred_find_dialog_by_not_type, &regtype)) {
-            /* There are non-register dialogs ==> phase-1 */
+            /* There is no register dialogs ==> phase-1 */
             goto phase1;
         }
         else if(tsk_list_count(self->dialogs, pred_find_dialog_by_type, &regtype)) {
-            /* There are one or more register dialogs ==> phase-2 */
+            /* There is at least one or more register dialogs ==> phase-2 */
             goto phase2;
         }
         else {

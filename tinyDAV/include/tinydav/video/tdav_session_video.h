@@ -126,6 +126,7 @@ typedef struct tdav_session_video_s {
     unsigned dec_avg_time_n;
     unsigned enc_avg_time_n;
     tsk_mutex_handle_t* h_mutex_qos;
+	uint64_t last_sendreport_time;
 }
 tdav_session_video_t;
 

@@ -731,6 +731,7 @@ static int _tdav_session_video_set_defaults(tdav_session_video_t* self)
     self->zero_artifacts = tmedia_defaults_get_video_zeroartifacts_enabled();
     self->avpf.max = tmedia_defaults_get_avpf_tail_min();
     self->encoder.last_frame_time = 0;
+	self->last_sendreport_time = 0;
     // Quality metrics
     session->qos_metrics.q1 = 0.f, self->q1_n = 0;
     session->qos_metrics.q2 = 0.f, self->q2_n = 0;
@@ -1458,7 +1459,7 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
                 q5 /= 10.f;
 #endif
 
-                qavg = q1 * 0.1f + q2 * 0.4f + q3 * 0.1f + q4 * 0.1f + q5 * 0.3f;
+                qavg = q1 * 0.1f + q2 * 0.4f + q3 * 0.1f + q4 * 0.0f + q5 * 0.4f;
                 c = /*fabs*/(qavg - session->qos_metrics.qvag);
                 c = c < 0.f ? -c : +c;
                 TSK_DEBUG_INFO("_tdav_session_video_timer_cb: q1=%f, q2=%f, q3=%f, q4=%f, q5=%f, qavg=%f, c=%f congestion_ctrl_enabled=true", q1, q2, q3, q4, q5, qavg, c);
@@ -1529,8 +1530,7 @@ static int _tdav_session_video_report_bw_usage_and_jcng(tdav_session_video_t* se
     //  - fps changed or
     //	- first frame
     if (base->congestion_ctrl_enabled && base->rtp_manager && session->qos_metrics.bw_down_est_kbps != 0) {
-# define TDAV_SESSION_VIDEO_QOS_COMPUTE_INTERVAL_HALF (TDAV_SESSION_VIDEO_QOS_COMPUTE_INTERVAL >> 1)
-        tsk_bool_t update_info = (self->fps_changed || self->decoder.codec_decoded_frames_count == 0 || session->qos_metrics.last_update_time == 0 || ((tsk_time_now() - session->qos_metrics.last_update_time) > TDAV_SESSION_VIDEO_QOS_COMPUTE_INTERVAL_HALF));
+        tsk_bool_t update_info = (tsk_time_now() - self->last_sendreport_time) > TDAV_SESSION_VIDEO_QOS_COMPUTE_INTERVAL;
         if (update_info) {
             float jcng_q = 1.f;
             if (self->jb && self->jb_enabled) {
@@ -1539,9 +1539,9 @@ static int _tdav_session_video_report_bw_usage_and_jcng(tdav_session_video_t* se
                     jcng_q = q5;
                 }
             }
-            self->fps_changed = tsk_false; // reset
             TSK_DEBUG_INFO("video with congestion control enabled: est_bw_down=%llukbps, est_jcng=%f", session->qos_metrics.bw_down_est_kbps, jcng_q);
             ret = trtp_manager_set_app_bw_and_jcng(base->rtp_manager, INT_MAX/* unused */, (int32_t)session->qos_metrics.bw_down_est_kbps, jcng_q);
+			self->last_sendreport_time = tsk_time_now();
         }
     }
     return ret;
