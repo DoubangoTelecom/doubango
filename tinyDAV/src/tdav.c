@@ -473,14 +473,15 @@ int tdav_codec_set_priority(tdav_codec_id_t codec_id, int priority)
 {
     tsk_size_t i;
 
-    if(priority < 0) {
+    if (priority < 0) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-    for(i = 0; i < __codec_plugins_all_count && __codec_plugins_all[i]; ++i) {
+    for (i = 0; i < __codec_plugins_all_count && __codec_plugins_all[i]; ++i) {
         if(__codec_plugins_all[i]->codec_id == codec_id) {
             const struct tmedia_codec_plugin_def_s *codec_decl_1, *codec_decl_2;
-            priority = TSK_MIN(priority, (int)__codec_plugins_all_count-1);
+			tsk_size_t max = tmedia_codec_plugin_registered_count(__codec_plugins_all, __codec_plugins_all_count);
+			priority = TSK_CLAMP(0, priority, (int)(max > 0 ? (max - 1) : 0));
             codec_decl_1 = __codec_plugins_all[priority];
             codec_decl_2 = __codec_plugins_all[i];
 

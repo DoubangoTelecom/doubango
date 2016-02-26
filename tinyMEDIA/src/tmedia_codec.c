@@ -302,37 +302,43 @@ int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin)
 
 int tmedia_codec_plugin_register_2(const tmedia_codec_plugin_def_t* plugin, int prio)
 {
-    tsk_size_t count = 0;
+    tsk_size_t index = 0, max;
     tsk_bool_t already_registered = tsk_false;
     const tmedia_codec_plugin_def_t* tmp;
-    if(!plugin || tsk_strnullORempty(plugin->name) || tsk_strnullORempty(plugin->format) || (prio + 1) >= TMED_CODEC_MAX_PLUGINS) {
+    if (!plugin || tsk_strnullORempty(plugin->name) || tsk_strnullORempty(plugin->format) || (prio + 1) >= TMED_CODEC_MAX_PLUGINS) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
 
     // count codecs and found if already registered
-    while(__tmedia_codec_plugins[count]) {
-        if(__tmedia_codec_plugins[count] == plugin) {
+    while (__tmedia_codec_plugins[index]) {
+        if (__tmedia_codec_plugins[index] == plugin) {
             already_registered = tsk_true;
         }
-        ++count;
+        ++index;
     }
 
-    if(count >= TMED_CODEC_MAX_PLUGINS) {
+    if (index >= TMED_CODEC_MAX_PLUGINS) {
         TSK_DEBUG_ERROR("No room");
         return -1;
     }
 
+	// clamp prio (must be done here before unregistering the plugin)
+	max = tmedia_codec_plugin_registered_count(__tmedia_codec_plugins, sizeof(__tmedia_codec_plugins)/sizeof(__tmedia_codec_plugins[0]));
+	prio = TSK_CLAMP(0, prio, (int)(max > 0 ? (max - 1) : 0));
+
     // unregister and compact
-    if(already_registered) {
-        if(tmedia_codec_plugin_unregister(plugin) == 0) {
-            --count;
+    if (already_registered) {
+        if (tmedia_codec_plugin_unregister(plugin) == 0) {
+            --index;
         }
     }
 
+	
+
     // put current plugin at prio and old (which was at prio) at the end
     tmp = __tmedia_codec_plugins[prio];
-    __tmedia_codec_plugins[count] = tmp;// put old codec add prio to the end of the list
+    __tmedia_codec_plugins[index] = tmp;// put old codec add prio to the end of the list
     __tmedia_codec_plugins[prio] = plugin;
 
     return 0;
@@ -396,6 +402,15 @@ const struct tmedia_codec_plugin_def_s* tmedia_codec_plugin_registered_get_const
         }
     }
     return tsk_null;
+}
+
+/**@ingroup tmedia_codec_group
+*/
+tsk_size_t tmedia_codec_plugin_registered_count(const struct tmedia_codec_plugin_def_s** plugins, tsk_size_t count)
+{
+	tsk_size_t i;
+    for (i = 0; i < count && plugins[i]; ++i) ;
+	return i;
 }
 
 /**@ingroup tmedia_codec_group
