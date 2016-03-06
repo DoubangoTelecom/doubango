@@ -72,36 +72,12 @@ static const tmedia_codec_action_t __action_encode_idr = tmedia_codec_action_enc
 static const tmedia_codec_action_t __action_encode_bw_up = tmedia_codec_action_bw_up;
 static const tmedia_codec_action_t __action_encode_bw_down = tmedia_codec_action_bw_down;
 
-// FIXME: lock ?
-#define _tdav_session_video_codec_set(__self, __key, __value) \
-{ \
-static tmedia_param_t* __param = tsk_null; \
-if(!__param){ \
-__param = tmedia_param_create(tmedia_pat_set,  \
-tmedia_video,  \
-tmedia_ppt_codec,  \
-tmedia_pvt_int32, \
-__key, \
-(void*)&__value); \
-} \
-if((__self)->encoder.codec && __param){ \
-/*tsk_mutex_lock((__self)->encoder.h_mutex);*/ \
-if(TDAV_SESSION_AV(__self)->producer && TDAV_SESSION_AV(__self)->producer->encoder.codec_id == (__self)->encoder.codec->id) { /* Whether the producer ourput encoded frames */ \
-tmedia_producer_set(TDAV_SESSION_AV(__self)->producer, __param); \
-} \
-else { \
-tmedia_codec_set((tmedia_codec_t*)(__self)->encoder.codec, __param); \
-} \
-/*tsk_mutex_unlock((__self)->encoder.h_mutex);*/ \
-} \
-/* TSK_OBJECT_SAFE_FREE(param); */ \
-}
 
 #define _tdav_session_video_remote_requested_idr(__self, __ssrc_media) { \
 uint64_t __now = tsk_time_now(); \
 tsk_bool_t too_close = tsk_false; \
 if((__now - (__self)->avpf.last_fir_time) > TDAV_SESSION_VIDEO_AVPF_FIR_HONOR_INTERVAL_MIN){ /* guard to avoid sending too many FIR */ \
-_tdav_session_video_codec_set((__self), "action", __action_encode_idr); \
+_tdav_session_video_codec_set_int32((__self), "action", __action_encode_idr); \
 }else { too_close = tsk_true; TSK_DEBUG_INFO("***IDR request tooo close(%llu ms)...ignoring****", (__now - (__self)->avpf.last_fir_time)); } \
 if((__self)->cb_rtcpevent.func){ \
 (__self)->cb_rtcpevent.func((__self)->cb_rtcpevent.context, tmedia_rtcp_event_type_fir, (__ssrc_media)); \
@@ -120,9 +96,9 @@ else if ((_session)->rfc5168_cb.fun) { \
 /*return*/ (_session)->rfc5168_cb.fun((_session)->rfc5168_cb.usrdata, (_session), (_reason), tmedia_session_rfc5168_cmd_picture_fast_update); \
 } \
 }
-#define _tdav_session_video_bw_up(__self) _tdav_session_video_codec_set(__self, "action", __action_encode_bw_up)
-#define _tdav_session_video_bw_down(__self) _tdav_session_video_codec_set(__self, "action", __action_encode_bw_down)
-#define _tdav_session_video_bw_kbps(__self, __bw_kbps) _tdav_session_video_codec_set(__self, "bw_kbps", __bw_kbps)
+#define _tdav_session_video_bw_up(__self) _tdav_session_video_codec_set_int32(__self, "action", __action_encode_bw_up)
+#define _tdav_session_video_bw_down(__self) _tdav_session_video_codec_set_int32(__self, "action", __action_encode_bw_down)
+#define _tdav_session_video_bw_kbps(__self, __bw_kbps) _tdav_session_video_codec_set_int32(__self, "bw_kbps", __bw_kbps)
 
 
 #define _tdav_session_video_reset_loss_prob(__self) \
@@ -133,6 +109,7 @@ else if ((_session)->rfc5168_cb.fun) { \
 }
 
 static int _tdav_session_video_set_defaults(tdav_session_video_t* self);
+static int _tdav_session_video_codec_set_int32(tdav_session_video_t* self, const char* key, int32_t value);
 static int _tdav_session_video_jb_cb(const tdav_video_jb_cb_data_xt* data);
 static int _tdav_session_video_open_decoder(tdav_session_video_t* self, uint8_t payload_type);
 static int _tdav_session_video_decode(tdav_session_video_t* self, const trtp_rtp_packet_t* packet);
@@ -766,6 +743,23 @@ static int _tdav_session_video_set_defaults(tdav_session_video_t* self)
     TSK_DEBUG_INFO("Video 'zero-artifacts' option = %s", self->zero_artifacts  ? "yes" : "no");
 
     return 0;
+}
+
+static int _tdav_session_video_codec_set_int32(tdav_session_video_t* self, const char* key, int32_t value) 
+{ 
+	int ret = -1;
+	tmedia_param_t* param = tmedia_param_create(tmedia_pat_set, tmedia_video, tmedia_ppt_codec, tmedia_pvt_int32, key, (void*)&value);
+	if (self->encoder.codec && param) { 
+		tdav_session_av_t* base = (tdav_session_av_t*)self;
+		if (base->producer && base->producer->encoder.codec_id == self->encoder.codec->id) { /* Whether the producer output encoded frames */ 
+			ret = tmedia_producer_set(base->producer, param); 
+		} 
+		else { 
+			ret = tmedia_codec_set((tmedia_codec_t*)(self)->encoder.codec, param); 
+		}
+	}
+	TSK_OBJECT_SAFE_FREE(param);
+	return ret;
 }
 
 // From jitter buffer to codec
@@ -1498,7 +1492,7 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
 				}
 
 				// Update video size
-#if 0
+#if BUILD_TYPE_TCH
 				if (update_size) {
 					unsigned new_w, new_h, new_s;
 					char size[128] = {'\0'};
@@ -1552,10 +1546,18 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
 
                 if (update_qavg) {
                     // Update the upload bandwidth
-                    int32_t bw_up_new_kbps, bw_up_base_kbps = base->bandwidth_max_upload_kbps; // user-defined maximum
-                    bw_up_base_kbps = TSK_MIN(tmedia_get_video_bandwidth_kbps_2(codec->out.width, codec->out.height, codec->out.fps), bw_up_base_kbps);
-                    bw_up_new_kbps = (int32_t)(bw_up_base_kbps * qavg);
-                    TSK_DEBUG_INFO("Video quality change(%d%%) > 10%%, changing bw_up from base=%dkbps to new=%dkbps", (int)(cavg*100), bw_up_base_kbps, bw_up_new_kbps);
+					// in the previous version the new bandwidth was (init_bw * qavg), this is not correct
+					// as the current qavg is relative to the curr_bw not the init_bw.
+					// so, new_bw = (curr_bw * qavg)
+                    int32_t bw_up_new_kbps, bw_up_base_kbps, bw_up_curr_kbps; 
+					bw_up_base_kbps = base->bandwidth_max_upload_kbps; // user-defined maximum
+					bw_up_curr_kbps = TMEDIA_CODEC(codec)->bandwidth_max_upload; // codec-defined bandwidth
+					if (bw_up_curr_kbps == INT_MAX || bw_up_curr_kbps <= 0) {
+						bw_up_curr_kbps = tmedia_get_video_bandwidth_kbps_2(codec->out.width, codec->out.height, codec->out.fps);
+					}
+                    bw_up_curr_kbps = TSK_MIN(bw_up_curr_kbps, bw_up_base_kbps); // clamp
+                    bw_up_new_kbps = (int32_t)(bw_up_curr_kbps * qavg);
+                    TSK_DEBUG_INFO("Video quality change(%d%%), changing bw_up from base=%dkbps to new=%dkbps", (int)(cavg*100), bw_up_base_kbps, bw_up_new_kbps);
                     _tdav_session_video_bw_kbps(video, bw_up_new_kbps);
                     session->qos_metrics.qvag = qavg;
                 }
