@@ -1426,7 +1426,7 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
         if (base->congestion_ctrl_enabled) {
             tmedia_codec_video_t* codec = tsk_object_ref(TSK_OBJECT(video->encoder.codec));
             if (codec && video->started) {
-                float q1, q2, q3, q4, q5, qavg, cavg, vs_weight;
+                float q1, q2, q3, q4, q5, qavg, cavg;
                 uint64_t bw_est_kbps;
 				tsk_bool_t cavgneg, update_qavg = tsk_false, update_size = tsk_false;
 				unsigned enc_avg_time;
@@ -1471,6 +1471,7 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
 #if BUILD_TYPE_TCH
 				{
 					unsigned best_enc_time;
+					float vs_weight;
 
 					// Check if encoding time is too high or low
 					best_enc_time = 1000 / (codec->out.fps);
