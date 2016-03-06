@@ -180,6 +180,15 @@ static int tdav_codec_vp8_set(tmedia_codec_t* self, const tmedia_param_t* param)
                 reconf = tsk_true;
             }
         }
+		else if (tsk_striequals(param->key, "out-size")) {
+			// It's up to the caller to lock the codec or make sure no other code will code encode() function.
+			uint32_t new_size = *((uint32_t*)param->value);
+			TMEDIA_CODEC_VIDEO(vp8)->out.width = (new_size & 0xFFFF);
+			TMEDIA_CODEC_VIDEO(vp8)->out.height = (new_size >> 16) & 0xFFFF;
+			vp8->encoder.cfg.g_w = (vp8->encoder.rotation == 90 || vp8->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(vp8)->out.height : TMEDIA_CODEC_VIDEO(self)->out.width;
+			vp8->encoder.cfg.g_h = (vp8->encoder.rotation == 90 || vp8->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(vp8)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
+			reconf = tsk_true;
+		}
     }
 
     if (reconf) {
@@ -709,7 +718,7 @@ int tdav_codec_vp8_open_encoder(tdav_codec_vp8_t* self)
     self->encoder.cfg.g_timebase.num = 1;
     self->encoder.cfg.g_timebase.den = TMEDIA_CODEC_VIDEO(self)->out.fps;
     self->encoder.cfg.rc_target_bitrate = TSK_CLAMP(
-            0,
+            1,
             tmedia_get_video_bandwidth_kbps_2(TMEDIA_CODEC_VIDEO(self)->out.width, TMEDIA_CODEC_VIDEO(self)->out.height, TMEDIA_CODEC_VIDEO(self)->out.fps),
             TMEDIA_CODEC(self)->bandwidth_max_upload
                                           );

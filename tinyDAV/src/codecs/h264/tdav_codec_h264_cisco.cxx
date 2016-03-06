@@ -170,6 +170,33 @@ static int tdav_codec_h264_cisco_set(tmedia_codec_t* self, const tmedia_param_t*
             }
             return 0;
         }
+		else if (tsk_striequals(param->key, "out-size")) {
+			int ret;
+			uint32_t new_size = *((uint32_t*)param->value);
+			uint16_t new_width = (new_size & 0xFFFF);
+			uint16_t new_height = (new_size >> 16) & 0xFFFF;
+			if (self->opened) {
+				// It's up to the caller to lock the codec or make sure no other code will code encode() function.
+				// We must not call lock/unlock(encoder.mutex) here because close() will free the mutex
+				// close encoder
+                if ((ret = tdav_codec_h264_cisco_close_encoder(h264, kResetRotationFalse))) {
+                    return ret;
+                }
+				// update size
+				h264->encoder.neg_width = TMEDIA_CODEC_VIDEO(h264)->out.width = new_width;
+				h264->encoder.neg_height = TMEDIA_CODEC_VIDEO(h264)->out.height = new_height;
+				// re-open encoder
+                if ((ret = tdav_codec_h264_cisco_open_encoder(h264))) {
+                    return ret;
+                }
+            }
+			else {
+				// update size
+				h264->encoder.neg_width = TMEDIA_CODEC_VIDEO(h264)->out.width = new_width;
+				h264->encoder.neg_height = TMEDIA_CODEC_VIDEO(h264)->out.height = new_height;
+			}
+			return 0;
+		}
     }
 
     if (reconf) {
@@ -642,7 +669,7 @@ static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self)
     self->encoder.neg_height = (self->encoder.rotation == 90 || self->encoder.rotation == 270) ? TMEDIA_CODEC_VIDEO(self)->out.width : TMEDIA_CODEC_VIDEO(self)->out.height;
     self->encoder.neg_fps = TMEDIA_CODEC_VIDEO(self)->out.fps;
     max_bw_kpbs = TSK_CLAMP(
-                      0,
+                      1,
                       tmedia_get_video_bandwidth_kbps_2(self->encoder.neg_width, self->encoder.neg_height, self->encoder.neg_fps),
                       TMEDIA_CODEC(self)->bandwidth_max_upload
                   );

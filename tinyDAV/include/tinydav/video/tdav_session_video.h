@@ -51,6 +51,8 @@ typedef struct tdav_session_video_s {
     tsk_bool_t zero_artifacts;
     tsk_bool_t fps_changed;
     tsk_bool_t started;
+	unsigned neg_width;
+	unsigned neg_height;
 
     struct {
         tsk_timer_manager_handle_t* mgr;
@@ -73,6 +75,8 @@ typedef struct tdav_session_video_s {
         tsk_size_t conv_buffer_size;
 
         uint64_t last_frame_time;
+
+		tsk_bool_t size_changed;
 
         uint8_t payload_type;
         struct tmedia_codec_s* codec;
@@ -127,6 +131,10 @@ typedef struct tdav_session_video_s {
     unsigned enc_avg_time_n;
     tsk_mutex_handle_t* h_mutex_qos;
 	uint64_t last_sendreport_time;
+	unsigned num_qavg_down;
+	float qavg_lowest;
+	signed num_enc_avg_time_high;
+
 }
 tdav_session_video_t;
 

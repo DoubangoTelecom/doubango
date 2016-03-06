@@ -388,6 +388,9 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
             return -2;
         }
         video->encoder.codec = tsk_object_ref(TSK_OBJECT(codec));
+		// update negotiated video size
+		video->neg_width = TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.width;
+		video->neg_height = TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.height;
         tsk_safeobj_unlock(base);
     }
 
@@ -416,19 +419,21 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 #define PRODUCER_OUTPUT_RAW (base->producer->encoder.codec_id == tmedia_codec_id_none) // Otherwise, frames from the producer are already encoded
 #define PRODUCER_SIZE_CHANGED ((video->conv.producerWidth && video->conv.producerWidth != base->producer->video.width) || (video->conv.producerHeight && video->conv.producerHeight != base->producer->video.height) \
 || (video->conv.xProducerSize && (video->conv.xProducerSize != size && PRODUCER_OUTPUT_FIXSIZE)))
+#define ENCODER_SIZE_CHANGED (video->encoder.size_changed)
 #define ENCODED_NEED_FLIP (TMEDIA_CODEC_VIDEO(codec_encoder)->out.flip)
 #define ENCODED_NEED_RESIZE (base->producer->video.width != TMEDIA_CODEC_VIDEO(codec_encoder)->out.width || base->producer->video.height != TMEDIA_CODEC_VIDEO(codec_encoder)->out.height)
 #define PRODUCED_FRAME_NEED_ROTATION (base->producer->video.rotation != 0)
 #define PRODUCED_FRAME_NEED_MIRROR (base->producer->video.mirror != tsk_false)
 #define PRODUCED_FRAME_NEED_CHROMA_CONVERSION (base->producer->video.chroma != TMEDIA_CODEC_VIDEO(codec_encoder)->out.chroma)
         // Video codecs only accept YUV420P buffers ==> do conversion if needed or producer doesn't have the right size
-        if (PRODUCER_OUTPUT_RAW && (PRODUCED_FRAME_NEED_CHROMA_CONVERSION || PRODUCER_SIZE_CHANGED || ENCODED_NEED_FLIP || ENCODED_NEED_RESIZE ||PRODUCED_FRAME_NEED_ROTATION || PRODUCED_FRAME_NEED_MIRROR)) {
-            // Create video converter if not already done or producer size have changed
-            if(!video->conv.toYUV420 || PRODUCER_SIZE_CHANGED) {
+        if (PRODUCER_OUTPUT_RAW && (PRODUCED_FRAME_NEED_CHROMA_CONVERSION || PRODUCER_SIZE_CHANGED || ENCODER_SIZE_CHANGED || ENCODED_NEED_FLIP || ENCODED_NEED_RESIZE ||PRODUCED_FRAME_NEED_ROTATION || PRODUCED_FRAME_NEED_MIRROR)) {
+            // Create video converter if not already done or producer/encoder size have changed
+            if(!video->conv.toYUV420 || PRODUCER_SIZE_CHANGED || ENCODER_SIZE_CHANGED) {
                 TSK_OBJECT_SAFE_FREE(video->conv.toYUV420);
                 video->conv.producerWidth = base->producer->video.width;
                 video->conv.producerHeight = base->producer->video.height;
                 video->conv.xProducerSize = size;
+				video->encoder.size_changed = tsk_false;
 
                 TSK_DEBUG_INFO("producer size = (%d, %d)", (int)base->producer->video.width, (int)base->producer->video.height);
                 if (!(video->conv.toYUV420 = tmedia_converter_video_create(base->producer->video.width, base->producer->video.height, base->producer->video.chroma, TMEDIA_CODEC_VIDEO(codec_encoder)->out.width, TMEDIA_CODEC_VIDEO(codec_encoder)->out.height,
@@ -478,7 +483,7 @@ static int tdav_session_video_producer_enc_cb(const void* callback_data, const v
 
         // Encode data
         tsk_mutex_lock(video->encoder.h_mutex);
-        if (video->started && codec_encoder->opened) { // stop() function locks the encoder mutex before changing "started"
+        if (video->started && codec_encoder->opened && !video->encoder.size_changed) { // stop() function locks the encoder mutex before changing "started"
             if (video->encoder.conv_buffer && yuv420p_size) {
                 /* producer doesn't support yuv42p */
                 out_size = codec_encoder->plugin->encode(codec_encoder, video->encoder.conv_buffer, yuv420p_size, &video->encoder.buffer, &video->encoder.buffer_size);
@@ -748,6 +753,12 @@ static int _tdav_session_video_set_defaults(tdav_session_video_t* self)
     session->qos_metrics.video_in_avg_fps = tmedia_defaults_get_video_fps(), self->in_avg_fps_n = 1;
     session->qos_metrics.video_dec_avg_time = 0, self->dec_avg_time_n = 0 ;
     session->qos_metrics.video_enc_avg_time = 0, self->enc_avg_time_n = 0;
+	self->qavg_lowest = 1.f;
+	self->num_qavg_down = 0;
+	self->num_enc_avg_time_high = 0;
+
+	// set negotiated video size to default pref-size
+	tmedia_video_get_size(tmedia_defaults_get_pref_video_size(), &self->neg_width, &self->neg_height);
 
     // reset rotation info (MUST for reINVITE when mobile device in portrait[90 degrees])
     self->encoder.rotation = 0;
@@ -1164,6 +1175,7 @@ static int tdav_session_video_start(tmedia_session_t* self)
     video->encoder.codec = tsk_object_ref((tsk_object_t*)codec);
     // initialize the encoder using user-defined values
     if ((ret = tdav_session_av_init_encoder(base, video->encoder.codec))) {
+		tsk_mutex_unlock(video->encoder.h_mutex);
         TSK_DEBUG_ERROR("Failed to initialize the encoder [%s] codec", video->encoder.codec->plugin->desc);
         return ret;
     }
@@ -1174,6 +1186,10 @@ static int tdav_session_video_start(tmedia_session_t* self)
             return ret;
         }
     }
+	// update negotiated video size
+	video->neg_width = TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.width;
+	video->neg_height = TMEDIA_CODEC_VIDEO(video->encoder.codec)->out.height;
+
     tsk_mutex_unlock(video->encoder.h_mutex);
 
     if (video->jb) {
@@ -1416,15 +1432,19 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
         if (base->congestion_ctrl_enabled) {
             tmedia_codec_video_t* codec = tsk_object_ref(TSK_OBJECT(video->encoder.codec));
             if (codec && video->started) {
-                float q1, q2, q3, q4, q5, qavg, c;
+                float q1, q2, q3, q4, q5, qavg, cavg, vs_weight;
                 uint64_t bw_est_kbps;
-                // Compute average QoS
+				tsk_bool_t cavgneg, update_qavg = tsk_false, update_size = tsk_false;
+				unsigned best_enc_time, enc_avg_time;
+                
                 tsk_mutex_lock(video->h_mutex_qos);
                 q1 = video->q1_n ? session->qos_metrics.q1 : 1.f;
                 q2 = video->q2_n ? session->qos_metrics.q2 : 1.f;
                 q3 = video->q3_n ? session->qos_metrics.q3 : 1.f;
                 q4 = video->q4_n ? session->qos_metrics.q4 : 1.f;
                 q5 = video->q5_n ? session->qos_metrics.q5 : 1.f;
+
+				enc_avg_time = session->qos_metrics.video_enc_avg_time;
 
                 // update bw info
                 if (_tdav_session_video_get_bw_usage_est(video, &bw_est_kbps, /*in=*/tsk_true, /*reset*/tsk_true) == 0 && bw_est_kbps != 0) {
@@ -1454,25 +1474,88 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
                 session->qos_metrics.last_update_time = tsk_time_now();
                 tsk_mutex_unlock(video->h_mutex_qos);
 
+				// Check if encoding time is too high or low
+				best_enc_time = 1000 / (codec->out.fps);
+				if (enc_avg_time > (best_enc_time + (best_enc_time >> 2))) { /* Too slow */
+					if (++video->num_enc_avg_time_high >= 2) {
+						update_size = tsk_true;
+						vs_weight = ((best_enc_time + (best_enc_time >> 2)) / (float)enc_avg_time);
+						TSK_DEBUG_INFO("_tdav_session_video_timer_cb: upsample the video size: %f", vs_weight);
+						video->num_enc_avg_time_high = 0;
+					}
+				}
+				else {  /* Too fast */
+					if (enc_avg_time < (best_enc_time - (best_enc_time >> 1))) {
+						if (--video->num_enc_avg_time_high <= -2) {
+							if (enc_avg_time != 0.f && (codec->out.width * codec->out.height) < (video->neg_width * video->neg_height)) { // video size downsampled in the past?
+								update_size = tsk_true;
+								vs_weight = ((best_enc_time - (best_enc_time >> 1)) / (float)enc_avg_time);
+								TSK_DEBUG_INFO("_tdav_session_video_timer_cb: downsample the video size: %f", vs_weight);
+							}
+							video->num_enc_avg_time_high = 0;
+						}
+					}
+				}
+
+				// Update video size
 #if 0
-                q1 /= 10.f;
-                q2 /= 10.f;
-                q3 /= 10.f;
-                q4 /= 10.f;
-                q5 /= 10.f;
+				if (update_size) {
+					unsigned new_w, new_h, new_s;
+					char size[128] = {'\0'};
+					tmedia_param_t* param;
+					new_w = (((unsigned)(codec->out.width * vs_weight)) + 16) & -16; // +16 instead of +15 to make sure the size will be >= 16
+					new_h = (((unsigned)(codec->out.height * vs_weight)) + 16) & -16;
+					new_s = (new_w & 0xFFFF) | (new_h << 16);
+					TSK_DEBUG_INFO("_tdav_session_video_timer_cb: new video size: (%u, %u), neg size: (%u, %u)", new_w, new_h, video->neg_width, video->neg_height);
+					param = tmedia_param_create(tmedia_pat_set,
+                                        tmedia_video,
+                                        tmedia_ppt_codec,
+                                        tmedia_pvt_int32,
+                                        "out-size",
+                                        (void*)&new_s);
+					if (param) {
+						tsk_mutex_lock(video->encoder.h_mutex);
+						tmedia_codec_set(TMEDIA_CODEC(codec), param);
+						video->encoder.size_changed = tsk_true;
+						tsk_mutex_unlock(video->encoder.h_mutex);
+						TSK_OBJECT_SAFE_FREE(param);
+					}
+				}
 #endif
 
+				// Compute the new qvag value
                 qavg = q1 * 0.1f + q2 * 0.4f + q3 * 0.1f + q4 * 0.0f + q5 * 0.4f;
-                c = /*fabs*/(qavg - session->qos_metrics.qvag);
-                c = c < 0.f ? -c : +c;
-                TSK_DEBUG_INFO("_tdav_session_video_timer_cb: q1=%f, q2=%f, q3=%f, q4=%f, q5=%f, qavg=%f, c=%f congestion_ctrl_enabled=true", q1, q2, q3, q4, q5, qavg, c);
+                cavg = (qavg - session->qos_metrics.qvag);
+				cavgneg = cavg < 0.f ? tsk_true : tsk_false;
+                cavg = cavg < 0.f ? -cavg : +cavg;
+                TSK_DEBUG_INFO("_tdav_session_video_timer_cb: q1=%f, q2=%f, q3=%f, q4=%f, q5=%f, qavg=%f, qavg_lowest=%f cavg=%f cavgneg=%d congestion_ctrl_enabled=true", q1, q2, q3, q4, q5, qavg, video->qavg_lowest, cavg, cavgneg);
 
-                if (c > 0.1f) { // quality change > or < 10%
+				
+				if (cavgneg) { /* Quality is down */
+					++video->num_qavg_down;
+					video->qavg_lowest = TSK_MIN(qavg, video->qavg_lowest);
+					
+					// If we have more than #2 successive quality downgrade then we update qvag
+					// We also update qavg when c > 5%
+					if (video->num_qavg_down >= 2 || (cavg > 0.05f)) {
+						qavg = video->qavg_lowest;
+						update_qavg = tsk_true;
+					}
+				}
+				else { /* Quality is up */
+					video->num_qavg_down = 0;
+					video->qavg_lowest = qavg;
+					
+					// We only increase the bandwidth if the the upgrade set the new avg to more than 10% of the old value
+					update_qavg = (cavg > 0.1f);
+				}
+
+                if (update_qavg) {
                     // Update the upload bandwidth
                     int32_t bw_up_new_kbps, bw_up_base_kbps = base->bandwidth_max_upload_kbps; // user-defined maximum
                     bw_up_base_kbps = TSK_MIN(tmedia_get_video_bandwidth_kbps_2(codec->out.width, codec->out.height, codec->out.fps), bw_up_base_kbps);
                     bw_up_new_kbps = (int32_t)(bw_up_base_kbps * qavg);
-                    TSK_DEBUG_INFO("Video quality change(%d%%) > 10%%, changing bw_up from base=%dkbps to new=%dkbps", (int)(c*100), bw_up_base_kbps, bw_up_new_kbps);
+                    TSK_DEBUG_INFO("Video quality change(%d%%) > 10%%, changing bw_up from base=%dkbps to new=%dkbps", (int)(cavg*100), bw_up_base_kbps, bw_up_new_kbps);
                     _tdav_session_video_bw_kbps(video, bw_up_new_kbps);
                     session->qos_metrics.qvag = qavg;
                 }
