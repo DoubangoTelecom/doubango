@@ -1429,7 +1429,7 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
                 float q1, q2, q3, q4, q5, qavg, cavg, vs_weight;
                 uint64_t bw_est_kbps;
 				tsk_bool_t cavgneg, update_qavg = tsk_false, update_size = tsk_false;
-				unsigned best_enc_time, enc_avg_time;
+				unsigned enc_avg_time;
                 
                 tsk_mutex_lock(video->h_mutex_qos);
                 q1 = video->q1_n ? session->qos_metrics.q1 : 1.f;
@@ -1468,51 +1468,55 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
                 session->qos_metrics.last_update_time = tsk_time_now();
                 tsk_mutex_unlock(video->h_mutex_qos);
 
-				// Check if encoding time is too high or low
-				best_enc_time = 1000 / (codec->out.fps);
-				if (enc_avg_time > (best_enc_time + (best_enc_time >> 2))) { /* Too slow */
-					if (++video->num_enc_avg_time_high >= 2) {
-						update_size = tsk_true;
-						vs_weight = ((best_enc_time + (best_enc_time >> 2)) / (float)enc_avg_time);
-						TSK_DEBUG_INFO("_tdav_session_video_timer_cb: upsample the video size: %f", vs_weight);
-						video->num_enc_avg_time_high = 0;
-					}
-				}
-				else {  /* Too fast */
-					if (enc_avg_time < (best_enc_time - (best_enc_time >> 1))) {
-						if (--video->num_enc_avg_time_high <= -2) {
-							if (enc_avg_time != 0.f && (codec->out.width * codec->out.height) < (video->neg_width * video->neg_height)) { // video size downsampled in the past?
-								update_size = tsk_true;
-								vs_weight = ((best_enc_time - (best_enc_time >> 1)) / (float)enc_avg_time);
-								TSK_DEBUG_INFO("_tdav_session_video_timer_cb: downsample the video size: %f", vs_weight);
-							}
+#if BUILD_TYPE_TCH
+				{
+					unsigned best_enc_time;
+
+					// Check if encoding time is too high or low
+					best_enc_time = 1000 / (codec->out.fps);
+					if (enc_avg_time > (best_enc_time + (best_enc_time >> 2))) { /* Too slow */
+						if (++video->num_enc_avg_time_high >= 2) {
+							update_size = tsk_true;
+							vs_weight = ((best_enc_time + (best_enc_time >> 2)) / (float)enc_avg_time);
+							TSK_DEBUG_INFO("_tdav_session_video_timer_cb: upsample the video size: %f", vs_weight);
 							video->num_enc_avg_time_high = 0;
 						}
 					}
-				}
+					else {  /* Too fast */
+						if (enc_avg_time < (best_enc_time - (best_enc_time >> 1))) {
+							if (--video->num_enc_avg_time_high <= -2) {
+								if (enc_avg_time != 0.f && (codec->out.width * codec->out.height) < (video->neg_width * video->neg_height)) { // video size downsampled in the past?
+									update_size = tsk_true;
+									vs_weight = ((best_enc_time - (best_enc_time >> 1)) / (float)enc_avg_time);
+									TSK_DEBUG_INFO("_tdav_session_video_timer_cb: downsample the video size: %f", vs_weight);
+								}
+								video->num_enc_avg_time_high = 0;
+							}
+						}
+					}
 
-				// Update video size
-#if BUILD_TYPE_TCH
-				if (update_size) {
-					unsigned new_w, new_h, new_s;
-					char size[128] = {'\0'};
-					tmedia_param_t* param;
-					new_w = (((unsigned)(codec->out.width * vs_weight)) + 16) & -16; // +16 instead of +15 to make sure the size will be >= 16
-					new_h = (((unsigned)(codec->out.height * vs_weight)) + 16) & -16;
-					new_s = (new_w & 0xFFFF) | (new_h << 16);
-					TSK_DEBUG_INFO("_tdav_session_video_timer_cb: new video size: (%u, %u), neg size: (%u, %u)", new_w, new_h, video->neg_width, video->neg_height);
-					param = tmedia_param_create(tmedia_pat_set,
-                                        tmedia_video,
-                                        tmedia_ppt_codec,
-                                        tmedia_pvt_int32,
-                                        "out-size",
-                                        (void*)&new_s);
-					if (param) {
-						tsk_mutex_lock(video->encoder.h_mutex);
-						tmedia_codec_set(TMEDIA_CODEC(codec), param);
-						video->encoder.size_changed = tsk_true;
-						tsk_mutex_unlock(video->encoder.h_mutex);
-						TSK_OBJECT_SAFE_FREE(param);
+					// Update video size
+					if (update_size) {
+						unsigned new_w, new_h, new_s;
+						char size[128] = {'\0'};
+						tmedia_param_t* param;
+						new_w = (((unsigned)(codec->out.width * vs_weight)) + 16) & -16; // +16 instead of +15 to make sure the size will be >= 16
+						new_h = (((unsigned)(codec->out.height * vs_weight)) + 16) & -16;
+						new_s = (new_w & 0xFFFF) | (new_h << 16);
+						TSK_DEBUG_INFO("_tdav_session_video_timer_cb: new video size: (%u, %u), neg size: (%u, %u)", new_w, new_h, video->neg_width, video->neg_height);
+						param = tmedia_param_create(tmedia_pat_set,
+											tmedia_video,
+											tmedia_ppt_codec,
+											tmedia_pvt_int32,
+											"out-size",
+											(void*)&new_s);
+						if (param) {
+							tsk_mutex_lock(video->encoder.h_mutex);
+							tmedia_codec_set(TMEDIA_CODEC(codec), param);
+							video->encoder.size_changed = tsk_true;
+							tsk_mutex_unlock(video->encoder.h_mutex);
+							TSK_OBJECT_SAFE_FREE(param);
+						}
 					}
 				}
 #endif
@@ -1546,17 +1550,9 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
 
                 if (update_qavg) {
                     // Update the upload bandwidth
-					// in the previous version the new bandwidth was (init_bw * qavg), this is not correct
-					// as the current qavg is relative to the curr_bw not the init_bw.
-					// so, new_bw = (curr_bw * qavg)
-                    int32_t bw_up_new_kbps, bw_up_base_kbps, bw_up_curr_kbps; 
-					bw_up_base_kbps = base->bandwidth_max_upload_kbps; // user-defined maximum
-					bw_up_curr_kbps = TMEDIA_CODEC(codec)->bandwidth_max_upload; // codec-defined bandwidth
-					if (bw_up_curr_kbps == INT_MAX || bw_up_curr_kbps <= 0) {
-						bw_up_curr_kbps = tmedia_get_video_bandwidth_kbps_2(codec->out.width, codec->out.height, codec->out.fps);
-					}
-                    bw_up_curr_kbps = TSK_MIN(bw_up_curr_kbps, bw_up_base_kbps); // clamp
-                    bw_up_new_kbps = (int32_t)(bw_up_curr_kbps * qavg);
+                    int32_t bw_up_new_kbps, bw_up_base_kbps = base->bandwidth_max_upload_kbps; // user-defined maximum
+                    bw_up_base_kbps = TSK_MIN(tmedia_get_video_bandwidth_kbps_2(codec->out.width, codec->out.height, codec->out.fps), bw_up_base_kbps);
+                    bw_up_new_kbps = (int32_t)(bw_up_base_kbps * qavg);
                     TSK_DEBUG_INFO("Video quality change(%d%%), changing bw_up from base=%dkbps to new=%dkbps", (int)(cavg*100), bw_up_base_kbps, bw_up_new_kbps);
                     _tdav_session_video_bw_kbps(video, bw_up_new_kbps);
                     session->qos_metrics.qvag = qavg;
