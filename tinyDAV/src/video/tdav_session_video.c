@@ -1430,7 +1430,8 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
                 uint64_t bw_est_kbps;
 				tsk_bool_t cavgneg, update_qavg = tsk_false, update_size = tsk_false;
 				unsigned enc_avg_time;
-                
+				int32_t bw_up_base_kbps, bw_up_ref_kbps;
+
                 tsk_mutex_lock(video->h_mutex_qos);
                 q1 = video->q1_n ? session->qos_metrics.q1 : 1.f;
                 q2 = video->q2_n ? session->qos_metrics.q2 : 1.f;
@@ -1527,8 +1528,7 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
                 cavg = (qavg - session->qos_metrics.qvag);
 				cavgneg = cavg < 0.f ? tsk_true : tsk_false;
                 cavg = cavg < 0.f ? -cavg : +cavg;
-                TSK_DEBUG_INFO("_tdav_session_video_timer_cb: q1=%f, q2=%f, q3=%f, q4=%f, q5=%f, qavg=%f, qavg_lowest=%f cavg=%f cavgneg=%d congestion_ctrl_enabled=true", q1, q2, q3, q4, q5, qavg, video->qavg_lowest, cavg, cavgneg);
-
+                TSK_DEBUG_INFO("_tdav_session_video_timer_cb: q1=%f, q2=%f, q3=%f, q4=%f, q5=%f, qavg=%f, qavg_lowest=%f cavg=%f cavgneg=%d congestion_ctrl_enabled=true", q1, q2, q3, q4, q5, qavg, video->qavg_lowest, cavg, cavgneg);				
 				
 				if (cavgneg) { /* Quality is down */
 					++video->num_qavg_down;
@@ -1549,12 +1549,33 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
 					update_qavg = (cavg > 0.1f);
 				}
 
+				bw_up_base_kbps = tmedia_get_video_bandwidth_kbps_2(codec->out.width, codec->out.height, codec->out.fps);
+				bw_up_ref_kbps = TMEDIA_CODEC(codec)->bandwidth_max_upload;
+				if (bw_up_ref_kbps < 0 || bw_up_ref_kbps == INT_MAX) {
+					bw_up_ref_kbps = tmedia_get_video_bandwidth_kbps_2(codec->out.width, codec->out.height, codec->out.fps);
+				}
+
+				// Unconditionally decrease the bandwidth when the quality is < 90%
+				// bandwidth will decrease regardless qavg value as the ref. value is recursive
+				update_qavg |= (qavg < 0.9f);
+				// Also update the bandwidth when quality is > 90% and saved qvag is < 90% or ref bw is < base bw
+				update_qavg |= (qavg > 0.9f && (session->qos_metrics.qvag < 0.9f || bw_up_ref_kbps < bw_up_base_kbps));
+
                 if (update_qavg) {
                     // Update the upload bandwidth
-                    int32_t bw_up_new_kbps, bw_up_base_kbps = base->bandwidth_max_upload_kbps; // user-defined maximum
-                    bw_up_base_kbps = TSK_MIN(tmedia_get_video_bandwidth_kbps_2(codec->out.width, codec->out.height, codec->out.fps), bw_up_base_kbps);
-                    bw_up_new_kbps = (int32_t)(bw_up_base_kbps * qavg);
-                    TSK_DEBUG_INFO("Video quality change(%d%%), changing bw_up from base=%dkbps to new=%dkbps", (int)(cavg*100), bw_up_base_kbps, bw_up_new_kbps);
+                    int32_t bw_up_new_kbps, bw_up_max_kbps = base->bandwidth_max_upload_kbps; // user-defined maximum
+
+					// When the qavg is within ]90-100]% we increase the ref. bw
+					if (qavg > 0.9f) {
+						bw_up_ref_kbps += (int32_t)((bw_up_base_kbps - bw_up_ref_kbps) * 0.1f);
+						bw_up_ref_kbps = TSK_CLAMP(5, bw_up_ref_kbps, bw_up_base_kbps);
+						bw_up_new_kbps = bw_up_ref_kbps;
+					}
+					else {
+						bw_up_ref_kbps = TSK_CLAMP(5, bw_up_ref_kbps, bw_up_max_kbps);
+						bw_up_new_kbps = (int32_t)(bw_up_ref_kbps * qavg);
+					}
+                    TSK_DEBUG_INFO("Video quality change(%d%%), changing bw_up from ref=%dkbps to new=%dkbps", (int)(cavg*100), bw_up_ref_kbps, bw_up_new_kbps);
                     _tdav_session_video_bw_kbps(video, bw_up_new_kbps);
                     session->qos_metrics.qvag = qavg;
                 }
