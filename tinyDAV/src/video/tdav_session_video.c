@@ -1575,12 +1575,10 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
 						}
 						new_w = TSK_CLAMP(min_w, new_w, max_w);
 						new_h = TSK_CLAMP(min_h, new_h, max_h);
-						if ((new_w * new_h) < (codec->out.width * codec->out.height)) { // make sure we'll set lower resolution after clipping
-							TSK_DEBUG_INFO("_tdav_session_video_timer_cb: [[size change based on bandwidth]] new video size: (%u, %u), neg size: (%u, %u)", new_w, new_h, video->neg_width, video->neg_height);
-							tsk_mutex_lock(video->encoder.h_mutex);
-							_tdav_session_video_codec_set_int32(video, "out-size", (int32_t)((new_w & 0xFFFF) | (new_h << 16)));
-							tsk_mutex_unlock(video->encoder.h_mutex);
-						}
+						TSK_DEBUG_INFO("_tdav_session_video_timer_cb: [[size change based on bandwidth]] new video size: (%u, %u), neg size: (%u, %u)", new_w, new_h, video->neg_width, video->neg_height);
+						tsk_mutex_lock(video->encoder.h_mutex);
+						_tdav_session_video_codec_set_int32(video, "out-size", (int32_t)((new_w & 0xFFFF) | (new_h << 16)));
+						tsk_mutex_unlock(video->encoder.h_mutex);
 					}
 				}
 #endif /* BUILD_TYPE_TCH */
