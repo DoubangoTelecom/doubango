@@ -755,6 +755,9 @@ static int _tdav_session_video_codec_set_int32(tdav_session_video_t* self, const
 			ret = tmedia_producer_set(base->producer, param); 
 		} 
 		else { 
+			if (tsk_strniequals(key, "out-size", 8)) {
+				self->encoder.size_changed = tsk_true;
+			}
 			ret = tmedia_codec_set((tmedia_codec_t*)(self)->encoder.codec, param); 
 		}
 	}
@@ -1430,7 +1433,7 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
                 uint64_t bw_est_kbps;
 				tsk_bool_t cavgneg, update_qavg = tsk_false, update_size = tsk_false;
 				unsigned enc_avg_time;
-				int32_t bw_up_base_kbps, bw_up_ref_kbps;
+				int32_t bw_up_base_kbps, bw_up_ref_kbps, bw_up_new_kbps;
 
                 tsk_mutex_lock(video->h_mutex_qos);
                 q1 = video->q1_n ? session->qos_metrics.q1 : 1.f;
@@ -1469,8 +1472,122 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
                 session->qos_metrics.last_update_time = tsk_time_now();
                 tsk_mutex_unlock(video->h_mutex_qos);
 
+				// Compute the new qvag value
+                qavg = q1 * 0.1f + q2 * 0.4f + q3 * 0.1f + q4 * 0.0f + q5 * 0.4f;
+                cavg = (qavg - session->qos_metrics.qvag);
+				cavgneg = cavg < 0.f ? tsk_true : tsk_false;
+                cavg = cavg < 0.f ? -cavg : +cavg;
+                TSK_DEBUG_INFO("_tdav_session_video_timer_cb: q1=%f, q2=%f, q3=%f, q4=%f, q5=%f, qavg=%f, qavg_lowest=%f cavg=%f cavgneg=%d congestion_ctrl_enabled=true", q1, q2, q3, q4, q5, qavg, video->qavg_lowest, cavg, cavgneg);				
+				
+				if (cavgneg) { /* Quality is down */
+					++video->num_qavg_down;
+					video->qavg_lowest = TSK_MIN(qavg, video->qavg_lowest);
+					
+					// If we have more than #2 successive quality downgrade then we update qvag
+					// We also update qavg when c > 5%
+					if (video->num_qavg_down >= 2 || (cavg > 0.05f)) {
+						qavg = video->qavg_lowest;
+						update_qavg = tsk_true;
+					}
+				}
+				else { /* Quality is up */
+					video->num_qavg_down = 0;
+					video->qavg_lowest = qavg;
+					
+					// We only increase the bandwidth if the the upgrade set the new avg to more than 10% of the old value
+					update_qavg = (cavg > 0.1f);
+				}
+
+				// Do not use "codec->out.width" and "codec->out.height" to compute "bw_up_base_kbps" as these values could be changed when 
+				// adapt. resolution is enabled
+				bw_up_base_kbps = tmedia_get_video_bandwidth_kbps_2(video->neg_width, video->neg_height, codec->out.fps);
+				bw_up_ref_kbps = TMEDIA_CODEC(codec)->bandwidth_max_upload;
+				if (bw_up_ref_kbps < 0 || bw_up_ref_kbps == INT_MAX) {
+					bw_up_ref_kbps = bw_up_base_kbps;
+				}
+				bw_up_new_kbps = bw_up_ref_kbps; // default value will be update depending on qavg
+
+				// Unconditionally decrease the bandwidth when the quality is < 90%
+				// bandwidth will decrease regardless qavg value as the ref. value is recursive
+				update_qavg |= (qavg < 0.9f);
+				// Also update the bandwidth when quality is > 90% and saved qvag is < 90% or ref bw is < base bw
+				update_qavg |= (qavg > 0.9f && (session->qos_metrics.qvag < 0.9f || bw_up_ref_kbps < bw_up_base_kbps));
+
+                if (update_qavg) {
+                    // Update the upload bandwidth
+                    int32_t bw_up_max_kbps = base->bandwidth_max_upload_kbps; // user-defined maximum
+
+					// When the qavg is within ]90-100]% we increase the ref. bw
+					if (qavg > 0.9f) {
+						bw_up_ref_kbps += (int32_t)((bw_up_base_kbps - bw_up_ref_kbps) * 0.1f);
+						bw_up_ref_kbps = TSK_CLAMP(5, bw_up_ref_kbps, bw_up_base_kbps);
+						bw_up_new_kbps = bw_up_ref_kbps;
+					}
+					else {
+						bw_up_ref_kbps = TSK_CLAMP(5, bw_up_ref_kbps, bw_up_max_kbps);
+						bw_up_new_kbps = (int32_t)(bw_up_ref_kbps * qavg);
+					}
+                    TSK_DEBUG_INFO("Video quality change(%d%%), changing bw_up from ref=%dkbps to new=%dkbps", (int)(cavg*100), bw_up_ref_kbps, bw_up_new_kbps);
+                    _tdav_session_video_bw_kbps(video, bw_up_new_kbps);
+                    session->qos_metrics.qvag = qavg;
+                }
+                //!\ update qavg only if condition "c" is true
+
+
+				/* Update size depending on bw */
 #if BUILD_TYPE_TCH
 				{
+					// A video quality is defined by MR (Motion Rank) like this:
+					// MR(#1)->poor, #2->acceptable, #4->good, #6->excellent ....
+					// Higher the MR is higher is the bandwidth and the quality
+					// The algorithm to change the video size depending on the bandwidth is straightforward:
+					//	1/ Compute the right bandwidth (bw_up_new_kbps) using Qavg as done above
+					//  2/ From the current video resolution (width, height), framerate(fps) and bandwidth(bw_up_new_kbps) compute the MR (a.k.a quality)
+					//  3/ If the computed MR is <=#1(poor) then, downsample the resolution to have MR=#2(acceptable)
+					//  4/ If the computed MR is >=#4 and the current resolution is lower than what was negotiated then, upsample the resolution to have MR=#2 (at most)
+					// In short: we want MR to stay within [2, %[
+					int32_t mr = tmedia_get_video_motion_rank(codec->out.width, codec->out.height, codec->out.fps, bw_up_new_kbps);
+					int32_t mr_diff = 0;
+					update_size = ((mr <= 1) || (mr >= 4 && (codec->out.width * codec->out.height) < (video->neg_width * video->neg_height)));
+					if (update_size) {
+						mr_diff = (mr - 2);
+					}
+					if (mr_diff != 0) {
+						unsigned new_w, new_h, min_w, min_h, max_w, max_h;
+						if (mr_diff > 0) {
+							new_w = ((codec->out.width << mr_diff) + 15) & -16;
+							new_h = ((codec->out.height << mr_diff) + 15) & -16;
+						}
+						else {
+							new_w = ((codec->out.width >> (-mr_diff)) + 15) & -16;
+							new_h = ((codec->out.height >> (-mr_diff)) + 15) & -16;
+						}
+						min_w = 16;
+						min_h = 16;
+						max_w = video->neg_width;
+						max_h = video->neg_height;
+						if (tmedia_defaults_get_adapt_video_size_range_enabled()) {
+							tmedia_pref_video_size_t min, max;
+							if (tmedia_defaults_get_pref_video_size_range(&min, &max) == 0) {
+								tmedia_video_get_size(min, &min_w, &min_h);
+								tmedia_video_get_size(max, &max_w, &max_h);
+							}
+						}
+						new_w = TSK_CLAMP(min_w, new_w, max_w);
+						new_h = TSK_CLAMP(min_h, new_h, max_h);
+						if ((new_w * new_h) < (codec->out.width * codec->out.height)) { // make sure we'll set lower resolution after clipping
+							TSK_DEBUG_INFO("_tdav_session_video_timer_cb: [[size change based on bandwidth]] new video size: (%u, %u), neg size: (%u, %u)", new_w, new_h, video->neg_width, video->neg_height);
+							tsk_mutex_lock(video->encoder.h_mutex);
+							_tdav_session_video_codec_set_int32(video, "out-size", (int32_t)((new_w & 0xFFFF) | (new_h << 16)));
+							tsk_mutex_unlock(video->encoder.h_mutex);
+						}
+					}
+				}
+#endif /* BUILD_TYPE_TCH */
+
+				/* Update size depending cpu usage  */
+#if BUILD_TYPE_TCH
+				if (!update_size) {
 					unsigned best_enc_time;
 					float vs_weight;
 
@@ -1501,85 +1618,17 @@ static int _tdav_session_video_timer_cb(const void* arg, tsk_timer_id_t timer_id
 					if (update_size) {
 						unsigned new_w, new_h, new_s;
 						char size[128] = {'\0'};
-						tmedia_param_t* param;
 						new_w = (((unsigned)(codec->out.width * vs_weight)) + 16) & -16; // +16 instead of +15 to make sure the size will be >= 16
 						new_h = (((unsigned)(codec->out.height * vs_weight)) + 16) & -16;
 						new_s = (new_w & 0xFFFF) | (new_h << 16);
-						TSK_DEBUG_INFO("_tdav_session_video_timer_cb: new video size: (%u, %u), neg size: (%u, %u)", new_w, new_h, video->neg_width, video->neg_height);
-						param = tmedia_param_create(tmedia_pat_set,
-											tmedia_video,
-											tmedia_ppt_codec,
-											tmedia_pvt_int32,
-											"out-size",
-											(void*)&new_s);
-						if (param) {
-							tsk_mutex_lock(video->encoder.h_mutex);
-							tmedia_codec_set(TMEDIA_CODEC(codec), param);
-							video->encoder.size_changed = tsk_true;
-							tsk_mutex_unlock(video->encoder.h_mutex);
-							TSK_OBJECT_SAFE_FREE(param);
-						}
+						TSK_DEBUG_INFO("_tdav_session_video_timer_cb: [[size change based on cpu]] new video size: (%u, %u), neg size: (%u, %u)", new_w, new_h, video->neg_width, video->neg_height);
+						tsk_mutex_lock(video->encoder.h_mutex);
+						_tdav_session_video_codec_set_int32(video, "out-size", (int32_t)new_s);
+						video->encoder.size_changed = tsk_true;
+						tsk_mutex_unlock(video->encoder.h_mutex);
 					}
 				}
-#endif
-
-				// Compute the new qvag value
-                qavg = q1 * 0.1f + q2 * 0.4f + q3 * 0.1f + q4 * 0.0f + q5 * 0.4f;
-                cavg = (qavg - session->qos_metrics.qvag);
-				cavgneg = cavg < 0.f ? tsk_true : tsk_false;
-                cavg = cavg < 0.f ? -cavg : +cavg;
-                TSK_DEBUG_INFO("_tdav_session_video_timer_cb: q1=%f, q2=%f, q3=%f, q4=%f, q5=%f, qavg=%f, qavg_lowest=%f cavg=%f cavgneg=%d congestion_ctrl_enabled=true", q1, q2, q3, q4, q5, qavg, video->qavg_lowest, cavg, cavgneg);				
-				
-				if (cavgneg) { /* Quality is down */
-					++video->num_qavg_down;
-					video->qavg_lowest = TSK_MIN(qavg, video->qavg_lowest);
-					
-					// If we have more than #2 successive quality downgrade then we update qvag
-					// We also update qavg when c > 5%
-					if (video->num_qavg_down >= 2 || (cavg > 0.05f)) {
-						qavg = video->qavg_lowest;
-						update_qavg = tsk_true;
-					}
-				}
-				else { /* Quality is up */
-					video->num_qavg_down = 0;
-					video->qavg_lowest = qavg;
-					
-					// We only increase the bandwidth if the the upgrade set the new avg to more than 10% of the old value
-					update_qavg = (cavg > 0.1f);
-				}
-
-				bw_up_base_kbps = tmedia_get_video_bandwidth_kbps_2(codec->out.width, codec->out.height, codec->out.fps);
-				bw_up_ref_kbps = TMEDIA_CODEC(codec)->bandwidth_max_upload;
-				if (bw_up_ref_kbps < 0 || bw_up_ref_kbps == INT_MAX) {
-					bw_up_ref_kbps = tmedia_get_video_bandwidth_kbps_2(codec->out.width, codec->out.height, codec->out.fps);
-				}
-
-				// Unconditionally decrease the bandwidth when the quality is < 90%
-				// bandwidth will decrease regardless qavg value as the ref. value is recursive
-				update_qavg |= (qavg < 0.9f);
-				// Also update the bandwidth when quality is > 90% and saved qvag is < 90% or ref bw is < base bw
-				update_qavg |= (qavg > 0.9f && (session->qos_metrics.qvag < 0.9f || bw_up_ref_kbps < bw_up_base_kbps));
-
-                if (update_qavg) {
-                    // Update the upload bandwidth
-                    int32_t bw_up_new_kbps, bw_up_max_kbps = base->bandwidth_max_upload_kbps; // user-defined maximum
-
-					// When the qavg is within ]90-100]% we increase the ref. bw
-					if (qavg > 0.9f) {
-						bw_up_ref_kbps += (int32_t)((bw_up_base_kbps - bw_up_ref_kbps) * 0.1f);
-						bw_up_ref_kbps = TSK_CLAMP(5, bw_up_ref_kbps, bw_up_base_kbps);
-						bw_up_new_kbps = bw_up_ref_kbps;
-					}
-					else {
-						bw_up_ref_kbps = TSK_CLAMP(5, bw_up_ref_kbps, bw_up_max_kbps);
-						bw_up_new_kbps = (int32_t)(bw_up_ref_kbps * qavg);
-					}
-                    TSK_DEBUG_INFO("Video quality change(%d%%), changing bw_up from ref=%dkbps to new=%dkbps", (int)(cavg*100), bw_up_ref_kbps, bw_up_new_kbps);
-                    _tdav_session_video_bw_kbps(video, bw_up_new_kbps);
-                    session->qos_metrics.qvag = qavg;
-                }
-                //!\ update qavg only if condition "c" is true
+#endif /* BUILD_TYPE_TCH */
             }
             tsk_object_unref(TSK_OBJECT(codec));
         }

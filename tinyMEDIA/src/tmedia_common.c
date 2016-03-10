@@ -452,3 +452,15 @@ int32_t tmedia_get_video_bandwidth_kbps_3()
     tmedia_video_get_size(tmedia_defaults_get_pref_video_size(), &width, &height);
     return tmedia_get_video_bandwidth_kbps(width, height, tmedia_defaults_get_video_fps(), tmedia_defaults_get_video_motion_rank());
 }
+
+int32_t tmedia_get_video_motion_rank(unsigned width, unsigned height, unsigned fps, int32_t bw_kbps)
+{
+	if (!width || !height || !fps || bw_kbps <= 0) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+	else {
+		float mr = (bw_kbps * 1024.f) / (width * height * fps * 0.07f);
+		return (int32_t)(TSK_MAX(1.f, (mr + 0.5f)));
+	}	
+}

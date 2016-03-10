@@ -263,6 +263,7 @@ TINYMEDIA_API int tmedia_get_video_quality(tmedia_bandwidth_level_t bl);
 TINYMEDIA_API int32_t tmedia_get_video_bandwidth_kbps(unsigned width, unsigned height, unsigned fps, unsigned motion_rank);
 TINYMEDIA_API int32_t tmedia_get_video_bandwidth_kbps_2(unsigned width, unsigned height, unsigned fps);
 TINYMEDIA_API int32_t tmedia_get_video_bandwidth_kbps_3();
+TINYMEDIA_API int32_t tmedia_get_video_motion_rank(unsigned width, unsigned height, unsigned fps, int32_t bw_kbps);
 #define tmedia_get_video_qscale tmedia_get_video_quality
 
 TMEDIA_END_DECLS
