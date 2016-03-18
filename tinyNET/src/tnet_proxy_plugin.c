@@ -90,7 +90,7 @@ int tnet_proxy_node_configure_2(tnet_proxy_node_t* self, va_list* app)
             // (const char*)(HOST_STR), (int)(PORT_INT)
             const char* HOST_STR = va_arg(*app, const char*);
             int PORT_INT = va_arg(*app, int);
-            if (PORT_INT < 1 || PORT_INT > 0xFFF) {
+            if (PORT_INT < 1 || PORT_INT > 0xFFFF) {
                 TSK_DEBUG_ERROR("Invalid value for port number: %d", PORT_INT);
                 ret = -3;
                 goto bail;
