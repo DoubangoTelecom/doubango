@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2014-2015 Mamadou DIOP.
+* Copyright (C) 2014-2016 Mamadou DIOP.
 *
 *
 * This file is part of Open Source Doubango Framework.
@@ -20,7 +20,7 @@
 */
 
 /**@file tdav_codec_h264_cisco.cxx
- * @brief H.264 codec plugin using OpenH264 (https://github.com/cisco/openh264) v1.1 for encoding/decoding.
+ * @brief H.264 codec plugin using OpenH264 (https://github.com/cisco/openh264) v1.5.0 for encoding/decoding.
  */
 #include "tinydav/codecs/h264/tdav_codec_h264_cisco.h"
 
@@ -682,7 +682,6 @@ static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self)
                    max_bitrate_bps
                   );
 
-    self->encoder.sEncParam.iInputCsp = videoFormatI420;
     self->encoder.sEncParam.iSpatialLayerNum = 1;
     self->encoder.sEncParam.iTemporalLayerNum = 1;
     self->encoder.sEncParam.uiIntraPeriod = (self->encoder.neg_fps * CISCO_H264_GOP_SIZE_IN_SECONDS);
@@ -693,7 +692,7 @@ static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self)
     self->encoder.sEncParam.iMaxBitrate = max_bitrate_bps;
     self->encoder.sEncParam.fMaxFrameRate = (float)self->encoder.neg_fps;
     self->encoder.sEncParam.uiMaxNalSize = H264_RTP_PAYLOAD_SIZE;
-    self->encoder.sEncParam.bEnableSpsPpsIdAddition = true;
+    self->encoder.sEncParam.eSpsPpsIdStrategy = INCREASING_ID;
     self->encoder.sEncParam.bEnableFrameCroppingFlag = true;
 
     layer = &self->encoder.sEncParam.sSpatialLayers[0];
@@ -782,8 +781,9 @@ int tdav_codec_h264_cisco_open_decoder(tdav_codec_h264_cisco_t* self)
     self->decoder.pInst->SetOption(DECODER_OPTION_TRACE_CALLBACK, &__tdav_codec_h264_cisco_debug_cb);
 
     // initialize decoder
-    sDecParam.iOutputColorFormat = videoFormatI420;
+    sDecParam.eOutputColorFormat = videoFormatI420;
     sDecParam.sVideoProperty.eVideoBsType = VIDEO_BITSTREAM_AVC;
+   
     if ((err = self->decoder.pInst->Initialize(&sDecParam)) != cmResultSuccess) {
         TSK_DEBUG_ERROR("Failed to initialize decoder: %ld", err);
         goto bail;
