@@ -129,6 +129,16 @@ int tnet_nat_set_server_address(struct tnet_nat_ctx_s* p_self, const char* pc_se
     return 0;
 }
 
+int tnet_nat_get_socket_type(const struct tnet_nat_ctx_s* p_self, enum tnet_socket_type_e* type)
+{
+	if (!p_self || !type) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+	*type = p_self->socket_type;
+    return 0;
+}
+
 /**@ingroup tnet_nat_group
  *
  * Sets the address and port of the STUN/TURN server.

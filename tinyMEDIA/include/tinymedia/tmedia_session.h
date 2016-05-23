@@ -306,10 +306,12 @@ typedef struct tmedia_session_mgr_s {
     tsk_bool_t offerer;
     //! local IP address or FQDN
     char* addr;
+	tnet_socket_type_t addr_type;
     //! public IP address or FQDN
     char* public_addr;
-    //! whether the @a addr is IPv6 or not (useful when @addr is a FQDN)
-    tsk_bool_t ipv6;
+	tnet_socket_type_t public_addr_type;
+    //! whether to enable IPv6
+    tsk_bool_t use_ipv6;
 
     struct {
         uint32_t lo_ver;
@@ -538,7 +540,7 @@ tmedia_session_param_type_t;
 //#define TMEDIA_SESSION_SET_QOS(TYPE_ENUM, STRENGTH_ENUM)	tmedia_sptype_qos, (tmedia_qos_stype_t)TYPE_ENUM, (tmedia_qos_strength_t)STRENGTH_ENUM
 
 
-TINYMEDIA_API tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* addr, tsk_bool_t ipv6, tsk_bool_t offerer);
+TINYMEDIA_API tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* addr, tsk_bool_t use_ipv6, tsk_bool_t offerer);
 TINYMEDIA_API int tmedia_session_mgr_set_media_type(tmedia_session_mgr_t* self, tmedia_type_t type);
 TINYMEDIA_API int tmedia_session_mgr_set_media_type_2(tmedia_session_mgr_t* self, tmedia_type_t type, tsk_bool_t force);
 TINYMEDIA_API int tmedia_session_mgr_set_codecs_supported(tmedia_session_mgr_t* self, tmedia_codec_id_t codecs_supported);

@@ -865,7 +865,7 @@ clean_routes:
                     transport = curr;
                     break;
                 }
-                if((curr->type & destNetType) == destNetType) {
+                if((curr->type & destNetType) == destNetType || (curr->type & destNetType) == curr->type) {
                     transport_closest1 = curr;
                 }
                 if(self->stack->network.transport_idx_default>= 0 && curr->type == self->stack->network.transport_types[self->stack->network.transport_idx_default]) {

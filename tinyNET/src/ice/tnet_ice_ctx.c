@@ -80,6 +80,8 @@
 
 #define kIcePairsBuildingTimeMax	2500 // maximum time to build pairs
 
+#define kIceDefaultDualStack		tsk_true
+
 typedef tsk_list_t tnet_ice_servers_L_t;
 
 static const char* foundation_default = tsk_null;
@@ -194,6 +196,12 @@ static tnet_ice_server_t* tnet_ice_server_create(
         TSK_DEBUG_ERROR("Invalid server address (host=%s, port=%d, transport=%d)", str_server_addr, u_server_port, e_transport);
         return tsk_null;
     }
+	if (obj_server_addr.ss_family == AF_INET6) {
+		TNET_SOCKET_TYPE_SET_IPV6Only(e_transport);
+	}
+	else {
+		TNET_SOCKET_TYPE_SET_IPV4Only(e_transport);
+	}
 
     if ((ice_server = tsk_object_new(&tnet_ice_server_def_s))) {
         ice_server->e_proto = e_proto;
@@ -218,6 +226,7 @@ typedef struct tnet_ice_ctx_s {
     tnet_ice_callback_f callback;
     const void* userdata;
     tsk_bool_t use_ipv6;
+	tsk_bool_t dual_stack;
     tsk_bool_t use_rtcp;
     tsk_bool_t use_rtcpmux;
     tsk_bool_t is_video;
@@ -399,6 +408,8 @@ static tsk_object_t* tnet_ice_ctx_ctor(tsk_object_t * self, va_list * app)
          Rc SHOULD be configurable and SHOULD have a default of 7.
          */
         ctx->Rc = kIceDefaultRC;
+
+		ctx->dual_stack = kIceDefaultDualStack;
 
         ctx->tie_breaker = ((tsk_time_now() << 32) ^ tsk_time_now());
         ctx->is_ice_jingle = tsk_false;
@@ -595,6 +606,15 @@ int tnet_ice_ctx_add_server(
         TSK_DEBUG_ERROR("'%s' not a valid transport proto", transport_proto);
         return -1;
     }
+	if (self->dual_stack) {
+		TNET_SOCKET_TYPE_SET_IPV46(socket_type);
+	}
+	else if (self->use_ipv6) {
+		TNET_SOCKET_TYPE_SET_IPV6Only(socket_type);
+	}
+	else {
+		TNET_SOCKET_TYPE_SET_IPV4Only(socket_type);
+	}
     return _tnet_ice_ctx_server_add(self, e_proto,
                                     socket_type, server_addr, server_port,
                                     kStunSoftware,
@@ -1117,7 +1137,7 @@ bail:
 // Started -> (GatherHostCandidates) -> (GatheringHostCandidates)
 static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandidates(va_list *app)
 {
-    int ret = 0;
+    int ret = 0, i;
     tnet_ice_ctx_t* self;
     tnet_addresses_L_t* addresses;
     const tsk_list_item_t *item;
@@ -1129,21 +1149,42 @@ static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandi
     uint16_t local_pref, curr_local_pref;
     tnet_ip_t best_local_ip;
     tsk_bool_t check_best_local_ip;
+	int af_inets[2] = { AF_UNSPEC, AF_UNSPEC };
     static const tsk_bool_t dnsserver = tsk_false;
     static const long if_index_any = -1; // any interface
     static const char* destination = "doubango.org";
 
     self = va_arg(*app, tnet_ice_ctx_t *);
-    socket_type = self->use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4;
-
-    addresses = tnet_get_addresses((self->use_ipv6 ? AF_INET6 : AF_INET), self->unicast, self->anycast, self->multicast, dnsserver, if_index_any);
-    if (!addresses || TSK_LIST_IS_EMPTY(addresses)) {
-        TSK_DEBUG_ERROR("Failed to get addresses");
+    socket_type = self->dual_stack
+				? tnet_socket_type_udp_ipv46
+				: (self->use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4);
+	
+	// Create list of addresses
+	if (!(addresses = tsk_list_create())) {
+		TSK_DEBUG_ERROR("Failed to create addresses-list");
         ret = -1;
         goto bail;
-    }
+	}
+	// Set IPv4 flag
+	if (TNET_SOCKET_TYPE_IS_IPV4(socket_type)) {
+		af_inets[0] = AF_INET;
+	}
+	// Set IPv6 flag
+	if (TNET_SOCKET_TYPE_IS_IPV6(socket_type)) {
+		af_inets[1] = AF_INET6;
+	}
 
-
+	/* IPv4/IPv6 addresses */
+	for (i = 0; i < sizeof(af_inets)/sizeof(af_inets[0]); ++i) {
+		if (af_inets[i] != AF_UNSPEC) {
+			tnet_addresses_L_t* list = tnet_get_addresses(af_inets[i], self->unicast, self->anycast, self->multicast, dnsserver, if_index_any);
+			if (list && !TSK_LIST_IS_EMPTY(list)) {
+				tsk_list_pushback_list(addresses, list);
+			}
+			TSK_OBJECT_SAFE_FREE(list);
+		}
+	}
+	
     check_best_local_ip = (tnet_getbestsource(destination, 5060, socket_type, &best_local_ip) == 0);
     curr_local_pref = local_pref = check_best_local_ip ? 0xFFFE : 0xFFFF;
 
@@ -1163,7 +1204,7 @@ static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandi
         }
 
         // host candidates
-        ret = tnet_ice_utils_create_sockets(socket_type,
+		ret = tnet_ice_utils_create_sockets((address->family == AF_INET6) ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4,
                                             address->ip, &socket_rtp,
                                             self->use_rtcp ? &socket_rtcp : tsk_null);
         if (ret == 0) {
@@ -1371,7 +1412,7 @@ static int _tnet_ice_ctx_fsm_GatheringHostCandidatesDone_2_GatheringReflexiveCan
                 if (!(candidate = (tnet_ice_candidate_t*)item->data)) {
                     continue;
                 }
-                if (candidate->socket && tsk_strnullORempty(candidate->stun.srflx_addr)) {
+				if (candidate->socket && candidate->transport_e == ice_server->e_transport && tsk_strnullORempty(candidate->stun.srflx_addr)) {
                     ret = tnet_ice_candidate_send_stun_bind_request(candidate, &ice_server->obj_server_addr, ice_server->str_username, ice_server->str_password);
                 }
             }
@@ -2759,8 +2800,9 @@ static int _tnet_ice_ctx_server_add(struct tnet_ice_ctx_s* self, enum tnet_ice_s
                                     const char* str_software,
                                     const char* str_username, const char* str_password)
 {
-    struct tnet_ice_server_s* ice_server;
-    int ret = -1;
+	struct tnet_ice_server_s* ice_server = tsk_null;
+	enum tnet_socket_type_e e_transports[2] = { tnet_socket_type_invalid, tnet_socket_type_invalid};
+    int ret = -1, i;
     if (!self || !e_proto || !str_server_addr || !u_server_port) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
@@ -2782,12 +2824,38 @@ static int _tnet_ice_ctx_server_add(struct tnet_ice_ctx_s* self, enum tnet_ice_s
         ret = 0; // Not an error
         goto bail;
     }
-    if (!(ice_server = tnet_ice_server_create(e_proto, e_transport, str_server_addr, u_server_port, str_software, str_username, str_password))) {
-        TSK_DEBUG_ERROR("Failed to create ICE server(proto=%d, transport=%d, addr=%s, port=%hu)", e_proto, e_transport, str_server_addr, u_server_port);
-        goto bail;
-    }
-    tsk_list_push_back_data(self->servers, (void**)&ice_server);
-    TSK_OBJECT_SAFE_FREE(ice_server);
+	// Guess the supported IP versions from the server address
+	if (self->dual_stack) {
+		enum tnet_socket_type_e server_addr_type = tnet_get_type(str_server_addr, u_server_port);
+		if (TNET_SOCKET_TYPE_IS_IPV4(server_addr_type)) {
+			e_transports[0] = e_transport;
+			TNET_SOCKET_TYPE_SET_IPV4Only(e_transports[0]);
+		}
+		if (TNET_SOCKET_TYPE_IS_IPV6(server_addr_type)) {
+			e_transports[1] = e_transport;
+			TNET_SOCKET_TYPE_SET_IPV6Only(e_transports[1]);
+		}
+	}
+	else {
+		e_transports[0] = e_transport;
+		if (self->use_ipv6) {
+			TNET_SOCKET_TYPE_SET_IPV6Only(e_transports[0]);
+		}
+		else {
+			TNET_SOCKET_TYPE_SET_IPV4Only(e_transports[0]);
+		}
+	}
+	// Add the ICE servers
+	for (i = 0; i < sizeof(e_transports)/sizeof(e_transports[0]); ++i) {
+		if (TNET_SOCKET_TYPE_IS_VALID(e_transports[i])) {
+			if (!(ice_server = tnet_ice_server_create(e_proto, e_transports[i], str_server_addr, u_server_port, str_software, str_username, str_password))) {
+				TSK_DEBUG_ERROR("Failed to create ICE server(proto=%d, transport=%d, addr=%s, port=%hu)", e_proto, e_transport, str_server_addr, u_server_port);
+				goto bail;
+			}
+			tsk_list_push_back_data(self->servers, (void**)&ice_server);
+			TSK_OBJECT_SAFE_FREE(ice_server);
+		}
+	}
 
     ret = 0;
 bail:

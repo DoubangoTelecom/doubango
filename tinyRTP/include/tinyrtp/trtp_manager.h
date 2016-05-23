@@ -90,8 +90,11 @@ typedef struct trtp_manager_s {
         tnet_port_t remote_port;
         struct sockaddr_storage remote_addr;
 
-        char* public_ip;
-        tnet_port_t public_port;
+		struct {
+			char* ip;
+			tnet_port_t port;
+			tnet_socket_type_t type;
+		} public_addr;
 
         struct {
             uint32_t local;
@@ -117,8 +120,11 @@ typedef struct trtp_manager_s {
         struct sockaddr_storage remote_addr;
         tnet_socket_t* local_socket;
 
-        char* public_ip;
-        tnet_port_t public_port;
+        struct {
+			char* ip;
+			tnet_port_t port;
+			tnet_socket_type_t type;
+		} public_addr;
 
         struct {
             const void* usrdata;

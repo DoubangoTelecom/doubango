@@ -102,7 +102,7 @@ static int _tdav_session_bfcp_set(tmedia_session_t* p_self, const tmedia_param_t
         else if (tsk_striequals(param->key, "local-ip")) {
             tsk_strupdate(&p_bfcp->p_local_ip, param->value);
         }
-        else if (tsk_striequals(param->key, "local-ipver")) {
+        else if (tsk_striequals(param->key, "use-ipv6")) {
             p_bfcp->b_use_ipv6 = tsk_striequals(param->value, "ipv6");
         }
     }

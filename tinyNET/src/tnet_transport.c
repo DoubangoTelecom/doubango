@@ -157,6 +157,7 @@ tnet_transport_t* tnet_transport_create(const char* host, tnet_port_t port, tnet
         if ((transport->master = tnet_socket_create(transport->local_host, transport->req_local_port, transport->type))) {
             transport->local_ip = tsk_strdup(transport->master->ip);
             transport->bind_local_port = transport->master->port;
+			transport->type = transport->master->type;
         }
         else {
             TSK_DEBUG_ERROR("Failed to create master socket");

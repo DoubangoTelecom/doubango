@@ -370,7 +370,7 @@ int tdav_session_msrp_set(tmedia_session_t* self, const tmedia_param_t* param)
         else if(tsk_striequals(param->key, "local-ip")) {
             tsk_strupdate(&msrp->local_ip, param->value);
         }
-        else if(tsk_striequals(param->key, "local-ipver")) {
+        else if(tsk_striequals(param->key, "use-ipv6")) {
             msrp->useIPv6 = tsk_striequals(param->value, "ipv6");
         }
         else if(tsk_striequals(param->key, "accept-types")) {

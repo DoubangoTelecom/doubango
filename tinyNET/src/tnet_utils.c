@@ -837,7 +837,7 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
         tnet_addresses_L_t* addresses = tsk_null;
         const tsk_list_item_t* item;
 
-        if (!(addresses = tnet_get_addresses(TNET_SOCKET_TYPE_IS_IPV6(type) ? AF_INET6 : AF_INET, tsk_true, tsk_false, tsk_false, tsk_false, dwBestIfIndex))) {
+		if (!(addresses = tnet_get_addresses(destAddr.ss_family, tsk_true, tsk_false, tsk_false, tsk_false, dwBestIfIndex))) {
             ret = -2;
             TSK_DEBUG_ERROR("Failed to retrieve addresses.");
             goto bail;
@@ -1053,33 +1053,49 @@ int tnet_getpeername(tnet_fd_t fd, struct sockaddr_storage *result)
     return -1;
 }
 
-/**@ingroup tnet_utils_group
- * Retrieves the socket type of a File Descriptor.
- * @param fd The File descriptor for which to retrive the type.
- * @retval @ref tnet_socket_type_t.
- */
-tnet_socket_type_t tnet_get_socket_type(tnet_fd_t fd)
+tnet_socket_type_t tnet_get_type(const char* host, tnet_port_t port)
 {
-    tnet_socket_type_t type = tnet_socket_type_invalid;
+	tnet_socket_type_t ret = TNET_SOCKET_TYPE_UDP;
+    if (host) {
+        int status;
+        tsk_istr_t srv;
+        struct addrinfo *result = tsk_null;
+        struct addrinfo hints;
+		const struct addrinfo *ptr = tsk_null;
 
-    /*if(fd >0)
-     {
-     struct sockaddr_storage ss;
-     if(!tnet_get_sockaddr(fd, &ss))
-     {
-     if(((struct sockaddr *)&ss)->sa_family == AF_INET)
-     {
-     TNET_SOCKET_TYPE_AS_IPV4(type);
-     }
-     else if(((struct sockaddr *)&ss)->sa_family == AF_INET6)
-     {
-     TNET_SOCKET_TYPE_AS_IPV6(type);
-     }
-     }
-     }*/
+        /* set the port: used as the default service */
+        if (port) {
+            tsk_itoa(port, &srv);
+        }
+        else {
+            memset(srv, '\0', sizeof(srv));
+        }
 
-    return type;
+        memset(&hints, 0, sizeof(hints));
+        hints.ai_family = AF_UNSPEC;
+        hints.ai_socktype = SOCK_DGRAM;
+        hints.ai_protocol = IPPROTO_UDP;
+
+        if ((status = tnet_getaddrinfo(host, srv, &hints, &result))) {
+            TNET_PRINT_LAST_ERROR("getaddrinfo(%s:%d) failed", host, port);
+            goto done;
+        }
+     
+		for (ptr = result; ptr; ptr = ptr->ai_next) {
+			if (ptr->ai_family == AF_INET) {
+				TNET_SOCKET_TYPE_SET_IPV4(ret);
+			}
+			else if (ptr->ai_family == AF_INET6) {
+				TNET_SOCKET_TYPE_SET_IPV6(ret);
+			}
+		}
+done:
+        tnet_freeaddrinfo(result);
+    }
+
+    return ret;
 }
+
 
 /**@ingroup tnet_utils_group
  * Gets the IP family of the @a host (e.g. "google.com" or "192.168.16.104" or "::1").
@@ -1125,6 +1141,12 @@ done:
     }
 
     return ret;
+}
+
+tsk_bool_t tnet_is_ipv6(const char* host, tnet_port_t port)
+{
+	tnet_socket_type_t type = tnet_get_type(host, port);
+	return TNET_SOCKET_TYPE_IS_IPV6(type);
 }
 
 /**@ingroup tnet_utils_group

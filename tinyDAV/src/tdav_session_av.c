@@ -305,7 +305,7 @@ tsk_bool_t tdav_session_av_set(tdav_session_av_t* self, const tmedia_param_t* pa
                 tsk_strupdate(&self->local_ip, (const char*)param->value);
                 return tsk_true;
             }
-            else if(tsk_striequals(param->key, "local-ipver")) {
+            else if(tsk_striequals(param->key, "use-ipv6")) {
                 self->use_ipv6 = tsk_striequals(param->value, "ipv6");
                 return tsk_true;
             }
@@ -876,11 +876,11 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
     *updated = (base->ro_changed || !base->M.lo);
 
     if(!base->M.lo) {
-        if((base->M.lo = tsdp_header_M_create(base->plugin->media, self->rtp_manager->rtp.public_port, "RTP/AVP"))) {
+        if((base->M.lo = tsdp_header_M_create(base->plugin->media, self->rtp_manager->rtp.public_addr.port, "RTP/AVP"))) {
             /* If NATT is active, do not rely on the global IP address Connection line */
             if(self->natt_ctx) {
                 tsdp_header_M_add_headers(base->M.lo,
-                                          TSDP_HEADER_C_VA_ARGS("IN", self->use_ipv6 ? "IP6" : "IP4", self->rtp_manager->rtp.public_ip),
+					TSDP_HEADER_C_VA_ARGS("IN", TNET_SOCKET_TYPE_IS_IPV6(self->rtp_manager->rtp.public_addr.type) ? "IP6" : "IP4", self->rtp_manager->rtp.public_addr.ip),
                                           tsk_null);
             }
             /* 3GPP TS 24.229 - 6.1.1 General
@@ -1337,10 +1337,10 @@ const tsdp_header_M_t* tdav_session_av_get_lo(tdav_session_av_t* self, tsk_bool_
         }
         else {
             if(base->M.lo->C) {
-                tsk_strupdate(&base->M.lo->C->addr, self->rtp_manager->rtp.public_ip);
-                tsk_strupdate(&base->M.lo->C->addrtype, (self->use_ipv6 ? "IP6" : "IP4"));
+                tsk_strupdate(&base->M.lo->C->addr, self->rtp_manager->rtp.public_addr.ip);
+                tsk_strupdate(&base->M.lo->C->addrtype, (TNET_SOCKET_TYPE_IS_IPV6(self->rtp_manager->rtp.public_addr.type) ? "IP6" : "IP4"));
             }
-            base->M.lo->port = self->rtp_manager->rtp.public_port;
+            base->M.lo->port = self->rtp_manager->rtp.public_addr.port;
         }
 
         if(self->media_type & tmedia_audio) {

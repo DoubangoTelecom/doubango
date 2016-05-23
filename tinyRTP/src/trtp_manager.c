@@ -833,8 +833,8 @@ static int _trtp_manager_ice_init(trtp_manager_t* self)
         if (candidate_answer_dest) { // could be "null" if remote peer is ICE-lite
             tsk_strupdate(&self->rtp.remote_ip, candidate_answer_dest->connection_addr);
             self->rtp.remote_port = candidate_answer_dest->port;
-            tsk_strupdate(&self->rtp.public_ip, candidate_offer->connection_addr);
-            self->rtp.public_port = candidate_offer->port;
+            tsk_strupdate(&self->rtp.public_addr.ip, candidate_offer->connection_addr);
+            self->rtp.public_addr.port = candidate_offer->port;
         }
 
         // get rtp nominated symetric candidates
@@ -845,8 +845,8 @@ static int _trtp_manager_ice_init(trtp_manager_t* self)
                 // set rtp local and remote IPs and ports
                 tsk_strupdate(&self->rtcp.remote_ip, candidate_answer_dest->connection_addr);
                 self->rtcp.remote_port = candidate_answer_dest->port;
-                tsk_strupdate(&self->rtcp.public_ip, candidate_offer->connection_addr);
-                self->rtcp.public_port = candidate_offer->port;
+                tsk_strupdate(&self->rtcp.public_addr.ip, candidate_offer->connection_addr);
+                self->rtcp.public_addr.port = candidate_offer->port;
                 TSK_OBJECT_SAFE_FREE(self->rtcp.local_socket);
                 // Get RTCP socket
                 if (self->is_ice_turn_active && candidate_offer->turn.ss) {
@@ -918,6 +918,7 @@ int trtp_manager_prepare(trtp_manager_t* self)
 {
     const char *rtp_local_ip = tsk_null, *rtcp_local_ip = tsk_null;
     tnet_port_t rtp_local_port = 0, rtcp_local_port = 0;
+	tnet_socket_type_t socket_type = self->use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4;
 
     if(!self) {
         TSK_DEBUG_ERROR("Invalid parameter");
@@ -939,7 +940,12 @@ int trtp_manager_prepare(trtp_manager_t* self)
 #define __retry_count_max 5
 #define __retry_count_max_minus1 (__retry_count_max - 1)
         uint8_t retry_count = __retry_count_max;
-        tnet_socket_type_t socket_type = self->use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4;
+        tnet_socket_type_t socket_type = tnet_socket_type_invalid;
+
+		// If local IP is defined then check its address family
+		if (!tsk_strempty(self->local_ip)) {
+			socket_type = tnet_get_type(self->local_ip, rtp_local_port); // IP @ always returns IPv4Only or IPv6Only
+		}
 
         /* Creates local rtp and rtcp sockets */
         while(retry_count--) {
@@ -949,8 +955,8 @@ int trtp_manager_prepare(trtp_manager_t* self)
             tnet_port_t local_port = 6060;
 #else
             // first check => try to use port from latest active session if exist
-            tnet_port_t local_port = (retry_count == __retry_count_max_minus1 && (self->port_range.start <= self->rtp.public_port && self->rtp.public_port <= self->port_range.stop))
-                                     ? self->rtp.public_port
+            tnet_port_t local_port = (retry_count == __retry_count_max_minus1 && (self->port_range.start <= self->rtp.public_addr.port && self->rtp.public_addr.port <= self->port_range.stop))
+                                     ? self->rtp.public_addr.port
                                      : (((rand() ^ ++counter) % (self->port_range.stop - self->port_range.start)) + self->port_range.start);
 #endif
             local_port = (local_port & 0xFFFE); /* turn to even number */
@@ -987,11 +993,13 @@ int trtp_manager_prepare(trtp_manager_t* self)
         }
     }// end-of-else(!ice)
 
-    tsk_strupdate(&self->rtp.public_ip, rtp_local_ip);
-    self->rtp.public_port = rtp_local_port;
+    tsk_strupdate(&self->rtp.public_addr.ip, rtp_local_ip);
+    self->rtp.public_addr.port = rtp_local_port;
+	self->rtp.public_addr.type = socket_type;
 
-    tsk_strupdate(&self->rtcp.public_ip, rtcp_local_ip);
-    self->rtcp.public_port = rtcp_local_port;
+    tsk_strupdate(&self->rtcp.public_addr.ip, rtcp_local_ip);
+    self->rtcp.public_addr.port = rtcp_local_port;
+	self->rtcp.public_addr.type = socket_type;
 
     if(self->transport) {
         /* set callback function */
@@ -1225,15 +1233,15 @@ int trtp_manager_set_natt_ctx(trtp_manager_t* self, struct tnet_nat_ctx_s* natt_
         tnet_port_t public_port = 0;
         // get RTP public IP and Port
         if(!tnet_transport_get_public_ip_n_port(self->transport, self->transport->master->fd, &public_ip, &public_port)) {
-            tsk_strupdate(&self->rtp.public_ip, public_ip);
-            self->rtp.public_port = public_port;
+            tsk_strupdate(&self->rtp.public_addr.ip, public_ip);
+            self->rtp.public_addr.port = public_port;
         }
         // get RTCP public IP and Port
         memset(public_ip, 0, sizeof(public_ip));
         public_port = 0;
         if(self->rtcp.local_socket && !tnet_transport_get_public_ip_n_port(self->transport, self->rtcp.local_socket->fd, &public_ip, &public_port)) {
-            tsk_strupdate(&self->rtcp.public_ip, public_ip);
-            self->rtcp.public_port = public_port;
+            tsk_strupdate(&self->rtcp.public_addr.ip, public_ip);
+            self->rtcp.public_addr.port = public_port;
         }
         // re-enable sockets to be able to receive STUN packets
 #if 0
@@ -1826,8 +1834,8 @@ int trtp_manager_stop(trtp_manager_t* self)
     // Free RTCP info to make sure these values will be updated in next start()
     TSK_OBJECT_SAFE_FREE(self->rtcp.local_socket);
     TSK_OBJECT_SAFE_FREE(self->rtcp.session);
-    self->rtcp.public_port = self->rtcp.remote_port = 0;
-    TSK_FREE(self->rtcp.public_ip);
+    self->rtcp.public_addr.port = self->rtcp.remote_port = 0;
+    TSK_FREE(self->rtcp.public_addr.ip);
     TSK_FREE(self->rtcp.remote_ip);
 
     // reset default values
@@ -1914,13 +1922,13 @@ static tsk_object_t* trtp_manager_dtor(tsk_object_t * self)
 
         /* rtp */
         TSK_FREE(manager->rtp.remote_ip);
-        TSK_FREE(manager->rtp.public_ip);
+        TSK_FREE(manager->rtp.public_addr.ip);
         TSK_FREE(manager->rtp.serial_buffer.ptr);
 
         /* rtcp */
         TSK_OBJECT_SAFE_FREE(manager->rtcp.session);
         TSK_FREE(manager->rtcp.remote_ip);
-        TSK_FREE(manager->rtcp.public_ip);
+        TSK_FREE(manager->rtcp.public_addr.ip);
         TSK_FREE(manager->rtcp.cname);
         TSK_OBJECT_SAFE_FREE(manager->rtcp.local_socket);
 

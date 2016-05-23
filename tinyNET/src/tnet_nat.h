@@ -30,6 +30,7 @@ struct tnet_nat_ctx_s;
 struct tnet_stun_binding_s;
 enum tnet_socket_type_e;
 
+TINYNET_API int tnet_nat_get_socket_type(const struct tnet_nat_ctx_s* p_self, enum tnet_socket_type_e* type);
 TINYNET_API int tnet_nat_set_server_address(struct tnet_nat_ctx_s* p_self, const char* pc_srv_addr);
 TINYNET_API int tnet_nat_set_server(struct tnet_nat_ctx_s* p_self, const char* pc_srv_addr,  tnet_port_t u_srv_port);
 TINYNET_API tnet_stun_binding_id_t tnet_nat_stun_bind(const struct tnet_nat_ctx_s* p_self, const tnet_fd_t localFD);

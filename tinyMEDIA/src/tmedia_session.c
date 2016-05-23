@@ -31,6 +31,8 @@
 
 #include "ice/tnet_ice_ctx.h"
 
+#include "tnet_utils.h"
+
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -816,7 +818,7 @@ filter_neg_codecs:
 * will create an audio/video session.
 * @retval new @ref tmedia_session_mgr_t object
 */
-tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* addr, tsk_bool_t ipv6, tsk_bool_t offerer)
+tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* addr, tsk_bool_t use_ipv6, tsk_bool_t offerer)
 {
     tmedia_session_mgr_t* mgr;
 
@@ -828,7 +830,10 @@ tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* 
     /* init */
     mgr->type = type;
     mgr->addr = tsk_strdup(addr);
-    mgr->ipv6 = ipv6;
+	mgr->addr_type = tsk_strempty(mgr->addr) 
+		? (use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4) 
+		: (tnet_is_ipv6(mgr->addr, 0) ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4);
+    mgr->use_ipv6 = use_ipv6;
 
     /* load sessions (will allow us to generate lo) */
     if (offerer) {
@@ -913,6 +918,7 @@ int tmedia_session_mgr_set_natt_ctx(tmedia_session_mgr_t* self, struct tnet_nat_
     TSK_OBJECT_SAFE_FREE(self->natt_ctx);
     self->natt_ctx = tsk_object_ref(natt_ctx);
     tsk_strupdate(&self->public_addr, public_addr);
+	tnet_nat_get_socket_type(natt_ctx, &self->public_addr_type);
 
     tmedia_session_mgr_set(self,
                            TMEDIA_SESSION_SET_POBJECT(self->type, "natt-ctx", self->natt_ctx),
@@ -2211,7 +2217,7 @@ static int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
                                TMEDIA_SESSION_SET_POBJECT(tmedia_bfcp_video, "ice-ctx", self->ice.ctx_bfcpvid),
 
                                TMEDIA_SESSION_SET_STR(self->type, "local-ip", self->addr),
-                               TMEDIA_SESSION_SET_STR(self->type, "local-ipver", self->ipv6 ? "ipv6" : "ipv4"),
+                               TMEDIA_SESSION_SET_STR(self->type, "use-ipv6", self->use_ipv6 ? "ipv6" : "ipv4"),
                                TMEDIA_SESSION_SET_INT32(self->type, "bandwidth-level", self->bl),
                                TMEDIA_SESSION_SET_NULL());
         // set callback functions
@@ -2350,10 +2356,12 @@ static const tsdp_message_t* _tmedia_session_mgr_get_lo(tmedia_session_mgr_t* se
         goto bail;
     }
     else {
-        if ((self->sdp.lo = tsdp_message_create_empty(self->public_addr ? self->public_addr : self->addr, self->ipv6, new_ver_num))) {
+		const char* addr = self->public_addr ? self->public_addr : self->addr;
+		tsk_bool_t ipv6 = self->public_addr ? TNET_SOCKET_TYPE_IS_IPV6(self->public_addr_type) : TNET_SOCKET_TYPE_IS_IPV6(self->addr_type);
+        if ((self->sdp.lo = tsdp_message_create_empty(addr, ipv6, new_ver_num))) {
             /* Set connection "c=" */
             tsdp_message_add_headers(self->sdp.lo,
-                                     TSDP_HEADER_C_VA_ARGS("IN", self->ipv6 ? "IP6" : "IP4", self->public_addr ? self->public_addr : self->addr),
+                                     TSDP_HEADER_C_VA_ARGS("IN", ipv6 ? "IP6" : "IP4", addr),
                                      tsk_null);
             if (inc_ver) {
                 ++self->sdp.lo_ver;
