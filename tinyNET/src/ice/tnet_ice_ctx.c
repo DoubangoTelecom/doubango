@@ -606,7 +606,7 @@ int tnet_ice_ctx_add_server(
         TSK_DEBUG_ERROR("'%s' not a valid transport proto", transport_proto);
         return -1;
     }
-	if (self->dual_stack) {
+	if (self->dual_stack && self->use_ipv6) {
 		TNET_SOCKET_TYPE_SET_IPV46(socket_type);
 	}
 	else if (self->use_ipv6) {
@@ -1155,7 +1155,7 @@ static int _tnet_ice_ctx_fsm_Started_2_GatheringHostCandidates_X_GatherHostCandi
     static const char* destination = "doubango.org";
 
     self = va_arg(*app, tnet_ice_ctx_t *);
-    socket_type = self->dual_stack
+    socket_type = (self->dual_stack && self->use_ipv6)
 				? tnet_socket_type_udp_ipv46
 				: (self->use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4);
 	
@@ -2825,7 +2825,7 @@ static int _tnet_ice_ctx_server_add(struct tnet_ice_ctx_s* self, enum tnet_ice_s
         goto bail;
     }
 	// Guess the supported IP versions from the server address
-	if (self->dual_stack) {
+	if (self->dual_stack && self->use_ipv6) {
 		enum tnet_socket_type_e server_addr_type = tnet_get_type(str_server_addr, u_server_port);
 		if (TNET_SOCKET_TYPE_IS_IPV4(server_addr_type)) {
 			e_transports[0] = e_transport;
