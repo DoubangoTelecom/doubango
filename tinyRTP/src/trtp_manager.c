@@ -940,11 +940,11 @@ int trtp_manager_prepare(trtp_manager_t* self)
 #define __retry_count_max 5
 #define __retry_count_max_minus1 (__retry_count_max - 1)
         uint8_t retry_count = __retry_count_max;
-        tnet_socket_type_t socket_type = tnet_socket_type_invalid;
+        tnet_socket_type_t socket_type = self->use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4;
 
 		// If local IP is defined then check its address family
 		if (!tsk_strempty(self->local_ip)) {
-			socket_type = tnet_get_type(self->local_ip, rtp_local_port); // IP @ always returns IPv4Only or IPv6Only
+			socket_type = tnet_get_type(self->local_ip, rtp_local_port); // IP address always returns IPv4Only or IPv6Only
 		}
 
         /* Creates local rtp and rtcp sockets */
