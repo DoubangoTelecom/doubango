@@ -940,7 +940,6 @@ int trtp_manager_prepare(trtp_manager_t* self)
 #define __retry_count_max 5
 #define __retry_count_max_minus1 (__retry_count_max - 1)
         uint8_t retry_count = __retry_count_max;
-        tnet_socket_type_t socket_type = self->use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4;
 
 		// If local IP is defined then check its address family
 		if (!tsk_strempty(self->local_ip)) {
