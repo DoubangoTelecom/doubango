@@ -1064,12 +1064,7 @@ tnet_socket_type_t tnet_get_type(const char* host, tnet_port_t port)
 		const struct addrinfo *ptr = tsk_null;
 
         /* set the port: used as the default service */
-        if (port) {
-            tsk_itoa(port, &srv);
-        }
-        else {
-            memset(srv, '\0', sizeof(srv));
-        }
+        tsk_itoa(port ? port : 5060, &srv); // service must not be empty -> Android IPv6 issue
 
         memset(&hints, 0, sizeof(hints));
         hints.ai_family = AF_UNSPEC;
@@ -1118,6 +1113,7 @@ tnet_family_t tnet_get_family(const char* host, tnet_port_t port)
             tsk_itoa(port, &srv);
         }
         else {
+            TSK_DEBUG_WARN("Empty port may lead to getaddrinfo issue on Android");
             memset(srv, '\0', sizeof(srv));
         }
 
@@ -1145,7 +1141,8 @@ done:
 
 tsk_bool_t tnet_is_ipv6(const char* host, tnet_port_t port)
 {
-	tnet_socket_type_t type = tnet_get_type(host, port);
+    // getaddrinfo with empty port fails on Android, set default port to 5060
+    tnet_socket_type_t type = tnet_get_type(host, port ? port : 5060);
 	return TNET_SOCKET_TYPE_IS_IPV6(type);
 }
 
