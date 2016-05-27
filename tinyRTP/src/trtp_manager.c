@@ -942,7 +942,7 @@ int trtp_manager_prepare(trtp_manager_t* self)
         uint8_t retry_count = __retry_count_max;
 
 		// If local IP is defined then check its address family
-		if (!tsk_strempty(self->local_ip)) {
+		if (!tsk_strnullORempty(self->local_ip)) {
 			socket_type = tnet_get_type(self->local_ip, rtp_local_port); // IP address always returns IPv4Only or IPv6Only
 		}
 
