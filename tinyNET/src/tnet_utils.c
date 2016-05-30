@@ -962,14 +962,23 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
         if (!ifa->ifa_addr || ifa->ifa_addr->sa_family != destAddr.ss_family) {
             continue;
         }
+        
+        if (destAddr.ss_family == AF_INET) {
+            if (tnet_is_linklocal(ifa->ifa_addr) ^ tnet_is_linklocal(((struct sockaddr *)&destAddr))) {
+                TSK_DEBUG_INFO("Ignoring IPv4 linklocal address");
+                continue;
+            }
+        }
 
         if (destAddr.ss_family == AF_INET6) {
             if (IN6_IS_ADDR_LINKLOCAL(&((struct sockaddr_in6 *) ifa->ifa_addr)->sin6_addr) ^
                     IN6_IS_ADDR_LINKLOCAL(&((struct sockaddr_in6 *) &destAddr)->sin6_addr)) {
+                TSK_DEBUG_INFO("Ignoring IPv6 linklocal address");
                 continue;
             }
             if (IN6_IS_ADDR_SITELOCAL(&((struct sockaddr_in6 *) ifa->ifa_addr)->sin6_addr) ^
                     IN6_IS_ADDR_SITELOCAL(&((struct sockaddr_in6 *) &destAddr)->sin6_addr)) {
+                TSK_DEBUG_INFO("Ignoring IPv6 sitelocal address");
                 continue;
             }
         }
@@ -1259,6 +1268,42 @@ int tnet_get_ip_n_port(tnet_fd_t fd, tsk_bool_t getlocal, tnet_ip_t *ip, tnet_po
 
     TSK_DEBUG_ERROR("Could not use an invalid socket description.");
     return -1;
+}
+
+/**@ingroup tnet_utils_group
+ */
+tsk_bool_t tnet_is_loopback(const struct sockaddr *sa)
+{
+    if (!sa || (sa->sa_family != AF_INET && sa->sa_family != AF_INET6)) {
+        TSK_DEBUG_ERROR("Invalid paramete");
+        return tsk_false;
+    }
+    if (sa->sa_family == AF_INET) {
+        const uint8_t* u8 = (const uint8_t*)&((const struct sockaddr_in*)sa)->sin_addr;
+        return u8[0] == 127;
+    }
+    else {
+        const uint32_t* u32 = (const uint32_t*)&((const struct sockaddr_in6*)sa)->sin6_addr;
+        return (u32[0] == 0) && (u32[4] == 0) && (u32[8] == 0) && (u32[12] == tnet_ntohl(1));
+    }
+}
+
+/**@ingroup tnet_utils_group
+ */
+tsk_bool_t tnet_is_linklocal(const struct sockaddr *sa)
+{
+    if (!sa || (sa->sa_family != AF_INET && sa->sa_family != AF_INET6)) {
+        TSK_DEBUG_ERROR("Invalid paramete");
+        return tsk_false;
+    }
+    if (sa->sa_family == AF_INET) {
+        const uint8_t* u8 = (const uint8_t*)&((const struct sockaddr_in*)sa)->sin_addr;
+        return u8[0] == 169 && u8[1] == 254;
+    }
+    else {
+        const uint8_t* u8 = (const uint8_t*)&((const struct sockaddr_in6*)sa)->sin6_addr;
+        return ((u8[0] == 0xfe) && ((u8[1] & 0xc0) == 0x80));
+    }
 }
 
 /**@ingroup tnet_utils_group
