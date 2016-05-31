@@ -830,7 +830,7 @@ tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* 
     /* init */
     mgr->type = type;
     mgr->addr = tsk_strdup(addr);
-	mgr->addr_type = tsk_strempty(mgr->addr) 
+	mgr->addr_type = tsk_strnullORempty(mgr->addr) 
 		? (use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4) 
 		: (tnet_is_ipv6(mgr->addr, 0) ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4);
     mgr->use_ipv6 = use_ipv6;
