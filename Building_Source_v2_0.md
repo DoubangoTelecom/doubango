@@ -188,7 +188,7 @@ make && make install
 ```
 git clone https://github.com/cisco/openh264.git
 cd openh264
-git checkout v1.1
+git checkout v1.5.0
 make ENABLE64BIT=Yes # Use ENABLE64BIT=No for 32bit platforms
 make install
 ```
