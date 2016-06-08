@@ -644,8 +644,10 @@ int removeSocketAtIndex(int index, transport_context_t *context)
         tnet_fd_t fd = sock->fd;
 
         // Remove from runloop
-        if (context->cf_run_loop && sock->cf_run_loop_source) {
-            CFRunLoopRemoveSource(context->cf_run_loop, sock->cf_run_loop_source, kCFRunLoopCommonModes);
+        if (sock->cf_run_loop_source) {
+            if (context->cf_run_loop) {
+                CFRunLoopRemoveSource(context->cf_run_loop, sock->cf_run_loop_source, kCFRunLoopCommonModes);
+            }
             CFRelease(sock->cf_run_loop_source), sock->cf_run_loop_source = NULL;
         }
 
@@ -1299,33 +1301,31 @@ void *tnet_transport_mainthread(void *param)
         }
     }
 
-    // Remove all the sockets, streams and sources from the run loop
-    tsk_safeobj_lock(context);
-    for(i = 0; i < context->count; i++) {
-        transport_context_t *context = transport->context;
-        transport_socket_xt *sock = context->sockets[i];
-
-        if (!sock) {
-            continue;
-        }
-        if (sock->cf_run_loop_source) {
-            CFRunLoopRemoveSource(context->cf_run_loop, sock->cf_run_loop_source, kCFRunLoopDefaultMode);
-        }
-        if (sock->cf_read_stream) {
-            //CFReadStreamClose(sock->cf_read_stream);
-            CFReadStreamUnscheduleFromRunLoop(sock->cf_read_stream, context->cf_run_loop, kCFRunLoopDefaultMode);
-        }
-        if (sock->cf_write_stream) {
-            //CFWriteStreamClose(sock->cf_write_stream);
-            CFWriteStreamUnscheduleFromRunLoop(sock->cf_write_stream, context->cf_run_loop, kCFRunLoopDefaultMode);
-        }
-    }
-    tsk_safeobj_unlock(context);
-
-
 bail:
     TSK_DEBUG_INFO("Stopped [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
+    
     if(context->cf_run_loop) {
+        // Remove all the sockets, streams and sources from the run loop
+        tsk_safeobj_lock(context);
+        for(i = 0; i < context->count; i++) {
+            transport_context_t *context = transport->context;
+            transport_socket_xt *sock = context->sockets[i];
+            
+            if (!sock) {
+                continue;
+            }
+            if (sock->cf_run_loop_source) {
+                CFRunLoopRemoveSource(context->cf_run_loop, sock->cf_run_loop_source, kCFRunLoopDefaultMode);
+            }
+            if (sock->cf_read_stream) {
+                CFReadStreamUnscheduleFromRunLoop(sock->cf_read_stream, context->cf_run_loop, kCFRunLoopDefaultMode);
+            }
+            if (sock->cf_write_stream) {
+                CFWriteStreamUnscheduleFromRunLoop(sock->cf_write_stream, context->cf_run_loop, kCFRunLoopDefaultMode);
+            }
+        }
+        tsk_safeobj_unlock(context);
+        // Release context
         CFRelease(context->cf_run_loop);
         context->cf_run_loop = NULL;
     }
