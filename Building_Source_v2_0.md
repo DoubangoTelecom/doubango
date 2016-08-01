@@ -11,7 +11,7 @@ sudo yum install make libtool autoconf subversion git wget libogg-devel gcc gcc-
 
 The first step is to checkout Doubango 2.0 source code:
 ```
-svn checkout https://doubango.googlecode.com/svn/branches/2.0/doubango doubango
+git clone https://github.com/DoubangoTelecom/doubango.git
 ```
 
 ### Building libsrtp ###
