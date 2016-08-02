@@ -339,8 +339,8 @@ PKCS7 *PKCS7_sign(X509 *signcert, EVP_PKEY *pkey, STACK_OF(X509) *certs,
                   BIO *data, int flags);
 
 PKCS7_SIGNER_INFO *PKCS7_sign_add_signer(PKCS7 *p7,
-        X509 *signcert, EVP_PKEY *pkey,
-        const EVP_MD *md, int flags);
+                                         X509 *signcert, EVP_PKEY *pkey,
+                                         const EVP_MD *md, int flags);
 
 int PKCS7_final(PKCS7 *p7, BIO *data, int flags);
 int PKCS7_verify(PKCS7 *p7, STACK_OF(X509) *certs, X509_STORE *store,

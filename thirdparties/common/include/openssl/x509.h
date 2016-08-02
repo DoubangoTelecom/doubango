@@ -184,7 +184,7 @@ struct X509_name_st {
 # else
     char *bytes;
 # endif
-    /*      unsigned long hash; Keep the hash around for lookups */
+/*      unsigned long hash; Keep the hash around for lookups */
     unsigned char *canon_enc;
     int canon_enclen;
 } /* X509_NAME */ ;
@@ -550,7 +550,7 @@ typedef struct PBE2PARAM_st {
 } PBE2PARAM;
 
 typedef struct PBKDF2PARAM_st {
-    /* Usually OCTET STRING but could be anything */
+/* Usually OCTET STRING but could be anything */
     ASN1_TYPE *salt;
     ASN1_INTEGER *iter;
     ASN1_INTEGER *keylength;
@@ -609,11 +609,11 @@ void X509_CRL_set_default_method(const X509_CRL_METHOD *meth);
 X509_CRL_METHOD *X509_CRL_METHOD_new(int (*crl_init) (X509_CRL *crl),
                                      int (*crl_free) (X509_CRL *crl),
                                      int (*crl_lookup) (X509_CRL *crl,
-                                             X509_REVOKED **ret,
-                                             ASN1_INTEGER *ser,
-                                             X509_NAME *issuer),
+                                                        X509_REVOKED **ret,
+                                                        ASN1_INTEGER *ser,
+                                                        X509_NAME *issuer),
                                      int (*crl_verify) (X509_CRL *crl,
-                                             EVP_PKEY *pk));
+                                                        EVP_PKEY *pk));
 void X509_CRL_METHOD_free(X509_CRL_METHOD *m);
 
 void X509_CRL_set_meth_data(X509_CRL *crl, void *dat);
@@ -696,7 +696,7 @@ int i2d_ECPrivateKey_fp(FILE *fp, EC_KEY *eckey);
 X509_SIG *d2i_PKCS8_fp(FILE *fp, X509_SIG **p8);
 int i2d_PKCS8_fp(FILE *fp, X509_SIG *p8);
 PKCS8_PRIV_KEY_INFO *d2i_PKCS8_PRIV_KEY_INFO_fp(FILE *fp,
-        PKCS8_PRIV_KEY_INFO **p8inf);
+                                                PKCS8_PRIV_KEY_INFO **p8inf);
 int i2d_PKCS8_PRIV_KEY_INFO_fp(FILE *fp, PKCS8_PRIV_KEY_INFO *p8inf);
 int i2d_PKCS8PrivateKeyInfo_fp(FILE *fp, EVP_PKEY *key);
 int i2d_PrivateKey_fp(FILE *fp, EVP_PKEY *pkey);
@@ -735,7 +735,7 @@ int i2d_ECPrivateKey_bio(BIO *bp, EC_KEY *eckey);
 X509_SIG *d2i_PKCS8_bio(BIO *bp, X509_SIG **p8);
 int i2d_PKCS8_bio(BIO *bp, X509_SIG *p8);
 PKCS8_PRIV_KEY_INFO *d2i_PKCS8_PRIV_KEY_INFO_bio(BIO *bp,
-        PKCS8_PRIV_KEY_INFO **p8inf);
+                                                 PKCS8_PRIV_KEY_INFO **p8inf);
 int i2d_PKCS8_PRIV_KEY_INFO_bio(BIO *bp, PKCS8_PRIV_KEY_INFO *p8inf);
 int i2d_PKCS8PrivateKeyInfo_bio(BIO *bp, EVP_PKEY *key);
 int i2d_PrivateKey_bio(BIO *bp, EVP_PKEY *pkey);
@@ -843,7 +843,7 @@ int X509_keyid_set1(X509 *x, unsigned char *id, int len);
 unsigned char *X509_alias_get0(X509 *x, int *len);
 unsigned char *X509_keyid_get0(X509 *x, int *len);
 int (*X509_TRUST_set_default(int (*trust) (int, X509 *, int))) (int, X509 *,
-        int);
+                                                                int);
 int X509_TRUST_set(int *t, int trust);
 int X509_add1_trust_object(X509 *x, ASN1_OBJECT *obj);
 int X509_add1_reject_object(X509 *x, ASN1_OBJECT *obj);
@@ -1030,19 +1030,19 @@ int X509_NAME_add_entry_by_NID(X509_NAME *name, int nid, int type,
                                unsigned char *bytes, int len, int loc,
                                int set);
 X509_NAME_ENTRY *X509_NAME_ENTRY_create_by_txt(X509_NAME_ENTRY **ne,
-        const char *field, int type,
-        const unsigned char *bytes,
-        int len);
+                                               const char *field, int type,
+                                               const unsigned char *bytes,
+                                               int len);
 X509_NAME_ENTRY *X509_NAME_ENTRY_create_by_NID(X509_NAME_ENTRY **ne, int nid,
-        int type, unsigned char *bytes,
-        int len);
+                                               int type, unsigned char *bytes,
+                                               int len);
 int X509_NAME_add_entry_by_txt(X509_NAME *name, const char *field, int type,
                                const unsigned char *bytes, int len, int loc,
                                int set);
 X509_NAME_ENTRY *X509_NAME_ENTRY_create_by_OBJ(X509_NAME_ENTRY **ne,
-        ASN1_OBJECT *obj, int type,
-        const unsigned char *bytes,
-        int len);
+                                               ASN1_OBJECT *obj, int type,
+                                               const unsigned char *bytes,
+                                               int len);
 int X509_NAME_ENTRY_set_object(X509_NAME_ENTRY *ne, ASN1_OBJECT *obj);
 int X509_NAME_ENTRY_set_data(X509_NAME_ENTRY *ne, int type,
                              const unsigned char *bytes, int len);
@@ -1059,7 +1059,7 @@ int X509v3_get_ext_by_critical(const STACK_OF(X509_EXTENSION) *x,
 X509_EXTENSION *X509v3_get_ext(const STACK_OF(X509_EXTENSION) *x, int loc);
 X509_EXTENSION *X509v3_delete_ext(STACK_OF(X509_EXTENSION) *x, int loc);
 STACK_OF(X509_EXTENSION) *X509v3_add_ext(STACK_OF(X509_EXTENSION) **x,
-        X509_EXTENSION *ex, int loc);
+                                         X509_EXTENSION *ex, int loc);
 
 int X509_get_ext_count(X509 *x);
 int X509_get_ext_by_NID(X509 *x, int nid, int lastpos);
@@ -1096,11 +1096,11 @@ int X509_REVOKED_add1_ext_i2d(X509_REVOKED *x, int nid, void *value, int crit,
                               unsigned long flags);
 
 X509_EXTENSION *X509_EXTENSION_create_by_NID(X509_EXTENSION **ex,
-        int nid, int crit,
-        ASN1_OCTET_STRING *data);
+                                             int nid, int crit,
+                                             ASN1_OCTET_STRING *data);
 X509_EXTENSION *X509_EXTENSION_create_by_OBJ(X509_EXTENSION **ex,
-        ASN1_OBJECT *obj, int crit,
-        ASN1_OCTET_STRING *data);
+                                             ASN1_OBJECT *obj, int crit,
+                                             ASN1_OCTET_STRING *data);
 int X509_EXTENSION_set_object(X509_EXTENSION *ex, ASN1_OBJECT *obj);
 int X509_EXTENSION_set_critical(X509_EXTENSION *ex, int crit);
 int X509_EXTENSION_set_data(X509_EXTENSION *ex, ASN1_OCTET_STRING *data);
@@ -1116,34 +1116,34 @@ int X509at_get_attr_by_OBJ(const STACK_OF(X509_ATTRIBUTE) *sk,
 X509_ATTRIBUTE *X509at_get_attr(const STACK_OF(X509_ATTRIBUTE) *x, int loc);
 X509_ATTRIBUTE *X509at_delete_attr(STACK_OF(X509_ATTRIBUTE) *x, int loc);
 STACK_OF(X509_ATTRIBUTE) *X509at_add1_attr(STACK_OF(X509_ATTRIBUTE) **x,
-        X509_ATTRIBUTE *attr);
+                                           X509_ATTRIBUTE *attr);
 STACK_OF(X509_ATTRIBUTE) *X509at_add1_attr_by_OBJ(STACK_OF(X509_ATTRIBUTE)
-        **x, const ASN1_OBJECT *obj,
-        int type,
-        const unsigned char *bytes,
-        int len);
+                                                  **x, const ASN1_OBJECT *obj,
+                                                  int type,
+                                                  const unsigned char *bytes,
+                                                  int len);
 STACK_OF(X509_ATTRIBUTE) *X509at_add1_attr_by_NID(STACK_OF(X509_ATTRIBUTE)
-        **x, int nid, int type,
-        const unsigned char *bytes,
-        int len);
+                                                  **x, int nid, int type,
+                                                  const unsigned char *bytes,
+                                                  int len);
 STACK_OF(X509_ATTRIBUTE) *X509at_add1_attr_by_txt(STACK_OF(X509_ATTRIBUTE)
-        **x, const char *attrname,
-        int type,
-        const unsigned char *bytes,
-        int len);
+                                                  **x, const char *attrname,
+                                                  int type,
+                                                  const unsigned char *bytes,
+                                                  int len);
 void *X509at_get0_data_by_OBJ(STACK_OF(X509_ATTRIBUTE) *x, ASN1_OBJECT *obj,
                               int lastpos, int type);
 X509_ATTRIBUTE *X509_ATTRIBUTE_create_by_NID(X509_ATTRIBUTE **attr, int nid,
-        int atrtype, const void *data,
-        int len);
+                                             int atrtype, const void *data,
+                                             int len);
 X509_ATTRIBUTE *X509_ATTRIBUTE_create_by_OBJ(X509_ATTRIBUTE **attr,
-        const ASN1_OBJECT *obj,
-        int atrtype, const void *data,
-        int len);
+                                             const ASN1_OBJECT *obj,
+                                             int atrtype, const void *data,
+                                             int len);
 X509_ATTRIBUTE *X509_ATTRIBUTE_create_by_txt(X509_ATTRIBUTE **attr,
-        const char *atrname, int type,
-        const unsigned char *bytes,
-        int len);
+                                             const char *atrname, int type,
+                                             const unsigned char *bytes,
+                                             int len);
 int X509_ATTRIBUTE_set1_object(X509_ATTRIBUTE *attr, const ASN1_OBJECT *obj);
 int X509_ATTRIBUTE_set1_data(X509_ATTRIBUTE *attr, int attrtype,
                              const void *data, int len);
@@ -1305,6 +1305,7 @@ void ERR_load_X509_strings(void);
 # define X509_R_LOADING_CERT_DIR                          103
 # define X509_R_LOADING_DEFAULTS                          104
 # define X509_R_METHOD_NOT_SUPPORTED                      124
+# define X509_R_NAME_TOO_LONG                             134
 # define X509_R_NEWER_CRL_NOT_NEWER                       132
 # define X509_R_NO_CERT_SET_FOR_US_TO_VERIFY              105
 # define X509_R_NO_CRL_NUMBER                             130

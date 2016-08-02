@@ -5,8 +5,8 @@
 extern "C" {
 #endif
 /* OpenSSL was configured with the following options: */
-#ifndef OPENSSL_SYSNAME_MACOSX
-# define OPENSSL_SYSNAME_MACOSX
+#ifndef OPENSSL_SYSNAME_WIN32
+# define OPENSSL_SYSNAME_WIN32
 #endif
 #ifndef OPENSSL_DOING_MAKEDEPEND
 
@@ -41,20 +41,23 @@ extern "C" {
 #ifndef OPENSSL_NO_SSL_TRACE
 # define OPENSSL_NO_SSL_TRACE
 #endif
+#ifndef OPENSSL_NO_SSL2
+# define OPENSSL_NO_SSL2
+#endif
 #ifndef OPENSSL_NO_STORE
 # define OPENSSL_NO_STORE
 #endif
 #ifndef OPENSSL_NO_UNIT_TEST
 # define OPENSSL_NO_UNIT_TEST
 #endif
+#ifndef OPENSSL_NO_WEAK_SSL_CIPHERS
+# define OPENSSL_NO_WEAK_SSL_CIPHERS
+#endif
 
 #endif /* OPENSSL_DOING_MAKEDEPEND */
 
 #ifndef OPENSSL_THREADS
 # define OPENSSL_THREADS
-#endif
-#ifndef OPENSSL_NO_DYNAMIC_ENGINE
-# define OPENSSL_NO_DYNAMIC_ENGINE
 #endif
 
 /* The OPENSSL_NO_* macros are also defined as NO_* if the application
@@ -92,11 +95,17 @@ extern "C" {
 # if defined(OPENSSL_NO_SSL_TRACE) && !defined(NO_SSL_TRACE)
 #  define NO_SSL_TRACE
 # endif
+# if defined(OPENSSL_NO_SSL2) && !defined(NO_SSL2)
+#  define NO_SSL2
+# endif
 # if defined(OPENSSL_NO_STORE) && !defined(NO_STORE)
 #  define NO_STORE
 # endif
 # if defined(OPENSSL_NO_UNIT_TEST) && !defined(NO_UNIT_TEST)
 #  define NO_UNIT_TEST
+# endif
+# if defined(OPENSSL_NO_WEAK_SSL_CIPHERS) && !defined(NO_WEAK_SSL_CIPHERS)
+#  define NO_WEAK_SSL_CIPHERS
 # endif
 #endif
 
@@ -109,8 +118,8 @@ extern "C" {
 
 #if !(defined(VMS) || defined(__VMS)) /* VMS uses logical names instead */
 #if defined(HEADER_CRYPTLIB_H) && !defined(OPENSSLDIR)
-#define ENGINESDIR "/tmp/openssl-1.0.2a-i386/lib/engines"
-#define OPENSSLDIR "/tmp/openssl-1.0.2a-i386"
+#define ENGINESDIR "T:\\Build-OpenSSL-VC32-Release-DLL/lib/engines"
+#define OPENSSLDIR "T:\\Build-OpenSSL-VC32-Release-DLL/ssl"
 #endif
 #endif
 
@@ -118,6 +127,7 @@ extern "C" {
 #define OPENSSL_UNISTD <unistd.h>
 
 #undef OPENSSL_EXPORT_VAR_AS_FUNCTION
+#define OPENSSL_EXPORT_VAR_AS_FUNCTION
 
 #if defined(HEADER_IDEA_H) && !defined(IDEA_INT)
 #define IDEA_INT unsigned int
@@ -148,7 +158,7 @@ extern "C" {
  * This enables code handling data aligned at natural CPU word
  * boundary. See crypto/rc4/rc4_enc.c for further details.
  */
-#define RC4_CHUNK unsigned long
+#undef RC4_CHUNK
 #endif
 #endif
 
@@ -176,12 +186,12 @@ extern "C" {
 #define CONFIG_HEADER_RC4_LOCL_H
 /* if this is defined data[i] is used instead of *data, this is a %20
  * speedup on x86 */
-#undef RC4_INDEX
+#define RC4_INDEX
 #endif
 
 #if defined(HEADER_BF_LOCL_H) && !defined(CONFIG_HEADER_BF_LOCL_H)
 #define CONFIG_HEADER_BF_LOCL_H
-#define BF_PTR
+#undef BF_PTR
 #endif /* HEADER_BF_LOCL_H */
 
 #if defined(HEADER_DES_LOCL_H) && !defined(CONFIG_HEADER_DES_LOCL_H)
@@ -205,13 +215,13 @@ extern "C" {
 #endif
 
 #if defined(DES_RISC1) && defined(DES_RISC2)
-YOU SHOULD NOT HAVE BOTH DES_RISC1 AND DES_RISC2 DEFINED!!!!!
+#error YOU SHOULD NOT HAVE BOTH DES_RISC1 AND DES_RISC2 DEFINED!!!!!
 #endif
 
 /* Unroll the inner loop, this sometimes helps, sometimes hinders.
  * Very mucy CPU dependant */
 #ifndef DES_UNROLL
-#define DES_UNROLL
+#undef DES_UNROLL
 #endif
 
 /* These default values were supplied by
@@ -223,8 +233,8 @@ YOU SHOULD NOT HAVE BOTH DES_RISC1 AND DES_RISC2 DEFINED!!!!!
    even newer MIPS CPU's, but at the moment one size fits all for
    optimization options.  Older Sparc's work better with only UNROLL, but
    there's no way to tell at compile time what it is you're running on */
-
-#if defined( sun )		/* Newer Sparc's */
+ 
+#if defined( __sun ) || defined ( sun )		/* Newer Sparc's */
 #  define DES_PTR
 #  define DES_RISC1
 #  define DES_UNROLL
@@ -236,11 +246,11 @@ YOU SHOULD NOT HAVE BOTH DES_RISC1 AND DES_RISC2 DEFINED!!!!!
 #  define DES_PTR
 #  define DES_RISC2
 #elif defined ( _AIX )		/* RS6000 */
-/* Unknown */
+  /* Unknown */
 #elif defined( __hpux )		/* HP-PA */
-/* Unknown */
+  /* Unknown */
 #elif defined( __aux )		/* 68K */
-/* Unknown */
+  /* Unknown */
 #elif defined( __dgux )		/* 88K (but P6 in latest boxes) */
 #  define DES_UNROLL
 #elif defined( __sgi )		/* Newer MIPS */

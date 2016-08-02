@@ -95,7 +95,7 @@ void *sk_shift(_STACK *st);
 void *sk_pop(_STACK *st);
 void sk_zero(_STACK *st);
 int (*sk_set_cmp_func(_STACK *sk, int (*c) (const void *, const void *)))
-(const void *, const void *);
+ (const void *, const void *);
 _STACK *sk_dup(_STACK *st);
 void sk_sort(_STACK *st);
 int sk_is_sorted(const _STACK *st);

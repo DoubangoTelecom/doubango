@@ -341,8 +341,8 @@ ESS_ISSUER_SERIAL *ESS_ISSUER_SERIAL_new(void);
 void ESS_ISSUER_SERIAL_free(ESS_ISSUER_SERIAL *a);
 int i2d_ESS_ISSUER_SERIAL(const ESS_ISSUER_SERIAL *a, unsigned char **pp);
 ESS_ISSUER_SERIAL *d2i_ESS_ISSUER_SERIAL(ESS_ISSUER_SERIAL **a,
-        const unsigned char **pp,
-        long length);
+                                         const unsigned char **pp,
+                                         long length);
 ESS_ISSUER_SERIAL *ESS_ISSUER_SERIAL_dup(ESS_ISSUER_SERIAL *a);
 
 ESS_CERT_ID *ESS_CERT_ID_new(void);
@@ -561,7 +561,7 @@ int TS_RESP_CTX_set_accuracy(TS_RESP_CTX *ctx,
  * '3' msec, '6' usec, and so on. Default is 0.
  */
 int TS_RESP_CTX_set_clock_precision_digits(TS_RESP_CTX *ctx,
-        unsigned clock_precision_digits);
+                                           unsigned clock_precision_digits);
 /* At most we accept usec precision. */
 # define TS_MAX_CLOCK_PRECISION_DIGITS   6
 

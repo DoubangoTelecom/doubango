@@ -313,7 +313,7 @@ void X509_STORE_CTX_set_depth(X509_STORE_CTX *ctx, int depth);
                 X509_LOOKUP_ctrl((x),X509_L_ADD_DIR,(name),(long)(type),NULL)
 
 # define         X509_V_OK                                       0
-/* illegal error (for uninitialized values, to avoid X509_V_OK): 1 */
+# define         X509_V_ERR_UNSPECIFIED                          1
 
 # define         X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT            2
 # define         X509_V_ERR_UNABLE_TO_GET_CRL                    3
@@ -432,6 +432,12 @@ void X509_STORE_CTX_set_depth(X509_STORE_CTX *ctx, int depth);
 
 /* Allow partial chains if at least one certificate is in trusted store */
 # define X509_V_FLAG_PARTIAL_CHAIN               0x80000
+/*
+ * If the initial chain is not trusted, do not attempt to build an alternative
+ * chain. Alternate chain checking was introduced in 1.0.2b. Setting this flag
+ * will force the behaviour to match that of previous versions.
+ */
+# define X509_V_FLAG_NO_ALT_CHAINS               0x100000
 
 # define X509_VP_FLAG_DEFAULT                    0x1
 # define X509_VP_FLAG_OVERWRITE                  0x2
@@ -448,7 +454,7 @@ void X509_STORE_CTX_set_depth(X509_STORE_CTX *ctx, int depth);
 int X509_OBJECT_idx_by_subject(STACK_OF(X509_OBJECT) *h, int type,
                                X509_NAME *name);
 X509_OBJECT *X509_OBJECT_retrieve_by_subject(STACK_OF(X509_OBJECT) *h,
-        int type, X509_NAME *name);
+                                             int type, X509_NAME *name);
 X509_OBJECT *X509_OBJECT_retrieve_match(STACK_OF(X509_OBJECT) *h,
                                         X509_OBJECT *x);
 void X509_OBJECT_up_ref_count(X509_OBJECT *a);
@@ -468,8 +474,8 @@ void X509_STORE_set_verify_cb(X509_STORE *ctx,
 
 void X509_STORE_set_lookup_crls_cb(X509_STORE *ctx,
                                    STACK_OF(X509_CRL) *(*cb) (X509_STORE_CTX
-                                           *ctx,
-                                           X509_NAME *nm));
+                                                              *ctx,
+                                                              X509_NAME *nm));
 
 X509_STORE_CTX *X509_STORE_CTX_new(void);
 
@@ -612,28 +618,28 @@ void X509_policy_tree_free(X509_POLICY_TREE *tree);
 
 int X509_policy_tree_level_count(const X509_POLICY_TREE *tree);
 X509_POLICY_LEVEL *X509_policy_tree_get0_level(const X509_POLICY_TREE *tree,
-        int i);
+                                               int i);
 
 STACK_OF(X509_POLICY_NODE) *X509_policy_tree_get0_policies(const
-        X509_POLICY_TREE
-        *tree);
+                                                           X509_POLICY_TREE
+                                                           *tree);
 
 STACK_OF(X509_POLICY_NODE) *X509_policy_tree_get0_user_policies(const
-        X509_POLICY_TREE
-        *tree);
+                                                                X509_POLICY_TREE
+                                                                *tree);
 
 int X509_policy_level_node_count(X509_POLICY_LEVEL *level);
 
 X509_POLICY_NODE *X509_policy_level_get0_node(X509_POLICY_LEVEL *level,
-        int i);
+                                              int i);
 
 const ASN1_OBJECT *X509_policy_node_get0_policy(const X509_POLICY_NODE *node);
 
 STACK_OF(POLICYQUALINFO) *X509_policy_node_get0_qualifiers(const
-        X509_POLICY_NODE
-        *node);
+                                                           X509_POLICY_NODE
+                                                           *node);
 const X509_POLICY_NODE *X509_policy_node_get0_parent(const X509_POLICY_NODE
-        *node);
+                                                     *node);
 
 #ifdef  __cplusplus
 }

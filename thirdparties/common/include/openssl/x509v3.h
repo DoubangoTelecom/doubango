@@ -85,8 +85,8 @@ typedef void (*X509V3_EXT_FREE) (void *);
 typedef void *(*X509V3_EXT_D2I)(void *, const unsigned char **, long);
 typedef int (*X509V3_EXT_I2D) (void *, unsigned char **);
 typedef STACK_OF(CONF_VALUE) *
-(*X509V3_EXT_I2V) (const struct v3_ext_method *method, void *ext,
-                   STACK_OF(CONF_VALUE) *extlist);
+    (*X509V3_EXT_I2V) (const struct v3_ext_method *method, void *ext,
+                       STACK_OF(CONF_VALUE) *extlist);
 typedef void *(*X509V3_EXT_V2I)(const struct v3_ext_method *method,
                                 struct v3_ext_ctx *ctx,
                                 STACK_OF(CONF_VALUE) *values);
@@ -104,20 +104,20 @@ typedef void *(*X509V3_EXT_R2I)(const struct v3_ext_method *method,
 struct v3_ext_method {
     int ext_nid;
     int ext_flags;
-    /* If this is set the following four fields are ignored */
+/* If this is set the following four fields are ignored */
     ASN1_ITEM_EXP *it;
-    /* Old style ASN1 calls */
+/* Old style ASN1 calls */
     X509V3_EXT_NEW ext_new;
     X509V3_EXT_FREE ext_free;
     X509V3_EXT_D2I d2i;
     X509V3_EXT_I2D i2d;
-    /* The following pair is used for string extensions */
+/* The following pair is used for string extensions */
     X509V3_EXT_I2S i2s;
     X509V3_EXT_S2I s2i;
-    /* The following pair is used for multi-valued extensions */
+/* The following pair is used for multi-valued extensions */
     X509V3_EXT_I2V i2v;
     X509V3_EXT_V2I v2i;
-    /* The following are used for raw extensions */
+/* The following are used for raw extensions */
     X509V3_EXT_I2R i2r;
     X509V3_EXT_R2I r2i;
     void *usr_data;             /* Any extension specific data */
@@ -140,7 +140,7 @@ struct v3_ext_ctx {
     X509_CRL *crl;
     X509V3_CONF_METHOD *db_meth;
     void *db;
-    /* Maybe more here */
+/* Maybe more here */
 };
 
 typedef struct v3_ext_method X509V3_EXT_METHOD;
@@ -229,7 +229,7 @@ typedef struct DIST_POINT_NAME_st {
         GENERAL_NAMES *fullname;
         STACK_OF(X509_NAME_ENTRY) *relativename;
     } name;
-    /* If relativename then this contains the full distribution point name */
+/* If relativename then this contains the full distribution point name */
     X509_NAME *dpname;
 } DIST_POINT_NAME;
 /* All existing reasons */
@@ -530,8 +530,8 @@ ASN1_BIT_STRING *v2i_ASN1_BIT_STRING(X509V3_EXT_METHOD *method,
                                      X509V3_CTX *ctx,
                                      STACK_OF(CONF_VALUE) *nval);
 STACK_OF(CONF_VALUE) *i2v_ASN1_BIT_STRING(X509V3_EXT_METHOD *method,
-        ASN1_BIT_STRING *bits,
-        STACK_OF(CONF_VALUE) *extlist);
+                                          ASN1_BIT_STRING *bits,
+                                          STACK_OF(CONF_VALUE) *extlist);
 
 STACK_OF(CONF_VALUE) *i2v_GENERAL_NAME(X509V3_EXT_METHOD *method,
                                        GENERAL_NAME *gen,
@@ -559,7 +559,7 @@ int GENERAL_NAME_get0_otherName(GENERAL_NAME *gen,
 char *i2s_ASN1_OCTET_STRING(X509V3_EXT_METHOD *method,
                             ASN1_OCTET_STRING *ia5);
 ASN1_OCTET_STRING *s2i_ASN1_OCTET_STRING(X509V3_EXT_METHOD *method,
-        X509V3_CTX *ctx, char *str);
+                                         X509V3_CTX *ctx, char *str);
 
 DECLARE_ASN1_FUNCTIONS(EXTENDED_KEY_USAGE)
 int i2a_ACCESS_DESCRIPTION(BIO *bp, ACCESS_DESCRIPTION *a);

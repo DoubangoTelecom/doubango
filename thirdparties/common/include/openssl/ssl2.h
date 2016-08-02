@@ -137,7 +137,7 @@ extern "C" {
 #  define SSL2_MAX_RECORD_LENGTH_2_BYTE_HEADER    29998u
 # else
 #  define SSL2_MAX_RECORD_LENGTH_2_BYTE_HEADER    32767u
-/* 2^15-1 */
+                                                       /* 2^15-1 */
 # endif
 # define SSL2_MAX_RECORD_LENGTH_3_BYTE_HEADER    16383/* 2^14-1 */
 
