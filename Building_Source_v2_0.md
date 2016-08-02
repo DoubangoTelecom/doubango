@@ -11,7 +11,7 @@ sudo yum install make libtool autoconf subversion git wget libogg-devel gcc gcc-
 
 The first step is to checkout Doubango 2.0 source code:
 ```
-svn checkout https://doubango.googlecode.com/svn/branches/2.0/doubango doubango
+git clone https://github.com/DoubangoTelecom/doubango.git
 ```
 
 ### Building libsrtp ###
@@ -188,7 +188,7 @@ make && make install
 ```
 git clone https://github.com/cisco/openh264.git
 cd openh264
-git checkout v1.1
+git checkout v1.5.0
 make ENABLE64BIT=Yes # Use ENABLE64BIT=No for 32bit platforms
 make install
 ```
