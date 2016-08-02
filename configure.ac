@@ -54,7 +54,7 @@ if test "$target_os" = "android"; then
 			export ANDROID_PREFIX=arm-linux-androideabi
 			export SYSROOT=$NDK/platforms/android-3/arch-arm
 			export ANDROID_TOOLCHAIN=$(pwd)/my-android-toolchain-android-armv7-a
-    			$NDK/build/tools/make-standalone-toolchain.sh --platform=android-3 --install-dir=$ANDROID_TOOLCHAIN
+    			$NDK/build/tools/make-standalone-toolchain.sh --platform=android-3 --arch=arm --install-dir=$ANDROID_TOOLCHAIN
     			export CFLAGS='-march=armv7-a -mfloat-abi=softfp'
     			export LDFLAGS='-Wl,--fix-cortex-a8'
 			AC_SUBST(TARGET_ARCH, "arm")
@@ -63,7 +63,7 @@ if test "$target_os" = "android"; then
 			export ANDROID_PREFIX=arm-linux-androideabi
 			export SYSROOT=$NDK/platforms/android-3/arch-arm
     			export ANDROID_TOOLCHAIN=$(pwd)/my-android-toolchain-android-armv7-a-neon
-    			$NDK/build/tools/make-standalone-toolchain.sh --platform=android-3 --install-dir=$ANDROID_TOOLCHAIN
+    			$NDK/build/tools/make-standalone-toolchain.sh --platform=android-3 --arch=arm --install-dir=$ANDROID_TOOLCHAIN
     			export CFLAGS='-march=armv7-a -mfloat-abi=softfp -mfpu=neon'
     			export LDFLAGS='-Wl,--fix-cortex-a8'
 			AC_SUBST(TARGET_ARCH, "arm")
@@ -72,7 +72,7 @@ if test "$target_os" = "android"; then
 			export ANDROID_PREFIX=arm-linux-androideabi
 			export SYSROOT=$NDK/platforms/android-3/arch-arm
 			export ANDROID_TOOLCHAIN=$(pwd)/my-android-toolchain-armv5te
-    			$NDK/build/tools/make-standalone-toolchain.sh --platform=android-3 --install-dir=$ANDROID_TOOLCHAIN
+    			$NDK/build/tools/make-standalone-toolchain.sh --platform=android-3 --arch=arm --install-dir=$ANDROID_TOOLCHAIN
 			AC_SUBST(TARGET_ARCH, "arm")
 		;;
 	esac
