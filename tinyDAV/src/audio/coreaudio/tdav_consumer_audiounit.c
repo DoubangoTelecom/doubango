@@ -37,6 +37,8 @@
 #define kRingPacketCount	+10
 
 static tsk_size_t tdav_consumer_audiounit_get(tdav_consumer_audiounit_t* self, void* data, tsk_size_t size);
+static int tdav_consumer_audiounit_pause(tmedia_consumer_t* self);
+static int tdav_consumer_audiounit_resume(tmedia_consumer_t* self);
 
 static OSStatus __handle_output_buffer(void *inRefCon,
                                        AudioUnitRenderActionFlags *ioActionFlags,
@@ -108,6 +110,10 @@ int tdav_consumer_audiounit_set(tmedia_consumer_t* self, const tmedia_param_t* p
             if (tsk_striequals(param->key, "interrupt")) {
                 int32_t interrupt = *((uint8_t*)param->value) ? 1 : 0;
                 return tdav_audiounit_handle_interrupt(consumer->audioUnitHandle, interrupt);
+            }
+            else if (tsk_striequals(param->key, "pause") || tsk_striequals(param->key, "hold")) {
+                int32_t pause = *((uint8_t*)param->value) ? 1 : 0;
+                return pause ? tdav_consumer_audiounit_pause(self) : tdav_consumer_audiounit_resume(self);
             }
         }
     }
@@ -337,8 +343,40 @@ static int tdav_consumer_audiounit_pause(tmedia_consumer_t* self)
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-    consumer->paused = tsk_true;
+    if (!consumer->paused) {
+        consumer->paused = tsk_true;
+        if (consumer->started) {
+            int ret = tdav_audiounit_handle_stop(consumer->audioUnitHandle);
+            if(ret) {
+                TSK_DEBUG_ERROR("tdav_audiounit_handle_stop failed with error code=%d", ret);
+            }
+            consumer->started = false;
+        }
+    }
+    
     TSK_DEBUG_INFO("AudioUnit consumer paused");
+    return 0;
+}
+
+static int tdav_consumer_audiounit_resume(tmedia_consumer_t* self)
+{
+    tdav_consumer_audiounit_t* consumer = (tdav_consumer_audiounit_t*)self;
+    if(!consumer) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    if (consumer->paused) {
+        consumer->paused = tsk_false;
+        if (!consumer->started) {
+            int ret = tdav_audiounit_handle_start(consumer->audioUnitHandle);
+            if(ret) {
+                TSK_DEBUG_ERROR("tdav_audiounit_handle_start failed with error code=%d", ret);
+            }
+            consumer->started = true;
+        }
+    }
+    
+    TSK_DEBUG_INFO("AudioUnit consumer resumed");
     return 0;
 }
 
