@@ -35,6 +35,9 @@
 
 #define kRingPacketCount 10
 
+static int tdav_producer_audiounit_pause(tmedia_producer_t* self);
+static int tdav_producer_audiounit_resume(tmedia_producer_t* self);
+
 static OSStatus __handle_input_buffer(void *inRefCon,
                                       AudioUnitRenderActionFlags *ioActionFlags,
                                       const AudioTimeStamp *inTimeStamp,
@@ -90,6 +93,10 @@ int tdav_producer_audiounit_set(tmedia_producer_t* self, const tmedia_param_t* p
             else if (tsk_striequals(param->key, "interrupt")) {
                 int32_t interrupt = *((uint8_t*)param->value) ? 1 : 0;
                 return tdav_audiounit_handle_interrupt(producer->audioUnitHandle, interrupt);
+            }
+            else if (tsk_striequals(param->key, "pause") || tsk_striequals(param->key, "hold")) {
+                int32_t pause = *((uint8_t*)param->value) ? 1 : 0;
+                return pause ? tdav_producer_audiounit_pause(self) : tdav_producer_audiounit_resume(self);
             }
         }
     }
@@ -319,8 +326,40 @@ static int tdav_producer_audiounit_pause(tmedia_producer_t* self)
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-    producer->paused = tsk_true;
+    if (!producer->paused) {
+        producer->paused = tsk_true;
+        if (producer->started) {
+            int ret = tdav_audiounit_handle_stop(producer->audioUnitHandle);
+            if(ret) {
+                TSK_DEBUG_ERROR("tdav_audiounit_handle_stop failed with error code=%d", ret);
+                // do not return even if failed => we MUST stop the thread!
+            }
+            producer->started = false;
+        }
+    }
     TSK_DEBUG_INFO("AudioUnit producer paused");
+    return 0;
+}
+
+static int tdav_producer_audiounit_resume(tmedia_producer_t* self)
+{
+    tdav_producer_audiounit_t* producer = (tdav_producer_audiounit_t*)self;
+    if(!producer) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    if (producer->paused) {
+        if (!producer->started) {
+            int ret = tdav_audiounit_handle_start(producer->audioUnitHandle);
+            if(ret) {
+                TSK_DEBUG_ERROR("tdav_audiounit_handle_start failed with error code=%d", ret);
+                // do not return even if failed => we MUST stop the thread!
+            }
+        }
+        producer->paused = false;
+        producer->started = true;
+    }
+    TSK_DEBUG_INFO("AudioUnit producer resumed");
     return 0;
 }
 

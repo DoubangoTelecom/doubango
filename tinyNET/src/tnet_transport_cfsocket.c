@@ -1325,6 +1325,7 @@ bail:
             }
         }
         tsk_safeobj_unlock(context);
+
         // Release context
         CFRelease(context->cf_run_loop);
         context->cf_run_loop = NULL;
