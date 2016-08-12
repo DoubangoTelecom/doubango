@@ -277,6 +277,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
             tsk_list_foreach(item, self->ss->caps) {
                 tsk_params_add_param(&TSIP_HEADER(request->Contact)->params, TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value);
             }
+			tsk_strupdate(&(request->Contact->uri->display_name), TSIP_DIALOG_GET_STACK(self)->identity.display_name);
         }
 
         break;

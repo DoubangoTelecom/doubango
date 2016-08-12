@@ -89,6 +89,9 @@ static int __tsip_stack_set(tsip_stack_t *self, va_list* app)
             /* (const char*)NAME_STR */
             const char* NAME_STR = va_arg(*app, const char*);
             tsk_strupdate(&self->identity.display_name, NAME_STR);
+			if (self->identity.impu) {
+				tsk_strupdate(&self->identity.impu->display_name, NAME_STR);
+			}
             break;
         }
         case tsip_pname_impu:
@@ -98,6 +101,7 @@ static int __tsip_stack_set(tsip_stack_t *self, va_list* app)
             if(!tsk_strnullORempty(URI_STR)) {
                 tsip_uri_t *uri = tsip_uri_parse(URI_STR, tsk_strlen(URI_STR));
                 if(uri) {
+					tsk_strupdate(&uri->display_name, self->identity.display_name);
                     if(curr == tsip_pname_impu) {
                         TSK_OBJECT_SAFE_FREE(self->identity.impu);
                         self->identity.impu = uri;

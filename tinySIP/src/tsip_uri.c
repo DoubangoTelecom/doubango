@@ -156,11 +156,15 @@ char* tsip_uri_tostring(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_
 tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_t quote)
 {
     tsip_uri_t *newuri = tsk_null;
-    tsk_buffer_t *output = tsk_buffer_create_null();
-    if((tsip_uri_serialize(uri, with_params, quote, output)) == 0) {
-        newuri = tsip_uri_parse(output->data, output->size);
-    }
-    TSK_OBJECT_SAFE_FREE(output);
+	if (uri) {
+		tsk_buffer_t *output = tsk_buffer_create_null();
+		if((tsip_uri_serialize(uri, with_params, quote, output)) == 0) {
+			if ((newuri = tsip_uri_parse(output->data, output->size))) {
+				tsk_strupdate(&newuri->display_name, uri->display_name);
+			}
+		}
+		TSK_OBJECT_SAFE_FREE(output);
+	}
 
     return newuri;
 }
