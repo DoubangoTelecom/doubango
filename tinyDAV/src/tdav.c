@@ -147,6 +147,17 @@ static struct tsk_plugin_s* __dll_plugin_ipsec_wfp = tsk_null; /* IPSec implemen
 
 #if HAVE_FFMPEG
 #	include <libavcodec/avcodec.h>
+#	if LIBAVCODEC_VERSION_MAJOR >= 54
+	AVCodecContext *avcodec_alloc_context(void) {
+		return avcodec_alloc_context3(NULL);
+	}
+	void avcodec_get_context_defaults(AVCodecContext *s) {
+		avcodec_get_context_defaults3(s, NULL);
+	}
+	int avcodec_open(AVCodecContext *avctx, AVCodec *codec) {
+		return avcodec_open2(avctx, codec, NULL);
+	}
+#	endif
 #endif
 
 static inline int _tdav_codec_plugins_collect();
