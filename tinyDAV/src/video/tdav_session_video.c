@@ -47,6 +47,8 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#include <limits.h> /* INT_MAX */
+
 // Minimum time between two incoming FIR. If smaller, the request from the remote party will be ignored
 // Tell the encoder to send IDR frame if condition is met
 #if METROPOLIS
