@@ -39,6 +39,8 @@
 static tsk_size_t tdav_consumer_audiounit_get(tdav_consumer_audiounit_t* self, void* data, tsk_size_t size);
 static int tdav_consumer_audiounit_pause(tmedia_consumer_t* self);
 static int tdav_consumer_audiounit_resume(tmedia_consumer_t* self);
+static int tdav_consumer_audiounit_init(tmedia_consumer_t* self);
+static int tdav_consumer_audiounit_deinit(tmedia_consumer_t* self);
 
 static OSStatus __handle_output_buffer(void *inRefCon,
                                        AudioUnitRenderActionFlags *ioActionFlags,
@@ -122,167 +124,23 @@ int tdav_consumer_audiounit_set(tmedia_consumer_t* self, const tmedia_param_t* p
 
 static int tdav_consumer_audiounit_prepare(tmedia_consumer_t* self, const tmedia_codec_t* codec)
 {
-    static UInt32 flagOne = 1;
-    AudioStreamBasicDescription audioFormat;
-#define kOutputBus  0
-
     tdav_consumer_audiounit_t* consumer = (tdav_consumer_audiounit_t*)self;
-    OSStatus status = noErr;
-
-    if(!consumer || !codec || !codec->plugin) {
+    
+    if (!consumer || !codec || !codec->plugin) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-    if(!consumer->audioUnitHandle) {
-        if(!(consumer->audioUnitHandle = tdav_audiounit_handle_create(TMEDIA_CONSUMER(consumer)->session_id))) {
-            TSK_DEBUG_ERROR("Failed to get audio unit instance for session with id=%lld", TMEDIA_CONSUMER(consumer)->session_id);
-            return -3;
-        }
-    }
-
-    // enable
-    status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle),
-                                  kAudioOutputUnitProperty_EnableIO,
-                                  kAudioUnitScope_Output,
-                                  kOutputBus,
-                                  &flagOne,
-                                  sizeof(flagOne));
-    if(status) {
-        TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO) failed with status=%d", (int32_t)status);
-        return -4;
-    }
-    else {
-
-#if !TARGET_OS_IPHONE // strange: TARGET_OS_MAC is equal to '1' on Smulator
-        UInt32 param;
-
-        // disable input
-        param = 0;
-        status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle), kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, 1, &param, sizeof(UInt32));
-        if(status != noErr) {
-            TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO) failed with status=%ld", (signed long)status);
-            return -4;
-        }
-
-        // set default audio device
-        param = sizeof(AudioDeviceID);
-        AudioDeviceID outputDeviceID;
-        status = AudioHardwareGetProperty(kAudioHardwarePropertyDefaultOutputDevice, &param, &outputDeviceID);
-        if(status != noErr) {
-            TSK_DEBUG_ERROR("AudioHardwareGetProperty(kAudioHardwarePropertyDefaultOutputDevice) failed with status=%ld", (signed long)status);
-            return -4;
-        }
-
-        // set the current device to the default input unit
-        status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle),
-                                      kAudioOutputUnitProperty_CurrentDevice,
-                                      kAudioUnitScope_Global,
-                                      0,
-                                      &outputDeviceID,
-                                      sizeof(AudioDeviceID));
-        if(status != noErr) {
-            TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_CurrentDevice) failed with status=%ld", (signed long)status);
-            return -4;
-        }
-
-#endif
-
-        TMEDIA_CONSUMER(consumer)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_DECODING(codec);
-        TMEDIA_CONSUMER(consumer)->audio.in.channels = TMEDIA_CODEC_CHANNELS_AUDIO_DECODING(codec);
-        TMEDIA_CONSUMER(consumer)->audio.in.rate = TMEDIA_CODEC_RATE_DECODING(codec);
-
-        TSK_DEBUG_INFO("AudioUnit consumer: in.channels=%d, out.channles=%d, in.rate=%d, out.rate=%d, ptime=%d",
-                       TMEDIA_CONSUMER(consumer)->audio.in.channels,
-                       TMEDIA_CONSUMER(consumer)->audio.out.channels,
-                       TMEDIA_CONSUMER(consumer)->audio.in.rate,
-                       TMEDIA_CONSUMER(consumer)->audio.out.rate,
-                       TMEDIA_CONSUMER(consumer)->audio.ptime);
-
-        audioFormat.mSampleRate = TMEDIA_CONSUMER(consumer)->audio.out.rate ? TMEDIA_CONSUMER(consumer)->audio.out.rate : TMEDIA_CONSUMER(consumer)->audio.in.rate;
-        audioFormat.mFormatID = kAudioFormatLinearPCM;
-        audioFormat.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
-        audioFormat.mChannelsPerFrame = TMEDIA_CONSUMER(consumer)->audio.in.channels;
-        audioFormat.mFramesPerPacket = 1;
-        audioFormat.mBitsPerChannel = TMEDIA_CONSUMER(consumer)->audio.bits_per_sample;
-        audioFormat.mBytesPerPacket = audioFormat.mBitsPerChannel / 8 * audioFormat.mChannelsPerFrame;
-        audioFormat.mBytesPerFrame = audioFormat.mBytesPerPacket;
-        audioFormat.mReserved = 0;
-        status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle),
-                                      kAudioUnitProperty_StreamFormat,
-                                      kAudioUnitScope_Input,
-                                      kOutputBus,
-                                      &audioFormat,
-                                      sizeof(audioFormat));
-
-        if(status) {
-            TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioUnitProperty_StreamFormat) failed with status=%ld", (signed long)status);
-            return -5;
-        }
-        else {
-            // configure
-            if(tdav_audiounit_handle_configure(consumer->audioUnitHandle, tsk_true, TMEDIA_CONSUMER(consumer)->audio.ptime, &audioFormat)) {
-                TSK_DEBUG_ERROR("tdav_audiounit_handle_set_rate(%d) failed", TMEDIA_CONSUMER(consumer)->audio.out.rate);
-                return -4;
-            }
-
-            // set callback function
-            AURenderCallbackStruct callback;
-            callback.inputProc = __handle_output_buffer;
-            callback.inputProcRefCon = consumer;
-            status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle),
-                                          kAudioUnitProperty_SetRenderCallback,
-                                          kAudioUnitScope_Input,
-                                          kOutputBus,
-                                          &callback,
-                                          sizeof(callback));
-            if(status) {
-                TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback) failed with status=%ld", (signed long)status);
-                return -6;
-            }
-        }
-    }
-
-    // allocate the chunck buffer and create the ring
-    consumer->ring.chunck.size = (TMEDIA_CONSUMER(consumer)->audio.ptime * audioFormat.mSampleRate * audioFormat.mBytesPerFrame) / 1000;
-    consumer->ring.size = kRingPacketCount * consumer->ring.chunck.size;
-    if(!(consumer->ring.chunck.buffer = tsk_realloc(consumer->ring.chunck.buffer, consumer->ring.chunck.size))) {
-        TSK_DEBUG_ERROR("Failed to allocate new buffer");
-        return -7;
-    }
-    if(!consumer->ring.buffer) {
-        consumer->ring.buffer = speex_buffer_init((int)consumer->ring.size);
-    }
-    else {
-        int ret;
-        if((ret = (int)speex_buffer_resize(consumer->ring.buffer, (int)consumer->ring.size)) < 0) {
-            TSK_DEBUG_ERROR("speex_buffer_resize(%d) failed with error code=%d", (int)consumer->ring.size, ret);
-            return ret;
-        }
-    }
-    if(!consumer->ring.buffer) {
-        TSK_DEBUG_ERROR("Failed to create a new ring buffer with size = %d", (int)consumer->ring.size);
-        return -8;
-    }
-    if(!consumer->ring.mutex && !(consumer->ring.mutex = tsk_mutex_create_2(tsk_false))) {
-        TSK_DEBUG_ERROR("Failed to create mutex");
-        return -9;
-    }
-
-    // set maximum frames per slice as buffer size
-    //UInt32 numFrames = (UInt32)consumer->ring.chunck.size;
-    //status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle),
-    //							  kAudioUnitProperty_MaximumFramesPerSlice,
-    //							  kAudioUnitScope_Global,
-    //							  0,
-    //							  &numFrames,
-    //							  sizeof(numFrames));
-    //if(status){
-    //	TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioUnitProperty_MaximumFramesPerSlice, %u) failed with status=%d", (unsigned)numFrames, (int32_t)status);
-    //	return -6;
-    //}
-
-    TSK_DEBUG_INFO("AudioUnit consumer prepared");
-    return tdav_audiounit_handle_signal_consumer_prepared(consumer->audioUnitHandle);
+    
+    // Initialize the decoder parameters without allocating AudioUnit resourses
+    TMEDIA_CONSUMER(consumer)->audio.ptime = TMEDIA_CODEC_PTIME_AUDIO_DECODING(codec);
+    TMEDIA_CONSUMER(consumer)->audio.in.channels = TMEDIA_CODEC_CHANNELS_AUDIO_DECODING(codec);
+    TMEDIA_CONSUMER(consumer)->audio.in.rate = TMEDIA_CODEC_RATE_DECODING(codec);
+    
+    TSK_DEBUG_INFO("AudioUnit consumer prepared (ptime=%d, channels=%d, rate=%d)",
+                   (int)TMEDIA_CONSUMER(consumer)->audio.ptime,
+                   (int)TMEDIA_CONSUMER(consumer)->audio.in.channels,
+                   (int)TMEDIA_CONSUMER(consumer)->audio.in.rate);
+    return 0;
 }
 
 static int tdav_consumer_audiounit_start(tmedia_consumer_t* self)
@@ -293,16 +151,28 @@ static int tdav_consumer_audiounit_start(tmedia_consumer_t* self)
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-    if(consumer->paused) {
+    if (consumer->paused) {
         consumer->paused = tsk_false;
     }
-    if(consumer->started) {
+    if (consumer->started) {
         TSK_DEBUG_WARN("Already started");
         return 0;
     }
     else {
-        int ret = tdav_audiounit_handle_start(consumer->audioUnitHandle);
-        if(ret) {
+        int ret;
+        // Initialize the consumer if not already done
+        if (!consumer->ready) {
+            ret = tdav_consumer_audiounit_init(self);
+            if (ret) {
+                tdav_consumer_audiounit_deinit(self);
+                TSK_DEBUG_ERROR("tdav_consumer_audiounit_init failed with error code=%d", ret);
+                return ret;
+            }
+        }
+        // Start the handle (will wait until producer is ready)
+        ret = tdav_audiounit_handle_start(consumer->audioUnitHandle);
+        if (ret) {
+            tdav_consumer_audiounit_deinit(self);
             TSK_DEBUG_ERROR("tdav_audiounit_handle_start failed with error code=%d", ret);
             return ret;
         }
@@ -344,14 +214,8 @@ static int tdav_consumer_audiounit_pause(tmedia_consumer_t* self)
         return -1;
     }
     if (!consumer->paused) {
+        tdav_consumer_audiounit_deinit(self);
         consumer->paused = tsk_true;
-        if (consumer->started) {
-            int ret = tdav_audiounit_handle_stop(consumer->audioUnitHandle);
-            if(ret) {
-                TSK_DEBUG_ERROR("tdav_audiounit_handle_stop failed with error code=%d", ret);
-            }
-            consumer->started = false;
-        }
     }
     
     TSK_DEBUG_INFO("AudioUnit consumer paused");
@@ -366,13 +230,13 @@ static int tdav_consumer_audiounit_resume(tmedia_consumer_t* self)
         return -1;
     }
     if (consumer->paused) {
-        consumer->paused = tsk_false;
+        consumer->paused = tsk_false; // *must* be  before start()
         if (!consumer->started) {
-            int ret = tdav_audiounit_handle_start(consumer->audioUnitHandle);
-            if(ret) {
-                TSK_DEBUG_ERROR("tdav_audiounit_handle_start failed with error code=%d", ret);
+            int ret = tdav_consumer_audiounit_start(self);
+            if (ret) {
+                TSK_DEBUG_ERROR("Failed to stop the consumer");
+                return ret;
             }
-            consumer->started = true;
         }
     }
     
@@ -382,34 +246,218 @@ static int tdav_consumer_audiounit_resume(tmedia_consumer_t* self)
 
 static int tdav_consumer_audiounit_stop(tmedia_consumer_t* self)
 {
-    tdav_consumer_audiounit_t* consumer = (tdav_consumer_audiounit_t*)self;
+    int ret = tdav_consumer_audiounit_deinit(self);
+    if (ret) {
+        TSK_DEBUG_ERROR("Failed to stop the consumer");
+        return ret;
+    }
+    TSK_DEBUG_INFO("AudioUnit consumer stoppped");
+    return 0;
+}
 
+static int tdav_consumer_audiounit_init(tmedia_consumer_t* self)
+{
+    static UInt32 flagOne = 1;
+    AudioStreamBasicDescription audioFormat;
+#define kOutputBus  0
+    
+    tdav_consumer_audiounit_t* consumer = (tdav_consumer_audiounit_t*)self;
+    OSStatus status = noErr;
+    
+    if (!consumer) {
+        TSK_DEBUG_ERROR("Invalid parameter");
+        return -1;
+    }
+    
+    if (consumer->ready) {
+        TSK_DEBUG_INFO("AudioUnit consumer already initialized");
+        return 0;
+    }
+    
+    // create handle if not already done
+    if (!consumer->audioUnitHandle) {
+        if(!(consumer->audioUnitHandle = tdav_audiounit_handle_create(TMEDIA_CONSUMER(consumer)->session_id))) {
+            TSK_DEBUG_ERROR("Failed to get audio unit instance for session with id=%lld", TMEDIA_CONSUMER(consumer)->session_id);
+            return -2;
+        }
+    }
+    
+    // enable
+    status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle),
+                                  kAudioOutputUnitProperty_EnableIO,
+                                  kAudioUnitScope_Output,
+                                  kOutputBus,
+                                  &flagOne,
+                                  sizeof(flagOne));
+    if(status) {
+        TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO) failed with status=%d", (int32_t)status);
+        return -4;
+    }
+    else {
+        
+#if !TARGET_OS_IPHONE // strange: TARGET_OS_MAC is equal to '1' on Smulator
+        UInt32 param;
+        
+        // disable input
+        param = 0;
+        status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle), kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, 1, &param, sizeof(UInt32));
+        if(status != noErr) {
+            TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_EnableIO) failed with status=%ld", (signed long)status);
+            return -4;
+        }
+        
+        // set default audio device
+        param = sizeof(AudioDeviceID);
+        AudioDeviceID outputDeviceID;
+        status = AudioHardwareGetProperty(kAudioHardwarePropertyDefaultOutputDevice, &param, &outputDeviceID);
+        if(status != noErr) {
+            TSK_DEBUG_ERROR("AudioHardwareGetProperty(kAudioHardwarePropertyDefaultOutputDevice) failed with status=%ld", (signed long)status);
+            return -4;
+        }
+        
+        // set the current device to the default input unit
+        status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle),
+                                      kAudioOutputUnitProperty_CurrentDevice,
+                                      kAudioUnitScope_Global,
+                                      0,
+                                      &outputDeviceID,
+                                      sizeof(AudioDeviceID));
+        if(status != noErr) {
+            TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_CurrentDevice) failed with status=%ld", (signed long)status);
+            return -4;
+        }
+        
+#endif
+        
+        TSK_DEBUG_INFO("AudioUnit consumer: in.channels=%d, out.channles=%d, in.rate=%d, out.rate=%d, ptime=%d",
+                       TMEDIA_CONSUMER(consumer)->audio.in.channels,
+                       TMEDIA_CONSUMER(consumer)->audio.out.channels,
+                       TMEDIA_CONSUMER(consumer)->audio.in.rate,
+                       TMEDIA_CONSUMER(consumer)->audio.out.rate,
+                       TMEDIA_CONSUMER(consumer)->audio.ptime);
+        
+        audioFormat.mSampleRate = TMEDIA_CONSUMER(consumer)->audio.out.rate ? TMEDIA_CONSUMER(consumer)->audio.out.rate : TMEDIA_CONSUMER(consumer)->audio.in.rate;
+        audioFormat.mFormatID = kAudioFormatLinearPCM;
+        audioFormat.mFormatFlags = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
+        audioFormat.mChannelsPerFrame = TMEDIA_CONSUMER(consumer)->audio.in.channels;
+        audioFormat.mFramesPerPacket = 1;
+        audioFormat.mBitsPerChannel = TMEDIA_CONSUMER(consumer)->audio.bits_per_sample;
+        audioFormat.mBytesPerPacket = audioFormat.mBitsPerChannel / 8 * audioFormat.mChannelsPerFrame;
+        audioFormat.mBytesPerFrame = audioFormat.mBytesPerPacket;
+        audioFormat.mReserved = 0;
+        status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle),
+                                      kAudioUnitProperty_StreamFormat,
+                                      kAudioUnitScope_Input,
+                                      kOutputBus,
+                                      &audioFormat,
+                                      sizeof(audioFormat));
+        
+        if(status) {
+            TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioUnitProperty_StreamFormat) failed with status=%ld", (signed long)status);
+            return -5;
+        }
+        else {
+            // configure
+            if(tdav_audiounit_handle_configure(consumer->audioUnitHandle, tsk_true, TMEDIA_CONSUMER(consumer)->audio.ptime, &audioFormat)) {
+                TSK_DEBUG_ERROR("tdav_audiounit_handle_set_rate(%d) failed", TMEDIA_CONSUMER(consumer)->audio.out.rate);
+                return -4;
+            }
+            
+            // set callback function
+            AURenderCallbackStruct callback;
+            callback.inputProc = __handle_output_buffer;
+            callback.inputProcRefCon = consumer;
+            status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle),
+                                          kAudioUnitProperty_SetRenderCallback,
+                                          kAudioUnitScope_Input,
+                                          kOutputBus,
+                                          &callback,
+                                          sizeof(callback));
+            if(status) {
+                TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioOutputUnitProperty_SetInputCallback) failed with status=%ld", (signed long)status);
+                return -6;
+            }
+        }
+    }
+    
+    // allocate the chunck buffer and create the ring
+    consumer->ring.chunck.size = (TMEDIA_CONSUMER(consumer)->audio.ptime * audioFormat.mSampleRate * audioFormat.mBytesPerFrame) / 1000;
+    consumer->ring.size = kRingPacketCount * consumer->ring.chunck.size;
+    if(!(consumer->ring.chunck.buffer = tsk_realloc(consumer->ring.chunck.buffer, consumer->ring.chunck.size))) {
+        TSK_DEBUG_ERROR("Failed to allocate new buffer");
+        return -7;
+    }
+    if(!consumer->ring.buffer) {
+        consumer->ring.buffer = speex_buffer_init((int)consumer->ring.size);
+    }
+    else {
+        int ret;
+        if((ret = (int)speex_buffer_resize(consumer->ring.buffer, (int)consumer->ring.size)) < 0) {
+            TSK_DEBUG_ERROR("speex_buffer_resize(%d) failed with error code=%d", (int)consumer->ring.size, ret);
+            return ret;
+        }
+    }
+    if(!consumer->ring.buffer) {
+        TSK_DEBUG_ERROR("Failed to create a new ring buffer with size = %d", (int)consumer->ring.size);
+        return -8;
+    }
+    if(!consumer->ring.mutex && !(consumer->ring.mutex = tsk_mutex_create_2(tsk_false))) {
+        TSK_DEBUG_ERROR("Failed to create mutex");
+        return -9;
+    }
+    
+    // set maximum frames per slice as buffer size
+    //UInt32 numFrames = (UInt32)consumer->ring.chunck.size;
+    //status = AudioUnitSetProperty(tdav_audiounit_handle_get_instance(consumer->audioUnitHandle),
+    //							  kAudioUnitProperty_MaximumFramesPerSlice,
+    //							  kAudioUnitScope_Global,
+    //							  0,
+    //							  &numFrames,
+    //							  sizeof(numFrames));
+    //if(status){
+    //	TSK_DEBUG_ERROR("AudioUnitSetProperty(kAudioUnitProperty_MaximumFramesPerSlice, %u) failed with status=%d", (unsigned)numFrames, (int32_t)status);
+    //	return -6;
+    //}
+    
+    if (tdav_audiounit_handle_signal_consumer_ready(consumer->audioUnitHandle)) {
+        TSK_DEBUG_ERROR("tdav_audiounit_handle_signal_consumer_ready failed");
+        return -10;
+    }
+    
+    consumer->ready = tsk_true;
+    
+    TSK_DEBUG_INFO("AudioUnit consumer initialized and ready");
+    return 0;
+}
+
+int tdav_consumer_audiounit_deinit(tmedia_consumer_t* self)
+{
+    tdav_consumer_audiounit_t* consumer = (tdav_consumer_audiounit_t*)self;
     if(!consumer) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
-    if(!consumer->started) {
-        TSK_DEBUG_INFO("Not started");
-        return 0;
-    }
-    else {
+    // Stop
+    if (consumer->started) {
         int ret = tdav_audiounit_handle_stop(consumer->audioUnitHandle);
-        if(ret) {
+        if (ret) {
             TSK_DEBUG_ERROR("tdav_audiounit_handle_stop failed with error code=%d", ret);
-            return ret;
         }
+        consumer->started = tsk_false;
     }
+    // Destroy handle (will be re-created by the next start)
 #if TARGET_OS_IPHONE
     //https://devforums.apple.com/thread/118595
-    if(consumer->audioUnitHandle) {
+    if (consumer->audioUnitHandle) {
         tdav_audiounit_handle_destroy(&consumer->audioUnitHandle);
     }
 #endif
-
-    consumer->started = tsk_false;
-    TSK_DEBUG_INFO("AudioUnit consumer stoppped");
+    consumer->ready = tsk_false;
+    consumer->paused = tsk_false;
+    
+    TSK_DEBUG_INFO("AudioUnit consumer deinitialized");
+    
     return 0;
-
 }
 
 //
@@ -432,14 +480,7 @@ static tsk_object_t* tdav_consumer_audiounit_dtor(tsk_object_t * self)
     tdav_consumer_audiounit_t *consumer = self;
     if(consumer) {
         /* deinit self */
-        // Stop the consumer if not done
-        if(consumer->started) {
-            tdav_consumer_audiounit_stop(self);
-        }
-        // destroy handle
-        if(consumer->audioUnitHandle) {
-            tdav_audiounit_handle_destroy(&consumer->audioUnitHandle);
-        }
+        tdav_consumer_audiounit_deinit(TMEDIA_CONSUMER(self));
         TSK_FREE(consumer->ring.chunck.buffer);
         if(consumer->ring.buffer) {
             speex_buffer_destroy(consumer->ring.buffer);

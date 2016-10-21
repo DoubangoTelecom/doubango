@@ -60,7 +60,7 @@ typedef struct tdav_audiounit_instance_s {
     struct {
         unsigned consumer:1;
         unsigned producer:1;
-    } prepared;
+    } ready;
     unsigned started:1;
     unsigned interrupted:1;
 
@@ -75,7 +75,7 @@ typedef tsk_list_t tdav_audiounit_instances_L_t;
 static AudioComponent __audioSystem = tsk_null;
 static tdav_audiounit_instances_L_t* __audioUnitInstances = tsk_null;
 
-static int _tdav_audiounit_handle_signal_xxx_prepared(tdav_audiounit_handle_t* self, tsk_bool_t consumer)
+static int _tdav_audiounit_handle_signal_xxx_ready(tdav_audiounit_handle_t* self, tsk_bool_t consumer)
 {
     tdav_audiounit_instance_t* inst = (tdav_audiounit_instance_t*)self;
     if(!inst || !inst->audioUnit) {
@@ -85,18 +85,18 @@ static int _tdav_audiounit_handle_signal_xxx_prepared(tdav_audiounit_handle_t* s
 
     tsk_safeobj_lock(inst);
 
-    if(consumer) {
-        inst->prepared.consumer = tsk_true;
+    if (consumer) {
+        inst->ready.consumer = tsk_true;
     }
     else {
-        inst->prepared.producer = tsk_true;
+        inst->ready.producer = tsk_true;
     }
 
     OSStatus status;
 
     // For iOS we are using full-duplex AudioUnit and we wait for both consumer and producer to be prepared
 #if TARGET_OS_IPHONE
-    if(inst->prepared.consumer && inst->prepared.producer)
+    if(inst->ready.consumer && inst->ready.producer)
 #endif
     {
         status = AudioUnitInitialize(inst->audioUnit);
@@ -184,14 +184,14 @@ AudioComponentInstance tdav_audiounit_handle_get_instance(tdav_audiounit_handle_
     return ((tdav_audiounit_instance_t*)self)->audioUnit;
 }
 
-int tdav_audiounit_handle_signal_consumer_prepared(tdav_audiounit_handle_t* self)
+int tdav_audiounit_handle_signal_consumer_ready(tdav_audiounit_handle_t* self)
 {
-    return _tdav_audiounit_handle_signal_xxx_prepared(self, tsk_true);
+    return _tdav_audiounit_handle_signal_xxx_ready(self, tsk_true);
 }
 
-int tdav_audiounit_handle_signal_producer_prepared(tdav_audiounit_handle_t* self)
+int tdav_audiounit_handle_signal_producer_ready(tdav_audiounit_handle_t* self)
 {
-    return _tdav_audiounit_handle_signal_xxx_prepared(self, tsk_false);
+    return _tdav_audiounit_handle_signal_xxx_ready(self, tsk_false);
 }
 
 int tdav_audiounit_handle_start(tdav_audiounit_handle_t* self)
@@ -204,18 +204,23 @@ int tdav_audiounit_handle_start(tdav_audiounit_handle_t* self)
     }
 
     tsk_safeobj_lock(inst);
-    status = (OSStatus)tdav_apple_enable_audio();
-    if (status == noErr) {
-        if ((!inst->started || inst->interrupted) && (status = AudioOutputUnitStart(inst->audioUnit))) {
-            TSK_DEBUG_ERROR("AudioOutputUnitStart failed with status=%ld", (signed long)status);
+    if (inst->ready.consumer && inst->ready.producer) {
+        status = (OSStatus)tdav_apple_enable_audio();
+        if (status == noErr) {
+            if ((!inst->started || inst->interrupted) && (status = AudioOutputUnitStart(inst->audioUnit))) {
+                TSK_DEBUG_ERROR("AudioOutputUnitStart failed with status=%ld", (signed long)status);
+            }
+        }
+        else {
+            TSK_DEBUG_ERROR("tdav_apple_enable_audio() failed with status=%ld", (signed long)status);
+        }
+        inst->started = (status == noErr) ? tsk_true : tsk_false;
+        if (inst->started) {
+            inst->interrupted = 0;
         }
     }
     else {
-        TSK_DEBUG_ERROR("tdav_apple_enable_audio() failed with status=%ld", (signed long)status);
-    }
-    inst->started = (status == noErr) ? tsk_true : tsk_false;
-    if (inst->started) {
-        inst->interrupted = 0;
+        TSK_DEBUG_INFO("AudioUnit producer(%d) or consumer(%d) not ready yet ...delaying start", (int)inst->ready.producer, (int)inst->ready.consumer);
     }
     tsk_safeobj_unlock(inst);
     return status ? -2 : 0;
@@ -223,7 +228,7 @@ int tdav_audiounit_handle_start(tdav_audiounit_handle_t* self)
 
 uint32_t tdav_audiounit_handle_get_frame_duration(tdav_audiounit_handle_t* self)
 {
-    if(self) {
+    if (self) {
         return ((tdav_audiounit_instance_t*)self)->frame_duration;
     }
     return 0;
@@ -349,28 +354,30 @@ int tdav_audiounit_handle_stop(tdav_audiounit_handle_t* self)
 {
     tdav_audiounit_instance_t* inst = (tdav_audiounit_instance_t*)self;
     OSStatus status = noErr;
-    if(!inst || (inst->started && !inst->audioUnit)) {
+    if (!inst || (inst->started && !inst->audioUnit)) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
 
     tsk_safeobj_lock(inst);
-    if(inst->started && (status = AudioOutputUnitStop(inst->audioUnit))) {
+    if (inst->started && (status = AudioOutputUnitStop(inst->audioUnit))) {
         TSK_DEBUG_ERROR("AudioOutputUnitStop failed with status=%ld", (signed long)status);
     }
     inst->started = (status == noErr ? tsk_false : tsk_true);
+    inst->ready.consumer = tsk_false;
+    inst->ready.producer = tsk_false;
     tsk_safeobj_unlock(inst);
     return (status != noErr) ? -2 : 0;
 }
 
 int tdav_audiounit_handle_destroy(tdav_audiounit_handle_t** self)
 {
-    if(!self || !*self) {
+    if (!self || !*self) {
         TSK_DEBUG_ERROR("Invalid parameter");
         return -1;
     }
     tsk_list_lock(__audioUnitInstances);
-    if(tsk_object_get_refcount(*self)==1) {
+    if (tsk_object_get_refcount(*self)==1) {
         tsk_list_remove_item_by_data(__audioUnitInstances, *self);
     }
     else {

@@ -42,6 +42,7 @@ typedef struct tdav_consumer_audiounit_s {
     tdav_audiounit_handle_t* audioUnitHandle;
     unsigned started:1;
     unsigned paused:1;
+    unsigned ready:1;
 
     struct {
         struct {

@@ -41,7 +41,8 @@ typedef struct tdav_producer_audiounit_s {
     tdav_audiounit_handle_t* audioUnitHandle;
     unsigned started:1;
     unsigned paused:1;
-    unsigned muted;
+    unsigned ready:1;
+    unsigned muted:1;
 
     struct {
         struct {
