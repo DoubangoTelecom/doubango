@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou [at) doubango (DOT) org>
 *
 * This file is part of Open Source Doubango Framework.
 *
@@ -26,7 +26,7 @@
  * This file incude all your preferences or configuration. All specific configuration
  * must be defined in this file. You must include this file in all your header files.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou [at) doubango (DOT) org>
  *
 
  */

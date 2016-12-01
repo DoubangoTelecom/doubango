@@ -194,7 +194,6 @@ static tsk_object_t* tcomp_compressordisp_ctor(tsk_object_t * self, va_list * ap
 {
     tcomp_compressordisp_t *compressordisp = self;
     if(compressordisp) {
-        int i = 0;
         compressordisp->stateHandler = va_arg(*app, const tcomp_statehandler_t*);
 
         compressordisp->compressors[0] = tcomp_compressor_deflate_compress;	/* If you don't want deflate compressor then remove this line. */

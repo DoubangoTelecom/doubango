@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{de0ca4f4-13e0-42c0-97c9-59432d02eb49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{61e67a25-ef14-45eb-ac0c-48d153167322}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\txcap.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\txcap_action.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\txcap_auid.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\txcap_document.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\txcap_node.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\txcap_selector.c">
+      <Filter>source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\tinyxcap.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinyxcap_config.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\txcap.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinyxcap\txcap_action.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinyxcap\txcap_auid.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinyxcap\txcap_document.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinyxcap\txcap_node.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinyxcap\txcap_selector.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

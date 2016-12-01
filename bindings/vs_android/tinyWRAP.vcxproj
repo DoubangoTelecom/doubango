@@ -1,0 +1,320 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\tinyBFCP\vs_android\tinyBFCP.vcxproj">
+      <Project>{70693f00-3cdc-4e07-94e2-d4db50378c2c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyDAV\vs_android\tinyDAV.vcxproj">
+      <Project>{38fa1286-a1d4-43d5-b36a-7fee178e4fc8}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyHTTP\vs_android\tinyHTTP.vcxproj">
+      <Project>{53c2473e-5f45-4a9c-bf5e-38a6b8120963}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyIPSec\vs_android\tinyIPSec.vcxproj">
+      <Project>{a715cfed-cef5-4ea3-8693-89dff4074019}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyMEDIA\vs_android\tinyMEDIA.vcxproj">
+      <Project>{06c44c32-30e6-47b8-aa88-83dfa328ad2a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyMSRP\vs_android\tinyMSRP.vcxproj">
+      <Project>{9949fca3-fbd4-4e39-a323-fa0172cc5a1d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyNET\vs_android\tinyNET.vcxproj">
+      <Project>{5a74fc21-cd4e-49e9-b9f5-9794b9feb72b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyRTP\vs_android\tinyRTP.vcxproj">
+      <Project>{0a016127-3082-423d-9a35-926c615bf62b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinySAK\vs_android\tinySAK.vcxproj">
+      <Project>{7e14fe0d-96c7-4370-9e38-258a90df2234}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinySDP\vs_android\tinySDP.vcxproj">
+      <Project>{982b7364-c42f-42a8-96a1-247dfd54b0be}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinySIGCOMP\vs_android\tinySIGCOMP.vcxproj">
+      <Project>{670cf2aa-0d60-4a5e-aefd-191d5c99c764}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinySIP\vs_android\tinySIP.vcxproj">
+      <Project>{19511869-f964-4412-95c6-638509323d2a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinySMS\vs_android\tinySMS.vcxproj">
+      <Project>{e3db3f8b-3492-47d6-96cb-217f7ad082dd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyXCAP\vs_android\tinyXCAP.vcxproj">
+      <Project>{ceb82e43-4d2b-4d17-b607-4df13abf51c9}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\java\android\tinyWRAP_wrap.cxx" />
+    <ClCompile Include="..\_common\ActionConfig.cxx" />
+    <ClCompile Include="..\_common\AudioResampler.cxx" />
+    <ClCompile Include="..\_common\DDebug.cxx" />
+    <ClCompile Include="..\_common\MediaContent.cxx" />
+    <ClCompile Include="..\_common\MediaSessionMgr.cxx" />
+    <ClCompile Include="..\_common\Msrp.cxx" />
+    <ClCompile Include="..\_common\ProxyConsumer.cxx" />
+    <ClCompile Include="..\_common\ProxyPluginMgr.cxx" />
+    <ClCompile Include="..\_common\ProxyProducer.cxx" />
+    <ClCompile Include="..\_common\SafeObject.cxx" />
+    <ClCompile Include="..\_common\SipCallback.cxx" />
+    <ClCompile Include="..\_common\SipEvent.cxx" />
+    <ClCompile Include="..\_common\SipMessage.cxx" />
+    <ClCompile Include="..\_common\SipSession.cxx" />
+    <ClCompile Include="..\_common\SipStack.cxx" />
+    <ClCompile Include="..\_common\SipUri.cxx" />
+    <ClCompile Include="..\_common\SMSEncoder.cxx" />
+    <ClCompile Include="..\_common\Xcap.cxx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\_common\Msrp.i" />
+    <None Include="..\_common\SipStack.i" />
+    <None Include="..\_common\SMS.i" />
+    <None Include="..\_common\tinyWRAP.i" />
+    <None Include="..\_common\Xcap.i" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\java\android\tinyWRAP_wrap.h" />
+    <ClInclude Include="..\_common\ActionConfig.h" />
+    <ClInclude Include="..\_common\AudioResampler.h" />
+    <ClInclude Include="..\_common\Common.h" />
+    <ClInclude Include="..\_common\DDebug.h" />
+    <ClInclude Include="..\_common\MediaContent.h" />
+    <ClInclude Include="..\_common\MediaSessionMgr.h" />
+    <ClInclude Include="..\_common\Msrp.h" />
+    <ClInclude Include="..\_common\ProxyConsumer.h" />
+    <ClInclude Include="..\_common\ProxyPluginMgr.h" />
+    <ClInclude Include="..\_common\ProxyProducer.h" />
+    <ClInclude Include="..\_common\SafeObject.h" />
+    <ClInclude Include="..\_common\SipCallback.h" />
+    <ClInclude Include="..\_common\SipEvent.h" />
+    <ClInclude Include="..\_common\SipMessage.h" />
+    <ClInclude Include="..\_common\SipSession.h" />
+    <ClInclude Include="..\_common\SipStack.h" />
+    <ClInclude Include="..\_common\SipUri.h" />
+    <ClInclude Include="..\_common\SMSEncoder.h" />
+    <ClInclude Include="..\_common\tinyWRAP_config.h" />
+    <ClInclude Include="..\_common\Xcap.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{bf8c64bb-98be-45d6-9206-e13eb10ace91}</ProjectGuid>
+    <Keyword>Android</Keyword>
+    <RootNamespace>tinyWRAP</RootNamespace>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <ApplicationType>Android</ApplicationType>
+    <ApplicationTypeRevision>2.0</ApplicationTypeRevision>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_3_8</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_3_8</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_3_8</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_3_8</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_3_8</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_3_8</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_3_8</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Clang_3_8</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\_common;..\.;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinySIP\include;..\..\tinyDAV\include;..\..\tinySDP\include;..\..\tinyMEDIA\include;..\..\tinyXCAP\include;..\..\tinySMS\include;..\..\tinyMSRP\include;..\..\tinyRTP\include;..\..\tinyBFCP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>log;stdc++;m;tinySIP;tinyDAV;tinyRTP;tinyMEDIA;tinyMSRP;tinySDP;tinySIGCOMP;tinySMS;tinyIPSec;tinyXCAP;tinyHTTP;tinyBFCP;tinyNET;tinySAK</LibraryDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>-Wl,-shared,-Bsymbolic,--no-undefined</AdditionalDependencies>
+      <ForceSymbolReferences>%(ForceSymbolReferences)</ForceSymbolReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\_common;..\.;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinySIP\include;..\..\tinyDAV\include;..\..\tinySDP\include;..\..\tinyMEDIA\include;..\..\tinyXCAP\include;..\..\tinySMS\include;..\..\tinyMSRP\include;..\..\tinyRTP\include;..\..\tinyBFCP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>log;stdc++;m;tinySIP;tinyDAV;tinyRTP;tinyMEDIA;tinyMSRP;tinySDP;tinySIGCOMP;tinySMS;tinyIPSec;tinyXCAP;tinyHTTP;tinyBFCP;tinyNET;tinySAK</LibraryDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>-Wl,-shared,-Bsymbolic,--no-undefined</AdditionalDependencies>
+      <ForceSymbolReferences>%(ForceSymbolReferences)</ForceSymbolReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\_common;..\.;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinySIP\include;..\..\tinyDAV\include;..\..\tinySDP\include;..\..\tinyMEDIA\include;..\..\tinyXCAP\include;..\..\tinySMS\include;..\..\tinyMSRP\include;..\..\tinyRTP\include;..\..\tinyBFCP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>log;stdc++;m;tinySIP;tinyDAV;tinyRTP;tinyMEDIA;tinyMSRP;tinySDP;tinySIGCOMP;tinySMS;tinyIPSec;tinyXCAP;tinyHTTP;tinyBFCP;tinyNET;tinySAK</LibraryDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>-Wl,-shared,-Bsymbolic,--no-undefined</AdditionalDependencies>
+      <ForceSymbolReferences>%(ForceSymbolReferences)</ForceSymbolReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\_common;..\.;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinySIP\include;..\..\tinyDAV\include;..\..\tinySDP\include;..\..\tinyMEDIA\include;..\..\tinyXCAP\include;..\..\tinySMS\include;..\..\tinyMSRP\include;..\..\tinyRTP\include;..\..\tinyBFCP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>log;stdc++;m;tinySIP;tinyDAV;tinyRTP;tinyMEDIA;tinyMSRP;tinySDP;tinySIGCOMP;tinySMS;tinyIPSec;tinyXCAP;tinyHTTP;tinyBFCP;tinyNET;tinySAK</LibraryDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>-Wl,-shared,-Bsymbolic,--no-undefined</AdditionalDependencies>
+      <ForceSymbolReferences>%(ForceSymbolReferences)</ForceSymbolReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\_common;..\.;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinySIP\include;..\..\tinyDAV\include;..\..\tinySDP\include;..\..\tinyMEDIA\include;..\..\tinyXCAP\include;..\..\tinySMS\include;..\..\tinyMSRP\include;..\..\tinyRTP\include;..\..\tinyBFCP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>log;stdc++;m;tinySIP;tinyDAV;tinyRTP;tinyMEDIA;tinyMSRP;tinySDP;tinySIGCOMP;tinySMS;tinyIPSec;tinyXCAP;tinyHTTP;tinyBFCP;tinyNET;tinySAK</LibraryDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>-Wl,-shared,-Bsymbolic,--no-undefined</AdditionalDependencies>
+      <ForceSymbolReferences>%(ForceSymbolReferences)</ForceSymbolReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\_common;..\.;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinySIP\include;..\..\tinyDAV\include;..\..\tinySDP\include;..\..\tinyMEDIA\include;..\..\tinyXCAP\include;..\..\tinySMS\include;..\..\tinyMSRP\include;..\..\tinyRTP\include;..\..\tinyBFCP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>log;stdc++;m;tinySIP;tinyDAV;tinyRTP;tinyMEDIA;tinyMSRP;tinySDP;tinySIGCOMP;tinySMS;tinyIPSec;tinyXCAP;tinyHTTP;tinyBFCP;tinyNET;tinySAK</LibraryDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>-Wl,-shared,-Bsymbolic,--no-undefined</AdditionalDependencies>
+      <ForceSymbolReferences>%(ForceSymbolReferences)</ForceSymbolReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\_common;..\.;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinySIP\include;..\..\tinyDAV\include;..\..\tinySDP\include;..\..\tinyMEDIA\include;..\..\tinyXCAP\include;..\..\tinySMS\include;..\..\tinyMSRP\include;..\..\tinyRTP\include;..\..\tinyBFCP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>log;stdc++;m;tinySIP;tinyDAV;tinyRTP;tinyMEDIA;tinyMSRP;tinySDP;tinySIGCOMP;tinySMS;tinyIPSec;tinyXCAP;tinyHTTP;tinyBFCP;tinyNET;tinySAK</LibraryDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ForceSymbolReferences>%(ForceSymbolReferences)</ForceSymbolReferences>
+      <AdditionalDependencies>-Wl,-shared,-Bsymbolic,--no-undefined</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\_common;..\.;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinySIP\include;..\..\tinyDAV\include;..\..\tinySDP\include;..\..\tinyMEDIA\include;..\..\tinyXCAP\include;..\..\tinySMS\include;..\..\tinyMSRP\include;..\..\tinyRTP\include;..\..\tinyBFCP\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <LibraryDependencies>log;stdc++;m;tinySIP;tinyDAV;tinyRTP;tinyMEDIA;tinyMSRP;tinySDP;tinySIGCOMP;tinySMS;tinyIPSec;tinyXCAP;tinyHTTP;tinyBFCP;tinyNET;tinySAK</LibraryDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>-Wl,-shared,-Bsymbolic,--no-undefined</AdditionalDependencies>
+      <ForceSymbolReferences>%(ForceSymbolReferences)</ForceSymbolReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

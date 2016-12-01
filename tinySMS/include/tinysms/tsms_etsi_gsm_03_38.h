@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou [at) doubango (DOT) org>
 *
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsms.h
  * @brief GSM 7 bit Default Alphabet as per 3GPP TS 23.038 v911 section 6.2.1.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou [at) doubango (DOT) org>
  *
 
  */

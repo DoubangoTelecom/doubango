@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{04afefee-e2cc-45e0-9db6-2ac978f395af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{9ce572e5-d10e-44b0-b0a9-ca6515fa17c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\headers">
+      <UniqueIdentifier>{d67bc808-0956-4335-abcc-b320075f9449}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\parsers">
+      <UniqueIdentifier>{5fe78ce1-a0bc-4c81-a2c4-d26a1298cf0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\session">
+      <UniqueIdentifier>{fd62dd83-96cf-469b-8f57-601619ad561a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\headers">
+      <UniqueIdentifier>{103e44aa-771e-478b-a1f2-2c8c61555341}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\session">
+      <UniqueIdentifier>{1fbc3721-72d5-4cc6-ad8f-d79ff6966169}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\parsers">
+      <UniqueIdentifier>{223da270-3fe6-46cd-a166-a2b7817d0e99}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\tmsrp.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmsrp_event.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmsrp_message.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tmsrp_uri.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_Authentication-Info.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_Authorization.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_Byte-Range.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_Content-Type.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_Dummy.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_Expires.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_Failure-Report.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_From-Path.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_Max-Expires.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_Message-ID.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_Min-Expires.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_Status.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_Success-Report.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_To-Path.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_Use-Path.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tmsrp_header_WWW-Authenticate.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\session\tmsrp_config.c">
+      <Filter>source\session</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\session\tmsrp_data.c">
+      <Filter>source\session</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\session\tmsrp_receiver.c">
+      <Filter>source\session</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\session\tmsrp_sender.c">
+      <Filter>source\session</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\tmsrp_parser_message.c">
+      <Filter>source\parsers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\tmsrp_parser_uri.c">
+      <Filter>source\parsers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\tinymsrp.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp_config.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tmsrp.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\tmsrp_event.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\tmsrp_message.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\tmsrp_uri.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Authentication-Info.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Authorization.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Byte-Range.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Content-Type.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Dummy.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Expires.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Failure-Report.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_From-Path.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Max-Expires.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Message-ID.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Min-Expires.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Status.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Success-Report.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_To-Path.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Use-Path.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_WWW-Authenticate.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\parsers\tmsrp_parser_header.h">
+      <Filter>include\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\parsers\tmsrp_parser_message.h">
+      <Filter>include\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\parsers\tmsrp_parser_uri.h">
+      <Filter>include\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\session\tmsrp_config.h">
+      <Filter>include\session</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\session\tmsrp_data.h">
+      <Filter>include\session</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\session\tmsrp_receiver.h">
+      <Filter>include\session</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinymsrp\session\tmsrp_sender.h">
+      <Filter>include\session</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

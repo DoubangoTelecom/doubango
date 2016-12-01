@@ -1321,7 +1321,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
                     if (param_get_codec) {
                         if (tmedia_session_get(ms, param_get_codec) == 0) {
                             if (encoder) {
-                                const char* codec_name = encoder->plugin ? encoder->plugin->name : "unknown";
+                                // const char* codec_name = encoder->plugin ? encoder->plugin->name : "unknown";
                                 const char* neg_format = encoder->neg_format ? encoder->neg_format : encoder->format;
                                 if (tsdp_header_M_have_fmt(M1, neg_format) == tsk_true) { // new ro has the old encoder?
                                     // same rtpmap would produce same encoder -> change nothing

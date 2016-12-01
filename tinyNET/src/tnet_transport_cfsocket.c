@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2010-2011 Mamadou Diop.
  *
- * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+ * Contact: Mamadou Diop <diopmamadou [at) doubango (DOT) org>
  * Original Author: Laurent Etiemble <laurent.etiemble(at)gmail.com>
  *
  * This file is part of Open Source Doubango Framework.
@@ -25,7 +25,7 @@
  * @brief Network transport layer using CFSocket. Used for iOS devices.
  *
  * @author Laurent Etiemble <laurent(dot)etiemble(at)gmail(DOT)com>
- * @author Mamadou Diop <diopmamadou(at)doubango(DOT)org>
+ * @author Mamadou Diop <diopmamadou [at) doubango (DOT) org>
  */
 
 #include "tnet_transport.h"

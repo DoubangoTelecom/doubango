@@ -111,7 +111,7 @@
 //**/
 //typedef tsk_list_t tnet_stun_bindings_L_t;
 //
-////#if defined(__SYMBIAN32__) || ANDROID /* Forward declaration */
+////#if defined(__SYMBIAN32__) || defined(__ANDROID__) || defined(ANDROID) /* Forward declaration */
 //struct struct tnet_nat_ctx_s;
 ////#endif
 //

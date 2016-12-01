@@ -763,7 +763,7 @@ int tnet_ice_ctx_set_concheck_timeout(tnet_ice_ctx_t* self, int64_t timeout)
 int tnet_ice_ctx_set_remote_candidates_2(struct tnet_ice_ctx_s* self, const char* candidates, const char* ufrag, const char* pwd, tsk_bool_t is_controlling, tsk_bool_t is_ice_jingle, tsk_bool_t use_rtcpmux)
 {
     int ret = 0;
-    char *v, *copy, *saveptr;
+    char *v, *copy, *saveptr = NULL;
     tsk_size_t size, idx = 0;
     tsk_bool_t exists;
     tnet_ice_candidate_t* candidate;

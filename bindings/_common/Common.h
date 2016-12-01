@@ -24,7 +24,7 @@
 
 #include "tinyWRAP_config.h"
 
-#if ANDROID
+#if defined(__ANDROID__) || defined(ANDROID)
 #	define dyn_cast	static_cast
 #	define __JNIENV JNIEnv
 #else

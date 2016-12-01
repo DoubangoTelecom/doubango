@@ -25,7 +25,7 @@
 
 #include "Common.h"
 
-#if ANDROID /* callbacks will fail with jni */
+#if defined(__ANDROID__) || defined(ANDROID) /* callbacks will fail with jni */
 #	include <android/log.h>
 #	define ANDROID_DEBUG_TAG "tinyWRAP"
 #endif
@@ -57,7 +57,7 @@ int debug_xxx_cb(const void* arg, const char* fmt, enum cb_type type, va_list *a
         switch(type) {
         case cb_info:
             ret=
-#if ANDROID
+#if defined(__ANDROID__) || defined(ANDROID)
                 __android_log_write(ANDROID_LOG_INFO, ANDROID_DEBUG_TAG, message);
 #else
                 stack->getDebugCallback()-> OnDebugInfo(message);
@@ -65,7 +65,7 @@ int debug_xxx_cb(const void* arg, const char* fmt, enum cb_type type, va_list *a
             break;
         case cb_warn:
             ret=
-#if ANDROID
+#if defined(__ANDROID__) || defined(ANDROID)
                 __android_log_write(ANDROID_LOG_WARN, ANDROID_DEBUG_TAG, message);
 #else
                 stack->getDebugCallback()-> OnDebugWarn(message);
@@ -73,7 +73,7 @@ int debug_xxx_cb(const void* arg, const char* fmt, enum cb_type type, va_list *a
             break;
         case cb_error:
             ret=
-#if ANDROID
+#if defined(__ANDROID__) || defined(ANDROID)
                 __android_log_write(ANDROID_LOG_ERROR, ANDROID_DEBUG_TAG, message);
 #else
                 stack->getDebugCallback()-> OnDebugError(message);
@@ -81,7 +81,7 @@ int debug_xxx_cb(const void* arg, const char* fmt, enum cb_type type, va_list *a
             break;
         case cb_fatal:
             ret=
-#if ANDROID
+#if defined(__ANDROID__) || defined(ANDROID)
                 __android_log_write(ANDROID_LOG_FATAL, ANDROID_DEBUG_TAG, message);
 #else
                 stack->getDebugCallback()-> OnDebugFatal(message);

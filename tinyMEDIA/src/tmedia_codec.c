@@ -740,7 +740,7 @@ tmedia_codec_t* tmedia_codec_find_by_format(tmedia_codecs_L_t* codecs, const cha
 */
 int tmedia_codec_parse_fmtp(const char* fmtp, unsigned* maxbr, unsigned* fps, unsigned *width, unsigned *height)
 {
-    char *copy, *pch, *saveptr;
+    char *copy, *pch, *saveptr = NULL;
     tsk_bool_t found = tsk_false;
 
     if(tsk_strnullORempty(fmtp)) {
@@ -863,8 +863,8 @@ int tmedia_codec_video_clamp_out_size_to_range_max(tmedia_codec_video_t *self)
             unsigned width, height;
             // clip(max)
             if ((ret = tmedia_video_get_size(max, &width, &height)) == 0) {
-                unsigned new_width = TSK_CLAMP(0, self->out.width, width);
-                unsigned new_height = TSK_CLAMP(0, self->out.height, height);
+                // unsigned new_width = TSK_CLAMP(0, self->out.width, width);
+                // unsigned new_height = TSK_CLAMP(0, self->out.height, height);
                 TSK_DEBUG_INFO("Pref. video size range defined, video size clipped (%ux%u)->(%ux%u)",
                                width, height,
                                self->out.width, self->out.height);

@@ -100,14 +100,32 @@
 #	define TSK_INLINE
 #endif
 
-
-/* Disable some well-known warnings for M$ Visual Studio*/
-#ifdef _MSC_VER
+/* Disable some well-known warnings */
+#if defined(_MSC_VER)
 #	if !defined(_CRT_SECURE_NO_WARNINGS)
 #		define _CRT_SECURE_NO_WARNINGS
 #	endif /* _CRT_SECURE_NO_WARNINGS */
 #	pragma warning( disable : 4996 )
-#endif
+#	define TSK_VS_DISABLE_WARNINGS_BEGIN(nn) \
+		__pragma(warning( push )) \
+		__pragma(warning( disable : ##nn ))
+#	define TSK_VS_DISABLE_WARNINGS_END() \
+		__pragma(warning( pop ))
+#else
+#	define TSK_VS_DISABLE_WARNINGS_BEGIN(nn)
+#	define TSK_VS_DISABLE_WARNINGS_END()
+#endif /* _MSC_VER */
+#if defined(__GNUC__)
+#	define TSK_GCC_DO_PRAGMA(x) _Pragma (#x)
+#	define TSK_GCC_DISABLE_WARNINGS_BEGIN(w) \
+		TSK_GCC_DO_PRAGMA(GCC diagnostic push) \
+		TSK_GCC_DO_PRAGMA(GCC diagnostic ignored w)
+#	define TSK_GCC_DISABLE_WARNINGS_END() \
+		TSK_GCC_DO_PRAGMA(GCC diagnostic pop)
+#else
+#	define TSK_GCC_DISABLE_WARNINGS_BEGIN(tt)
+#	define TSK_GCC_DISABLE_WARNINGS_END()
+#endif /* __GNUC__ */
 
 /*	Features */
 #if !defined (HAVE_GETTIMEOFDAY)
@@ -118,7 +136,8 @@
 #endif
 #endif /* HAVE_GETTIMEOFDAY */
 
-#if ANDROID
+#if defined(__ANDROID__) || defined(ANDROID)
+#	define TSK_UNDER_ANDROID				1
 #	define HAVE_CLOCK_GETTIME				1
 #endif
 

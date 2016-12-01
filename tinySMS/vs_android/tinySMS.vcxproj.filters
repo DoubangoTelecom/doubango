@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{db420b2c-f3f5-4d38-9197-35245ec38e3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{f7a68e72-588d-4e1e-9c6f-386576ea3e00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\rpdu">
+      <UniqueIdentifier>{5da1705c-c80b-4c72-823a-0f067aa09d99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\tpdu">
+      <UniqueIdentifier>{dafc1029-d011-4a8f-9140-689df6c83d29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\rpdu">
+      <UniqueIdentifier>{3047cc34-a949-4e4e-b062-feff6ebeca52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\tpdu">
+      <UniqueIdentifier>{04ad3c3a-8973-4953-bd97-c4598402f881}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\tsms.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsms_address.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsms_common.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsms_packing.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tpdu\tsms_tpdu_command.c">
+      <Filter>source\tpdu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tpdu\tsms_tpdu_deliver.c">
+      <Filter>source\tpdu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tpdu\tsms_tpdu_report.c">
+      <Filter>source\tpdu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tpdu\tsms_tpdu_status_report.c">
+      <Filter>source\tpdu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tpdu\tsms_tpdu_submit.c">
+      <Filter>source\tpdu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\rpdu\tsms_rpdu.c">
+      <Filter>source\rpdu</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\tinysms.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms_config.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tsms.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tsms_address.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tsms_common.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tsms_etsi_gsm_03_38.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tsms_packing.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tpdu\tsms_tpdu_command.h">
+      <Filter>include\tpdu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tpdu\tsms_tpdu_deliver.h">
+      <Filter>include\tpdu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tpdu\tsms_tpdu_report.h">
+      <Filter>include\tpdu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tpdu\tsms_tpdu_status_report.h">
+      <Filter>include\tpdu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\tpdu\tsms_tpdu_submit.h">
+      <Filter>include\tpdu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysms\rpdu\tsms_rpdu.h">
+      <Filter>include\rpdu</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{e6c7f067-5211-42a1-b443-7eb4be1406e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{aa324ccc-0e36-4d64-af87-c9e51fd9fa3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\headers">
+      <UniqueIdentifier>{bc94ffdb-65c2-459a-8fc3-086534c85c84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source\parsers">
+      <UniqueIdentifier>{041bbdca-fd15-4498-829e-bd9d48cd603f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\headers">
+      <UniqueIdentifier>{0a3ed06b-d045-41c5-8999-59e4ea2e030c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\parsers">
+      <UniqueIdentifier>{bfe6af20-f316-41e4-8777-36ca84675c4d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\tsdp.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsdp_message.c">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_A.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_B.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_C.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_Dummy.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_E.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_I.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_K.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_M.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_O.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_P.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_R.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_S.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_T.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_U.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_V.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\headers\tsdp_header_Z.c">
+      <Filter>source\headers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\parsers\tsdp_parser_message.c">
+      <Filter>source\parsers</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\tinysdp.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp_config.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tsdp.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\tsdp_message.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_A.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_B.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_C.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_Dummy.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_E.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_I.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_K.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_M.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_O.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_P.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_R.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_S.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_T.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_U.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_V.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\headers\tsdp_header_Z.h">
+      <Filter>include\headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\parsers\tsdp_parser_header.h">
+      <Filter>include\parsers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tinysdp\parsers\tsdp_parser_message.h">
+      <Filter>include\parsers</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

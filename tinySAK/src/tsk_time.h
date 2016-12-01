@@ -34,7 +34,7 @@
 
 TSK_BEGIN_DECLS
 
-//#if defined(__SYMBIAN32__) || ANDROID /* Forward declaration */
+//#if defined(__SYMBIAN32__) || defined(__ANDROID__) || defined(ANDROID) /* Forward declaration */
 struct timeval;
 struct timezone;
 struct timespec;

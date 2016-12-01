@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2011 Doubango Telecom <http://www.doubango.org>
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango(DOT)org>
+* Contact: Mamadou Diop <diopmamadou [at) doubango (DOT) org>
 *
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tdav_consumer_video.h
  * @brief Base class for all Video consumers.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango(DOT)org>
+ * @author Mamadou Diop <diopmamadou [at) doubango (DOT) org>
  */
 #ifndef TINYDAV_CONSUMER_VIDEO_H
 #define TINYDAV_CONSUMER_VIDEO_H

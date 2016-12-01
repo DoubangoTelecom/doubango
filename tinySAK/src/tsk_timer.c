@@ -86,7 +86,6 @@ typedef tsk_list_t tsk_timer_manager_L_t; /**< List of @ref tsk_timer_manager_t 
 /*== Definitions */
 static void* TSK_STDCALL __tsk_timer_manager_mainthread(void *param);
 static int __tsk_pred_find_timer_by_id(const tsk_list_item_t *item, const void *id);
-static void __tsk_timer_manager_raise(tsk_timer_t *timer);
 static void* TSK_STDCALL run(void* self);
 
 /**@ingroup tsk_timer_group
@@ -144,7 +143,7 @@ void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self)
 
         tsk_list_foreach(item, manager->timers) {
             tsk_timer_t* timer = (tsk_timer_t*)item->data;
-            TSK_DEBUG_INFO("timer [%llu]- %llu, %llu", timer->id, timer->timeout, tsk_time_now());
+            TSK_DEBUG_INFO("timer [%ld]- %llu, %llu", timer->id, timer->timeout, tsk_time_now());
         }
 
         tsk_mutex_unlock(manager->mutex);

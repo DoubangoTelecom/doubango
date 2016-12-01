@@ -747,7 +747,7 @@ void *tnet_transport_mainthread(void *param)
                 }
 
                 if(len <= 0) {
-#if ANDROID
+#if defined(__ANDROID__) || defined(ANDROID)
                     // workaround for indoona OSX which sends bodiless UDP packets
                     // vand Android requires to call recv() even if len is equal to zero
                     if(len == 0 && ret == 0) {

@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\tinyHTTP\vs_android\tinyHTTP.vcxproj">
+      <Project>{53c2473e-5f45-4a9c-bf5e-38a6b8120963}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyNET\vs_android\tinyNET.vcxproj">
+      <Project>{5a74fc21-cd4e-49e9-b9f5-9794b9feb72b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinySAK\vs_android\tinySAK.vcxproj">
+      <Project>{7e14fe0d-96c7-4370-9e38-258a90df2234}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinySDP\vs_android\tinySDP.vcxproj">
+      <Project>{982b7364-c42f-42a8-96a1-247dfd54b0be}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\headers\tmsrp_header.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_Authentication-Info.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_Authorization.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_Byte-Range.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_Content-Type.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_Dummy.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_Expires.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_Failure-Report.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_From-Path.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_Max-Expires.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_Message-ID.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_Min-Expires.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_Status.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_Success-Report.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_To-Path.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_Use-Path.c" />
+    <ClCompile Include="..\src\headers\tmsrp_header_WWW-Authenticate.c" />
+    <ClCompile Include="..\src\parsers\tmsrp_parser_message.c" />
+    <ClCompile Include="..\src\parsers\tmsrp_parser_uri.c" />
+    <ClCompile Include="..\src\session\tmsrp_config.c" />
+    <ClCompile Include="..\src\session\tmsrp_data.c" />
+    <ClCompile Include="..\src\session\tmsrp_receiver.c" />
+    <ClCompile Include="..\src\session\tmsrp_sender.c" />
+    <ClCompile Include="..\src\tmsrp.c" />
+    <ClCompile Include="..\src\tmsrp_event.c" />
+    <ClCompile Include="..\src\tmsrp_message.c" />
+    <ClCompile Include="..\src\tmsrp_uri.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\tinymsrp.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Authentication-Info.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Authorization.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Byte-Range.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Content-Type.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Dummy.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Expires.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Failure-Report.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_From-Path.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Max-Expires.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Message-ID.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Min-Expires.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Status.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Success-Report.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_To-Path.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_Use-Path.h" />
+    <ClInclude Include="..\include\tinymsrp\headers\tmsrp_header_WWW-Authenticate.h" />
+    <ClInclude Include="..\include\tinymsrp\parsers\tmsrp_parser_header.h" />
+    <ClInclude Include="..\include\tinymsrp\parsers\tmsrp_parser_message.h" />
+    <ClInclude Include="..\include\tinymsrp\parsers\tmsrp_parser_uri.h" />
+    <ClInclude Include="..\include\tinymsrp\session\tmsrp_config.h" />
+    <ClInclude Include="..\include\tinymsrp\session\tmsrp_data.h" />
+    <ClInclude Include="..\include\tinymsrp\session\tmsrp_receiver.h" />
+    <ClInclude Include="..\include\tinymsrp\session\tmsrp_sender.h" />
+    <ClInclude Include="..\include\tinymsrp\tmsrp_event.h" />
+    <ClInclude Include="..\include\tinymsrp\tmsrp_message.h" />
+    <ClInclude Include="..\include\tinymsrp\tmsrp_uri.h" />
+    <ClInclude Include="..\include\tinymsrp_config.h" />
+    <ClInclude Include="..\include\tmsrp.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9949fca3-fbd4-4e39-a323-fa0172cc5a1d}</ProjectGuid>
+    <Keyword>Android</Keyword>
+    <RootNamespace>tinyMSRP</RootNamespace>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <ApplicationType>Android</ApplicationType>
+    <ApplicationTypeRevision>2.0</ApplicationTypeRevision>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_3_8</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinySAK/src;../../tinyNET/src;../../tinyHTTP/include;../../tinySDP/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinySAK/src;../../tinyNET/src;../../tinyHTTP/include;../../tinySDP/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinySAK/src;../../tinyNET/src;../../tinyHTTP/include;../../tinySDP/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinySAK/src;../../tinyNET/src;../../tinyHTTP/include;../../tinySDP/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinySAK/src;../../tinyNET/src;../../tinyHTTP/include;../../tinySDP/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinySAK/src;../../tinyNET/src;../../tinyHTTP/include;../../tinySDP/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinySAK/src;../../tinyNET/src;../../tinyHTTP/include;../../tinySDP/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinySAK/src;../../tinyNET/src;../../tinyHTTP/include;../../tinySDP/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

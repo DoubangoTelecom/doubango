@@ -170,7 +170,7 @@ tnet_addresses_L_t * tnet_dns_resolvconf_parse(const char* path)
         servers = tsk_list_create();
     }
     else {
-#if ANDROID || defined(__APPLE__) /* TARGET_OS_IPHONE not defined for bsd libraries */
+#if defined(__ANDROID__) || defined(ANDROID) || defined(__APPLE__) /* TARGET_OS_IPHONE not defined for bsd libraries */
         TSK_DEBUG_INFO("Failed to open [%s]. But don't panic, we have detected that you are using Google Android/iOS Systems.\n"
                        "You should look at the Progammer's Guide for more information.\n If you are not using DNS functions, don't worry about this warning.",
                        fullpath);

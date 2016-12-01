@@ -3,7 +3,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou [at) doubango (DOT) org>
 *
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,7 +25,7 @@
 /**@file tmsrp_header_Authorization.c
  * @brief MSRP Proxy-Authenticate header.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ * @author Mamadou Diop <diopmamadou [at) doubango (DOT) org>
  *
 
  */

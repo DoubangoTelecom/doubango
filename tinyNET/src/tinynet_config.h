@@ -113,7 +113,7 @@
 /* have poll()? */
 /* Do not use WSAPoll event if it's supported under Vista */
 #if !HAVE_CONFIG_H
-#	if ANDROID || defined(__APPLE__)
+#	if defined(__ANDROID__) || defined(ANDROID) || defined(__APPLE__)
 #		define USE_POLL	1
 #		define HAVE_POLL	1
 #		define HAVE_POLL_H	1

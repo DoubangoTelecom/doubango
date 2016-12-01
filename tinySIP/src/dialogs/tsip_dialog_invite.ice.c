@@ -464,7 +464,6 @@ static int x0500_Current_2_Current_X_oINVITE(va_list *app)
     const tsip_action_t* action;
     const tsip_message_t *message;
     tmedia_type_t media_type;
-    static const tsk_bool_t __force_restart_is_yes = tsk_true;
 
     self = va_arg(*app, tsip_dialog_invite_t *);
     message = va_arg(*app, const tsip_message_t *);

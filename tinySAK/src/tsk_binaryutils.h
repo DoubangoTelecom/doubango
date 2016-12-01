@@ -51,6 +51,7 @@ TSK_BEGIN_DECLS
 */
 #define TSK_BINARY_GET_1BYTE(buffer) *TSK_TO_U8(buffer)// 1-byte
 
+TSK_GCC_DISABLE_WARNINGS_BEGIN("-Wunused-function")
 /**@ingroup tsk_binaryutils_group
 * Converts from Little to Big endian.
 */
@@ -59,6 +60,7 @@ static uint16_t TSK_LSB_2_MSB( void const * buffer )
     const uint8_t* dummy = (const uint8_t*)buffer;
     return ( ((uint16_t)dummy[0] << 8) | dummy[1] );
 }
+TSK_GCC_DISABLE_WARNINGS_END()
 
 /**@ingroup tsk_binaryutils_group
 * @def TSK_BINARY_GET_2BYTES

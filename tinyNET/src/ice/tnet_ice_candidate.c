@@ -144,7 +144,7 @@ tnet_ice_candidate_t* tnet_ice_candidate_create(tnet_ice_cand_type_t type_e, tne
 // @param str e.g. "1 1 udp 1 192.168.196.1 57806 typ host name video_rtcp network_name {0C0137CC-DB78-46B6-9B6C-7E097FFA79FE} username StFEVThMK2DHThkv password qkhKUDr4WqKRwZTo generation 0"
 tnet_ice_candidate_t* tnet_ice_candidate_parse(const char* str)
 {
-    char *v, *copy, *saveptr;
+    char *v, *copy, *saveptr = NULL;
     int32_t k;
     tnet_ice_candidate_t* candidate;
 

@@ -215,7 +215,7 @@ static int init_neg_types(tdav_session_msrp_t* msrp, const tsdp_header_M_t* m)
     const tsdp_header_A_t* A;
 
     if((A = tsdp_header_M_findA(m, "accept-types"))) {
-        char *saveptr;
+        char *saveptr = NULL;
         char* atype = tsk_strtok_r((char*)A->value, " ", &saveptr);
         const char* default_atype = atype;
         while(atype) {

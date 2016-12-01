@@ -68,7 +68,7 @@ bool SipStack::start()
 
 bool SipStack::setDebugCallback(DDebugCallback* pCallback)
 {
-    if(this && pCallback) {
+    if(pCallback) {
         m_pDebugCallback = pCallback;
         tsk_debug_set_arg_data(this);
         tsk_debug_set_info_cb(DDebugCallback::debug_info_cb);
@@ -76,7 +76,7 @@ bool SipStack::setDebugCallback(DDebugCallback* pCallback)
         tsk_debug_set_error_cb(DDebugCallback::debug_error_cb);
         tsk_debug_set_fatal_cb(DDebugCallback::debug_fatal_cb);
     }
-    else if(this) {
+    else {
         m_pDebugCallback = tsk_null;
         tsk_debug_set_arg_data(tsk_null);
         tsk_debug_set_info_cb(tsk_null);

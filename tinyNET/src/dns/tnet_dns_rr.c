@@ -244,7 +244,7 @@ tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, tsk_size_t size, tsk_si
     tnet_dns_qtype_t qtype;
     tnet_dns_qclass_t qclass;
     uint32_t ttl;
-    uint16_t rdlength;
+    uint16_t rdlength = 0;
     char* qname = tsk_null;
 
     /* Check validity */

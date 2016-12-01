@@ -1,0 +1,491 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\tinyHTTP\vs_android\tinyHTTP.vcxproj">
+      <Project>{53c2473e-5f45-4a9c-bf5e-38a6b8120963}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyIPSec\vs_android\tinyIPSec.vcxproj">
+      <Project>{a715cfed-cef5-4ea3-8693-89dff4074019}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyMEDIA\vs_android\tinyMEDIA.vcxproj">
+      <Project>{06c44c32-30e6-47b8-aa88-83dfa328ad2a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyNET\vs_android\tinyNET.vcxproj">
+      <Project>{5a74fc21-cd4e-49e9-b9f5-9794b9feb72b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinySAK\vs_android\tinySAK.vcxproj">
+      <Project>{7e14fe0d-96c7-4370-9e38-258a90df2234}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinySDP\vs_android\tinySDP.vcxproj">
+      <Project>{982b7364-c42f-42a8-96a1-247dfd54b0be}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinySIGCOMP\vs_android\tinySIGCOMP.vcxproj">
+      <Project>{670cf2aa-0d60-4a5e-aefd-191d5c99c764}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\api\tsip_api_common.c" />
+    <ClCompile Include="..\src\api\tsip_api_info.c" />
+    <ClCompile Include="..\src\api\tsip_api_invite.c" />
+    <ClCompile Include="..\src\api\tsip_api_message.c" />
+    <ClCompile Include="..\src\api\tsip_api_options.c" />
+    <ClCompile Include="..\src\api\tsip_api_publish.c" />
+    <ClCompile Include="..\src\api\tsip_api_register.c" />
+    <ClCompile Include="..\src\api\tsip_api_subscribe.c" />
+    <ClCompile Include="..\src\authentication\tsip_challenge.c" />
+    <ClCompile Include="..\src\authentication\tsip_milenage.c" />
+    <ClCompile Include="..\src\authentication\tsip_rijndael.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_info.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.cdiv.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.client.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.conf.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.ect.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.hold.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.ice.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.qos.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.server.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_invite.timers.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_layer.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_message.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_options.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_publish.client.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_register.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_register.client.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_register.server.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_subscribe.client.c" />
+    <ClCompile Include="..\src\dialogs\tsip_dialog_subscribe.server.c" />
+    <ClCompile Include="..\src\headers\tsip_header.c" />
+    <ClCompile Include="..\src\headers\tsip_header_accept.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Accept_Contact.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Accept_Encoding.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Accept_Language.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Accept_Resource_Priority.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Alert_Info.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Allow.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Allow_Events.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Authentication_Info.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Authorization.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Call_ID.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Call_Info.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Contact.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Content_Disposition.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Content_Encoding.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Content_Language.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Content_Length.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Content_Type.c" />
+    <ClCompile Include="..\src\headers\tsip_header_CSeq.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Date.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Dummy.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Error_Info.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Event.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Expires.c" />
+    <ClCompile Include="..\src\headers\tsip_header_From.c" />
+    <ClCompile Include="..\src\headers\tsip_header_History_Info.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Identity.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Identity_Info.c" />
+    <ClCompile Include="..\src\headers\tsip_header_In_Reply_To.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Join.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Max_Forwards.c" />
+    <ClCompile Include="..\src\headers\tsip_header_MIME_Version.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Min_Expires.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Min_SE.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Organization.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Path.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Priority.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Privacy.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Proxy_Authenticate.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Proxy_Authorization.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Proxy_Require.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_Access_Network_Info.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_Answer_State.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_Asserted_Identity.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_Associated_URI.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_Called_Party_ID.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_Charging_Function_Addresses.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_Charging_Vector.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_DCS_Billing_Info.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_DCS_LAES.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_DCS_OSPS.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_DCS_Redirect.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_DCS_Trace_Party_ID.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_Early_Media.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_Media_Authorization.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_Preferred_Identity.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_Profile_Key.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_User_Database.c" />
+    <ClCompile Include="..\src\headers\tsip_header_P_Visited_Network_ID.c" />
+    <ClCompile Include="..\src\headers\tsip_header_RAck.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Reason.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Record_Route.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Referred_By.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Refer_Sub.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Refer_To.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Reject_Contact.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Replaces.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Reply_To.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Request_Disposition.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Require.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Resource_Priority.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Retry_After.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Route.c" />
+    <ClCompile Include="..\src\headers\tsip_header_RSeq.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Security_Client.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Security_Server.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Security_Verify.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Server.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Service_Route.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Session_Expires.c" />
+    <ClCompile Include="..\src\headers\tsip_header_SIP_ETag.c" />
+    <ClCompile Include="..\src\headers\tsip_header_SIP_If_Match.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Subject.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Subscription_State.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Supported.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Target_Dialog.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Timestamp.c" />
+    <ClCompile Include="..\src\headers\tsip_header_To.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Unsupported.c" />
+    <ClCompile Include="..\src\headers\tsip_header_User_Agent.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Via.c" />
+    <ClCompile Include="..\src\headers\tsip_header_Warning.c" />
+    <ClCompile Include="..\src\headers\tsip_header_WWW_Authenticate.c" />
+    <ClCompile Include="..\src\parsers\tsip_parser_header.c" />
+    <ClCompile Include="..\src\parsers\tsip_parser_message.c" />
+    <ClCompile Include="..\src\parsers\tsip_parser_uri.c" />
+    <ClCompile Include="..\src\sigcomp\tsip_sigcomp.c" />
+    <ClCompile Include="..\src\transactions\tsip_transac.c" />
+    <ClCompile Include="..\src\transactions\tsip_transac_ict.c" />
+    <ClCompile Include="..\src\transactions\tsip_transac_ist.c" />
+    <ClCompile Include="..\src\transactions\tsip_transac_layer.c" />
+    <ClCompile Include="..\src\transactions\tsip_transac_nict.c" />
+    <ClCompile Include="..\src\transactions\tsip_transac_nist.c" />
+    <ClCompile Include="..\src\transports\tsip_transport.c" />
+    <ClCompile Include="..\src\transports\tsip_transport_ipsec.c" />
+    <ClCompile Include="..\src\transports\tsip_transport_layer.c" />
+    <ClCompile Include="..\src\transports\tsip_transport_tls.c" />
+    <ClCompile Include="..\src\tsip.c" />
+    <ClCompile Include="..\src\tsip_action.c" />
+    <ClCompile Include="..\src\tsip_event.c" />
+    <ClCompile Include="..\src\tsip_message.c" />
+    <ClCompile Include="..\src\tsip_ssession.c" />
+    <ClCompile Include="..\src\tsip_timers.c" />
+    <ClCompile Include="..\src\tsip_uri.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\tinysip.h" />
+    <ClInclude Include="..\include\tinysip\api\tsip_api_common.h" />
+    <ClInclude Include="..\include\tinysip\api\tsip_api_info.h" />
+    <ClInclude Include="..\include\tinysip\api\tsip_api_invite.h" />
+    <ClInclude Include="..\include\tinysip\api\tsip_api_message.h" />
+    <ClInclude Include="..\include\tinysip\api\tsip_api_options.h" />
+    <ClInclude Include="..\include\tinysip\api\tsip_api_publish.h" />
+    <ClInclude Include="..\include\tinysip\api\tsip_api_register.h" />
+    <ClInclude Include="..\include\tinysip\api\tsip_api_subscribe.h" />
+    <ClInclude Include="..\include\tinysip\authentication\tsip_challenge.h" />
+    <ClInclude Include="..\include\tinysip\authentication\tsip_milenage.h" />
+    <ClInclude Include="..\include\tinysip\authentication\tsip_rijndael.h" />
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog.h" />
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_info.h" />
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_invite.common.h" />
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_invite.h" />
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_layer.h" />
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_message.h" />
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_options.h" />
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_publish.h" />
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_register.common.h" />
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_register.h" />
+    <ClInclude Include="..\include\tinysip\dialogs\tsip_dialog_subscribe.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_headers.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_accept.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Accept_Contact.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Accept_Encoding.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Accept_Language.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Accept_Resource_Priority.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Alert_Info.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Allow.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Allow_Events.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Authentication_Info.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Authorization.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Call_ID.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Call_Info.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Contact.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Content_Disposition.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Content_Encoding.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Content_Language.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Content_Length.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Content_Type.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_CSeq.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Date.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Dummy.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Error_Info.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Event.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Expires.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_From.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_History_Info.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Identity.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Identity_Info.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_In_Reply_To.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Join.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Max_Forwards.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_MIME_Version.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Min_Expires.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Min_SE.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Organization.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Path.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Priority.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Privacy.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Proxy_Authenticate.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Proxy_Authorization.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Proxy_Require.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Access_Network_Info.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Answer_State.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Asserted_Identity.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Associated_URI.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Called_Party_ID.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Charging_Function_Addresses.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Charging_Vector.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_DCS_Billing_Info.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_DCS_LAES.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_DCS_OSPS.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_DCS_Redirect.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_DCS_Trace_Party_ID.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Early_Media.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Media_Authorization.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Preferred_Identity.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Profile_Key.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_User_Database.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_P_Visited_Network_ID.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_RAck.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Reason.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Record_Route.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Referred_By.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Refer_Sub.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Refer_To.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Reject_Contact.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Replaces.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Reply_To.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Request_Disposition.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Require.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Resource_Priority.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Retry_After.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Route.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_RSeq.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Security_Client.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Security_Server.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Security_Verify.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Server.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Service_Route.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Session_Expires.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_SIP_ETag.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_SIP_If_Match.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Subject.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Subscription_State.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Supported.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Target_Dialog.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Timestamp.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_To.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Unsupported.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_User_Agent.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Via.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_Warning.h" />
+    <ClInclude Include="..\include\tinysip\headers\tsip_header_WWW_Authenticate.h" />
+    <ClInclude Include="..\include\tinysip\parsers\tsip_parser_header.h" />
+    <ClInclude Include="..\include\tinysip\parsers\tsip_parser_message.h" />
+    <ClInclude Include="..\include\tinysip\parsers\tsip_parser_uri.h" />
+    <ClInclude Include="..\include\tinysip\sigcomp\tsip_sigcomp.h" />
+    <ClInclude Include="..\include\tinysip\transactions\tsip_transac.h" />
+    <ClInclude Include="..\include\tinysip\transactions\tsip_transac_ict.h" />
+    <ClInclude Include="..\include\tinysip\transactions\tsip_transac_ist.h" />
+    <ClInclude Include="..\include\tinysip\transactions\tsip_transac_layer.h" />
+    <ClInclude Include="..\include\tinysip\transactions\tsip_transac_nict.h" />
+    <ClInclude Include="..\include\tinysip\transactions\tsip_transac_nist.h" />
+    <ClInclude Include="..\include\tinysip\transports\tsip_transport.h" />
+    <ClInclude Include="..\include\tinysip\transports\tsip_transport_ipsec.h" />
+    <ClInclude Include="..\include\tinysip\transports\tsip_transport_layer.h" />
+    <ClInclude Include="..\include\tinysip\transports\tsip_transport_tls.h" />
+    <ClInclude Include="..\include\tinysip\tsip_action.h" />
+    <ClInclude Include="..\include\tinysip\tsip_event.h" />
+    <ClInclude Include="..\include\tinysip\tsip_message.h" />
+    <ClInclude Include="..\include\tinysip\tsip_message_common.h" />
+    <ClInclude Include="..\include\tinysip\tsip_ssession.h" />
+    <ClInclude Include="..\include\tinysip\tsip_timers.h" />
+    <ClInclude Include="..\include\tinysip\tsip_uri.h" />
+    <ClInclude Include="..\include\tinysip_config.h" />
+    <ClInclude Include="..\include\tsip.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{19511869-f964-4412-95c6-638509323d2a}</ProjectGuid>
+    <Keyword>Android</Keyword>
+    <RootNamespace>tinySIP</RootNamespace>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <ApplicationType>Android</ApplicationType>
+    <ApplicationTypeRevision>2.0</ApplicationTypeRevision>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_3_8</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyNET/src;../../tinyMEDIA/include;../../tinySAK/src;../../tinyHTTP/include;../../tinySIGCOMP/src;../../tinySDP/include;../../tinyIPSec/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyNET/src;../../tinyMEDIA/include;../../tinySAK/src;../../tinyHTTP/include;../../tinySIGCOMP/src;../../tinySDP/include;../../tinyIPSec/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyNET/src;../../tinyMEDIA/include;../../tinySAK/src;../../tinyHTTP/include;../../tinySIGCOMP/src;../../tinySDP/include;../../tinyIPSec/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyNET/src;../../tinyMEDIA/include;../../tinySAK/src;../../tinyHTTP/include;../../tinySIGCOMP/src;../../tinySDP/include;../../tinyIPSec/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyNET/src;../../tinyMEDIA/include;../../tinySAK/src;../../tinyHTTP/include;../../tinySIGCOMP/src;../../tinySDP/include;../../tinyIPSec/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyNET/src;../../tinyMEDIA/include;../../tinySAK/src;../../tinyHTTP/include;../../tinySIGCOMP/src;../../tinySDP/include;../../tinyIPSec/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyNET/src;../../tinyMEDIA/include;../../tinySAK/src;../../tinyHTTP/include;../../tinySIGCOMP/src;../../tinySDP/include;../../tinyIPSec/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyNET/src;../../tinyMEDIA/include;../../tinySAK/src;../../tinyHTTP/include;../../tinySIGCOMP/src;../../tinySDP/include;../../tinyIPSec/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

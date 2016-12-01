@@ -294,7 +294,7 @@ next:
     struct ifconf ifc;
 
     struct sockaddr_in *sin;
-    struct ifreq *ifr;
+    struct ifreq *ifr = NULL;
 
     if((fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
         TSK_DEBUG_ERROR("Failed to create new DGRAM socket and errno= [%d]", tnet_geterrno());

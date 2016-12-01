@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2011 Doubango Telecom <http://www.doubango.org>
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango(DOT)org>
+* Contact: Mamadou Diop <diopmamadou [at) doubango (DOT) org>
 *
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tdav_consumer_video.c
  * @brief Base class for all Video consumers.
  *
- * @author Mamadou Diop <diopmamadou(at)doubango(DOT)org>
+ * @author Mamadou Diop <diopmamadou [at) doubango (DOT) org>
  */
 #include "tinydav/video/tdav_consumer_video.h"
 #include "tinymedia/tmedia_jitterbuffer.h"

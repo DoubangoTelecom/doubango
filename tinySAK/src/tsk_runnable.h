@@ -159,6 +159,8 @@ TINYSAK_GEXTERN const tsk_object_def_t *tsk_runnable_def_t;
 */
 #define TSK_RUNNABLE_POP_FIRST(self) \
 	tsk_list_pop_first_item(TSK_RUNNABLE(self)->objects)
+
+TSK_GCC_DISABLE_WARNINGS_BEGIN("-Wunused-function")
 static tsk_list_item_t* TSK_RUNNABLE_POP_FIRST_SAFE(tsk_runnable_t* self)
 {
     tsk_list_item_t* item;
@@ -167,6 +169,7 @@ static tsk_list_item_t* TSK_RUNNABLE_POP_FIRST_SAFE(tsk_runnable_t* self)
     tsk_list_unlock(self->objects);
     return item;
 }
+TSK_GCC_DISABLE_WARNINGS_END()
 
 TSK_END_DECLS
 

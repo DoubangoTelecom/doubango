@@ -156,7 +156,7 @@
 //TINYNET_GEXTERN const tsk_object_def_t *tnet_turn_channel_binding_def_t;
 //TINYNET_GEXTERN const tsk_object_def_t *tnet_turn_allocation_def_t;
 //
-////#if defined(__SYMBIAN32__) || ANDROID /* Forward declaration */
+////#if defined(__SYMBIAN32__) || defined(__ANDROID__) || defined(ANDROID) /* Forward declaration */
 //struct struct tnet_nat_ctx_s;
 ////#endif
 //

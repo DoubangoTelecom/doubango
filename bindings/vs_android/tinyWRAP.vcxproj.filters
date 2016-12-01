@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="source">
+      <UniqueIdentifier>{d18194f7-c842-4a73-96e8-24f1838ec877}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{dcb7559b-e68b-45bf-905a-1ce051cae41d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="swig">
+      <UniqueIdentifier>{81c1bbdc-49bb-47d7-9698-19c94f936fc2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\_common\ActionConfig.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\AudioResampler.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\DDebug.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\MediaContent.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\MediaSessionMgr.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\Msrp.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\ProxyConsumer.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\ProxyPluginMgr.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\ProxyProducer.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\SafeObject.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\SipCallback.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\SipEvent.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\SipMessage.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\SipSession.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\SipStack.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\SipUri.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\SMSEncoder.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\_common\Xcap.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\java\android\tinyWRAP_wrap.cxx">
+      <Filter>source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\_common\Msrp.i">
+      <Filter>swig</Filter>
+    </None>
+    <None Include="..\_common\SipStack.i">
+      <Filter>swig</Filter>
+    </None>
+    <None Include="..\_common\SMS.i">
+      <Filter>swig</Filter>
+    </None>
+    <None Include="..\_common\tinyWRAP.i">
+      <Filter>swig</Filter>
+    </None>
+    <None Include="..\_common\Xcap.i">
+      <Filter>swig</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\_common\ActionConfig.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\AudioResampler.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\Common.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\DDebug.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\MediaContent.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\MediaSessionMgr.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\Msrp.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\ProxyConsumer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\ProxyPluginMgr.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\ProxyProducer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\SafeObject.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\SipCallback.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\SipEvent.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\SipMessage.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\SipSession.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\SipStack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\SipUri.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\SMSEncoder.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\tinyWRAP_config.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\_common\Xcap.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\java\android\tinyWRAP_wrap.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

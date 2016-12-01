@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{143a92d5-819c-456b-bc7c-186835f34a2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{2dcc2605-e97f-4e9d-9c83-49a4bb817f73}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\tinysak_config.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_base64.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_binaryutils.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_buffer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_common.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_condwait.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_debug.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_errno.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_fsm.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_hmac.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_list.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_md5.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_memory.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_mutex.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_object.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_options.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_params.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_plugin.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_ppfcs16.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_ppfcs32.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_ragel_state.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_runnable.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_safeobj.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_semaphore.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_sha1.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_string.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_thread.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_time.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_timer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_url.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_uuid.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\tsk_xml.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\tsk.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_base64.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_binaryutils.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_buffer.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_condwait.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_debug.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_fsm.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_hmac.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_list.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_md5.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_memory.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_mutex.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_object.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_options.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_params.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_plugin.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_ppfcs16.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_ppfcs32.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_ragel_state.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_runnable.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_safeobj.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_semaphore.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_sha1.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_string.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_thread.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_time.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_timer.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_url.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_uuid.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\tsk_xml.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

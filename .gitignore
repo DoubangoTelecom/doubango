@@ -19,3 +19,6 @@ Debug
 /tinyRTP/Release
 /tinyXCAP/Release
 *.orig
+*.db
+*.ipch
+*.opendb

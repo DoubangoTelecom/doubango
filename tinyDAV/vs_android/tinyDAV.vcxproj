@@ -1,0 +1,342 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\tinyBFCP\vs_android\tinyBFCP.vcxproj">
+      <Project>{70693f00-3cdc-4e07-94e2-d4db50378c2c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyIPSec\vs_android\tinyIPSec.vcxproj">
+      <Project>{a715cfed-cef5-4ea3-8693-89dff4074019}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyMEDIA\vs_android\tinyMEDIA.vcxproj">
+      <Project>{06c44c32-30e6-47b8-aa88-83dfa328ad2a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyMSRP\vs_android\tinyMSRP.vcxproj">
+      <Project>{9949fca3-fbd4-4e39-a323-fa0172cc5a1d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyNET\vs_android\tinyNET.vcxproj">
+      <Project>{5a74fc21-cd4e-49e9-b9f5-9794b9feb72b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinyRTP\vs_android\tinyRTP.vcxproj">
+      <Project>{0a016127-3082-423d-9a35-926c615bf62b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinySAK\vs_android\tinySAK.vcxproj">
+      <Project>{7e14fe0d-96c7-4370-9e38-258a90df2234}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\tinySDP\vs_android\tinySDP.vcxproj">
+      <Project>{982b7364-c42f-42a8-96a1-247dfd54b0be}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\tinydav.h" />
+    <ClInclude Include="..\include\tinydav\audio\tdav_consumer_audio.h" />
+    <ClInclude Include="..\include\tinydav\audio\tdav_jitterbuffer.h" />
+    <ClInclude Include="..\include\tinydav\audio\tdav_producer_audio.h" />
+    <ClInclude Include="..\include\tinydav\audio\tdav_session_audio.h" />
+    <ClInclude Include="..\include\tinydav\audio\tdav_speakup_jitterbuffer.h" />
+    <ClInclude Include="..\include\tinydav\audio\tdav_speex_denoise.h" />
+    <ClInclude Include="..\include\tinydav\audio\tdav_speex_jitterbuffer.h" />
+    <ClInclude Include="..\include\tinydav\audio\tdav_speex_resampler.h" />
+    <ClInclude Include="..\include\tinydav\audio\tdav_webrtc_denoise.h" />
+    <ClInclude Include="..\include\tinydav\bfcp\tdav_session_bfcp.h" />
+    <ClInclude Include="..\include\tinydav\codecs\amr\tdav_codec_amr.h" />
+    <ClInclude Include="..\include\tinydav\codecs\bfcp\tdav_codec_bfcp.h" />
+    <ClInclude Include="..\include\tinydav\codecs\bv\tdav_codec_bv16.h" />
+    <ClInclude Include="..\include\tinydav\codecs\bv\tdav_codec_bv32.h" />
+    <ClInclude Include="..\include\tinydav\codecs\dtmf\tdav_codec_dtmf.h" />
+    <ClInclude Include="..\include\tinydav\codecs\fec\tdav_codec_red.h" />
+    <ClInclude Include="..\include\tinydav\codecs\fec\tdav_codec_ulpfec.h" />
+    <ClInclude Include="..\include\tinydav\codecs\g711\g711.h" />
+    <ClInclude Include="..\include\tinydav\codecs\g711\tdav_codec_g711.h" />
+    <ClInclude Include="..\include\tinydav\codecs\g722\g722_enc_dec.h" />
+    <ClInclude Include="..\include\tinydav\codecs\g722\tdav_codec_g722.h" />
+    <ClInclude Include="..\include\tinydav\codecs\g729\tdav_codec_g729.h" />
+    <ClInclude Include="..\include\tinydav\codecs\gsm\tdav_codec_gsm.h" />
+    <ClInclude Include="..\include\tinydav\codecs\h261\tdav_codec_h261.h" />
+    <ClInclude Include="..\include\tinydav\codecs\h263\tdav_codec_h263.h" />
+    <ClInclude Include="..\include\tinydav\codecs\h264\tdav_codec_h264.h" />
+    <ClInclude Include="..\include\tinydav\codecs\h264\tdav_codec_h264_cisco.h" />
+    <ClInclude Include="..\include\tinydav\codecs\h264\tdav_codec_h264_common.h" />
+    <ClInclude Include="..\include\tinydav\codecs\h264\tdav_codec_h264_cuda.h" />
+    <ClInclude Include="..\include\tinydav\codecs\h264\tdav_codec_h264_intel.h" />
+    <ClInclude Include="..\include\tinydav\codecs\h264\tdav_codec_h264_rtp.h" />
+    <ClInclude Include="..\include\tinydav\codecs\ilbc\tdav_codec_ilbc.h" />
+    <ClInclude Include="..\include\tinydav\codecs\mp4ves\tdav_codec_mp4ves.h" />
+    <ClInclude Include="..\include\tinydav\codecs\msrp\tdav_codec_msrp.h" />
+    <ClInclude Include="..\include\tinydav\codecs\opus\tdav_codec_opus.h" />
+    <ClInclude Include="..\include\tinydav\codecs\speex\tdav_codec_speex.h" />
+    <ClInclude Include="..\include\tinydav\codecs\t140\tdav_codec_t140.h" />
+    <ClInclude Include="..\include\tinydav\codecs\theora\tdav_codec_theora.h" />
+    <ClInclude Include="..\include\tinydav\codecs\vpx\tdav_codec_vp8.h" />
+    <ClInclude Include="..\include\tinydav\msrp\tdav_consumer_msrp.h" />
+    <ClInclude Include="..\include\tinydav\msrp\tdav_producer_msrp.h" />
+    <ClInclude Include="..\include\tinydav\msrp\tdav_session_msrp.h" />
+    <ClInclude Include="..\include\tinydav\t140\tdav_consumer_t140.h" />
+    <ClInclude Include="..\include\tinydav\t140\tdav_producer_t140.h" />
+    <ClInclude Include="..\include\tinydav\t140\tdav_session_t140.h" />
+    <ClInclude Include="..\include\tinydav\tdav.h" />
+    <ClInclude Include="..\include\tinydav\tdav_apple.h" />
+    <ClInclude Include="..\include\tinydav\tdav_session_av.h" />
+    <ClInclude Include="..\include\tinydav\tdav_win32.h" />
+    <ClInclude Include="..\include\tinydav\video\jb\tdav_video_frame.h" />
+    <ClInclude Include="..\include\tinydav\video\jb\tdav_video_jb.h" />
+    <ClInclude Include="..\include\tinydav\video\tdav_consumer_video.h" />
+    <ClInclude Include="..\include\tinydav\video\tdav_converter_video.h" />
+    <ClInclude Include="..\include\tinydav\video\tdav_runnable_video.h" />
+    <ClInclude Include="..\include\tinydav\video\tdav_session_video.h" />
+    <ClInclude Include="..\include\tinydav_config.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\audio\tdav_consumer_audio.c" />
+    <ClCompile Include="..\src\audio\tdav_jitterbuffer.c" />
+    <ClCompile Include="..\src\audio\tdav_producer_audio.c" />
+    <ClCompile Include="..\src\audio\tdav_session_audio.c" />
+    <ClCompile Include="..\src\audio\tdav_speakup_jitterbuffer.c" />
+    <ClCompile Include="..\src\audio\tdav_speex_denoise.c" />
+    <ClCompile Include="..\src\audio\tdav_speex_jitterbuffer.c" />
+    <ClCompile Include="..\src\audio\tdav_speex_resampler.c" />
+    <ClCompile Include="..\src\audio\tdav_webrtc_denoise.c" />
+    <ClCompile Include="..\src\bfcp\tdav_session_bfcp.c" />
+    <ClCompile Include="..\src\codecs\amr\tdav_codec_amr.c" />
+    <ClCompile Include="..\src\codecs\bfcp\tdav_codec_bfcp.c" />
+    <ClCompile Include="..\src\codecs\bv\tdav_codec_bv16.c" />
+    <ClCompile Include="..\src\codecs\bv\tdav_codec_bv32.c" />
+    <ClCompile Include="..\src\codecs\dtmf\tdav_codec_dtmf.c" />
+    <ClCompile Include="..\src\codecs\fec\tdav_codec_red.c" />
+    <ClCompile Include="..\src\codecs\fec\tdav_codec_ulpfec.c" />
+    <ClCompile Include="..\src\codecs\g711\g711.c" />
+    <ClCompile Include="..\src\codecs\g711\tdav_codec_g711.c" />
+    <ClCompile Include="..\src\codecs\g722\g722_decode.c" />
+    <ClCompile Include="..\src\codecs\g722\g722_encode.c" />
+    <ClCompile Include="..\src\codecs\g722\tdav_codec_g722.c" />
+    <ClCompile Include="..\src\codecs\g729\tdav_codec_g729.c" />
+    <ClCompile Include="..\src\codecs\gsm\tdav_codec_gsm.c" />
+    <ClCompile Include="..\src\codecs\h261\tdav_codec_h261.c" />
+    <ClCompile Include="..\src\codecs\h263\tdav_codec_h263.c" />
+    <ClCompile Include="..\src\codecs\h264\tdav_codec_h264.c" />
+    <ClCompile Include="..\src\codecs\h264\tdav_codec_h264_cisco.cxx" />
+    <ClCompile Include="..\src\codecs\h264\tdav_codec_h264_cuda.cxx" />
+    <ClCompile Include="..\src\codecs\h264\tdav_codec_h264_intel.cxx" />
+    <ClCompile Include="..\src\codecs\h264\tdav_codec_h264_rtp.c" />
+    <ClCompile Include="..\src\codecs\ilbc\tdav_codec_ilbc.c" />
+    <ClCompile Include="..\src\codecs\mp4ves\tdav_codec_mp4ves.c" />
+    <ClCompile Include="..\src\codecs\msrp\tdav_codec_msrp.c" />
+    <ClCompile Include="..\src\codecs\opus\tdav_codec_opus.c" />
+    <ClCompile Include="..\src\codecs\speex\tdav_codec_speex.c" />
+    <ClCompile Include="..\src\codecs\t140\tdav_codec_t140.c" />
+    <ClCompile Include="..\src\codecs\theora\tdav_codec_theora.c" />
+    <ClCompile Include="..\src\codecs\vpx\tdav_codec_vp8.c" />
+    <ClCompile Include="..\src\msrp\tdav_consumer_msrp.c" />
+    <ClCompile Include="..\src\msrp\tdav_producer_msrp.c" />
+    <ClCompile Include="..\src\msrp\tdav_session_msrp.c" />
+    <ClCompile Include="..\src\t140\tdav_consumer_t140.c" />
+    <ClCompile Include="..\src\t140\tdav_producer_t140.c" />
+    <ClCompile Include="..\src\t140\tdav_session_t140.c" />
+    <ClCompile Include="..\src\tdav.c" />
+    <ClCompile Include="..\src\tdav_session_av.c" />
+    <ClCompile Include="..\src\tdav_win32.c" />
+    <ClCompile Include="..\src\video\jb\tdav_video_frame.c" />
+    <ClCompile Include="..\src\video\jb\tdav_video_jb.c" />
+    <ClCompile Include="..\src\video\tdav_consumer_video.c" />
+    <ClCompile Include="..\src\video\tdav_converter_video.cxx" />
+    <ClCompile Include="..\src\video\tdav_runnable_video.c" />
+    <ClCompile Include="..\src\video\tdav_session_video.c" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{38fa1286-a1d4-43d5-b36a-7fee178e4fc8}</ProjectGuid>
+    <Keyword>Android</Keyword>
+    <RootNamespace>tinyDAV</RootNamespace>
+    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <ApplicationType>Android</ApplicationType>
+    <ApplicationTypeRevision>2.0</ApplicationTypeRevision>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>Clang_3_8</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>Gcc_4_9</PlatformToolset>
+    <AndroidAPILevel>android-3</AndroidAPILevel>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyRTP/include;../../tinyMEDIA/include;../../tinySAK/src;../../tinySDP/include;../../tinyMSRP/include;../../tinyBFCP/include;../../tinyIPSec/src;../../tinyNET/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Lib>
+      <AdditionalOptions>-no-undefined %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyRTP/include;../../tinyMEDIA/include;../../tinySAK/src;../../tinySDP/include;../../tinyMSRP/include;../../tinyBFCP/include;../../tinyIPSec/src;../../tinyNET/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Lib>
+      <AdditionalOptions>-no-undefined %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyRTP/include;../../tinyMEDIA/include;../../tinySAK/src;../../tinySDP/include;../../tinyMSRP/include;../../tinyBFCP/include;../../tinyIPSec/src;../../tinyNET/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Lib>
+      <AdditionalOptions>-no-undefined %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyRTP/include;../../tinyMEDIA/include;../../tinySAK/src;../../tinySDP/include;../../tinyMSRP/include;../../tinyBFCP/include;../../tinyIPSec/src;../../tinyNET/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Lib>
+      <AdditionalOptions>-no-undefined %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyRTP/include;../../tinyMEDIA/include;../../tinySAK/src;../../tinySDP/include;../../tinyMSRP/include;../../tinyBFCP/include;../../tinyIPSec/src;../../tinyNET/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Lib>
+      <AdditionalOptions>-no-undefined %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyRTP/include;../../tinyMEDIA/include;../../tinySAK/src;../../tinySDP/include;../../tinyMSRP/include;../../tinyBFCP/include;../../tinyIPSec/src;../../tinyNET/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Lib>
+      <AdditionalOptions>-no-undefined %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyRTP/include;../../tinyMEDIA/include;../../tinySAK/src;../../tinySDP/include;../../tinyMSRP/include;../../tinyBFCP/include;../../tinyIPSec/src;../../tinyNET/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG_LEVEL=DEBUG_LEVEL_INFO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Lib>
+      <AdditionalOptions>-no-undefined %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../include;../../tinyRTP/include;../../tinyMEDIA/include;../../tinySAK/src;../../tinySDP/include;../../tinyMSRP/include;../../tinyBFCP/include;../../tinyIPSec/src;../../tinyNET/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Lib>
+      <AdditionalOptions>-no-undefined %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>
