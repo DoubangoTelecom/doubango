@@ -145,7 +145,7 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 
     va_start(ap, cond_data2);
     tsk_list_foreach(item, self->entries) {
-		if (!item) {
+		if (!item || !item->data) {
 			continue;
 		}
         tsk_fsm_entry_t* entry = (tsk_fsm_entry_t*)item->data;
