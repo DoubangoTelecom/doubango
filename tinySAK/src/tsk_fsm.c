@@ -145,6 +145,9 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 
     va_start(ap, cond_data2);
     tsk_list_foreach(item, self->entries) {
+		if (!item) {
+			continue;
+		}
         tsk_fsm_entry_t* entry = (tsk_fsm_entry_t*)item->data;
         if(((entry->from != tsk_fsm_state_any) && (entry->from != tsk_fsm_state_current)) && (entry->from != self->current)) {
             continue;
