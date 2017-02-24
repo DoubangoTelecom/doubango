@@ -42,6 +42,7 @@
 extern "C" {
 #include <wels/codec_api.h>
 #include <wels/codec_app_def.h>
+#include <wels/codec_ver.h>
 }
 
 #include <limits.h> /* INT_MAX */
@@ -81,6 +82,14 @@ tdav_codec_h264_cisco_t;
 
 #define kResetRotationTrue tsk_true
 #define kResetRotationFalse tsk_false
+
+#define OPENH264_VER_AT_LEAST(maj, min) \
+        ((OPENH264_MAJOR  > (maj)) || \
+        (OPENH264_MAJOR == (maj) && OPENH264_MINOR >= (min)))
+
+//#if !OPENH264_VER_AT_LEAST(1, 6)
+//#define SM_SIZELIMITED_SLICE SM_DYN_SLICE
+//#endif
 
 static int tdav_codec_h264_cisco_init(tdav_codec_h264_cisco_t* self, profile_idc_t profile);
 static int tdav_codec_h264_cisco_deinit(tdav_codec_h264_cisco_t* self);
@@ -707,11 +716,17 @@ static int tdav_codec_h264_cisco_open_encoder(tdav_codec_h264_cisco_t* self)
     layer->iSpatialBitrate = self->encoder.sEncParam.iTargetBitrate;
     layer->iVideoWidth = self->encoder.sEncParam.iPicWidth;
     layer->iVideoHeight = self->encoder.sEncParam.iPicHeight;
-    layer->sSliceCfg.uiSliceMode = SM_DYN_SLICE;
+#if OPENH264_VER_AT_LEAST(1, 6)
+    layer->sSliceArgument.uiSliceMode = SM_FIXEDSLCNUM_SLICE;
+    layer->sSliceArgument.uiSliceSizeConstraint = H264_RTP_PAYLOAD_SIZE;
+    layer->sSliceArgument.uiSliceNum = 1;
+    layer->sSliceArgument.uiSliceMbNum[0] = 960;
+#else
+    layer->sSliceCfg.sSliceArgument.uiSliceMode = SM_DYN_SLICE;
     layer->sSliceCfg.sSliceArgument.uiSliceSizeConstraint = H264_RTP_PAYLOAD_SIZE;
     layer->sSliceCfg.sSliceArgument.uiSliceNum = 1;
-    //layer->sSliceCfg.sSliceArgument.uiSliceMbNum[0] = 960;
-
+    layer->sSliceCfg.sSliceArgument.uiSliceMbNum[0] = 960;
+#endif
     if ((err = self->encoder.pInst->InitializeExt(&self->encoder.sEncParam)) != cmResultSuccess) {
         TSK_DEBUG_ERROR("InitializeExt failed: %ld", err);
         goto bail;
@@ -781,7 +796,9 @@ int tdav_codec_h264_cisco_open_decoder(tdav_codec_h264_cisco_t* self)
     self->decoder.pInst->SetOption(DECODER_OPTION_TRACE_CALLBACK, &__tdav_codec_h264_cisco_debug_cb);
 
     // initialize decoder
+#if !OPENH264_VER_AT_LEAST(1, 6)
     sDecParam.eOutputColorFormat = videoFormatI420;
+#endif
     sDecParam.sVideoProperty.eVideoBsType = VIDEO_BITSTREAM_AVC;
    
     if ((err = self->decoder.pInst->Initialize(&sDecParam)) != cmResultSuccess) {
