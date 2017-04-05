@@ -111,7 +111,7 @@ do
 	
 	echo -e building for ARCH="$arch, OPTIONS=$OPTIONS.... \n"
 	
-	./configure --host=$HOST --with-android-cpu=$arch --prefix=$HOME/$arch --with-pic --enable-nonfree=$ENABLE_NONFREE --enable-gpl=$ENABLE_GPL --enable-debug=$DEBUG $OPTIONS
+	./configure --host=$HOST --with-android-cpu=$arch --prefix=$HOME/$arch --without-pic --enable-nonfree=$ENABLE_NONFREE --enable-gpl=$ENABLE_GPL --enable-debug=$DEBUG $OPTIONS
 	make clean
 	make uninstall
 	make all

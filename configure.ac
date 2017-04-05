@@ -79,7 +79,7 @@ if test "$target_os" = "android"; then
 
 	AC_SUBST(NDK, $NDK)
 	
-	export CFLAGS="${CFLAGS} -DANDROID=1 -fPIC"
+	export CFLAGS="${CFLAGS} -DANDROID=1"
 	export CPPFLAGS=$CFLAGS
 	export LDFLAGS="${LDFLAGS} -lc -lm -lgcc"
 
