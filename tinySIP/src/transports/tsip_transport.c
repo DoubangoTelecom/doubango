@@ -928,8 +928,8 @@ int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const s
 
     if(TNET_SOCKET_TYPE_IS_STREAM(type)) {
         if(TNET_SOCKET_TYPE_IS_TLS(type)) {
-            self->scheme = "sips";
-            self->protocol = "tcp";
+            self->scheme = "sip";
+            self->protocol = "tls";
             self->via_protocol = "TLS";
             self->service = "SIPS+D2T";
         }
