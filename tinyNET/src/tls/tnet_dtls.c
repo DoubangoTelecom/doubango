@@ -116,7 +116,7 @@ static int _tnet_dtls_verify_cert(int preverify_ok, X509_STORE_CTX *ctx)
         return 0;
     }
     tsk_safeobj_lock(socket);
-    if (_tnet_dtls_is_fingerprint_matching(ctx->cert, &socket->remote.fp, socket->remote.hash) == tsk_false) {
+    if (_tnet_dtls_is_fingerprint_matching(X509_STORE_CTX_get_current_cert(ctx), &socket->remote.fp, socket->remote.hash) == tsk_false) {
         TSK_DEBUG_ERROR("Failed to match fingerprint");
         tsk_safeobj_unlock(socket);
         return 0;
@@ -322,7 +322,9 @@ tnet_dtls_socket_handle_t* tnet_dtls_socket_create(struct tnet_socket_s* wrapped
         if (set_mtu) {
             SSL_set_options(socket->ssl, SSL_OP_NO_QUERY_MTU);
             SSL_set_mtu(socket->ssl, TNET_DTLS_MTU - 28);
-            socket->ssl->d1->mtu = TNET_DTLS_MTU - 28;
+#if OPENSSL_VERSION_NUMBER <= 0x1000208fL
+			socket->ssl->d1->mtu = TNET_DTLS_MTU - 28;
+#endif
         }
         if (!(socket->rbio = BIO_new(BIO_s_mem())) || !(socket->wbio = BIO_new(BIO_s_mem()))) {
             TSK_DEBUG_ERROR("BIO_new_socket(%d) failed [%s]", socket->wrapped_sock->fd, ERR_error_string(ERR_get_error(), tsk_null));

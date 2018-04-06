@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export NDK=/home/android-ndk-r10e
-export PREFIX_BASE=/home/openssl-1.0.1t/android
+export PREFIX_BASE=/home/openssl-1.1.0h/android
 export HOST=arm-linux-androideabi
 export CPU=ARM
 
@@ -68,7 +68,7 @@ export CXX=$ANDROID_TOOLCHAIN/bin/$HOST-g++
 export AS=$ANDROID_TOOLCHAIN/bin/$HOST-gcc
 export RANLIB=$ANDROID_TOOLCHAIN/bin/$HOST-ranlib
 
-./Configure --prefix=$PREFIX_BASE/$CPU --openssldir=$PREFIX_BASE/$CPU/openssl $OS
+./Configure -no-shared --prefix=$PREFIX_BASE/$CPU --openssldir=$PREFIX_BASE/$CPU/openssl $OS -I$ANDROID_TOOLCHAIN/sysroot/ -I$ANDROID_TOOLCHAIN/sysroot/usr/include
 make clean
 make
 

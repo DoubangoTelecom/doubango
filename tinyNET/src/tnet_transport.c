@@ -45,6 +45,15 @@
 #ifndef TNET_CIPHER_LIST
 #	define TNET_CIPHER_LIST  "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH"
 #endif
+#if BUILD_TYPE_GE
+#	define TNET_DTLS_method				DTLSv1_2_method
+#	define TNET_SSL_client_method		TLSv1_2_client_method
+#	define TNET_SSL_server_method		TLSv1_2_server_method
+#else // For backward compatibility, negotiate
+#	define TNET_DTLS_method				DTLS_method // 1.1 or 1.2 (negotiated)
+#	define TNET_SSL_client_method		TLS_client_method // Any method (from SSLv23 to TLS1.2)
+#	define TNET_SSL_server_method		TLS_server_method // Any method (from SSLv23 to TLS1.2)
+#endif
 
 extern int tnet_transport_prepare(tnet_transport_t *transport);
 extern int tnet_transport_unprepare(tnet_transport_t *transport);
@@ -74,11 +83,11 @@ static int _tnet_transport_ssl_init(tnet_transport_t* transport)
             return -1;
         }
         if ((transport->tls.enabled = is_tls)) {
-            if (!transport->tls.ctx_client && !(transport->tls.ctx_client = SSL_CTX_new(SSLv23_client_method()))) {
+			if (!transport->tls.ctx_client && !(transport->tls.ctx_client = SSL_CTX_new(TNET_SSL_client_method()))) {
                 TSK_DEBUG_ERROR("Failed to create SSL client context");
                 return -2;
             }
-            if (!transport->tls.ctx_server && !(transport->tls.ctx_server = SSL_CTX_new(SSLv23_server_method()))) {
+			if (!transport->tls.ctx_server && !(transport->tls.ctx_server = SSL_CTX_new(TNET_SSL_server_method()))) {
                 TSK_DEBUG_ERROR("Failed to create SSL server context");
                 return -3;
             }
@@ -93,14 +102,12 @@ static int _tnet_transport_ssl_init(tnet_transport_t* transport)
         }
 #if HAVE_OPENSSL_DTLS
         if ((transport->dtls.enabled = is_dtls)) {
-            if (!transport->dtls.ctx && !(transport->dtls.ctx = SSL_CTX_new(DTLSv1_method()))) {
+			if (!transport->dtls.ctx && !(transport->dtls.ctx = SSL_CTX_new(TNET_DTLS_method()))) {
                 TSK_DEBUG_ERROR("Failed to create DTLSv1 context");
                 TSK_OBJECT_SAFE_FREE(transport);
                 return -5;
             }
             SSL_CTX_set_read_ahead(transport->dtls.ctx, 1);
-            // SSL_CTX_set_options(transport->dtls.ctx, SSL_OP_ALL);
-            // SSL_CTX_set_mode(transport->dtls.ctx, SSL_MODE_AUTO_RETRY);
             SSL_CTX_set_verify(transport->dtls.ctx, SSL_VERIFY_PEER | SSL_VERIFY_FAIL_IF_NO_PEER_CERT, tsk_null); // to be updated by tnet_transport_tls_set_certs()
             if (SSL_CTX_set_cipher_list(transport->dtls.ctx, TNET_CIPHER_LIST) <= 0) {
                 TSK_DEBUG_ERROR("SSL_CTX_set_cipher_list failed [%s]", ERR_error_string(ERR_get_error(), tsk_null));
