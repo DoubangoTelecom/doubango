@@ -45,14 +45,22 @@
 #ifndef TNET_CIPHER_LIST
 #	define TNET_CIPHER_LIST  "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH"
 #endif
+
+// https://mta.openssl.org/pipermail/openssl-dev/2015-May/001449.html
 #if BUILD_TYPE_GE
 #	define TNET_DTLS_method				DTLSv1_2_method
 #	define TNET_SSL_client_method		TLSv1_2_client_method
 #	define TNET_SSL_server_method		TLSv1_2_server_method
 #else // For backward compatibility, negotiate
-#	define TNET_DTLS_method				DTLS_method // 1.1 or 1.2 (negotiated)
-#	define TNET_SSL_client_method		TLS_client_method // Any method (from SSLv23 to TLS1.2)
-#	define TNET_SSL_server_method		TLS_server_method // Any method (from SSLv23 to TLS1.2)
+#	if (OPENSSL_VERSION_NUMBER >= 0x10100000L)
+#		define TNET_DTLS_method				DTLS_method // 1.1 or 1.2 (negotiated)
+#		define TNET_SSL_client_method		TLS_client_method // Any method (from SSLv23 to TLS1.2)
+#		define TNET_SSL_server_method		TLS_server_method // Any method (from SSLv23 to TLS1.2)
+#	else
+#		define TNET_DTLS_method				DTLSv1_method 
+#		define TNET_SSL_client_method		SSLv23_client_method
+#		define TNET_SSL_server_method		SSLv23_server_method
+#	endif
 #endif
 
 extern int tnet_transport_prepare(tnet_transport_t *transport);
