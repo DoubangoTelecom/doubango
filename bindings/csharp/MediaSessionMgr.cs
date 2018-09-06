@@ -250,6 +250,16 @@ public class MediaSessionMgr : IDisposable {
     return ret;
   }
 
+  public static bool defaultsSetConditionalRingingEnabled(bool _cond_ringing_enabled) {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSetConditionalRingingEnabled(_cond_ringing_enabled);
+    return ret;
+  }
+
+  public static bool defaultsGetConditionalRingingEnabled() {
+    bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsGetConditionalRingingEnabled();
+    return ret;
+  }
+
   public static bool defaultsSet100relEnabled(bool _100rel_enabled) {
     bool ret = tinyWRAPPINVOKE.MediaSessionMgr_defaultsSet100relEnabled(_100rel_enabled);
     return ret;

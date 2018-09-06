@@ -5103,6 +5103,52 @@ XS(_wrap_MediaSessionMgr_defaultsGetNoiseSuppLevel) {
 }
 
 
+XS(_wrap_MediaSessionMgr_defaultsSetConditionalRingingEnabled) {
+  {
+    bool arg1 ;
+    bool val1 ;
+    int ecode1 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsSetConditionalRingingEnabled(_cond_ringing_enabled);");
+    }
+    ecode1 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(0), &val1);
+    if (!SWIG_IsOK(ecode1)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetConditionalRingingEnabled" "', argument " "1"" of type '" "bool""'");
+    } 
+    arg1 = static_cast< bool >(val1);
+    result = (bool)MediaSessionMgr::defaultsSetConditionalRingingEnabled(arg1);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_MediaSessionMgr_defaultsGetConditionalRingingEnabled) {
+  {
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: MediaSessionMgr_defaultsGetConditionalRingingEnabled();");
+    }
+    result = (bool)MediaSessionMgr::defaultsGetConditionalRingingEnabled();
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_MediaSessionMgr_defaultsSet100relEnabled) {
   {
     bool arg1 ;
@@ -28539,6 +28585,8 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::MediaSessionMgr_defaultsGetNoiseSuppEnabled", _wrap_MediaSessionMgr_defaultsGetNoiseSuppEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetNoiseSuppLevel", _wrap_MediaSessionMgr_defaultsSetNoiseSuppLevel},
 {"tinyWRAPc::MediaSessionMgr_defaultsGetNoiseSuppLevel", _wrap_MediaSessionMgr_defaultsGetNoiseSuppLevel},
+{"tinyWRAPc::MediaSessionMgr_defaultsSetConditionalRingingEnabled", _wrap_MediaSessionMgr_defaultsSetConditionalRingingEnabled},
+{"tinyWRAPc::MediaSessionMgr_defaultsGetConditionalRingingEnabled", _wrap_MediaSessionMgr_defaultsGetConditionalRingingEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsSet100relEnabled", _wrap_MediaSessionMgr_defaultsSet100relEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsGet100relEnabled", _wrap_MediaSessionMgr_defaultsGet100relEnabled},
 {"tinyWRAPc::MediaSessionMgr_defaultsSetScreenSize", _wrap_MediaSessionMgr_defaultsSetScreenSize},
@@ -29573,6 +29621,11 @@ XS(SWIG_init) {
   /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_event_code_dialog_request_sent", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(804)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "tsip_event_code_dialog_request_prechecking", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(805)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
   /*@SWIG:/usr/local/share/swig/2.0.9/perl5/perltypemaps.swg,65,%set_constant@*/ do {

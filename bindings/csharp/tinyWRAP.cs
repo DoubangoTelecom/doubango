@@ -19,6 +19,7 @@ public class tinyWRAP {
   public static readonly int tsip_event_code_dialog_request_outgoing = tinyWRAPPINVOKE.tsip_event_code_dialog_request_outgoing_get();
   public static readonly int tsip_event_code_dialog_request_cancelled = tinyWRAPPINVOKE.tsip_event_code_dialog_request_cancelled_get();
   public static readonly int tsip_event_code_dialog_request_sent = tinyWRAPPINVOKE.tsip_event_code_dialog_request_sent_get();
+  public static readonly int tsip_event_code_dialog_request_prechecking = tinyWRAPPINVOKE.tsip_event_code_dialog_request_prechecking_get();
   public static readonly int tsip_event_code_dialog_connecting = tinyWRAPPINVOKE.tsip_event_code_dialog_connecting_get();
   public static readonly int tsip_event_code_dialog_connected = tinyWRAPPINVOKE.tsip_event_code_dialog_connected_get();
   public static readonly int tsip_event_code_dialog_terminating = tinyWRAPPINVOKE.tsip_event_code_dialog_terminating_get();

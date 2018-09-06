@@ -318,6 +318,8 @@ sub DESTROY {
 *defaultsGetNoiseSuppEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGetNoiseSuppEnabled;
 *defaultsSetNoiseSuppLevel = *tinyWRAPc::MediaSessionMgr_defaultsSetNoiseSuppLevel;
 *defaultsGetNoiseSuppLevel = *tinyWRAPc::MediaSessionMgr_defaultsGetNoiseSuppLevel;
+*defaultsSetConditionalRingingEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSetConditionalRingingEnabled;
+*defaultsGetConditionalRingingEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGetConditionalRingingEnabled;
 *defaultsSet100relEnabled = *tinyWRAPc::MediaSessionMgr_defaultsSet100relEnabled;
 *defaultsGet100relEnabled = *tinyWRAPc::MediaSessionMgr_defaultsGet100relEnabled;
 *defaultsSetScreenSize = *tinyWRAPc::MediaSessionMgr_defaultsSetScreenSize;
@@ -2574,6 +2576,7 @@ package tinyWRAP;
 *tsip_event_code_dialog_request_outgoing = *tinyWRAPc::tsip_event_code_dialog_request_outgoing;
 *tsip_event_code_dialog_request_cancelled = *tinyWRAPc::tsip_event_code_dialog_request_cancelled;
 *tsip_event_code_dialog_request_sent = *tinyWRAPc::tsip_event_code_dialog_request_sent;
+*tsip_event_code_dialog_request_prechecking = *tinyWRAPc::tsip_event_code_dialog_request_prechecking;
 *tsip_event_code_dialog_connecting = *tinyWRAPc::tsip_event_code_dialog_connecting;
 *tsip_event_code_dialog_connected = *tinyWRAPc::tsip_event_code_dialog_connected;
 *tsip_event_code_dialog_terminating = *tinyWRAPc::tsip_event_code_dialog_terminating;

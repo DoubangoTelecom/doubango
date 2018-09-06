@@ -7884,6 +7884,41 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSetConditionalRingingEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool arg1 ;
+  bool val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MediaSessionMgr_defaultsSetConditionalRingingEnabled",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_bool(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "MediaSessionMgr_defaultsSetConditionalRingingEnabled" "', argument " "1"" of type '" "bool""'");
+  } 
+  arg1 = static_cast< bool >(val1);
+  result = (bool)MediaSessionMgr::defaultsSetConditionalRingingEnabled(arg1);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsGetConditionalRingingEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)":MediaSessionMgr_defaultsGetConditionalRingingEnabled")) SWIG_fail;
+  result = (bool)MediaSessionMgr::defaultsGetConditionalRingingEnabled();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_MediaSessionMgr_defaultsSet100relEnabled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   bool arg1 ;
@@ -26787,6 +26822,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"MediaSessionMgr_defaultsGetNoiseSuppEnabled", _wrap_MediaSessionMgr_defaultsGetNoiseSuppEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetNoiseSuppLevel", _wrap_MediaSessionMgr_defaultsSetNoiseSuppLevel, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGetNoiseSuppLevel", _wrap_MediaSessionMgr_defaultsGetNoiseSuppLevel, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsSetConditionalRingingEnabled", _wrap_MediaSessionMgr_defaultsSetConditionalRingingEnabled, METH_VARARGS, NULL},
+	 { (char *)"MediaSessionMgr_defaultsGetConditionalRingingEnabled", _wrap_MediaSessionMgr_defaultsGetConditionalRingingEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSet100relEnabled", _wrap_MediaSessionMgr_defaultsSet100relEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsGet100relEnabled", _wrap_MediaSessionMgr_defaultsGet100relEnabled, METH_VARARGS, NULL},
 	 { (char *)"MediaSessionMgr_defaultsSetScreenSize", _wrap_MediaSessionMgr_defaultsSetScreenSize, METH_VARARGS, NULL},
@@ -28515,6 +28552,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_request_outgoing",SWIG_From_int(static_cast< int >(802)));
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_request_cancelled",SWIG_From_int(static_cast< int >(803)));
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_request_sent",SWIG_From_int(static_cast< int >(804)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_request_prechecking",SWIG_From_int(static_cast< int >(805)));
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_connecting",SWIG_From_int(static_cast< int >(900)));
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_connected",SWIG_From_int(static_cast< int >(901)));
   SWIG_Python_SetConstant(d, "tsip_event_code_dialog_terminating",SWIG_From_int(static_cast< int >(902)));

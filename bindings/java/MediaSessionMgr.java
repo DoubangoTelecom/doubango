@@ -203,6 +203,14 @@ public class MediaSessionMgr {
     return tinyWRAPJNI.MediaSessionMgr_defaultsGetNoiseSuppLevel();
   }
 
+  public static boolean defaultsSetConditionalRingingEnabled(boolean _cond_ringing_enabled) {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsSetConditionalRingingEnabled(_cond_ringing_enabled);
+  }
+
+  public static boolean defaultsGetConditionalRingingEnabled() {
+    return tinyWRAPJNI.MediaSessionMgr_defaultsGetConditionalRingingEnabled();
+  }
+
   public static boolean defaultsSet100relEnabled(boolean _100rel_enabled) {
     return tinyWRAPJNI.MediaSessionMgr_defaultsSet100relEnabled(_100rel_enabled);
   }

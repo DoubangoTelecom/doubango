@@ -462,6 +462,12 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetNoiseSuppLevel")]
   public static extern int MediaSessionMgr_defaultsGetNoiseSuppLevel();
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSetConditionalRingingEnabled")]
+  public static extern bool MediaSessionMgr_defaultsSetConditionalRingingEnabled(bool jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsGetConditionalRingingEnabled")]
+  public static extern bool MediaSessionMgr_defaultsGetConditionalRingingEnabled();
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_MediaSessionMgr_defaultsSet100relEnabled")]
   public static extern bool MediaSessionMgr_defaultsSet100relEnabled(bool jarg1);
 
@@ -1877,6 +1883,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_request_sent_get")]
   public static extern int tsip_event_code_dialog_request_sent_get();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_request_prechecking_get")]
+  public static extern int tsip_event_code_dialog_request_prechecking_get();
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_connecting_get")]
   public static extern int tsip_event_code_dialog_connecting_get();

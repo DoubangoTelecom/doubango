@@ -101,6 +101,8 @@ public class tinyWRAPJNI {
   public final static native boolean MediaSessionMgr_defaultsGetNoiseSuppEnabled();
   public final static native boolean MediaSessionMgr_defaultsSetNoiseSuppLevel(int jarg1);
   public final static native int MediaSessionMgr_defaultsGetNoiseSuppLevel();
+  public final static native boolean MediaSessionMgr_defaultsSetConditionalRingingEnabled(boolean jarg1);
+  public final static native boolean MediaSessionMgr_defaultsGetConditionalRingingEnabled();
   public final static native boolean MediaSessionMgr_defaultsSet100relEnabled(boolean jarg1);
   public final static native boolean MediaSessionMgr_defaultsGet100relEnabled();
   public final static native boolean MediaSessionMgr_defaultsSetScreenSize(int jarg1, int jarg2);

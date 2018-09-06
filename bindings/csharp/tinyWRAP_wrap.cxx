@@ -2296,6 +2296,28 @@ SWIGEXPORT int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetNoiseSuppLevel() {
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSetConditionalRingingEnabled(unsigned int jarg1) {
+  unsigned int jresult ;
+  bool arg1 ;
+  bool result;
+  
+  arg1 = jarg1 ? true : false; 
+  result = (bool)MediaSessionMgr::defaultsSetConditionalRingingEnabled(arg1);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsGetConditionalRingingEnabled() {
+  unsigned int jresult ;
+  bool result;
+  
+  result = (bool)MediaSessionMgr::defaultsGetConditionalRingingEnabled();
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_MediaSessionMgr_defaultsSet100relEnabled(unsigned int jarg1) {
   unsigned int jresult ;
   bool arg1 ;
@@ -8362,6 +8384,16 @@ SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_request_sent_get() {
   int result;
   
   result = (int)(804);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_request_prechecking_get() {
+  int jresult ;
+  int result;
+  
+  result = (int)(805);
   jresult = result; 
   return jresult;
 }

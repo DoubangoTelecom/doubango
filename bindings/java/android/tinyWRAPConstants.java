@@ -16,6 +16,7 @@ public interface tinyWRAPConstants {
   public final static int tsip_event_code_dialog_request_outgoing = 802;
   public final static int tsip_event_code_dialog_request_cancelled = 803;
   public final static int tsip_event_code_dialog_request_sent = 804;
+  public final static int tsip_event_code_dialog_request_prechecking = 805;
   public final static int tsip_event_code_dialog_connecting = 900;
   public final static int tsip_event_code_dialog_connected = 901;
   public final static int tsip_event_code_dialog_terminating = 902;

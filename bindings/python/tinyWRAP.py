@@ -277,6 +277,10 @@ class MediaSessionMgr(_object):
     if _newclass:defaultsSetNoiseSuppLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetNoiseSuppLevel)
     __swig_getmethods__["defaultsGetNoiseSuppLevel"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetNoiseSuppLevel
     if _newclass:defaultsGetNoiseSuppLevel = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetNoiseSuppLevel)
+    __swig_getmethods__["defaultsSetConditionalRingingEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSetConditionalRingingEnabled
+    if _newclass:defaultsSetConditionalRingingEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSetConditionalRingingEnabled)
+    __swig_getmethods__["defaultsGetConditionalRingingEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGetConditionalRingingEnabled
+    if _newclass:defaultsGetConditionalRingingEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsGetConditionalRingingEnabled)
     __swig_getmethods__["defaultsSet100relEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsSet100relEnabled
     if _newclass:defaultsSet100relEnabled = staticmethod(_tinyWRAP.MediaSessionMgr_defaultsSet100relEnabled)
     __swig_getmethods__["defaultsGet100relEnabled"] = lambda x: _tinyWRAP.MediaSessionMgr_defaultsGet100relEnabled
@@ -481,6 +485,14 @@ MediaSessionMgr_defaultsSetNoiseSuppLevel = _tinyWRAP.MediaSessionMgr_defaultsSe
 def MediaSessionMgr_defaultsGetNoiseSuppLevel():
   return _tinyWRAP.MediaSessionMgr_defaultsGetNoiseSuppLevel()
 MediaSessionMgr_defaultsGetNoiseSuppLevel = _tinyWRAP.MediaSessionMgr_defaultsGetNoiseSuppLevel
+
+def MediaSessionMgr_defaultsSetConditionalRingingEnabled(*args):
+  return _tinyWRAP.MediaSessionMgr_defaultsSetConditionalRingingEnabled(*args)
+MediaSessionMgr_defaultsSetConditionalRingingEnabled = _tinyWRAP.MediaSessionMgr_defaultsSetConditionalRingingEnabled
+
+def MediaSessionMgr_defaultsGetConditionalRingingEnabled():
+  return _tinyWRAP.MediaSessionMgr_defaultsGetConditionalRingingEnabled()
+MediaSessionMgr_defaultsGetConditionalRingingEnabled = _tinyWRAP.MediaSessionMgr_defaultsGetConditionalRingingEnabled
 
 def MediaSessionMgr_defaultsSet100relEnabled(*args):
   return _tinyWRAP.MediaSessionMgr_defaultsSet100relEnabled(*args)
@@ -1709,6 +1721,7 @@ tsip_event_code_dialog_request_incoming = _tinyWRAP.tsip_event_code_dialog_reque
 tsip_event_code_dialog_request_outgoing = _tinyWRAP.tsip_event_code_dialog_request_outgoing
 tsip_event_code_dialog_request_cancelled = _tinyWRAP.tsip_event_code_dialog_request_cancelled
 tsip_event_code_dialog_request_sent = _tinyWRAP.tsip_event_code_dialog_request_sent
+tsip_event_code_dialog_request_prechecking = _tinyWRAP.tsip_event_code_dialog_request_prechecking
 tsip_event_code_dialog_connecting = _tinyWRAP.tsip_event_code_dialog_connecting
 tsip_event_code_dialog_connected = _tinyWRAP.tsip_event_code_dialog_connected
 tsip_event_code_dialog_terminating = _tinyWRAP.tsip_event_code_dialog_terminating
