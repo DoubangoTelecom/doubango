@@ -1755,6 +1755,7 @@ tsip_ao_info = _tinyWRAP.tsip_ao_info
 tsip_i_options = _tinyWRAP.tsip_i_options
 tsip_ao_options = _tinyWRAP.tsip_ao_options
 tsip_i_newcall = _tinyWRAP.tsip_i_newcall
+tsip_i_prechecking = _tinyWRAP.tsip_i_prechecking
 tsip_i_request = _tinyWRAP.tsip_i_request
 tsip_ao_request = _tinyWRAP.tsip_ao_request
 tsip_o_ect_trying = _tinyWRAP.tsip_o_ect_trying

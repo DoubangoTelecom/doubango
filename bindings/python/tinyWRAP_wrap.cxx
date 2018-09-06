@@ -28586,6 +28586,7 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tsip_i_options",SWIG_From_int(static_cast< int >(tsip_i_options)));
   SWIG_Python_SetConstant(d, "tsip_ao_options",SWIG_From_int(static_cast< int >(tsip_ao_options)));
   SWIG_Python_SetConstant(d, "tsip_i_newcall",SWIG_From_int(static_cast< int >(tsip_i_newcall)));
+  SWIG_Python_SetConstant(d, "tsip_i_prechecking",SWIG_From_int(static_cast< int >(tsip_i_prechecking)));
   SWIG_Python_SetConstant(d, "tsip_i_request",SWIG_From_int(static_cast< int >(tsip_i_request)));
   SWIG_Python_SetConstant(d, "tsip_ao_request",SWIG_From_int(static_cast< int >(tsip_ao_request)));
   SWIG_Python_SetConstant(d, "tsip_o_ect_trying",SWIG_From_int(static_cast< int >(tsip_o_ect_trying)));

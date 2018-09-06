@@ -2610,6 +2610,7 @@ package tinyWRAP;
 *tsip_i_options = *tinyWRAPc::tsip_i_options;
 *tsip_ao_options = *tinyWRAPc::tsip_ao_options;
 *tsip_i_newcall = *tinyWRAPc::tsip_i_newcall;
+*tsip_i_prechecking = *tinyWRAPc::tsip_i_prechecking;
 *tsip_i_request = *tinyWRAPc::tsip_i_request;
 *tsip_ao_request = *tinyWRAPc::tsip_ao_request;
 *tsip_o_ect_trying = *tinyWRAPc::tsip_o_ect_trying;

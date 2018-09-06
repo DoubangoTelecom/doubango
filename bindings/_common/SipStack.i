@@ -185,41 +185,42 @@ tsip_options_event_type_t;
 typedef enum tsip_invite_event_type_e
 {
 	// ============================
-	//	Sip Events
-	//
-	tsip_i_newcall,
-	
-	//! in-dialog requests/reponses
-	tsip_i_request,
-	tsip_ao_request,
-	
-	/* 3GPP TS 24.629: Explicit Call Transfer (ECT) */
-	tsip_o_ect_trying,
-	tsip_o_ect_accepted,
-	tsip_o_ect_completed,
-	tsip_o_ect_failed,
-	tsip_o_ect_notify,
-	tsip_i_ect_requested,
-	tsip_i_ect_newcall,
-	tsip_i_ect_completed,
-	tsip_i_ect_failed,
-	tsip_i_ect_notify,
-	
-	// ============================
-	//	Media Events
-	//
+    //	Sip Events
+    //
+    tsip_i_newcall,
+    tsip_i_prechecking,
 
-	tsip_m_early_media,
-	tsip_m_updating, // Trying to update from Audio -> Video for example
-	tsip_m_updated, // succeed to update
-	
-	/* 3GPP TS 24.610: Communication Hold */
-	tsip_m_local_hold_ok,
-	tsip_m_local_hold_nok,
-	tsip_m_local_resume_ok,
-	tsip_m_local_resume_nok,
-	tsip_m_remote_hold,
-	tsip_m_remote_resume,
+    //! in-dialog requests/reponses
+    tsip_i_request,
+    tsip_ao_request,
+
+    /* 3GPP TS 24.629: Explicit Call Transfer (ECT) */
+    tsip_o_ect_trying,
+    tsip_o_ect_accepted,
+    tsip_o_ect_completed,
+    tsip_o_ect_failed,
+    tsip_o_ect_notify,
+    tsip_i_ect_requested,
+    tsip_i_ect_newcall,
+    tsip_i_ect_completed,
+    tsip_i_ect_failed,
+    tsip_i_ect_notify,
+
+    // ============================
+    //	Media Events
+    //
+
+    tsip_m_early_media,
+    tsip_m_updating, // Trying to update from Audio -> Video for example
+    tsip_m_updated, // succeed to update
+
+    /* 3GPP TS 24.610: Communication Hold */
+    tsip_m_local_hold_ok,
+    tsip_m_local_hold_nok,
+    tsip_m_local_resume_ok,
+    tsip_m_local_resume_nok,
+    tsip_m_remote_hold,
+    tsip_m_remote_resume,
 }
 tsip_invite_event_type_t;
 

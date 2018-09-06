@@ -10,6 +10,7 @@ namespace org.doubango.tinyWRAP {
 
 public enum tsip_invite_event_type_t {
   tsip_i_newcall,
+  tsip_i_prechecking,
   tsip_i_request,
   tsip_ao_request,
   tsip_o_ect_trying,
