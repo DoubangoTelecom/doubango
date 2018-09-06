@@ -708,6 +708,7 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
         ss->media.profile = tmedia_defaults_get_profile();
         ss->media.srtp_mode = tmedia_defaults_get_srtp_mode();
         ss->media.avpf_mode = tmedia_defaults_get_avpf_mode();
+        ss->media.enable_conditional_ringing = tmedia_defaults_get_conditional_ringing_enabled();
         ss->media.enable_100rel = tmedia_defaults_get_100rel_enabled();
         ss->media.enable_ice = tmedia_defaults_get_ice_enabled();
         ss->media.enable_icestun = tmedia_defaults_get_icestun_enabled();

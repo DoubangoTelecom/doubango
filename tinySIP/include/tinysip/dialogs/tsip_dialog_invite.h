@@ -51,6 +51,7 @@ typedef struct tsip_dialog_invite {
     tsk_bool_t use_rtcpmux;
     tsk_bool_t is_initial_iack_pending; // we're waiting for the initial incoming ACK (for the 200 OK) to ensure the session
     tsk_bool_t is_cancelling; // whether we're cancelling the outgoing INVITE
+    tsk_bool_t is_conditional_ringing_enabled; // whether to ask end-user before sending 18x ringing message
     uint32_t rseq;
     uint32_t cseq_out_media_update; // CSeq for the last media update request (INVITE or UPDATE).
     uint64_t last_out_fastupdate_time;

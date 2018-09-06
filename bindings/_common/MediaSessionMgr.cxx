@@ -473,6 +473,16 @@ int32_t MediaSessionMgr::defaultsGetNoiseSuppLevel()
     return tmedia_defaults_get_noise_supp_level();
 }
 
+bool MediaSessionMgr::defaultsSetConditionalRingingEnabled(bool _cond_ringing_enabled)
+{
+    return tmedia_defaults_set_conditional_ringing_enabled(_cond_ringing_enabled ? tsk_true : tsk_false) == 0;
+}
+
+bool MediaSessionMgr::defaultsGetConditionalRingingEnabled()
+{
+    return !!tmedia_defaults_get_conditional_ringing_enabled();
+}
+
 bool MediaSessionMgr::defaultsSet100relEnabled(bool _100rel_enabled)
 {
     return tmedia_defaults_set_100rel_enabled(_100rel_enabled ? tsk_true : tsk_false) == 0;
@@ -480,7 +490,7 @@ bool MediaSessionMgr::defaultsSet100relEnabled(bool _100rel_enabled)
 
 bool MediaSessionMgr::defaultsGet100relEnabled()
 {
-    return tmedia_defaults_get_100rel_enabled() == 0;
+    return !!tmedia_defaults_get_100rel_enabled();
 }
 
 bool MediaSessionMgr::defaultsSetScreenSize(int32_t sx, int32_t sy)

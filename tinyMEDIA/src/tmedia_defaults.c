@@ -49,6 +49,7 @@ static float __agc_level = 8000.0f;
 static tsk_bool_t __vad_enabled = tsk_false;
 static tsk_bool_t __noise_supp_enabled = tsk_true;
 static int32_t __noise_supp_level = -30;
+static tsk_bool_t __cond_ringing_enabled = tsk_false; // Whether to let the user decide if sending ringing is needed or not -> If enabled then, the state machine will hang on "PreChecking" state until "accept" request is received from the end-user
 static tsk_bool_t __100rel_enabled = tsk_true;
 static int32_t __sx = -1;
 static int32_t __sy = -1;
@@ -331,6 +332,16 @@ int tmedia_defaults_set_noise_supp_level(int32_t noise_supp_level)
 int32_t tmedia_defaults_get_noise_supp_level()
 {
     return __noise_supp_level;
+}
+
+int tmedia_defaults_set_conditional_ringing_enabled(tsk_bool_t _cond_ringing_enabled)
+{
+    __cond_ringing_enabled = _cond_ringing_enabled;
+    return 0;
+}
+tsk_bool_t tmedia_defaults_get_conditional_ringing_enabled()
+{
+    return __cond_ringing_enabled;
 }
 
 int tmedia_defaults_set_100rel_enabled(tsk_bool_t _100rel_enabled)

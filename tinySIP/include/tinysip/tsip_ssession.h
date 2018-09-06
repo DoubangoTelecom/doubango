@@ -259,6 +259,7 @@ typedef struct tsip_ssession_s {
         } stun;
 
         /* Features */
+        unsigned enable_conditional_ringing:1;
         unsigned enable_100rel:1;
         unsigned enable_ice:1;
         unsigned enable_icestun:1;

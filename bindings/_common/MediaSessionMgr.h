@@ -197,6 +197,8 @@ public:
     static bool defaultsGetNoiseSuppEnabled();
     static bool defaultsSetNoiseSuppLevel(int32_t noise_supp_level);
     static int32_t defaultsGetNoiseSuppLevel();
+    static bool defaultsSetConditionalRingingEnabled(bool _cond_ringing_enabled);
+    static bool defaultsGetConditionalRingingEnabled();
     static bool defaultsSet100relEnabled(bool _100rel_enabled);
     static bool defaultsGet100relEnabled();
     static bool defaultsSetScreenSize(int32_t sx, int32_t sy);

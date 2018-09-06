@@ -1882,6 +1882,7 @@ static tsk_object_t* tsip_dialog_invite_ctor(tsk_object_t * self, va_list * app)
 
         dialog->ice.last_action_id = tsk_fsm_state_none;
         dialog->refersub = tsk_true;
+        dialog->is_conditional_ringing_enabled = ((tsip_ssession_t*)ss)->media.enable_conditional_ringing;
         // ... do the same for preconditions, replaces, ....
 
         /* Initialize the class itself */

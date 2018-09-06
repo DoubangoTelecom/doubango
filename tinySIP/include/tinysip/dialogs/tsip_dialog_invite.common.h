@@ -93,6 +93,7 @@ typedef enum _fsm_state_e {
     _fsm_state_Started,
     _fsm_state_Outgoing,
     _fsm_state_Incoming,
+    _fsm_state_PreChecking,
     _fsm_state_Trying,
     _fsm_state_Ringing,
     _fsm_state_Cancelling,

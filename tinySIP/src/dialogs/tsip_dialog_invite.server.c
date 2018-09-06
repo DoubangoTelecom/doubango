@@ -62,8 +62,13 @@ static int send_UNSUPPORTED(tsip_dialog_invite_t* self, const tsip_request_t* re
 /* ======================== transitions ======================== */
 static int s0000_Started_2_Terminated_X_iINVITE(va_list *app); // Failure
 static int s0000_Started_2_Started_X_iINVITE(va_list *app); // Session Interval Too Small
+static int s0000_Started_2_PreChecking_X_iINVITE(va_list *app); // Conditional ringing (or any pre-chechecking) enabled
 static int s0000_Started_2_InProgress_X_iINVITE(va_list *app); // 100rel supported
 static int s0000_Started_2_Ringing_X_iINVITE(va_list *app); // Neither 100rel nor QoS
+static int s0000_PreChecking_2_Terminated_X_Reject(va_list *app); // User rejected the incoming call after pre-checking
+static int s0000_PreChecking_2_Terminated_X_iCANCEL(va_list *app);
+static int s0000_PreChecking_2_InProgress_X_Accept(va_list *app); // User accepted the incoming call after pre-checking - 100rel supported
+static int s0000_PreChecking_2_Ringing_X_Accept(va_list *app); // User accepted the incoming call after pre-checking - neither 100rel nor QoS
 static int s0000_InProgress_2_InProgress_X_iPRACK(va_list *app); // PRACK for our 18x response (with QoS)
 static int s0000_InProgress_2_Ringing_X_iPRACK(va_list *app); // PRACK for our 18x response (without QoS)
 static int s0000_InProgress_2_InProgress_X_iUPDATE(va_list *app); // QoS cannot resume
@@ -219,11 +224,15 @@ static tsk_bool_t _fsm_cond_cannotresume(tsip_dialog_invite_t* self, tsip_messag
     }
 }
 
-static tsk_bool_t _fsm_cond_initial_iack_pending(tsip_dialog_invite_t* self, tsip_message_t* rACK)
+static tsk_bool_t _fsm_cond_initial_iack_pending(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
     return self->is_initial_iack_pending;
 }
 
+static tsk_bool_t _fsm_cond_prechecking_enabled(tsip_dialog_invite_t* self, tsip_message_t* rACK)
+{
+    return self->is_conditional_ringing_enabled && !self->is_client; // add here other options requiring pre-checking using OR (|)
+}
 
 
 /* Init FSM */
@@ -240,11 +249,26 @@ int tsip_dialog_invite_server_init(tsip_dialog_invite_t *self)
                        TSK_FSM_ADD(_fsm_state_Started, _fsm_action_iINVITE, _fsm_cond_bad_content, _fsm_state_Terminated, s0000_Started_2_Terminated_X_iINVITE, "s0000_Started_2_Terminated_X_iINVITE"),
                        // Started -> (Session Interval Too Small) -> Started
                        TSK_FSM_ADD(_fsm_state_Started, _fsm_action_iINVITE, _fsm_cond_toosmall, _fsm_state_Started, s0000_Started_2_Started_X_iINVITE, "s0000_Started_2_Started_X_iINVITE"),
+                       // Started ->(Pre-Checking enabled) -> PreChecking
+                       TSK_FSM_ADD(_fsm_state_Started, _fsm_action_iINVITE, _fsm_cond_prechecking_enabled, _fsm_state_PreChecking, s0000_Started_2_PreChecking_X_iINVITE, "s0000_Started_2_PreChecking_X_iINVITE"),
                        // Started -> (100rel && (QoS or ICE)) -> InProgress
                        TSK_FSM_ADD(_fsm_state_Started, _fsm_action_iINVITE, _fsm_cond_use_early_media, _fsm_state_InProgress, s0000_Started_2_InProgress_X_iINVITE, "s0000_Started_2_InProgress_X_iINVITE"),
                        // Started -> (non-100rel and non-QoS, referred to as "basic") -> Ringing
                        TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_iINVITE, _fsm_state_Ringing, s0000_Started_2_Ringing_X_iINVITE, "s0000_Started_2_Ringing_X_iINVITE"),
-
+                       
+                       /*=======================
+                        * === PreChecking ===
+                        */
+                       // PreChecking ->(iCANCEL) -> Terminated
+                       TSK_FSM_ADD_ALWAYS(_fsm_state_PreChecking, _fsm_action_iCANCEL, _fsm_state_Terminated, s0000_PreChecking_2_Terminated_X_iCANCEL, "s0000_PreChecking_2_Terminated_X_iCancel"),
+                       // PreChecking ->(oReject) -> Terminated
+                       TSK_FSM_ADD_ALWAYS(_fsm_state_PreChecking, _fsm_action_reject, _fsm_state_Terminated, s0000_PreChecking_2_Terminated_X_Reject, "s0000_PreChecking_2_Terminated_X_Reject"),
+                       // PreChecking ->(oCANCEL) -> Terminated
+                       TSK_FSM_ADD_ALWAYS(_fsm_state_PreChecking, _fsm_action_oCANCEL, _fsm_state_Terminated, s0000_PreChecking_2_Terminated_X_Reject, "s0000_PreChecking_2_Terminated_X_oCANCEL"),
+                       // PreChecking -> (oAccept + 100rel && (QoS or ICE)) -> InProgress
+                       TSK_FSM_ADD(_fsm_state_PreChecking, _fsm_action_accept, _fsm_cond_use_early_media, _fsm_state_InProgress, s0000_PreChecking_2_InProgress_X_Accept, "s0000_PreChecking_2_InProgress_X_Accept"),
+                       // PreChecking -> (oAccept + non-100rel and non-QoS, referred to as "basic") -> Ringing
+                       TSK_FSM_ADD_ALWAYS(_fsm_state_PreChecking, _fsm_action_accept, _fsm_state_Ringing, s0000_PreChecking_2_Ringing_X_Accept, "s0000_PreChecking_2_Ringing_X_Accept"),
 
                        /*=======================
                        * === InProgress ===
@@ -317,11 +341,30 @@ int s0000_Started_2_Started_X_iINVITE(va_list *app)
     return 0;
 }
 
+/* Started ->(Pre-Checking enabled) -> PreChecking */
+int s0000_Started_2_PreChecking_X_iINVITE(va_list *app)
+{
+    tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+    tsip_request_t *request = va_arg(*app, tsip_request_t *);
+    
+    /* update last INVITE */
+    TSK_OBJECT_SAFE_FREE(self->last_iInvite);
+    self->last_iInvite = tsk_object_ref(request);
+    
+    /* alert the user (session) */
+    TSIP_DIALOG_INVITE_SIGNAL(self, tsip_i_prechecking,
+                              tsip_event_code_dialog_request_prechecking, "Pre-checking incoming Call", request);
+    
+    return 0;
+}
+
 /* Started -> (non-100rel and non-QoS, referred to as "basic") -> Ringing */
 int s0000_Started_2_Ringing_X_iINVITE(va_list *app)
 {
     tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
-    tsip_request_t *request = va_arg(*app, tsip_request_t *);
+    tsip_request_t *request = self->is_conditional_ringing_enabled // When called from pre-checking state (s0000_PreChecking_2_Ringing_X_Accept) then, there is no 'request embedded'
+    ? tsk_object_ref(self->last_iInvite)
+    : va_arg(*app, tsip_request_t *);
     const tsip_header_Session_Expires_t* hdr_SessionExpires;
 
     /* we are not the client */
@@ -366,7 +409,9 @@ int s0000_Started_2_Ringing_X_iINVITE(va_list *app)
 int s0000_Started_2_InProgress_X_iINVITE(va_list *app)
 {
     tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
-    tsip_request_t *request = va_arg(*app, tsip_request_t *);
+    tsip_request_t *request = self->is_conditional_ringing_enabled // When called from pre-checking state (s0000_PreChecking_2_InProgress_X_Accept) then, there is no 'request embedded'
+    ? tsk_object_ref(self->last_iInvite)
+    : va_arg(*app, tsip_request_t *);
 
     /* We are not the client */
     self->is_client = tsk_false;
@@ -394,6 +439,30 @@ int s0000_Started_2_InProgress_X_iINVITE(va_list *app)
     send_RESPONSE(self, request, 183, "Session in Progress", tsk_true);
 
     return 0;
+}
+
+/* PreChecking ->(oReject) -> Terminated */
+int s0000_PreChecking_2_Terminated_X_iCANCEL(va_list *app)
+{
+    return s0000_Ringing_2_Terminated_X_iCANCEL(app);
+}
+
+/* PreChecking ->(oReject) -> Terminated */
+int s0000_PreChecking_2_Terminated_X_Reject(va_list *app)
+{
+    return s0000_Ringing_2_Terminated_X_Reject(app);
+}
+
+// PreChecking -> (oAccept + 100rel && (QoS or ICE)) -> InProgress
+int s0000_PreChecking_2_InProgress_X_Accept(va_list *app)
+{
+    return s0000_Started_2_InProgress_X_iINVITE(app);
+}
+
+/* PreChecking -> (oAccept + non-100rel and non-QoS, referred to as "basic") -> Ringing */
+int s0000_PreChecking_2_Ringing_X_Accept(va_list *app)
+{
+    return s0000_Started_2_Ringing_X_iINVITE(app);
 }
 
 /* InProgress ->(iPRACK with QoS) -> InProgress */
