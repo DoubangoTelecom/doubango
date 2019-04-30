@@ -22,7 +22,15 @@ case "$host" in
     target_os=android
     android_cpu=armv5te
     ;;
-   i686-*-linux-android)
+  aarch64-*-linux-android)
+    target_os=android
+    android_cpu=arm64
+    ;;
+  x86_64-*-linux-android)
+    target_os=android
+    android_cpu=x64
+    ;;
+  i686-*-linux-android)
     target_os=android
     android_cpu=x86
     ;;
@@ -37,7 +45,9 @@ AC_ARG_WITH(android-cpu,
                        armv5te: ARMv5TE
                        armv7-a: ARMv7-a *without* NEON
                        armv7-a-neon: ARMv7-a *with* NEON
-                       x86: X86],
+                       arm64: aarch64
+                       x86: X86
+                       x64: X86_64],
 [ android_cpu=$withval ])
 
 ### ANDROID-TOOLCHAIN (http://www.kandroid.org/ndk/docs/STANDALONE-TOOLCHAIN.html)
@@ -48,14 +58,31 @@ if test "$target_os" = "android"; then
     			export ANDROID_PREFIX=i686-linux-android
 			export ANDROID_TOOLCHAIN=$(pwd)/my-android-toolchain-android-x86
     			$NDK/build/tools/make-standalone-toolchain.sh --platform=android-9 --arch=x86 --install-dir=$ANDROID_TOOLCHAIN
+			export CFLAGS='-DANDROID=1'
 			AC_SUBST(TARGET_ARCH, "x86")
+		;;
+		x64)
+			export SYSROOT=$NDK/platforms/android-21/arch-x86_64
+    			export ANDROID_PREFIX=x86_64-linux-android
+			export ANDROID_TOOLCHAIN=$(pwd)/my-android-toolchain-android-x86_64
+    			$NDK/build/tools/make-standalone-toolchain.sh --arch=x86_64 --platform=android-21 --install-dir=$ANDROID_TOOLCHAIN
+			export CFLAGS='-DANDROID=1'
+			AC_SUBST(TARGET_ARCH, "x86")
+		;;
+		arm64)
+			export ANDROID_PREFIX=aarch64-linux-android
+			export SYSROOT=$NDK/platforms/android-21/arch-arm64
+			export ANDROID_TOOLCHAIN=$(pwd)/my-android-toolchain-android-arm64
+    			$NDK/build/tools/make-standalone-toolchain.sh --arch=arm64 --platform=android-21 --install-dir=$ANDROID_TOOLCHAIN
+			export CFLAGS='-DANDROID=1 -D__ARMEL__'
+			AC_SUBST(TARGET_ARCH, "arm")
 		;;
 		armv7-a)
 			export ANDROID_PREFIX=arm-linux-androideabi
 			export SYSROOT=$NDK/platforms/android-3/arch-arm
 			export ANDROID_TOOLCHAIN=$(pwd)/my-android-toolchain-android-armv7-a
     			$NDK/build/tools/make-standalone-toolchain.sh --platform=android-3 --arch=arm --install-dir=$ANDROID_TOOLCHAIN
-    			export CFLAGS='-march=armv7-a -mfloat-abi=softfp'
+    			export CFLAGS='-march=armv7-a -mfloat-abi=softfp -DANDROID=1 -D__ARMEL__'
     			export LDFLAGS='-Wl,--fix-cortex-a8'
 			AC_SUBST(TARGET_ARCH, "arm")
 		;;
@@ -64,7 +91,7 @@ if test "$target_os" = "android"; then
 			export SYSROOT=$NDK/platforms/android-3/arch-arm
     			export ANDROID_TOOLCHAIN=$(pwd)/my-android-toolchain-android-armv7-a-neon
     			$NDK/build/tools/make-standalone-toolchain.sh --platform=android-3 --arch=arm --install-dir=$ANDROID_TOOLCHAIN
-    			export CFLAGS='-march=armv7-a -mfloat-abi=softfp -mfpu=neon'
+    			export CFLAGS='-march=armv7-a -mfloat-abi=softfp -mfpu=neon -DANDROID=1'
     			export LDFLAGS='-Wl,--fix-cortex-a8'
 			AC_SUBST(TARGET_ARCH, "arm")
 		;;
@@ -73,13 +100,14 @@ if test "$target_os" = "android"; then
 			export SYSROOT=$NDK/platforms/android-3/arch-arm
 			export ANDROID_TOOLCHAIN=$(pwd)/my-android-toolchain-armv5te
     			$NDK/build/tools/make-standalone-toolchain.sh --platform=android-3 --arch=arm --install-dir=$ANDROID_TOOLCHAIN
+			export CFLAGS='-DANDROID=1 -D__ARMEL__'
 			AC_SUBST(TARGET_ARCH, "arm")
 		;;
 	esac
 
 	AC_SUBST(NDK, $NDK)
 	
-	export CFLAGS="${CFLAGS} -DANDROID=1"
+	export CFLAGS="${CFLAGS} -fPIC"
 	export CPPFLAGS=$CFLAGS
 	export LDFLAGS="${LDFLAGS} -lc -lm -lgcc"
 
@@ -401,10 +429,10 @@ AC_ARG_WITH(ssl,
 if test $want_ssl != no; then
 	# check for lib and headers
 	AC_CHECK_HEADERS(openssl/ssl.h,
-       	AC_CHECK_LIB(ssl, SSL_library_init, AC_DEFINE_UNQUOTED(HAVE_OPENSSL, 1, HAVE_OPENSSL) [have_ssl=yes] LIBSSL_LIBADD="${LIBSSL_LIBADD} -lssl", 
+       	AC_CHECK_LIB(ssl, SSL_connect, AC_DEFINE_UNQUOTED(HAVE_OPENSSL, 1, HAVE_OPENSSL) [have_ssl=yes] LIBSSL_LIBADD="${LIBSSL_LIBADD} -lssl", 
 		AC_DEFINE_UNQUOTED(HAVE_OPENSSL, 0, HAVE_OPENSSL) [have_ssl=no], [-lcrypto]
 	))
-	AC_CHECK_LIB(crypto, BN_init, 
+	AC_CHECK_LIB(crypto, CRYPTO_new_ex_data, 
 		LIBSSL_LIBADD="${LIBSSL_LIBADD} -lcrypto"
 		AC_CHECK_LIB(ssl, SSL_CTX_set_tlsext_use_srtp, AC_DEFINE_UNQUOTED(HAVE_OPENSSL_DTLS_SRTP, 1, HAVE_OPENSSL_DTLS_SRTP) [have_dtls_srtp=yes],[],[-lcrypto])
 		AC_CHECK_LIB(ssl, DTLSv1_method, AC_DEFINE_UNQUOTED(HAVE_OPENSSL_DTLS, 1, HAVE_OPENSSL_DTLS) [have_dtls=yes],[],[-lcrypto])
@@ -465,7 +493,7 @@ AM_CONDITIONAL([USE_FFMPEG], [test $have_ffmpeg = yes])
 ########################################################
 # X264
 ########################################################
-AM_CONDITIONAL(USE_X264, [test $target_os:$enable_gpl = android:yes]) # X264 is always there for Android and statically linked
+AM_CONDITIONAL(USE_X264, [test $target_os:$enable_gpl:$have_ffmpeg = android:yes:yes]) # X264 is always there for Android and statically linked
 AC_SUBST(LIBX264_LIBADD, "-lx264")
 AC_ARG_WITH(x264, [  --with-x264 IMPORTANT: deprecated to be removed ],[], [])
 
