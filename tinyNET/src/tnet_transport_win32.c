@@ -42,6 +42,14 @@ typedef struct transport_socket_xs {
     unsigned connected : 1;
     unsigned paused : 1;
 
+	tnet_proxy_node_t *proxy_node;
+	tnet_proxyinfo_t* proxy_info;
+	tsk_bool_t proxy_handshacking_completed;
+	tsk_bool_t proxy_handshacking_started;
+
+	char* dst_host;
+	tnet_port_t dst_port;
+
     tnet_socket_type_t type;
     tnet_tls_socket_handle_t* tlshandle;
 }
@@ -60,6 +68,7 @@ typedef struct transport_context_s {
 transport_context_t;
 
 static transport_socket_xt* getSocket(transport_context_t *context, tnet_fd_t fd);
+static int addSocket2(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client, tnet_tls_socket_handle_t* tlsHandle, const char* dst_host, tnet_port_t dst_port, struct tnet_proxyinfo_s* proxy_info);
 static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client, tnet_tls_socket_handle_t* tlsHandle);
 static int removeSocket(int index, transport_context_t *context);
 
@@ -116,11 +125,45 @@ const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transpor
 
 int tnet_transport_add_socket_2(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient, tnet_tls_socket_handle_t* tlsHandle, const char* dst_host, tnet_port_t dst_port, struct tnet_proxyinfo_s* proxy_info)
 {
-    // TODO: support for web-proxies not added yet
-    (void)(dst_host);
-    (void)(dst_port);
-    (void)(proxy_info);
-    return tnet_transport_add_socket(handle, fd, type, take_ownership, isClient, tlsHandle);
+
+	tnet_transport_t *transport = (tnet_transport_t*)handle;
+	transport_context_t* context;
+	int ret = -1;
+
+	if (!transport) {
+		TSK_DEBUG_ERROR("Invalid server handle.");
+		return ret;
+	}
+
+	if (!(context = (transport_context_t*)transport->context)) {
+		TSK_DEBUG_ERROR("Invalid context.");
+		return -2;
+	}
+
+	if (TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)) {
+		transport->tls.enabled = tsk_true;
+	}
+
+	addSocket2(fd, type, transport, take_ownership, isClient, tlsHandle,dst_host,dst_port, proxy_info);
+
+	if (WSAEventSelect(fd, context->events[context->count - 1], FD_ALL_EVENTS) == SOCKET_ERROR) {
+		removeSocket((int)(context->count - 1), context);
+		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
+		return -1;
+	}
+
+	/* Signal if transport is running */
+	if (TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started) {
+		if (WSASetEvent(context->events[0])) {
+			TSK_DEBUG_INFO("New socket added to the network transport.");
+			return 0;
+		}
+		TSK_DEBUG_ERROR("Transport not started yet");
+		return -1;
+	}
+
+	TSK_DEBUG_INFO("Adding socket delayed");
+	return 0;
 }
 
 /*
@@ -128,44 +171,10 @@ int tnet_transport_add_socket_2(const tnet_transport_handle_t *handle, tnet_fd_t
 */
 int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient, tnet_tls_socket_handle_t* tlsHandle)
 {
-    tnet_transport_t *transport = (tnet_transport_t*)handle;
-    transport_context_t* context;
-    int ret = -1;
-
-    if (!transport) {
-        TSK_DEBUG_ERROR("Invalid server handle.");
-        return ret;
-    }
-
-    if (!(context = (transport_context_t*)transport->context)) {
-        TSK_DEBUG_ERROR("Invalid context.");
-        return -2;
-    }
-
-    if (TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)) {
-        transport->tls.enabled = tsk_true;
-    }
-
-    addSocket(fd, type, transport, take_ownership, isClient, tlsHandle);
-
-    if (WSAEventSelect(fd, context->events[context->count - 1], FD_ALL_EVENTS) == SOCKET_ERROR) {
-        removeSocket((int)(context->count - 1), context);
-        TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
-        return -1;
-    }
-
-    /* Signal if transport is running */
-    if (TSK_RUNNABLE(transport)->running || TSK_RUNNABLE(transport)->started) {
-        if (WSASetEvent(context->events[0])) {
-            TSK_DEBUG_INFO("New socket added to the network transport.");
-            return 0;
-        }
-        TSK_DEBUG_ERROR("Transport not started yet");
-        return -1;
-    }
-
-    TSK_DEBUG_INFO("Adding socket delayed");
-    return 0;
+	static tnet_proxyinfo_t* __proxy_info_null = tsk_null;
+	static const char* __dst_host_null = tsk_null;
+	static tnet_port_t __dst_port_zero = 0;
+	return tnet_transport_add_socket_2(handle, fd, type, take_ownership, isClient, tlsHandle, __dst_host_null, __dst_port_zero, __proxy_info_null);
 }
 
 int tnet_transport_pause_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tsk_bool_t pause)
@@ -350,48 +359,83 @@ static transport_socket_xt* getSocket(transport_context_t *context, tnet_fd_t fd
 /*== Add new socket ==*/
 static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client, tnet_tls_socket_handle_t* tlsHandle)
 {
-    transport_context_t *context;
+	static tnet_proxyinfo_t* __proxy_info_null = tsk_null;
+	static const char* __dst_host_null = tsk_null;
+	static tnet_port_t __dst_port_zero = 0;
+	return addSocket2(fd, type, transport, take_ownership, is_client, tlsHandle, __dst_host_null, __dst_port_zero, __proxy_info_null);
+}
 
-    if (TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)) {
+/*== Add new socket ==*/
+
+static int addSocket2(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, 
+	tsk_bool_t take_ownership, tsk_bool_t is_client, 
+	tnet_tls_socket_handle_t* tlsHandle,
+	const char* dst_host, tnet_port_t dst_port, struct tnet_proxyinfo_s* proxy_info)
+{
+	transport_context_t *context;
+
+	if (TNET_SOCKET_TYPE_IS_TLS(type) || TNET_SOCKET_TYPE_IS_WSS(type)) {
 #if !HAVE_OPENSSL
-        TSK_DEBUG_ERROR("Cannot create TLS socket: OpenSSL missing");
-        return -2;
+		TSK_DEBUG_ERROR("Cannot create TLS socket: OpenSSL missing");
+		return -2;
 #endif
-    }
+	}
 
-    if ((context = transport ? transport->context : tsk_null)) {
-        transport_socket_xt *sock = tsk_calloc(1, sizeof(transport_socket_xt));
-        sock->fd = fd;
-        sock->type = type;
-        sock->owner = take_ownership ? 1 : 0;
+	if ((context = transport ? transport->context : tsk_null)) {
+		transport_socket_xt *sock = tsk_calloc(1, sizeof(transport_socket_xt));
+		sock->fd = fd;
+		sock->type = type;
+		sock->owner = take_ownership ? 1 : 0;
+		sock->dst_host = tsk_strdup(dst_host);
+		sock->dst_port = dst_port;
 
-        if ((TNET_SOCKET_TYPE_IS_TLS(sock->type) || TNET_SOCKET_TYPE_IS_WSS(sock->type)) && transport->tls.enabled) {
-            if (tlsHandle) {
-                sock->tlshandle = tsk_object_ref(tlsHandle);
-            }
-            else {
+		if ((TNET_SOCKET_TYPE_IS_TLS(sock->type) || TNET_SOCKET_TYPE_IS_WSS(sock->type)) && transport->tls.enabled) {
+			if (tlsHandle) {
+				sock->tlshandle = tsk_object_ref(tlsHandle);
+			}
+			else {
 #if HAVE_OPENSSL
-                sock->tlshandle = tnet_tls_socket_create(sock->fd, is_client ? transport->tls.ctx_client : transport->tls.ctx_server);
+				sock->tlshandle = tnet_tls_socket_create(sock->fd, is_client ? transport->tls.ctx_client : transport->tls.ctx_server);
 #endif
-            }
-        }
+			}
+		}
 
-        tsk_safeobj_lock(context);
-        context->events[context->count] = WSACreateEvent();
-        context->sockets[context->count] = sock;
+		//proxy
+		if (proxy_info && tnet_proxyinfo_is_valid(proxy_info))
+		{
+			sock->proxy_info = tsk_object_ref(proxy_info);
+			if (sock->proxy_node && sock->proxy_node->type != sock->proxy_info->type) {
+				TSK_OBJECT_SAFE_FREE(sock->proxy_node);
+			}
+			if (!sock->proxy_node && !(sock->proxy_node = tnet_proxy_node_create(sock->proxy_info->type))) {
+				TSK_DEBUG_ERROR("Failed to create proxy node");
+				return -1;
+			}
+			tnet_proxy_node_configure(sock->proxy_node,
+				TNET_PROXY_SET_DEST_ADDRESS(sock->dst_host, sock->dst_port),
+				TNET_PROXY_SET_PROXY_ADDRESS(sock->proxy_info->hostname, sock->proxy_info->port),
+				TNET_PROXY_NODE_SET_IPV6(TNET_SOCKET_TYPE_IS_IPV6(sock->type)),
+				TNET_PROXY_SET_CREDENTIALS(sock->proxy_info->username, sock->proxy_info->password),
+				TNET_PROXY_SET_SOCKET(sock->fd, sock->type),
+				TNET_PROXY_NODE_SET_NULL());
+		}
 
-        context->count++;
+		tsk_safeobj_lock(context);
+		context->events[context->count] = WSACreateEvent();
+		context->sockets[context->count] = sock;
 
-        TSK_DEBUG_INFO("Transport[%s] sockets count = %u", transport->description, context->count);
+		context->count++;
 
-        tsk_safeobj_unlock(context);
+		TSK_DEBUG_INFO("Transport[%s] sockets count = %u", transport->description, context->count);
 
-        return 0;
-    }
-    else {
-        TSK_DEBUG_ERROR("Context is Null.");
-        return -1;
-    }
+		tsk_safeobj_unlock(context);
+
+		return 0;
+	}
+	else {
+		TSK_DEBUG_ERROR("Context is Null.");
+		return -1;
+	}
 }
 
 /*== Remove socket ==*/
@@ -541,6 +585,37 @@ int tnet_transport_unprepare(tnet_transport_t *transport)
     return 0;
 }
 
+static int tnet_proxy_start_handshaking(tnet_transport_t *transport, transport_socket_xt *sock)
+{
+	transport_context_t *context;
+	int ret;
+	void* handshaking_data_ptr = tsk_null;
+	tsk_size_t handshaking_data_size = 0;
+
+	if (!transport || !(context = transport->context) || !sock || !sock->proxy_info || !sock->proxy_node) {
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	// start handshaking
+	if ((ret = tnet_proxy_node_start_handshaking(sock->proxy_node)) != 0) {
+		return ret;
+	}
+	// pull handshaking data
+	ret = tnet_proxy_node_get_handshaking_pending_data(sock->proxy_node, &handshaking_data_ptr, &handshaking_data_size);
+	if (ret == 0 && handshaking_data_ptr && handshaking_data_size) {
+		// send handshaking data
+		tsk_size_t sent = tnet_transport_send(transport, sock->fd, handshaking_data_ptr, handshaking_data_size);
+		ret = (sent == handshaking_data_size) ? 0 : -1;
+	}
+	// free handshaking data
+	TSK_FREE(handshaking_data_ptr);
+	// check if handshaking completed
+	tnet_proxy_node_get_handshaking_completed(sock->proxy_node, &sock->proxy_handshacking_completed);
+
+	return ret;
+}
+
 /*=== Main thread */
 void* TSK_STDCALL tnet_transport_mainthread(void *param)
 {
@@ -578,7 +653,7 @@ void* TSK_STDCALL tnet_transport_mainthread(void *param)
         if (!(active_socket = context->sockets[index])) {
             goto done;
         }
-
+		TSK_DEBUG_INFO("Receive Event For socket:%d", active_socket->fd);
         /* Get the network events flags */
         if (WSAEnumNetworkEvents(active_socket->fd, active_event, &networkEvents) == SOCKET_ERROR) {
             TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
@@ -634,18 +709,25 @@ void* TSK_STDCALL tnet_transport_mainthread(void *param)
         /*================== FD_CONNECT ==================*/
         if (networkEvents.lNetworkEvents & FD_CONNECT) {
             TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_CONNECT", transport->description);
-
-            if (networkEvents.iErrorCode[FD_CONNECT_BIT]) {
-                tnet_fd_t fd = active_socket->fd;
-                TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, fd);
-                tnet_transport_remove_socket(transport, &fd);
-                TNET_PRINT_LAST_ERROR("CONNECT FAILED.");
-                goto done;
-            }
-            else {
-                TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, active_socket->fd);
-                active_socket->connected = 1;
-            }
+			if ( !active_socket->proxy_info || active_socket->proxy_handshacking_completed)
+			{
+				if (networkEvents.iErrorCode[FD_CONNECT_BIT]) {
+					tnet_fd_t fd = active_socket->fd;
+					TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, fd);
+					tnet_transport_remove_socket(transport, &fd);
+					TNET_PRINT_LAST_ERROR("CONNECT FAILED.");
+					goto done;
+				}
+				else {
+					TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, active_socket->fd);
+					active_socket->connected = 1;
+				}
+			}
+			else if(active_socket->proxy_info && !active_socket->proxy_handshacking_started)
+			{
+				active_socket->proxy_handshacking_started = tsk_true;
+				tnet_proxy_start_handshaking(transport, active_socket);
+			}
         }
 
 
@@ -714,7 +796,43 @@ void* TSK_STDCALL tnet_transport_mainthread(void *param)
                     /* wsaBuffer.buf = tsk_realloc(wsaBuffer.buf, readCount); */
                 }
             }
+			if (!active_socket->proxy_handshacking_completed && active_socket->proxy_handshacking_started && active_socket->proxy_node && active_socket->proxy_info) {
+				void* handshaking_data_ptr = tsk_null;
+				tsk_size_t handshaking_data_size = 0;
+				TSK_DEBUG_INFO("Proxy handshaking data:%.*s", (int)wsaBuffer.len, wsaBuffer.buf);
 
+				// handle incoming hadshaking data
+				if ((ret = tnet_proxy_node_set_handshaking_data(active_socket->proxy_node, wsaBuffer.buf, wsaBuffer.len)) != 0) {
+					TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
+					removeSocket(index, transport->context);
+					goto bail;
+				}
+				// pull handshaking data
+				ret = tnet_proxy_node_get_handshaking_pending_data(active_socket->proxy_node, &handshaking_data_ptr, &handshaking_data_size);
+				if (ret == 0 && handshaking_data_ptr && handshaking_data_size) {
+					// send handshaking data
+					tsk_size_t sent = tnet_transport_send(transport, active_socket->fd, handshaking_data_ptr, handshaking_data_size);
+					ret = (sent == handshaking_data_size) ? 0 : -1;
+				}
+				// free handshaking data
+				TSK_FREE(handshaking_data_ptr);
+				// check if handshaking completed
+				ret = tnet_proxy_node_get_handshaking_completed(active_socket->proxy_node, &active_socket->proxy_handshacking_completed);
+				if (active_socket->proxy_handshacking_completed) {
+					if (TNET_SOCKET_TYPE_IS_TLS(transport->type) && !TNET_SOCKET_TYPE_IS_TLS(active_socket->type)) {
+						// Upgrade the socket type from TCP to TLS and send SSL handshaking
+						TNET_SOCKET_TYPE_UNSET(active_socket->type, TCP);
+						TNET_SOCKET_TYPE_SET(active_socket->type, TLS);
+						/*if ((ret = enableSSL(transport, active_socket)) != 0) {
+							TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
+							removeSocket(active_socket, transport->context);
+							goto bail;
+						}*/
+					}
+					TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, active_socket->fd);
+				}
+				goto done; // do not forward the data to the end-user
+			}
             if (ret) {
                 ret = WSAGetLastError();
                 if (ret == WSAEWOULDBLOCK) {
@@ -768,7 +886,7 @@ FD_READ_DONE:
             TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_CLOSE", transport->description);
 
             TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, active_socket->fd);
-            removeSocket(index, context);
+			removeSocket(index, context);
         }
 
         /*	http://msdn.microsoft.com/en-us/library/ms741690(VS.85).aspx

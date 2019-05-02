@@ -409,9 +409,11 @@ static int _tnet_proxy_node_socks_plugin_set_handshaking_data(tnet_proxy_node_t*
                 if (node->handshacking.socks5_auth_method == kSocks5AuthMethodNone) {
                     node->handshacking.socks5_state = socks5_state_conn_req;
                     // FIXME:
-                    TSK_DEBUG_ERROR("Not implemented yet");
+                    /*TSK_DEBUG_ERROR("Not implemented yet");
                     ret = -3;
-                    goto bail;
+                    goto bail;*/
+					//no need authentication,build connect request
+					goto connect_request;
                 }
                 else {
                     if (node->handshacking.socks5_auth_method == kSocks5AuthMethodUsrPwd) {
@@ -505,7 +507,8 @@ static int _tnet_proxy_node_socks_plugin_set_handshaking_data(tnet_proxy_node_t*
             }
 
             // State changed from "auth_req" to "conn_req" : build connection request
-            if (node->handshacking.socks5_state == socks5_state_conn_req) {
+		connect_request:
+			if (node->handshacking.socks5_state == socks5_state_conn_req) {
 #define kAddrTypeIPv4           0x01
 #define kAddrTypeDomaineName    0x03
 #define kAddrTypeIPv6           0x04
@@ -613,6 +616,8 @@ bail:
     tsk_safeobj_unlock(node);
     return ret;
 }
+
+
 
 static int _tnet_proxy_node_socks_plugin_get_handshaking_pending_data(tnet_proxy_node_t* self, void** data_pptr, tsk_size_t* data_psize)
 {
