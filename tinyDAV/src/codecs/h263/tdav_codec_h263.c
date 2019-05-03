@@ -118,7 +118,7 @@ tdav_codec_h263_t;
 
 #define TDAV_DECLARE_CODEC_H263 tdav_codec_h263_t __codec_h263__
 
-static int tdav_codec_h263_init(tdav_codec_h263_t* self, tdav_codec_h263_type_t type, enum CodecID encoder, enum CodecID decoder);
+static int tdav_codec_h263_init(tdav_codec_h263_t* self, tdav_codec_h263_type_t type, enum AVCodecID encoder, enum AVCodecID decoder);
 static int tdav_codec_h263_deinit(tdav_codec_h263_t* self);
 static int tdav_codec_h263_open_encoder(tdav_codec_h263_t* self);
 static int tdav_codec_h263_open_decoder(tdav_codec_h263_t* self);
@@ -178,7 +178,7 @@ static int tdav_codec_h263_set(tmedia_codec_t* self, const tmedia_param_t* param
     return -1;
 }
 
-int tdav_codec_h263_init(tdav_codec_h263_t* self, tdav_codec_h263_type_t type, enum CodecID encoder, enum CodecID decoder)
+int tdav_codec_h263_init(tdav_codec_h263_t* self, tdav_codec_h263_type_t type, enum AVCodecID encoder, enum AVCodecID decoder)
 {
     int ret = 0;
 
