@@ -510,6 +510,10 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
             }
         }
         else if(TSIP_MESSAGE_IS_RESPONSE(msg)) {
+            const tsip_header_t *via;
+            if ((via = tsip_message_get_headerAt(msg, tsip_htype_Via, 1))) {
+                msg->firstVia = NULL;
+            }
             /* AoR for responses which have a contact header (e.g. 183/200 INVITE) */
             if(msg->Contact) {
                 tsip_transport_msg_update_aor((tsip_transport_t*)self, msg);
@@ -521,7 +525,7 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
             	with no value, it MUST set the value of the parameter to the source
             	port of the request.
             */
-            if(msg->firstVia->rport == 0) {
+            if(msg->firstVia && msg->firstVia->rport == 0) {
                 /* As the response message has been built from the request ...then it's first via is the same as
                 	the request's first via.
                 */
